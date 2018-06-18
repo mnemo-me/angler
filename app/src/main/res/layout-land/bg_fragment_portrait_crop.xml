@@ -1,0 +1,63 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    tools:context="com.mnemo.angler.background_changer.PortraitCropFragment">
+
+    <com.steelkiwi.cropiwa.CropIwaView
+        android:id="@+id/fragment_portrait_crop_iwa"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        app:ci_dynamic_aspect_ratio="false"
+        app:ci_aspect_ratio_w="410"
+        app:ci_aspect_ratio_h="520"
+        app:ci_border_width="0dp"
+        app:ci_corner_width="0dp"
+        app:ci_grid_width="1dp"
+        app:ci_grid_color="#66FFFFFF"
+        app:ci_crop_scale="1"/>
+
+    <RelativeLayout
+        android:layout_width="180dp"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="#FFFFFF">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:layout_marginEnd="@dimen/default_margin"
+            android:layout_marginStart="@dimen/default_margin"
+            android:text="crop background for portrait orientation"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="?android:actionBarSize"
+            android:layout_alignParentBottom="true"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/fragment_portrait_back"
+                style="@style/bottom_bar_button"
+                android:text="back"/>
+
+            <View
+                style="@style/bottom_bar_separator"/>
+
+
+            <TextView
+                android:id="@+id/fragment_portrait_crop"
+                style="@style/bottom_bar_button"
+                android:text="crop"/>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</LinearLayout>

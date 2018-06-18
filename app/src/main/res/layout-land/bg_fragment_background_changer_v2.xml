@@ -1,0 +1,148 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    tools:context="com.mnemo.angler.background_changer.BackgroundChangerFragmentv2">
+
+    <LinearLayout
+        android:layout_width="272dp"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <android.support.v7.widget.Toolbar
+                android:layout_width="match_parent"
+                android:layout_height="?android:actionBarSize"
+                app:contentInsetStart="0dp">
+
+                <LinearLayout
+                    android:id="@+id/background_changer_drawer_back"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:paddingStart="3dp"
+                    android:paddingEnd="8dp">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="@string/menu"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_chevron_left_black_24dp"/>
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:contentDescription="@string/menu"
+                        android:src="@drawable/ic_menu_black_24dp" />
+
+                </LinearLayout>
+
+            </android.support.v7.widget.Toolbar>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:text="@string/change_background"
+                android:textAllCaps="true"
+                android:textColor="#000000"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:gravity="center"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#22000000"/>
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/overlay_background"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="@string/background_image"
+            android:scaleType="centerCrop"
+            tools:src="@drawable/back4" />
+
+        <FrameLayout
+            android:id="@+id/overlay_overlay"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#CC000000"
+            tools:background="#CC000000" />
+
+
+        <ImageView
+            android:id="@+id/background_changer_select_background"
+            style="@style/bottom_bar_image"
+            android:alpha="0.5"
+            android:layout_alignParentEnd="true"
+            android:layout_margin="@dimen/default_margin"
+            android:src="@drawable/ic_check_white_24dp"/>
+
+
+        <com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBarWrapper
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="64dp"
+            android:layout_marginBottom="64dp"
+            android:layout_marginEnd="@dimen/default_margin"
+            android:layout_gravity="center_horizontal"
+            android:visibility="gone">
+
+            <com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBar
+                android:id="@+id/overlay_seekbar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:max="255"
+                android:splitTrack="false"
+                app:seekBarRotation="CW270"
+                android:progressTint="@color/colorAccent"
+                android:thumbTint="@color/colorAccent"/>
+
+        </com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBarWrapper>
+
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/background_changer_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:paddingStart="4dp"
+            android:paddingEnd="4dp"
+            android:layout_marginBottom="10dp"
+            android:clipToPadding="false"
+            android:elevation="4dp"/>
+
+    </RelativeLayout>
+
+</LinearLayout>
+
+
+

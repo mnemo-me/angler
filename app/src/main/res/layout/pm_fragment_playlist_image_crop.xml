@@ -1,0 +1,73 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+
+    <com.steelkiwi.cropiwa.CropIwaView
+        android:id="@+id/fragment_playlist_image_crop_crop_iwa"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        app:ci_dynamic_aspect_ratio="false"
+        app:ci_aspect_ratio_w="410"
+        app:ci_aspect_ratio_h="410"
+        app:ci_border_width="0dp"
+        app:ci_corner_width="0dp"
+        app:ci_grid_width="1dp"
+        app:ci_grid_color="#66FFFFFF"
+        app:ci_crop_scale="1"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="140dp"
+        android:orientation="vertical"
+        android:background="#FFFFFF">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="crop image for playlist cover"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="?android:actionBarSize"
+            android:baselineAligned="false"
+            android:orientation="horizontal">
+
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <ImageView
+                    android:id="@+id/fragment_playlist_image_crop_back"
+                    style="@style/bottom_bar_image"
+                    android:src="@drawable/ic_clear_black_24dp"/>
+
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <ImageView
+                    android:id="@+id/fragment_playlist_image_crop_crop"
+                    style="@style/bottom_bar_image"
+                    android:src="@drawable/ic_crop_black_24dp"/>
+
+            </FrameLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+
+
+</LinearLayout>

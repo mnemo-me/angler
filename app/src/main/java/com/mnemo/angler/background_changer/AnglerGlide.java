@@ -1,0 +1,8 @@
+package com.mnemo.angler.background_changer;
+
+import com.bumptech.glide.annotation.GlideModule;
+import com.bumptech.glide.module.AppGlideModule;
+
+@GlideModule
+public class AnglerGlide extends AppGlideModule {
+}

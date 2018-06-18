@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<android.support.v4.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/drawer_layout"
+    tools:context="com.mnemo.angler.MainActivity">
+
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <!-- background -->
+
+        <android.support.constraint.Group
+            android:id="@+id/background_group"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="240dp"
+            app:constraint_referenced_ids="main_fragment_background, overlay"/>
+
+        <ImageView
+            android:id="@+id/main_fragment_background"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="240dp"
+            android:contentDescription="@string/background_image"
+            android:scaleType="centerCrop"
+            tools:src="@drawable/back"/>
+
+        <FrameLayout
+            android:id="@+id/overlay"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="240dp"
+            tools:background="#CC000000" />
+
+        <!-- frames for fragments -->
+
+        <FrameLayout
+            android:id="@+id/main_frame"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        <FrameLayout
+            android:id="@+id/frame"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        <FrameLayout
+            android:id="@+id/full_frame"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+
+        <View
+            android:id="@+id/main_toolbar"
+            android:layout_width="240dp"
+            android:layout_height="48dp"/>
+
+        <!-- media panel -->
+
+        <android.support.constraint.Group
+            android:id="@+id/media_panel_group"
+            android:layout_width="240dp"
+            android:layout_height="match_parent"
+            app:constraint_referenced_ids="media_panel_upper_shadow, media_panel_title,
+            media_panel_seek_bar, media_panel_lyrics, media_panel_add_to_playlist,
+            media_panel_previous_track, media_panel_play_pause, media_panel_next_track,
+            media_panel_repeat, media_panel_shuffle"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/media_panel_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="#000000"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toTopOf="@id/media_panel_artist"
+            app:layout_constraintEnd_toStartOf="@id/main_fragment_background"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:text="Sweet dreams"/>
+
+        <TextView
+            android:id="@+id/media_panel_artist"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/gGrey"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toTopOf="@id/media_panel_repeat"
+            app:layout_constraintEnd_toStartOf="@id/main_fragment_background"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:text="Marilyn Manson" />
+
+
+        <SeekBar
+            android:id="@+id/media_panel_seek_bar"
+            android:layout_width="240dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:progressBackgroundTint="#22000000"
+            android:progressTint="@color/colorAccent"
+            app:layout_constraintBottom_toTopOf="@+id/media_panel_play_pause"
+            app:layout_constraintEnd_toStartOf="@id/main_fragment_background"
+            app:layout_constraintStart_toStartOf="parent" />
+
+
+
+        <!-- media buttons -->
+
+        <ImageButton
+            android:id="@+id/media_panel_lyrics"
+            style="@style/playlist_media_button"
+            android:layout_marginBottom="16dp"
+            android:src="@drawable/ic_receipt_black_24dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/media_panel_previous_track"
+            app:layout_constraintStart_toStartOf="parent"/>
+
+
+        <ImageButton
+            android:id="@+id/media_panel_previous_track"
+            style="@style/playlist_media_button"
+            android:layout_marginBottom="16dp"
+            android:src="@drawable/ic_skip_previous_black_24dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/media_panel_play_pause"
+            app:layout_constraintStart_toEndOf="@+id/media_panel_lyrics" />
+
+
+        <ImageButton
+            android:id="@+id/media_panel_play_pause"
+            style="@style/playlist_media_button"
+            android:layout_marginBottom="16dp"
+            android:src="@drawable/ic_play_arrow_black_48dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/media_panel_next_track"
+            app:layout_constraintStart_toEndOf="@+id/media_panel_previous_track" />
+
+
+        <ImageButton
+            android:id="@+id/media_panel_next_track"
+            style="@style/playlist_media_button"
+            android:layout_marginBottom="16dp"
+            android:src="@drawable/ic_skip_next_black_24dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/media_panel_add_to_playlist"
+            app:layout_constraintStart_toEndOf="@id/media_panel_play_pause" />
+
+        <ImageButton
+            android:id="@+id/media_panel_add_to_playlist"
+            style="@style/playlist_media_button"
+            android:layout_marginBottom="16dp"
+            android:src="@drawable/ic_add_black_24dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/main_fragment_background"
+            app:layout_constraintStart_toEndOf="@+id/media_panel_next_track" />
+
+
+        <ImageButton
+            android:id="@+id/media_panel_repeat"
+            style="@style/playlist_media_button"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginBottom="8dp"
+            android:alpha="0.4"
+            android:src="@drawable/ic_repeat_black_24dp"
+            app:layout_constraintStart_toStartOf="@id/media_panel_lyrics"
+            app:layout_constraintBottom_toTopOf="@id/media_panel_seek_bar"/>
+
+
+        <ImageButton
+            android:id="@+id/media_panel_shuffle"
+            style="@style/playlist_media_button"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="8dp"
+            android:alpha="0.4"
+            android:src="@drawable/ic_shuffle_black_24dp"
+            app:layout_constraintBottom_toTopOf="@id/media_panel_seek_bar"
+            app:layout_constraintEnd_toEndOf="@id/media_panel_add_to_playlist"/>
+
+
+    </android.support.constraint.ConstraintLayout>
+
+
+
+
+    <!-- drawer -->
+
+    <LinearLayout
+        android:id="@+id/drawer_panel"
+        android:layout_width="240dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:background="#FFFFFF"
+        android:orientation="vertical"
+        android:clickable="true">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/app_name_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/app_name"
+                android:textColor="#000000"
+                android:textSize="44sp"
+                android:textAllCaps="true"
+                android:fontFamily="serif"
+                android:layout_centerInParent="true" />
+
+            <TextView
+                android:id="@+id/pro_version"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="top"
+                android:text="@string/trial_version"
+                android:textColor="#000000"
+                android:textAllCaps="true"
+                android:textSize="12sp"
+                android:fontFamily="serif"
+                android:layout_below="@id/app_name_text"
+                android:layout_alignEnd="@id/app_name_text" />
+
+        </RelativeLayout>
+
+
+        <View
+            android:id="@+id/top_line"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#44000000"
+            android:layout_marginStart="@dimen/default_margin"
+            android:layout_marginEnd="@dimen/default_margin"/>
+
+        <TextView
+            android:id="@+id/music_player_drawer_item"
+            style="@style/drawer_item"
+            android:text="@string/music_player"/>
+
+        <View
+            android:id="@+id/top_line2"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#44000000"
+            android:layout_marginStart="@dimen/default_margin"
+            android:layout_marginEnd="@dimen/default_margin"/>
+
+        <TextView
+            android:id="@+id/playlists_drawer_item"
+            style="@style/drawer_item"
+            android:text="@string/playlist_manager" />
+
+        <TextView
+            android:id="@+id/albums_drawer_item"
+            style="@style/drawer_item"
+            android:text="@string/albums" />
+
+        <TextView
+            android:id="@+id/artists_drawer_item"
+            style="@style/drawer_item"
+            android:text="@string/artists" />
+
+        <TextView
+            android:id="@+id/equalizer_drawer_item"
+            style="@style/drawer_item"
+            android:text="@string/equalizer"/>
+
+        <TextView
+            android:id="@+id/background_drawer_item"
+            style="@style/drawer_item"
+            android:text="@string/change_background" />
+
+
+        <View
+            android:id="@+id/bottom_line"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#44000000"
+            android:layout_marginStart="@dimen/default_margin"
+            android:layout_marginEnd="@dimen/default_margin"/>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/purchase"
+                style="@style/drawer_item"
+                android:background="@color/colorAccent"
+                android:textColor="#FFFFFF"
+                android:layout_marginTop="@dimen/default_margin"
+                android:text="@string/purchase"/>
+
+        </FrameLayout>
+
+
+    </LinearLayout>
+
+
+
+</android.support.v4.widget.DrawerLayout>
