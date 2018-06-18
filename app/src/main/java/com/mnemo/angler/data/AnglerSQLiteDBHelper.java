@@ -333,11 +333,6 @@ public class AnglerSQLiteDBHelper extends SQLiteOpenHelper{
     }
 
 
-    private void createGoogleDrivePlaylist(SQLiteDatabase db){
-
-    }
-
-
     public static String createTrackTableName(String title){
 
         return title.replaceAll("[ !.,:'-]", "_");

@@ -35,26 +35,15 @@ public class AlbumListAdapter extends ArrayAdapter{
     private Context context;
     private int albumsInLine;
     private ArrayList<ListItem> items;
-    private TreeSet<String> artists;
 
     AlbumListAdapter(@NonNull Context context, ArrayList<Album> albums) {
 
         super(context, 0, albums);
 
         this.context = context;
-/*
-        int orientation = context.getResources().getConfiguration().orientation;
-
-        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            albumsInLine = 5;
-        }else{
-            albumsInLine = 3;
-        }
-*/
         albumsInLine = 3;
 
-
-        artists = new TreeSet<>();
+        TreeSet<String> artists = new TreeSet<>();
         for (Album album : albums){
                 artists.add(album.getArtist());
         }
@@ -135,22 +124,16 @@ public class AlbumListAdapter extends ArrayAdapter{
         albumIdentifier.add(R.id.album_line_album_one);
         albumIdentifier.add(R.id.album_line_album_two);
         albumIdentifier.add(R.id.album_line_album_three);
-        //albumIdentifier.add(R.id.album_line_album_four);
-        //albumIdentifier.add(R.id.album_line_album_five);
 
         ArrayList<Integer> albumImageIdentifier = new ArrayList<>();
         albumImageIdentifier.add(R.id.album_line_album_one_image);
         albumImageIdentifier.add(R.id.album_line_album_two_image);
         albumImageIdentifier.add(R.id.album_line_album_three_image);
-        //albumImageIdentifier.add(R.id.album_line_album_four_image);
-        //albumImageIdentifier.add(R.id.album_line_album_five_image);
 
         ArrayList<Integer> albumTextIdentifier = new ArrayList<>();
         albumTextIdentifier.add(R.id.album_line_album_one_name);
         albumTextIdentifier.add(R.id.album_line_album_two_name);
         albumTextIdentifier.add(R.id.album_line_album_three_name);
-        //albumTextIdentifier.add(R.id.album_line_album_four_name);
-        //albumTextIdentifier.add(R.id.album_line_album_five_name);
 
 
         for (int i = 0; i < albumsInLine; i ++) {

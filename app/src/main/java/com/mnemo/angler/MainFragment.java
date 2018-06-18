@@ -6,23 +6,26 @@ import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
 
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 
 import com.mnemo.angler.data.AnglerContract;
-import com.mnemo.angler.data.AnglerSQLiteDBHelper;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.Unbinder;
 
 
 public class MainFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -30,25 +33,32 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
 
     public static final int LOADER_PLAYLIST_ID = 0;
 
+    @BindView(R.id.main_fragment_playlist_spinner)
     Spinner spinner;
+
+    @BindView(R.id.playlist)
+    View playlist;
+
+    @BindView(R.id.artists)
+    View artists;
+
     SimpleCursorAdapter adapter;
 
-    ImageButton playlist;
-    ImageButton artists;
+    Unbinder unbinder;
 
     public MainFragment() {
         // Required empty public constructor
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_main, container, false);
 
+        unbinder = ButterKnife.bind(this, view);
 
         // Configure playlist spinner with cursor adapter
-        spinner = view.findViewById(R.id.main_fragment_playlist_spinner);
         adapter = new SimpleCursorAdapter(getContext(), R.layout.playlist_spinner_item, null,
                     new String[]{AnglerContract.PlaylistEntry.COLUMN_NAME},
                     new int[]{R.id.playlist_spinner_item_title});
@@ -57,16 +67,9 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
 
         getLoaderManager().initLoader(LOADER_PLAYLIST_ID, null, this);
 
+        configureNavigationButtons();
 
         return view;
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        configureNavigationButtons();
-        configureSettingsButton();
     }
 
 
@@ -89,8 +92,6 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
 
     private void configureNavigationButtons(){
 
-        playlist = getActivity().findViewById(R.id.playlist);
-        artists = getActivity().findViewById(R.id.artists);
 
         playlist.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -118,17 +119,6 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
 
 
 
-    private void configureSettingsButton(){
-
-        ImageView settingsView = getActivity().findViewById(R.id.settings);
-        settingsView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ((DrawerLayout) getActivity().findViewById(R.id.drawer_layout)).openDrawer(Gravity.START);
-            }
-        });
-    }
-
 
     public void updateMainPlaylist(){
 
@@ -136,13 +126,6 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
             .replace(R.id.song_list, new MainPlaylistFragment())
             .commit();
     }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        //AnglerApplication.getRefWatcher(getActivity()).watch(this);
-    }
-
 
 
     @Override
@@ -213,4 +196,16 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     }
 
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+
+        unbinder.unbind();
+    }
+
+    // Setup drawer button
+    @OnClick(R.id.settings)
+    void drawerBack(){
+        ((DrawerLayout) getActivity().findViewById(R.id.drawer_layout)).openDrawer(Gravity.START);
+    }
 }

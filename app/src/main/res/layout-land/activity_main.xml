@@ -40,6 +40,16 @@
             android:layout_marginStart="240dp"
             tools:background="#CC000000" />
 
+        <View
+            android:layout_width="224dp"
+            android:layout_height="1dp"
+            android:background="#44000000"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="12dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/media_panel_title"/>
+
         <!-- frames for fragments -->
 
         <FrameLayout
@@ -75,6 +85,7 @@
             media_panel_repeat, media_panel_shuffle"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
 
         <TextView
             android:id="@+id/media_panel_title"

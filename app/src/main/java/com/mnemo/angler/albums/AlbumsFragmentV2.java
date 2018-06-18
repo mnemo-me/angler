@@ -1,10 +1,10 @@
 package com.mnemo.angler.albums;
 
 
-import android.content.res.Configuration;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -15,11 +15,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TextView;
 
-import com.mnemo.angler.AnglerApplication;
 import com.mnemo.angler.DrawerItem;
 import com.mnemo.angler.R;
 import com.mnemo.angler.data.AnglerContract;
@@ -46,7 +43,7 @@ public class AlbumsFragmentV2 extends Fragment implements DrawerItem, LoaderMana
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.alb_fragment_albums, container, false);
@@ -134,9 +131,4 @@ public class AlbumsFragmentV2 extends Fragment implements DrawerItem, LoaderMana
 
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        //AnglerApplication.getRefWatcher(getActivity()).watch(this);
-    }
 }

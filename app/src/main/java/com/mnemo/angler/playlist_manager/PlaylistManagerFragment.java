@@ -44,7 +44,7 @@ public class PlaylistManagerFragment extends Fragment implements DrawerItem, Loa
     View separator;
     ImageView back;
 
-    ImageButton addNewPlaylist;
+    View addNewPlaylist;
 
     public static final int LOADER_PLAYLIST_ID = 0;
 

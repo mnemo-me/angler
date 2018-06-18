@@ -2,6 +2,7 @@ package com.mnemo.angler.background_changer;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -9,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 
 import com.mnemo.angler.MainActivity;
 import com.mnemo.angler.R;
@@ -66,11 +66,6 @@ public class BackgroundImageAdapter extends RecyclerView.Adapter<BackgroundImage
             }else{
                 holder.cardView.setSelected(false);
             }
-            /*
-            ColorMatrix matrix = new ColorMatrix();
-            matrix.setSaturation(0);
-            background.setColorFilter(new ColorMatrixColorFilter(matrix));
-            */
         }else{
             holder.cardView.setActivated(false);
             if (image.equals(selectedImage)){
@@ -80,7 +75,15 @@ public class BackgroundImageAdapter extends RecyclerView.Adapter<BackgroundImage
             }
         }
 
-        ImageAssistent.loadImage(context, image, background, 270);
+        final int orientation = context.getResources().getConfiguration().orientation;
+
+        if (orientation == Configuration.ORIENTATION_PORTRAIT){
+            ImageAssistent.loadImage(context, image, background, 100);
+        }else{
+            ImageAssistent.loadImage(context, image.replace("port", "land"), background, 120);
+        }
+
+
 
         background.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,7 +103,12 @@ public class BackgroundImageAdapter extends RecyclerView.Adapter<BackgroundImage
                 }else {
                     selectedImage = image;
                     notifyDataSetChanged();
-                    onImageClickListener.onImageClick(image);
+
+                    if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+                        onImageClickListener.onImageClick(image);
+                    }else{
+                        onImageClickListener.onImageClick(image.replace("port", "land"));
+                    }
                 }
             }
         });

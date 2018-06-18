@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -45,7 +46,7 @@ public class ArtistsFragment extends Fragment implements DrawerItem, LoaderManag
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.art_fragment_artists, container, false);
@@ -86,7 +87,7 @@ public class ArtistsFragment extends Fragment implements DrawerItem, LoaderManag
 
 
     @Override
-    public Loader onCreateLoader(int id, Bundle args) {
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
         switch (id) {
             case LOADER_ARTISTS_ID:
@@ -143,9 +144,4 @@ public class ArtistsFragment extends Fragment implements DrawerItem, LoaderManag
         }
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        //AnglerApplication.getRefWatcher(getActivity()).watch(this);
-    }
 }

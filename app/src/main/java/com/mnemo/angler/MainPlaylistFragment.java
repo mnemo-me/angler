@@ -82,7 +82,7 @@ public class MainPlaylistFragment extends ListFragment implements LoaderManager.
 
 
         getListView().setDividerHeight(0);
-        getListView().setPadding(0, (int)(4 * MainActivity.density),0,(int)(8 * MainActivity.density));
+        getListView().setPadding(0, (int)(8 * MainActivity.density),0,(int)(8 * MainActivity.density));
         getListView().setClipToPadding(false);
         getListView().setVerticalScrollBarEnabled(false);
         getListView().setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
