@@ -4,16 +4,20 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.constraint.Group;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.mnemo.angler.MainActivity;
 import com.mnemo.angler.R;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class BackgroundImageAdapter extends RecyclerView.Adapter<BackgroundImageAdapter.ViewHolder>{
@@ -77,13 +81,22 @@ public class BackgroundImageAdapter extends RecyclerView.Adapter<BackgroundImage
 
         final int orientation = context.getResources().getConfiguration().orientation;
 
-        if (orientation == Configuration.ORIENTATION_PORTRAIT){
+        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
             ImageAssistent.loadImage(context, image, background, 100);
-        }else{
+        } else {
             ImageAssistent.loadImage(context, image.replace("port", "land"), background, 120);
         }
 
 
+        Group addImage = holder.cardView.findViewById(R.id.background_add_image);
+
+        if (holder.getAdapterPosition() != 0) {
+            if (addImage.getVisibility() == View.VISIBLE){
+                addImage.setVisibility(View.GONE);
+            }
+        }else{
+            addImage.setVisibility(View.VISIBLE);
+        }
 
         background.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -113,6 +126,33 @@ public class BackgroundImageAdapter extends RecyclerView.Adapter<BackgroundImage
             }
         });
 
+        // Setup delete image button
+        ImageButton deleteImage = holder.cardView.findViewById(R.id.background_delete_image);
+
+        if (image.startsWith("R.drawable.")){
+            deleteImage.setVisibility(View.GONE);
+        }else{
+            if (deleteImage.getVisibility() == View.GONE){
+                deleteImage.setVisibility(View.VISIBLE);
+            }
+        }
+
+        deleteImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                File fileToDeletePort = new File(image);
+                fileToDeletePort.delete();
+
+                File fileToDeleteLand = new File(image.replace("port", "land"));
+                fileToDeleteLand.delete();
+
+                images.remove(holder.getAdapterPosition());
+                notifyItemRemoved(holder.getAdapterPosition());
+            }
+
+        });
+
 
 
     }
@@ -125,5 +165,9 @@ public class BackgroundImageAdapter extends RecyclerView.Adapter<BackgroundImage
     // Setters for listeners
     void setOnImageClickListener(OnImageClickListener onImageClickListener) {
         this.onImageClickListener = onImageClickListener;
+    }
+
+    public String getSelectedImage() {
+        return selectedImage;
     }
 }

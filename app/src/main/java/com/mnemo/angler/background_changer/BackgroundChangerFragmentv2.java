@@ -130,7 +130,7 @@ public class BackgroundChangerFragmentv2 extends Fragment implements DrawerItem 
         ArrayList<String> images = new ArrayList<>();
 
         // Add 'load from storage' image
-        images.add("R.drawable.ic_add_white_24dp");
+        images.add("R.drawable.null_rectangle");
 
         // Add images from app folder to list
         TreeSet<String> backgroundFolderImages = new TreeSet<>(new BackgroundComparator());
@@ -157,41 +157,13 @@ public class BackgroundChangerFragmentv2 extends Fragment implements DrawerItem 
 
 
         // Initialize recycler view and background image adapter for it
-        BackgroundImageAdapter backgroundImageAdapter = new BackgroundImageAdapter(getActivity(), images);
-
-        /*
-        Setup listeners:
-        OnImageClickListener = set background
-        OnImageLongClickListener - delete non-default background
-         */
+        final BackgroundImageAdapter backgroundImageAdapter = new BackgroundImageAdapter(getActivity(), images);
 
         backgroundImageAdapter.setOnImageClickListener(new BackgroundImageAdapter.OnImageClickListener() {
             @Override
             public void onImageClick(final String image) {
 
                 ImageAssistent.loadImage(getContext(), image, background, imageHeight);
-
-/*
-                delete.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-
-                        if (image.startsWith("R.drawable.")) {
-                            Toast.makeText(getContext(),"Can't delete default background",Toast.LENGTH_SHORT).show();
-                        }else{
-
-                            BackgroundDeleteFragment backgroundDeleteFragment = new BackgroundDeleteFragment();
-                            Bundle args = new Bundle();
-                            args.putString("image",image);
-                            backgroundDeleteFragment.setArguments(args);
-
-                            getActivity().getSupportFragmentManager().beginTransaction()
-                                    .add(R.id.frame, backgroundDeleteFragment)
-                                    .addToBackStack(null)
-                                    .commit();
-                        }
-                    }
-                });*/
 
             }
         });
@@ -214,14 +186,23 @@ public class BackgroundChangerFragmentv2 extends Fragment implements DrawerItem 
         select.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-                sharedPref.edit().putString("background",backgroundImage).apply();
+
+                String selectedBackgroundImage = backgroundImageAdapter.getSelectedImage();
+
+                if (selectedBackgroundImage != null){
+                    sharedPref.edit().putString("background", selectedBackgroundImage).apply();
+
+                    ImageView background = getActivity().findViewById(R.id.main_fragment_background);
+
+                    ImageAssistent.loadImage(getContext(), backgroundImageAdapter.getSelectedImage(), background, imageHeight);
+                }
+
                 sharedPref.edit().putInt("overlay", seekBar.getProgress()).apply();
 
-                ImageView background = getActivity().findViewById(R.id.main_fragment_background);
-
-                ImageAssistent.loadImage(getContext(), backgroundImage, background, imageHeight);
                 ((MainActivity)getActivity()).setOverlay(seekBar.getProgress());
+
 
                 getActivity().onBackPressed();
             }
