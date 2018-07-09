@@ -10,7 +10,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import com.mnemo.angler.R;
 import com.steelkiwi.cropiwa.CropIwaView;
@@ -19,11 +18,20 @@ import com.steelkiwi.cropiwa.config.CropIwaSaveConfig;
 import java.io.File;
 import java.io.IOException;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.Unbinder;
+
 
 public class PlaylistImageCropFragment extends Fragment {
 
+    @BindView(R.id.fragment_playlist_image_crop_crop_iwa)
+    CropIwaView cropIwaView;
 
-    private static final int LOADER_UPDATE_COVER_ID = 1;
+    String image;
+
+    Unbinder unbinder;
 
     public PlaylistImageCropFragment() {
         // Required empty public constructor
@@ -36,59 +44,54 @@ public class PlaylistImageCropFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.pm_fragment_playlist_image_crop, container, false);
 
+        unbinder = ButterKnife.bind(this, view);
+
         // Get image and new image name from arguments
-        final String image = getArguments().getString("image");
+        image = getArguments().getString("image");
 
         // Setup CropIwa
-        final CropIwaView cropIwaView = view.findViewById(R.id.fragment_playlist_image_crop_crop_iwa);
         cropIwaView.setImageUri(Uri.fromFile(new File(image)));
-
-        // Setup back button
-        ImageView back = view.findViewById(R.id.fragment_playlist_image_crop_back);
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getActivity().onBackPressed();
-            }
-        });
-
-        /*
-         Setup crop button
-         Cropping image in CropIwa borders
-          */
-        ImageView crop = view.findViewById(R.id.fragment_playlist_image_crop_crop);
-        crop.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                // Get image path
-                String imageName  = ((PlaylistOptionsFragment)getActivity().getSupportFragmentManager().findFragmentByTag("playlist_opt_fragment")).getImage();
-
-                File destinationFile = new File(imageName);
-
-                try {
-                    destinationFile.createNewFile();
-                }catch (IOException e){
-                    e.printStackTrace();
-                }
-
-                cropIwaView.crop(new CropIwaSaveConfig.Builder(Uri.fromFile(destinationFile))
-                        .setCompressFormat(Bitmap.CompressFormat.JPEG)
-                        .build());
-
-                getActivity().getSupportFragmentManager().popBackStack();
-                getActivity().getSupportFragmentManager().popBackStack();
-                getActivity().getSupportFragmentManager().popBackStack();
-            }
-        });
 
         return view;
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        //AnglerApplication.getRefWatcher(getActivity()).watch(this);
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
     }
 
+
+    /*
+     Setup crop button
+     Cropping image in CropIwa borders
+      */
+    @OnClick(R.id.fragment_playlist_image_crop_crop)
+    void crop(){
+
+        // Get image path
+        String imageName  = ((PlaylistOptionsFragment)getActivity().getSupportFragmentManager().findFragmentByTag("playlist_opt_fragment")).getImage();
+
+        File destinationFile = new File(imageName);
+
+        try {
+            destinationFile.createNewFile();
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+
+        cropIwaView.crop(new CropIwaSaveConfig.Builder(Uri.fromFile(destinationFile))
+                .setCompressFormat(Bitmap.CompressFormat.JPEG)
+                .build());
+
+        getActivity().getSupportFragmentManager().popBackStack();
+        getActivity().getSupportFragmentManager().popBackStack();
+        getActivity().getSupportFragmentManager().popBackStack();
+    }
+
+    // Setup back button
+    @OnClick(R.id.fragment_playlist_image_crop_back)
+    void back(){
+        getActivity().onBackPressed();
+    }
 }

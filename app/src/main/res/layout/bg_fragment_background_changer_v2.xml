@@ -24,7 +24,7 @@
     <android.support.v7.widget.Toolbar
         android:id="@+id/background_changer_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="?android:actionBarSize"
+        android:layout_height="48dp"
         android:elevation="4dp"
         app:contentInsetStart="0dp">
 
@@ -52,7 +52,8 @@
             style="@style/bottom_bar_image"
             android:alpha="0.5"
             android:layout_gravity="end"
-            android:layout_margin="@dimen/default_margin"
+            android:padding="8dp"
+            android:layout_marginEnd="8dp"
             android:src="@drawable/ic_check_white_24dp"/>
 
     </android.support.v7.widget.Toolbar>

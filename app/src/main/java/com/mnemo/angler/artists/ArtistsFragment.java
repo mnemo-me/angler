@@ -22,7 +22,7 @@ import android.widget.SimpleCursorAdapter;
 
 import com.mnemo.angler.DrawerItem;
 import com.mnemo.angler.R;
-import com.mnemo.angler.background_changer.ImageAssistent;
+import com.mnemo.angler.background_changer.ImageAssistant;
 import com.mnemo.angler.data.AnglerContract.*;
 import com.mnemo.angler.data.AnglerFolder;
 import com.mnemo.angler.playlist_manager.PlaylistConfigurationFragment;
@@ -64,7 +64,7 @@ public class ArtistsFragment extends Fragment implements DrawerItem, LoaderManag
                 if (view.getId() == R.id.artist_image){
 
                     String imagePath = AnglerFolder.PATH_ARTIST_IMAGE + File.separator + cursor.getString(1) + ".jpg";
-                    ImageAssistent.loadImage(getContext(), imagePath, (ImageView)view, 205);
+                    ImageAssistant.loadImage(getContext(), imagePath, (ImageView)view, 205);
 
                     return true;
                 }

@@ -72,7 +72,7 @@ public class BackgroundChangerFragmentv2 extends Fragment implements DrawerItem 
         // Hide background
         ((MainActivity)getActivity()).hideBackground();
 
-        int orientation = getResources().getConfiguration().orientation;
+        final int orientation = getResources().getConfiguration().orientation;
 
 
         // Get background image from shared preferences
@@ -86,7 +86,7 @@ public class BackgroundChangerFragmentv2 extends Fragment implements DrawerItem 
             imageHeight = 203;
         }
 
-        ImageAssistent.loadImage(getContext(), backgroundImage, background, imageHeight);
+        ImageAssistant.loadImage(getContext(), backgroundImage, background, imageHeight);
 
 
 
@@ -163,7 +163,11 @@ public class BackgroundChangerFragmentv2 extends Fragment implements DrawerItem 
             @Override
             public void onImageClick(final String image) {
 
-                ImageAssistent.loadImage(getContext(), image, background, imageHeight);
+                if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+                    ImageAssistant.loadImage(getContext(), image, background, imageHeight);
+                }else{
+                    ImageAssistant.loadImage(getContext(), image.replace("port", "land"), background, imageHeight);
+                }
 
             }
         });
@@ -196,7 +200,12 @@ public class BackgroundChangerFragmentv2 extends Fragment implements DrawerItem 
 
                     ImageView background = getActivity().findViewById(R.id.main_fragment_background);
 
-                    ImageAssistent.loadImage(getContext(), backgroundImageAdapter.getSelectedImage(), background, imageHeight);
+                    if (orientation == Configuration.ORIENTATION_PORTRAIT){
+                        ImageAssistant.loadImage(getContext(), selectedBackgroundImage, background, imageHeight);
+                    }else{
+                        ImageAssistant.loadImage(getContext(), selectedBackgroundImage.replace("port", "land"), background, imageHeight);
+                    }
+
                 }
 
                 sharedPref.edit().putInt("overlay", seekBar.getProgress()).apply();

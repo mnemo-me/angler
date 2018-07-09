@@ -8,7 +8,6 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 
-import android.support.design.widget.FloatingActionButton;
 import android.support.transition.ChangeBounds;
 import android.support.transition.ChangeTransform;
 import android.support.transition.Slide;
@@ -19,7 +18,6 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,7 +26,7 @@ import com.mnemo.angler.MainActivity;
 import com.mnemo.angler.PlaybackManager;
 import com.mnemo.angler.PlaylistManager;
 import com.mnemo.angler.R;
-import com.mnemo.angler.background_changer.ImageAssistent;
+import com.mnemo.angler.background_changer.ImageAssistant;
 import com.mnemo.angler.background_changer.LocalLoadFragment;
 import com.mnemo.angler.data.AnglerContract;
 import com.mnemo.angler.data.AnglerFolder;
@@ -142,7 +140,7 @@ public class PlaylistOptionsFragment extends Fragment {
 
         // Fill views
         titleView.setText(title);
-        ImageAssistent.loadImage(getContext(), image, coverView, 250);
+        ImageAssistant.loadImage(getContext(), image, coverView, 250);
 
 
 
@@ -152,7 +150,7 @@ public class PlaylistOptionsFragment extends Fragment {
             @Override
             public void onCropSuccess(Uri croppedUri) {
 
-                ImageAssistent.loadImage(getContext(), image, coverView, 250);
+                ImageAssistant.loadImage(getContext(), image, coverView, 250);
 
                 if (isPlaylistInside){
                     ((PlaylistConfigurationFragment) getActivity().getSupportFragmentManager().findFragmentByTag("playlist_conf_fragment")).updateCover();

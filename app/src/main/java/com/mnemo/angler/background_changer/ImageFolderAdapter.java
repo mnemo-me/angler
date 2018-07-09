@@ -52,7 +52,7 @@ public class ImageFolderAdapter extends RecyclerView.Adapter<ImageFolderAdapter.
         final ImageView background = holder.imageView;
         background.setTransitionName(context.getResources().getString(R.string.local_load_image_transition) + selectedImagePosition);
 
-        ImageAssistent.loadImage(context, images.get(position), background, 120);
+        ImageAssistant.loadImage(context, images.get(position), background, 120);
 
 
         background.setOnClickListener(new View.OnClickListener() {
@@ -78,21 +78,6 @@ public class ImageFolderAdapter extends RecyclerView.Adapter<ImageFolderAdapter.
             }
         });
 
-        // Flex grow for images in flexbox
-        /*
-        ViewGroup.LayoutParams layoutParams = background.getLayoutParams();
-        if (layoutParams instanceof FlexboxLayoutManager.LayoutParams){
-            FlexboxLayoutManager.LayoutParams lp = (FlexboxLayoutManager.LayoutParams) layoutParams;
-            lp.setFlexGrow(1.0f);
-
-            int orientation = context.getResources().getConfiguration().orientation;
-            if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-                lp.setMaxWidth((int) (203.5 * MainActivity.density));
-            }else{
-                lp.setMaxWidth((int) (226 * MainActivity.density));
-            }
-        }
-        */
     }
 
     @Override

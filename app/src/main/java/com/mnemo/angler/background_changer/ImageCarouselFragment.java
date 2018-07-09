@@ -3,24 +3,37 @@ package com.mnemo.angler.background_changer;
 
 import android.os.Bundle;
 
-import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.mnemo.angler.AnglerApplication;
 import com.mnemo.angler.R;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 
 public class ImageCarouselFragment extends Fragment {
 
+
+    @BindView(R.id.image_carousel_tab)
+    TabLayout tabLayout;
+
+    @BindView(R.id.image_carousel_view_pager)
+    ViewPager viewPager;
+
+    Unbinder unbinder;
 
     public ImageCarouselFragment() {
         // Required empty public constructor
@@ -28,41 +41,33 @@ public class ImageCarouselFragment extends Fragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.bg_fragment_image_carousel, container, false);
 
+        unbinder = ButterKnife.bind(this, view);
+
         /*
         Get arguments
-        images = list of images in current folder
+        images - list of images in current folder
         image - selected image
+        imageType - tag to recognize starter fragment
         */
         Bundle args = getArguments();
-        final ArrayList<String> images = args.getStringArrayList("images");
+        ArrayList<String> images = args.getStringArrayList("images");
         String image = args.getString("image");
+        String imageType = getArguments().getString("image_type");
 
-        // Initialize TabLayout and bind it with ViewPager
-        final TabLayout tabLayout = view.findViewById(R.id.image_carousel_tab);
-        ViewPager viewPager = view.findViewById(R.id.image_carousel_view_pager);
 
-        viewPager.setAdapter(new ImageCarouselAdapter(getActivity().getSupportFragmentManager(), images, getArguments().getString("image_type")));
+
+        // Bind TabLayout with ViewPager
+        viewPager.setAdapter(new ImageCarouselAdapter(getActivity().getSupportFragmentManager(), images, imageType));
         tabLayout.setupWithViewPager(viewPager);
 
         tabLayout.getTabAt(images.indexOf(image)).select();
 
-        // Animation with disappearing advice text
-        final TextView adviceText = view.findViewById(R.id.image_carousel_advice);
-
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                adviceText.animate()
-                        .alpha(0f)
-                        .setDuration(1000);
-            }
-        },2000);
-
+        // Image appear animation
         viewPager.setScaleX(0f);
         viewPager.setScaleY(0f);
         viewPager.setAlpha(0f);
@@ -72,13 +77,16 @@ public class ImageCarouselFragment extends Fragment {
                 .scaleY(1f)
                 .alpha(1f);
 
+
+        // Show toast with navigation advice
+        Toast.makeText(getContext(), R.string.image_carousel_advice_text, Toast.LENGTH_SHORT).show();
+
         return view;
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        //AnglerApplication.getRefWatcher(getActivity()).watch(this);
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
     }
-
 }

@@ -43,6 +43,7 @@
             android:id="@+id/background_add_image_photo"
             android:layout_width="48dp"
             android:layout_height="48dp"
+            android:layout_marginStart="4dp"
             android:src="@drawable/baseline_add_photo_alternate_white_48dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

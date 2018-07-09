@@ -2,7 +2,6 @@ package com.mnemo.angler.background_changer;
 
 
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -10,13 +9,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.mnemo.angler.AnglerApplication;
 import com.mnemo.angler.R;
 import com.mnemo.angler.playlist_manager.PlaylistImageCropFragment;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.Unbinder;
 
 
 public class ImageFragment extends Fragment {
 
+    @BindView(R.id.image_fragment_image)
+    ImageView imageView;
+
+    String image;
+
+    Unbinder unbinder;
 
     public ImageFragment() {
         // Required empty public constructor
@@ -42,67 +51,61 @@ public class ImageFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.bg_fragment_image, container, false);
 
+        unbinder = ButterKnife.bind(this, view);
+
         // Get selected image from arguments
-        Bundle args = getArguments();
-        final String image = args.getString("image");
+        image = getArguments().getString("image");
 
-        ImageView imageView = view.findViewById(R.id.image_fragment_image);
+        // Assign image to view
         imageView.setTransitionName(getResources().getString(R.string.local_load_image_transition) + getArguments().getInt("position"));
+        ImageAssistant.loadImage(getContext(), image, imageView, 400);
 
-        ImageAssistent.loadImage(getContext(), image, imageView, 400);
-
-        // Setup cancel button
-        final ImageView cancel = view.findViewById(R.id.image_cancel);
-        cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getActivity().onBackPressed();
-            }
-        });
-
-        // Setup load button
-        final ImageView load = view.findViewById(R.id.image_load);
-        load.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                Bundle args = new Bundle();
-                args.putString("image", image);
-
-                switch (getArguments().getString("image_type")){
-
-                    case "background":
-                        PortraitCropFragment portraitCropFragment = new PortraitCropFragment();
-                        portraitCropFragment.setArguments(args);
-
-                        getActivity().getSupportFragmentManager().beginTransaction()
-                                .add(R.id.full_frame, portraitCropFragment)
-                                .addToBackStack(null)
-                                .commit();
-                        break;
-
-                    case "cover":
-                        PlaylistImageCropFragment playlistImageCropFragment = new PlaylistImageCropFragment();
-                        playlistImageCropFragment.setArguments(args);
-
-                        getActivity().getSupportFragmentManager().beginTransaction()
-                                .add(R.id.full_frame, playlistImageCropFragment)
-                                .addToBackStack(null)
-                                .commit();
-                        break;
-                }
-
-
-            }
-        });
 
         return view;
     }
 
+
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        //AnglerApplication.getRefWatcher(getActivity()).watch(this);
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
     }
 
+
+    // Setup load button
+    @OnClick(R.id.image_load)
+    void imageLoad(){
+
+        Bundle args = new Bundle();
+        args.putString("image", image);
+
+        switch (getArguments().getString("image_type")){
+
+            case "background":
+                PortraitCropFragment portraitCropFragment = new PortraitCropFragment();
+                portraitCropFragment.setArguments(args);
+
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .add(R.id.full_frame, portraitCropFragment)
+                        .addToBackStack(null)
+                        .commit();
+                break;
+
+            case "cover":
+                PlaylistImageCropFragment playlistImageCropFragment = new PlaylistImageCropFragment();
+                playlistImageCropFragment.setArguments(args);
+
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .add(R.id.full_frame, playlistImageCropFragment)
+                        .addToBackStack(null)
+                        .commit();
+                break;
+        }
+    }
+
+    // Setup hide button
+    @OnClick(R.id.image_hide)
+    void imageHide(){
+        getActivity().onBackPressed();
+    }
 }

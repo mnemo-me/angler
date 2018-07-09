@@ -12,14 +12,6 @@
         android:layout_height="wrap_content"
         android:visibility="gone" />
 
-    <TextView
-        android:id="@+id/image_carousel_advice"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
-        android:gravity="center"
-        android:text="@string/image_carousel_advice_text"
-        android:textColor="#aba9a9" />
 
     <android.support.v4.view.ViewPager
         android:id="@+id/image_carousel_view_pager"

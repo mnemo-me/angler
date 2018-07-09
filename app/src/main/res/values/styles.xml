@@ -120,4 +120,27 @@
         <item name="android:layout_marginStart">8dp</item>
     </style>
 
+    <style name="landscape_options">
+        <item name="android:layout_height">48dp</item>
+        <item name="android:layout_width">230dp</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:background">#88000000</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:paddingStart">64dp</item>
+        <item name="android:paddingEnd">16dp</item>
+        <item name="android:layout_marginTop">4dp</item>
+        <item name="android:layout_marginBottom">4dp</item>
+    </style>
+
+    <style name="bottom_bar_button_v2">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">40dp</item>
+        <item name="android:padding">8dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:alpha">0.6</item>
+    </style>
+
 </resources>

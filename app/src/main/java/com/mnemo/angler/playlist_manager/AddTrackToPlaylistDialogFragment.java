@@ -24,7 +24,7 @@ import android.widget.TextView;
 
 import com.mnemo.angler.MainActivity;
 import com.mnemo.angler.R;
-import com.mnemo.angler.background_changer.ImageAssistent;
+import com.mnemo.angler.background_changer.ImageAssistant;
 import com.mnemo.angler.data.AnglerContract.*;
 
 public class AddTrackToPlaylistDialogFragment extends DialogFragment implements LoaderManager.LoaderCallbacks<Cursor>  {
@@ -71,7 +71,7 @@ public class AddTrackToPlaylistDialogFragment extends DialogFragment implements 
             public boolean setViewValue(View view, Cursor cursor, int i) {
 
                 if (view.getId() == R.id.playlist_options_image){
-                    ImageAssistent.loadImage(getContext(),cursor.getString(2), (ImageView) view, 104);
+                    ImageAssistant.loadImage(getContext(),cursor.getString(2), (ImageView) view, 104);
                     return true;
                 }
                 return false;

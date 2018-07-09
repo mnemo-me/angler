@@ -48,7 +48,7 @@
 
     <TextView
         android:id="@+id/new_playlist_button"
-        style="@style/drawer_item"
+        style="@style/landscape_options"
         android:text="@string/create_new_playlist"
         app:layout_constraintTop_toBottomOf="@id/playlist_manager_separator"/>
 

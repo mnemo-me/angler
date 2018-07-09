@@ -5,7 +5,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
-
     <com.steelkiwi.cropiwa.CropIwaView
         android:id="@+id/fragment_playlist_image_crop_crop_iwa"
         android:layout_width="match_parent"
@@ -20,54 +19,38 @@
         app:ci_grid_color="#66FFFFFF"
         app:ci_crop_scale="1"/>
 
-    <LinearLayout
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="140dp"
+        android:layout_height="120dp"
         android:orientation="vertical"
         android:background="#FFFFFF">
 
         <TextView
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="crop image for playlist cover"/>
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/album_cover_crop_advice"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/fragment_playlist_image_crop_crop"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="?android:actionBarSize"
-            android:baselineAligned="false"
-            android:orientation="horizontal">
+        <TextView
+            android:id="@+id/fragment_playlist_image_crop_back"
+            style="@style/bottom_bar_button_v2"
+            android:text="@string/back"
+            app:layout_constraintHorizontal_chainStyle="spread_inside"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/fragment_playlist_image_crop_crop"/>
 
-            <FrameLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1">
+        <TextView
+            android:id="@+id/fragment_playlist_image_crop_crop"
+            style="@style/bottom_bar_button_v2"
+            android:text="@string/crop"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/fragment_playlist_image_crop_back"/>
 
-                <ImageView
-                    android:id="@+id/fragment_playlist_image_crop_back"
-                    style="@style/bottom_bar_image"
-                    android:src="@drawable/ic_clear_black_24dp"/>
-
-            </FrameLayout>
-
-            <FrameLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1">
-
-                <ImageView
-                    android:id="@+id/fragment_playlist_image_crop_crop"
-                    style="@style/bottom_bar_image"
-                    android:src="@drawable/ic_crop_black_24dp"/>
-
-            </FrameLayout>
-
-        </LinearLayout>
-
-    </LinearLayout>
-
-
-
+    </android.support.constraint.ConstraintLayout>
 
 </LinearLayout>

@@ -71,6 +71,11 @@
     <string name="close">Close</string>
     <string name="create_new_playlist">Create new playlist</string>
     <string name="empty_playlist">Playlist is empty</string>
+    <string name="hide">Hide</string>
+    <string name="portrait_crop_advice">crop background for portrait orientation</string>
+    <string name="landscape_crop_advice">crop background for landscape orientation</string>
+    <string name="album_cover_crop_advice">crop image for playlist cover</string>
+    <string name="crop">crop</string>
 
 
 </resources>

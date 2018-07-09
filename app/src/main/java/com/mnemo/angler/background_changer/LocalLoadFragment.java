@@ -4,6 +4,7 @@ package com.mnemo.angler.background_changer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -12,9 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.MimeTypeMap;
-import android.widget.ImageView;
 
-import com.mnemo.angler.AnglerApplication;
 import com.mnemo.angler.MainActivity;
 import com.mnemo.angler.R;
 
@@ -24,9 +23,21 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.TreeSet;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.Unbinder;
+
 
 public class LocalLoadFragment extends Fragment {
 
+    @BindView(R.id.tab_layout)
+    TabLayout tabLayout;
+
+    @BindView(R.id.view_pager)
+    ViewPager viewPager;
+
+    Unbinder unbinder;
 
     private ArrayList<String> imageFolders = new ArrayList<>();
 
@@ -36,10 +47,12 @@ public class LocalLoadFragment extends Fragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.bg_fragment_local_load, container, false);
+
+        unbinder = ButterKnife.bind(this, view);
 
         // Hide background, media panel and frame
         ((MainActivity)getActivity()).hideBackground();
@@ -50,20 +63,9 @@ public class LocalLoadFragment extends Fragment {
         imageFolders.addAll(getImageFolders(Environment.getExternalStorageDirectory().getPath()));
 
         // Setup TabLayout and bind ViewPager with it
-        TabLayout tabLayout = view.findViewById(R.id.tab_layout);
-        ViewPager viewPager = view.findViewById(R.id.view_pager);
-
         viewPager.setAdapter(new LocalLoadAdapter(getActivity().getSupportFragmentManager(), imageFolders, getArguments().getString("image_type")));
         tabLayout.setupWithViewPager(viewPager);
 
-        // Setup back button
-        ImageView back = view.findViewById(R.id.local_load_back_button);
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getActivity().onBackPressed();
-            }
-        });
 
         return view;
     }
@@ -129,11 +131,11 @@ public class LocalLoadFragment extends Fragment {
         ((MainActivity)getActivity()).showBackground();
         ((MainActivity)getActivity()).showMediaPanel();
         ((MainActivity)getActivity()).showFrame();
+
+        unbinder.unbind();
     }
 
-    /*
-        Comparator for TreeSet to sort folders alphabetically based on relative path
-         */
+    // Comparator for TreeSet to sort folders alphabetically based on relative path
     public class FolderComparator implements Comparator{
         @Override
         public int compare(Object o, Object t1) {
@@ -147,10 +149,9 @@ public class LocalLoadFragment extends Fragment {
         }
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        //AnglerApplication.getRefWatcher(getActivity()).watch(this);
-    }
 
+    @OnClick(R.id.local_load_back_button)
+    void back(){
+        getActivity().onBackPressed();
+    }
 }

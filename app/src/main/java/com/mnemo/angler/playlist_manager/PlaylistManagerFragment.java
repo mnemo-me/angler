@@ -23,14 +23,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
 import com.mnemo.angler.DrawerItem;
 import com.mnemo.angler.R;
-import com.mnemo.angler.background_changer.ImageAssistent;
+import com.mnemo.angler.background_changer.ImageAssistant;
 import com.mnemo.angler.data.AnglerContract.*;
 
 
@@ -73,7 +72,7 @@ public class PlaylistManagerFragment extends Fragment implements DrawerItem, Loa
             public boolean setViewValue(View view, Cursor cursor, int i) {
 
                 if (view.getId() == R.id.playlist_options_image){
-                    ImageAssistent.loadImage(getContext(),cursor.getString(2), (ImageView) view, 125);
+                    ImageAssistant.loadImage(getContext(),cursor.getString(2), (ImageView) view, 125);
                     view.setTransitionName(cursor.getString(1) + " cover");
 
                     ((CardView)view.getParent().getParent()).setTransitionName(cursor.getString(1) + " card");

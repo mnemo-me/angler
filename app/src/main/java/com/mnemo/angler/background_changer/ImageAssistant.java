@@ -4,15 +4,12 @@ import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.widget.ImageView;
 
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.signature.MediaStoreSignature;
 import com.bumptech.glide.signature.ObjectKey;
 import com.mnemo.angler.MainActivity;
-import com.mnemo.angler.R;
 
 import java.io.File;
 
-public class ImageAssistent {
+public class ImageAssistant {
 
     // Simplify loading image in ImageView
     public static void loadImage(Context context, String image, ImageView targetImageView, int imageHeight){

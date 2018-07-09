@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.mnemo.angler.MainActivity;
 import com.mnemo.angler.R;
@@ -52,8 +51,8 @@ public class BackgroundImageAdapter extends RecyclerView.Adapter<BackgroundImage
     @Override
     public BackgroundImageAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        CardView relativeLayout = (CardView) LayoutInflater.from(parent.getContext()).inflate(R.layout.bg_background_item, parent, false);
-        return new BackgroundImageAdapter.ViewHolder(relativeLayout);
+        CardView cardView = (CardView) LayoutInflater.from(parent.getContext()).inflate(R.layout.bg_background_item, parent, false);
+        return new BackgroundImageAdapter.ViewHolder(cardView);
     }
 
     @Override
@@ -82,9 +81,9 @@ public class BackgroundImageAdapter extends RecyclerView.Adapter<BackgroundImage
         final int orientation = context.getResources().getConfiguration().orientation;
 
         if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-            ImageAssistent.loadImage(context, image, background, 100);
+            ImageAssistant.loadImage(context, image, background, 120);
         } else {
-            ImageAssistent.loadImage(context, image.replace("port", "land"), background, 120);
+            ImageAssistant.loadImage(context, image.replace("port", "land"), background, 120);
         }
 
 
@@ -114,14 +113,11 @@ public class BackgroundImageAdapter extends RecyclerView.Adapter<BackgroundImage
                             .addToBackStack(null)
                             .commit();
                 }else {
+
                     selectedImage = image;
                     notifyDataSetChanged();
 
-                    if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-                        onImageClickListener.onImageClick(image);
-                    }else{
-                        onImageClickListener.onImageClick(image.replace("port", "land"));
-                    }
+                    onImageClickListener.onImageClick(image);
                 }
             }
         });
@@ -147,6 +143,27 @@ public class BackgroundImageAdapter extends RecyclerView.Adapter<BackgroundImage
                 File fileToDeleteLand = new File(image.replace("port", "land"));
                 fileToDeleteLand.delete();
 
+                String backgroundImage = ((Activity) context).getPreferences(Context.MODE_PRIVATE).getString("background", "R.drawable.back");
+
+                if (!backgroundImage.startsWith("R.drawable.")) {
+                    if (!new File(backgroundImage).exists()) {
+                        backgroundImage = "R.drawable.back";
+                        onImageClickListener.onImageClick(backgroundImage);
+                        ImageView background = ((MainActivity) context).findViewById(R.id.main_fragment_background);
+
+                        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+                            ImageAssistant.loadImage(context, backgroundImage, background, 520);
+                        } else {
+                            ImageAssistant.loadImage(context, backgroundImage.replace("port", "land"), background, 203);
+                        }
+                    }
+                }
+
+                if (images.get(holder.getAdapterPosition()).equals(selectedImage)){
+                    onImageClickListener.onImageClick(backgroundImage);
+                }
+
+
                 images.remove(holder.getAdapterPosition());
                 notifyItemRemoved(holder.getAdapterPosition());
             }
@@ -162,12 +179,12 @@ public class BackgroundImageAdapter extends RecyclerView.Adapter<BackgroundImage
         return images.size();
     }
 
-    // Setters for listeners
+    // Setter for listener
     void setOnImageClickListener(OnImageClickListener onImageClickListener) {
         this.onImageClickListener = onImageClickListener;
     }
 
-    public String getSelectedImage() {
+    String getSelectedImage() {
         return selectedImage;
     }
 }

@@ -38,7 +38,7 @@ import android.widget.TextView;
 import com.mnemo.angler.albums.AlbumsFragmentV2;
 import com.mnemo.angler.artists.ArtistsFragment;
 import com.mnemo.angler.background_changer.BackgroundChangerFragmentv2;
-import com.mnemo.angler.background_changer.ImageAssistent;
+import com.mnemo.angler.background_changer.ImageAssistant;
 import com.mnemo.angler.data.AnglerContract;
 import com.mnemo.angler.data.AnglerDBUpdateLoader;
 import com.mnemo.angler.equalizer.EqualizerFragment;
@@ -344,13 +344,26 @@ public class MainActivity extends AppCompatActivity implements MainPlaylistFragm
 
         String backgroundImage = sharedPref.getString("background", "R.drawable.back");
 
+        if (!backgroundImage.startsWith("R.drawable.")) {
+            if (!new File(backgroundImage).exists()) {
+                backgroundImage = "R.drawable.back";
+                sharedPref.edit().putString("background", backgroundImage).apply();
+            }
+        }
+
+        int imageHeight;
+
         int orientation = getResources().getConfiguration().orientation;
-        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+
+        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            imageHeight = 520;
+        }else{
             backgroundImage = backgroundImage.replace("port", "land");
+            imageHeight = 203;
         }
 
         ImageView background = findViewById(R.id.main_fragment_background);
-        ImageAssistent.loadImage(this, backgroundImage, background, 520);
+        ImageAssistant.loadImage(this, backgroundImage, background, imageHeight);
 
         int alpha = sharedPref.getInt("overlay", 203);
         setOverlay(alpha);
@@ -586,25 +599,25 @@ public class MainActivity extends AppCompatActivity implements MainPlaylistFragm
     }
 
     @OnClick(R.id.albums_drawer_item)
-    void albumsSelest(View v) {
+    void albumsSelect(View v) {
         createDrawerItemFragment(v, new AlbumsFragmentV2(), "Albums fragment");
 
     }
 
     @OnClick(R.id.artists_drawer_item)
-    void artistsSelest(View v) {
+    void artistsSelect(View v) {
         createDrawerItemFragment(v, new ArtistsFragment(), "Artists fragment");
 
     }
 
     @OnClick(R.id.equalizer_drawer_item)
-    void equalizerSelest(View v) {
+    void equalizerSelect(View v) {
         createDrawerItemFragment(v, new EqualizerFragment(), "Equalizer fragment");
 
     }
 
     @OnClick(R.id.background_drawer_item)
-    void backgroundSelest(View v) {
+    void backgroundSelect(View v) {
         createDrawerItemFragment(v, new BackgroundChangerFragmentv2(), "Background fragment");
 
     }

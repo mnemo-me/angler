@@ -7,14 +7,13 @@
     android:orientation="vertical"
     tools:context="com.mnemo.angler.background_changer.PortraitCropFragment">
 
-
     <com.steelkiwi.cropiwa.CropIwaView
         android:id="@+id/fragment_landscape_crop_iwa"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         app:ci_dynamic_aspect_ratio="false"
-        app:ci_aspect_ratio_w="500"
+        app:ci_aspect_ratio_w="520"
         app:ci_aspect_ratio_h="410"
         app:ci_border_width="0dp"
         app:ci_corner_width="0dp"
@@ -22,43 +21,37 @@
         app:ci_grid_color="#66FFFFFF"
         app:ci_crop_scale="1"/>
 
-    <LinearLayout
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="140dp"
-        android:orientation="vertical"
+        android:layout_height="120dp"
         android:background="#FFFFFF">
 
         <TextView
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="crop background for landscape orientation"/>
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/landscape_crop_advice"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/fragment_landscape_crop"/>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="?android:actionBarSize"
-            android:orientation="horizontal">
+        <TextView
+            android:id="@+id/fragment_landscape_back"
+            style="@style/bottom_bar_button_v2"
+            android:text="@string/back"
+            app:layout_constraintHorizontal_chainStyle="spread_inside"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/fragment_landscape_crop"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
-            <TextView
-                android:id="@+id/fragment_landscape_back"
-                style="@style/bottom_bar_button"
-                android:text="back"/>
+        <TextView
+            android:id="@+id/fragment_landscape_crop"
+            style="@style/bottom_bar_button_v2"
+            android:text="@string/crop"
+            app:layout_constraintStart_toEndOf="@id/fragment_landscape_back"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
-            <View
-                style="@style/bottom_bar_separator"/>
-
-
-            <TextView
-                android:id="@+id/fragment_landscape_crop"
-                style="@style/bottom_bar_button"
-                android:text="crop"/>
-
-        </LinearLayout>
-
-    </LinearLayout>
-
-
-
+    </android.support.constraint.ConstraintLayout>
 
 </LinearLayout>

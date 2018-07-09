@@ -21,7 +21,7 @@ import android.widget.TextView;
 
 import com.mnemo.angler.MainActivity;
 import com.mnemo.angler.R;
-import com.mnemo.angler.background_changer.ImageAssistent;
+import com.mnemo.angler.background_changer.ImageAssistant;
 import com.mnemo.angler.data.AnglerFolder;
 import com.mnemo.angler.playlist_manager.PlaylistConfigurationFragment;
 
@@ -148,7 +148,7 @@ public class AlbumListAdapter extends ArrayAdapter{
 
                 imageOne.setTransitionName(artist + " " + album);
 
-                ImageAssistent.loadImage(context,
+                ImageAssistant.loadImage(context,
                         albumImagePath,
                         imageOne, 125);
 

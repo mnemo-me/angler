@@ -26,7 +26,7 @@
     <android.support.v7.widget.Toolbar
         android:id="@+id/background_changer_toolbar"
         android:layout_width="240dp"
-        android:layout_height="?android:actionBarSize"
+        android:layout_height="48dp"
         app:contentInsetStart="0dp">
 
         <ImageView
@@ -62,10 +62,9 @@
 
     <TextView
         android:id="@+id/background_changer_select_background"
-        style="@style/drawer_item"
+        style="@style/landscape_options"
         android:text="apply"
-        app:layout_constraintTop_toBottomOf="@id/background_changer_separator"
-        app:layout_constraintEnd_toStartOf="@id/overlay_background"/>
+        app:layout_constraintTop_toBottomOf="@id/background_changer_separator"/>
 
 
     <android.support.v7.widget.RecyclerView

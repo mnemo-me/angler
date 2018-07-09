@@ -37,7 +37,7 @@ import com.mnemo.angler.MainActivity;
 import com.mnemo.angler.PlaybackManager;
 import com.mnemo.angler.PlaylistManager;
 import com.mnemo.angler.R;
-import com.mnemo.angler.background_changer.ImageAssistent;
+import com.mnemo.angler.background_changer.ImageAssistant;
 import com.mnemo.angler.data.AnglerContract;
 import com.mnemo.angler.data.AnglerContract.SourceEntry;
 import com.mnemo.angler.data.AnglerContract.TrackEntry;
@@ -348,7 +348,7 @@ public class PlaylistConfigurationFragment extends Fragment implements LoaderMan
             imageHeight = 240;
         }
 
-        ImageAssistent.loadImage(getContext(), image, imageView, imageHeight);
+        ImageAssistant.loadImage(getContext(), image, imageView, imageHeight);
     }
 
 
