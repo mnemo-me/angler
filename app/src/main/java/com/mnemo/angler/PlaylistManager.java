@@ -21,6 +21,8 @@ public class PlaylistManager {
     public static int position;
     private MediaMetadata metadata = null;
 
+    public static String playlistFilter = "";
+
     PlaylistManager(ContentResolver contentResolver, String activePlaylist) {
 
         this.contentResolver = contentResolver;
@@ -43,7 +45,9 @@ public class PlaylistManager {
 
 
         Cursor cursor = contentResolver.query(Uri.withAppendedPath(AnglerContract.BASE_CONTENT_URI, dbName),
-                null, null, null,
+                null,
+                TrackEntry.COLUMN_TITLE + " LIKE ?",
+                new String[]{"%" + playlistFilter + "%"},
                 TrackEntry.COLUMN_POSITION + " ASC, " + TrackEntry.COLUMN_TITLE + " ASC, " + TrackEntry.COLUMN_ARTIST + " ASC");
 
 

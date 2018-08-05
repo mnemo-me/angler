@@ -116,7 +116,7 @@ public class AnglerProvider extends ContentProvider{
                 String playlistArtist = playlistArtistPath.substring(playlistArtistPath.lastIndexOf("/") + 1).replace("\\", "/");
 
                 cursor = db.query(playlist, projection,
-                        AnglerContract.TrackEntry.COLUMN_ARTIST + " = ?", new String[]{playlistArtist},
+                        AnglerContract.TrackEntry.COLUMN_ARTIST + " = ? AND " + selection, new String[]{playlistArtist, selectionArgs[0]},
                         null, null,
                         AnglerContract.TrackEntry.COLUMN_TITLE + " ASC");
 

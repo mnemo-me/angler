@@ -78,8 +78,13 @@ public class MainPlaylistFragment extends ListFragment implements LoaderManager.
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        initializePlaylist();
+        // Setup empty text
+        setEmptyText("");
+        TextView emptyText = (TextView) getListView().getEmptyView();
+        emptyText.setTextSize(16);
+        emptyText.setTextColor(getResources().getColor(R.color.gGrey, null));
 
+        getLoaderManager().initLoader(LOADER_PLAYLIST_ID, null, this);
 
         getListView().setDividerHeight(0);
         getListView().setPadding(0, (int)(8 * MainActivity.density),0,(int)(8 * MainActivity.density));
@@ -88,13 +93,6 @@ public class MainPlaylistFragment extends ListFragment implements LoaderManager.
         getListView().setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
 
         setListAdapter(adapter);
-
-        // Setup empty text
-        setEmptyText(getResources().getText(R.string.empty_playlist));
-        TextView emptyText = (TextView) getListView().getEmptyView();
-        emptyText.setTextSize(16);
-        emptyText.setTextColor(getResources().getColor(R.color.gGrey, null));
-
 
 
         if (state != null) {
@@ -106,13 +104,30 @@ public class MainPlaylistFragment extends ListFragment implements LoaderManager.
         receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                getListView().setItemChecked(PlaylistManager.position, true);
+
+                switch (intent.getAction()){
+                    case "track_changed":
+
+                        if (PlaylistManager.mainPlaylistName.equals(PlaylistManager.currentPlaylistName)) {
+                            getListView().setItemChecked(PlaylistManager.position, true);
+                        }
+
+                        break;
+
+                    case "filter_applied":
+
+                        getLoaderManager().restartLoader(LOADER_PLAYLIST_ID, null, MainPlaylistFragment.this);
+                        break;
+                }
+
             }
         };
 
         intentFilter = new IntentFilter();
         intentFilter.addAction("track_changed");
+        intentFilter.addAction("filter_applied");
 
+        getContext().registerReceiver(receiver, intentFilter);
 
     }
 
@@ -143,7 +158,8 @@ public class MainPlaylistFragment extends ListFragment implements LoaderManager.
                     return new CursorLoader(getContext(),
                             Uri.withAppendedPath(AnglerContract.BASE_CONTENT_URI, AnglerSQLiteDBHelper.createTrackTableName(PlaylistManager.mainPlaylistName)),
                             null,
-                            null, null,
+                            TrackEntry.COLUMN_TITLE + " LIKE ?",
+                            new String[]{"%" + MainActivity.filter + "%"},
                             TrackEntry.COLUMN_POSITION + " ASC, " + TrackEntry.COLUMN_TITLE + " ASC, " + TrackEntry.COLUMN_ARTIST + " ASC");
                 default:
                     return null;
@@ -162,12 +178,13 @@ public class MainPlaylistFragment extends ListFragment implements LoaderManager.
                 adapter.setOnTrackClickedListener(this);
                 adapter.setOnTrackRemoveListener(this);
 
-                getListView().setAdapter(adapter);
-
-                if (PlaylistManager.mainPlaylistName.equals(PlaylistManager.currentPlaylistName)) {
-                    getListView().setItemChecked(PlaylistManager.position, true);
-                    getContext().registerReceiver(receiver, intentFilter);
+                if (MainActivity.filter.equals("")) {
+                    setEmptyText(getResources().getText(R.string.empty_playlist));
+                }else{
+                    setEmptyText(getResources().getText(R.string.search_empty_tracks));
                 }
+
+                getListView().setAdapter(adapter);
 
         }
     }
@@ -189,8 +206,6 @@ public class MainPlaylistFragment extends ListFragment implements LoaderManager.
         PlaylistManager.currentPlaylistName = PlaylistManager.mainPlaylistName;
         PlaylistManager.position = position;
 
-        getContext().registerReceiver(receiver, intentFilter);
-
         trackListener.trackClicked();
 
     }
@@ -202,34 +217,9 @@ public class MainPlaylistFragment extends ListFragment implements LoaderManager.
 
 
     @Override
-    public void onResume() {
-        super.onResume();
-        if (PlaylistManager.mainPlaylistName.equals(PlaylistManager.currentPlaylistName)) {
-            getListView().setItemChecked(PlaylistManager.position, true);
-            getContext().registerReceiver(receiver, intentFilter);
-        }
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (PlaylistManager.mainPlaylistName.equals(PlaylistManager.currentPlaylistName)) {
-            if (receiver != null) {
-                getListView().setItemChecked(PlaylistManager.position, false);
-                getContext().unregisterReceiver(receiver);
-            }
-        }
-    }
-
-    @Override
     public void onDestroy() {
         super.onDestroy();
-        //AnglerApplication.getRefWatcher(getActivity()).watch(this);
-    }
 
-    public void initializePlaylist(){
-
-        getLoaderManager().initLoader(LOADER_PLAYLIST_ID, null, this);
-
+        getContext().unregisterReceiver(receiver);
     }
 }

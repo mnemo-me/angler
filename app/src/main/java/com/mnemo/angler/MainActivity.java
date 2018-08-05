@@ -25,12 +25,14 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.SearchView;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -79,6 +81,7 @@ public class MainActivity extends AppCompatActivity implements MainPlaylistFragm
     // other variables
     private long durationMS;
     public static float density;
+    public static String filter;
     private static final int LOADER_DB_UPDATE_ID = 1;
 
 
@@ -93,6 +96,7 @@ public class MainActivity extends AppCompatActivity implements MainPlaylistFragm
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         density = dm.density;
 
+        filter = "";
 
         ButterKnife.bind(this);
 
@@ -142,7 +146,7 @@ public class MainActivity extends AppCompatActivity implements MainPlaylistFragm
         runOnUiThread(runnable);
 
 
-        // create main fragment or restore visibility of main frame
+        // create main fragment or restore visibility of main frame and restore filters
         if (savedInstanceState == null) {
 
             getSupportFragmentManager().beginTransaction()
@@ -153,6 +157,8 @@ public class MainActivity extends AppCompatActivity implements MainPlaylistFragm
 
             int mainFrameVisibility = savedInstanceState.getInt("main_frame_visibility");
             findViewById(R.id.main_frame).setVisibility(mainFrameVisibility);
+
+            filter = savedInstanceState.getString("filter");
         }
 
 
@@ -393,6 +399,7 @@ public class MainActivity extends AppCompatActivity implements MainPlaylistFragm
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt("main_frame_visibility", findViewById(R.id.main_frame).getVisibility());
+        outState.putString("filter", filter);
     }
 
 
@@ -444,11 +451,15 @@ public class MainActivity extends AppCompatActivity implements MainPlaylistFragm
 
     @Override
     public void trackClicked() {
+
+        PlaylistManager.playlistFilter = MainActivity.filter;
         getMediaController().getTransportControls().play();
     }
 
     @Override
     public void artistClicked(String artist) {
+
+        ((SearchView)findViewById(R.id.search_toolbar)).setQuery("", false);
 
         Bundle bundle = new Bundle();
         bundle.putString("artist", artist);
@@ -466,18 +477,9 @@ public class MainActivity extends AppCompatActivity implements MainPlaylistFragm
 
     // Show/hide methods
     public void showBackgroundLabel(String label) {
-        TextView mArtistBackLabel = findViewById(R.id.artist_back);
-        if (mArtistBackLabel != null) {
-            mArtistBackLabel.setVisibility(View.VISIBLE);
-            mArtistBackLabel.setText(label);
-        }
     }
 
     public void hideBackgroundLabel() {
-        TextView mArtistBackLabel = findViewById(R.id.artist_back);
-        if (mArtistBackLabel != null) {
-            mArtistBackLabel.setVisibility(View.INVISIBLE);
-        }
     }
 
     public void showBackground() {

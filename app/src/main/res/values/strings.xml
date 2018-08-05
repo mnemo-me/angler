@@ -76,6 +76,10 @@
     <string name="landscape_crop_advice">crop background for landscape orientation</string>
     <string name="album_cover_crop_advice">crop image for playlist cover</string>
     <string name="crop">crop</string>
+    <string name="search">search</string>
+    <string name="search_hint">type keyword here...</string>
+    <string name="search_empty_tracks">no tracks found</string>
+    <string name="search_empty_artists">no artists found</string>
 
 
 </resources>

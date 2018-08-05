@@ -1,7 +1,10 @@
 package com.mnemo.angler;
 
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -17,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
 
 import com.mnemo.angler.data.AnglerContract.*;
 
@@ -25,6 +29,8 @@ import static com.mnemo.angler.data.AnglerContract.BASE_CONTENT_URI;
 
 public class ArtistFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
+    BroadcastReceiver receiver;
+    IntentFilter intentFilter;
 
     public ArtistFragment() {
         // Required empty public constructor
@@ -63,6 +69,12 @@ public class ArtistFragment extends ListFragment implements LoaderManager.Loader
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        // Setup empty text
+        setEmptyText("");
+        TextView emptyText = (TextView) getListView().getEmptyView();
+        emptyText.setTextSize(16);
+        emptyText.setTextColor(getResources().getColor(R.color.gGrey, null));
+
         getLoaderManager().initLoader(LOADER_ARTISTS_ID, null, this);
         /*
         populating list view with artists
@@ -80,6 +92,27 @@ public class ArtistFragment extends ListFragment implements LoaderManager.Loader
         if (state != null) {
             getListView().onRestoreInstanceState(state);
         }
+
+        // Initialize broadcast receiver
+        receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+
+                switch (intent.getAction()){
+
+                    case "filter_applied":
+
+                        getLoaderManager().restartLoader(LOADER_ARTISTS_ID, null, ArtistFragment.this);
+                        break;
+                }
+
+            }
+        };
+
+        intentFilter = new IntentFilter();
+        intentFilter.addAction("filter_applied");
+
+        getContext().registerReceiver(receiver, intentFilter);
 
     }
 
@@ -106,7 +139,8 @@ public class ArtistFragment extends ListFragment implements LoaderManager.Loader
                 return new CursorLoader(getContext(),
                         Uri.withAppendedPath(BASE_CONTENT_URI, "artist_list/" + PlaylistManager.mainPlaylistName),
                         new String[] {"_id", TrackEntry.COLUMN_ARTIST},
-                        null, null,
+                        TrackEntry.COLUMN_ARTIST + " LIKE ?",
+                        new String[]{"%" + MainActivity.filter + "%"},
                         TrackEntry.COLUMN_ARTIST + " ASC");
             default:
                 return null;
@@ -134,6 +168,10 @@ public class ArtistFragment extends ListFragment implements LoaderManager.Loader
                         artistFragmentListener.artistClicked(artist);
                     }
                 });
+
+                if (!MainActivity.filter.equals("")) {
+                    setEmptyText(getResources().getText(R.string.search_empty_artists));
+                }
         }
     }
 
@@ -150,6 +188,7 @@ public class ArtistFragment extends ListFragment implements LoaderManager.Loader
     @Override
     public void onDestroy() {
         super.onDestroy();
-        //AnglerApplication.getRefWatcher(getActivity()).watch(this);
+
+        getContext().unregisterReceiver(receiver);
     }
 }
