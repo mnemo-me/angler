@@ -36,6 +36,7 @@ public class ArtistTrackFragment extends ListFragment implements LoaderManager.L
 
     private MainPlaylistFragment.TrackFragmentListener trackListener;
 
+    private String artist;
     private String localPlaylistName;
 
     private Parcelable state;
@@ -68,11 +69,14 @@ public class ArtistTrackFragment extends ListFragment implements LoaderManager.L
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        /*
-        get artist from artist fragment
-         */
-        Bundle arguments = getArguments();
-        String artist = arguments.getString("artist");
+
+        // get artist
+        if (savedInstanceState == null) {
+            Bundle arguments = getArguments();
+            artist = arguments.getString("artist");
+        }else{
+            artist = savedInstanceState.getString("artist");
+        }
 
         localPlaylistName = "playlist_artist/" + PlaylistManager.mainPlaylistName.replace("/", "\\") + "/" + artist.replace("/", "\\");
 
@@ -143,6 +147,8 @@ public class ArtistTrackFragment extends ListFragment implements LoaderManager.L
         }catch(IllegalStateException e){
             e.printStackTrace();
         }
+
+        outState.putString("artist", artist);
     }
 
 
@@ -170,7 +176,7 @@ public class ArtistTrackFragment extends ListFragment implements LoaderManager.L
         switch (loader.getId()){
             case LOADER_ARTIST_PLAYLIST_ID:
 
-                adapter = new PlaylistCursorAdapter(getContext(), data, "main", PlaylistManager.mainPlaylistName, AnglerSQLiteDBHelper.createTrackTableName(PlaylistManager.mainPlaylistName), null);
+                adapter = new PlaylistCursorAdapter(getContext(), data, AnglerSQLiteDBHelper.createTrackTableName(PlaylistManager.mainPlaylistName), null);
 
                 adapter.setOnTrackClickedListener(this);
                 adapter.setOnTrackRemoveListener(this);
@@ -180,6 +186,10 @@ public class ArtistTrackFragment extends ListFragment implements LoaderManager.L
                 }
 
                 getListView().setAdapter(adapter);
+
+                if (localPlaylistName.equals(PlaylistManager.currentPlaylistName) && MainActivity.filter.equals(PlaylistManager.playlistFilter)) {
+                    getListView().setItemChecked(PlaylistManager.position, true);
+                }
         }
     }
 
@@ -207,6 +217,16 @@ public class ArtistTrackFragment extends ListFragment implements LoaderManager.L
     @Override
     public void onTrackRemove(int position, Track trackToRemove, boolean isCurrentTrack) {
 
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if (localPlaylistName.equals(PlaylistManager.currentPlaylistName) && MainActivity.filter.equals(PlaylistManager.playlistFilter)) {
+            getListView().setItemChecked(PlaylistManager.position, true);
+        }
     }
 
     @Override

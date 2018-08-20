@@ -19,11 +19,13 @@
     <TextView
         android:id="@+id/context_menu_go_to_album"
         style="@style/contextual_menu_item"
+        android:visibility="gone"
         android:text="@string/context_menu_go_to_album"/>
 
     <TextView
         android:id="@+id/context_menu_go_to_artist"
         style="@style/contextual_menu_item"
+        android:visibility="gone"
         android:text="@string/context_menu_go_to_artist"/>
 
     <TextView
@@ -34,11 +36,13 @@
     <TextView
         android:id="@+id/context_menu_move"
         style="@style/contextual_menu_item"
+        android:visibility="gone"
         android:text="@string/context_menu_move"/>
 
     <TextView
         android:id="@+id/context_menu_remove_from_playlist"
         style="@style/contextual_menu_item"
+        android:visibility="gone"
         android:text="@string/context_menu_remove_from_playlist"/>
 
 

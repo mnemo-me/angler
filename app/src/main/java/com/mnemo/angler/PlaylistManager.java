@@ -18,7 +18,7 @@ public class PlaylistManager {
     public static String mainPlaylistName;
     public static String currentPlaylistName;
 
-    public static int position;
+    public static int position = -1;
     private MediaMetadata metadata = null;
 
     public static String playlistFilter = "";

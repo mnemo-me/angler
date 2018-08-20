@@ -9,6 +9,15 @@
     android:paddingTop="5dp"
     android:paddingBottom="5dp">
 
+    <CheckBox
+        android:id="@+id/playlist_song_check"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:buttonTint="#FFFFFF"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline"
@@ -28,7 +37,7 @@
         android:textColor="@color/selected_song"
         android:textSize="16sp"
         app:layout_constraintBottom_toTopOf="@+id/guideline"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/playlist_song_check"
         tools:text="Sweet dreams" />
 
     <TextView
@@ -41,7 +50,7 @@
         android:lines="1"
         android:textColor="@color/selected_subtitle"
         android:textSize="12sp"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/playlist_song_check"
         app:layout_constraintTop_toTopOf="@+id/guideline"
         tools:text="Marylin Manson" />
 

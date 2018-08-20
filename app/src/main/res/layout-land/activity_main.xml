@@ -71,7 +71,8 @@
             android:layout_width="240dp"
             android:layout_height="match_parent"
             app:constraint_referenced_ids="media_panel_separator, media_panel_title, media_panel_artist,
-            media_panel_seek_bar, media_panel_lyrics, media_panel_add_to_playlist,
+            media_panel_seek_bar, media_panel_progress_time, media_panel_duration_time,
+            media_panel_lyrics, media_panel_add_to_playlist,
             media_panel_previous_track, media_panel_play_pause, media_panel_next_track,
             media_panel_repeat, media_panel_shuffle"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -84,7 +85,7 @@
             android:background="#44000000"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
-            android:layout_marginBottom="12dp"
+            android:layout_marginBottom="5dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toTopOf="@id/media_panel_title"/>
 
@@ -112,6 +113,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
+            android:layout_marginBottom="4dp"
             android:ellipsize="end"
             android:maxLines="1"
             android:textColor="@color/gGrey"
@@ -122,16 +124,44 @@
             tools:text="Marilyn Manson" />
 
 
+        <!-- seekbar and time views -->
         <SeekBar
             android:id="@+id/media_panel_seek_bar"
-            android:layout_width="240dp"
+            android:layout_width="232dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
+            android:layout_marginStart="@dimen/default_margin"
+            android:layout_marginEnd="@dimen/default_margin"
             android:progressBackgroundTint="#22000000"
             android:progressTint="@color/colorAccent"
             app:layout_constraintBottom_toTopOf="@+id/media_panel_play_pause"
             app:layout_constraintEnd_toStartOf="@id/main_fragment_background"
             app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/media_panel_progress_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="9dp"
+            android:textSize="10sp"
+            android:textColor="@color/gGrey"
+            app:layout_constraintBottom_toTopOf="@id/media_panel_seek_bar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/media_panel_duration_time"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            tools:text="0:00"/>
+
+        <TextView
+            android:id="@+id/media_panel_duration_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="9dp"
+            android:textSize="10sp"
+            android:textColor="@color/gGrey"
+            app:layout_constraintBottom_toTopOf="@id/media_panel_seek_bar"
+            app:layout_constraintStart_toEndOf="@id/media_panel_progress_time"
+            app:layout_constraintEnd_toStartOf="@id/main_fragment_background"
+            tools:text=" / 4:12"/>
 
 
 
@@ -191,12 +221,13 @@
             style="@style/playlist_media_button"
             android:layout_width="16dp"
             android:layout_height="16dp"
-            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
             android:layout_marginBottom="8dp"
+            android:scaleType="centerCrop"
             android:alpha="0.4"
             android:src="@drawable/ic_repeat_black_24dp"
-            app:layout_constraintStart_toStartOf="@id/media_panel_lyrics"
-            app:layout_constraintBottom_toTopOf="@id/media_panel_seek_bar"/>
+            app:layout_constraintBottom_toTopOf="@id/media_panel_seek_bar"
+            app:layout_constraintEnd_toEndOf="@id/media_panel_add_to_playlist"/>
 
 
         <ImageButton
@@ -204,12 +235,13 @@
             style="@style/playlist_media_button"
             android:layout_width="16dp"
             android:layout_height="16dp"
-            android:layout_marginEnd="10dp"
+            android:layout_marginStart="10dp"
             android:layout_marginBottom="8dp"
+            android:scaleType="centerCrop"
             android:alpha="0.4"
             android:src="@drawable/ic_shuffle_black_24dp"
-            app:layout_constraintBottom_toTopOf="@id/media_panel_seek_bar"
-            app:layout_constraintEnd_toEndOf="@id/media_panel_add_to_playlist"/>
+            app:layout_constraintStart_toStartOf="@id/media_panel_lyrics"
+            app:layout_constraintBottom_toTopOf="@id/media_panel_seek_bar"/>
 
 
     </android.support.constraint.ConstraintLayout>

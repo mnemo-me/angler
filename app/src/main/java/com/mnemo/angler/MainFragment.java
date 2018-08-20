@@ -97,13 +97,16 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         // restore visibility of search toolbar
         if (savedInstanceState != null){
             int searchToolbarVisibility = savedInstanceState.getInt("search_toolbar_visibility");
-            search.setAlpha(1f);
-            searchView.setVisibility(searchToolbarVisibility);
 
-            int orientation = getResources().getConfiguration().orientation;
+            if (searchToolbarVisibility == View.VISIBLE) {
+                search.setAlpha(1f);
+                searchView.setVisibility(searchToolbarVisibility);
 
-            if (orientation == Configuration.ORIENTATION_LANDSCAPE){
-                separator.setVisibility(View.VISIBLE);
+                int orientation = getResources().getConfiguration().orientation;
+
+                if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                    separator.setVisibility(View.VISIBLE);
+                }
             }
         }
 

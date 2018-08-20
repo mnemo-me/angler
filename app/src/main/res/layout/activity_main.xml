@@ -68,7 +68,8 @@
             android:layout_height="124dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:constraint_referenced_ids="media_panel_title,
-            media_panel_seek_bar, media_panel_lyrics, media_panel_add_to_playlist,
+            media_panel_seek_bar, media_panel_progress_time, media_panel_duration_time,
+            media_panel_lyrics, media_panel_add_to_playlist,
             media_panel_previous_track, media_panel_play_pause, media_panel_next_track,
             media_panel_repeat, media_panel_shuffle"/>
 
@@ -90,18 +91,43 @@
             tools:text="Marylin Manson - Sweet dreams" />
 
 
+        <!-- seekbar and time views -->
         <SeekBar
             android:id="@+id/media_panel_seek_bar"
-            android:layout_width="match_parent"
+            android:layout_width="330dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:layout_marginEnd="12dp"
-            android:layout_marginStart="12dp"
             android:progressBackgroundTint="#22000000"
             android:progressTint="@color/colorAccent"
             app:layout_constraintBottom_toTopOf="@+id/media_panel_play_pause"
+            app:layout_constraintStart_toEndOf="@id/media_panel_progress_time"
+            app:layout_constraintEnd_toStartOf="@id/media_panel_duration_time"/>
+
+        <TextView
+            android:id="@+id/media_panel_progress_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginStart="16dp"
+            android:textSize="12sp"
+            android:textColor="@color/gGrey"
+            app:layout_constraintBottom_toTopOf="@+id/media_panel_play_pause"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/media_panel_seek_bar"
+            tools:text="0:00"/>
+
+        <TextView
+            android:id="@+id/media_panel_duration_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="16dp"
+            android:textSize="12sp"
+            android:textColor="@color/gGrey"
+            app:layout_constraintBottom_toTopOf="@+id/media_panel_play_pause"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toEndOf="@id/media_panel_seek_bar"
+            tools:text="4:12"/>
 
 
 

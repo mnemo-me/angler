@@ -29,23 +29,14 @@
             android:id="@+id/playlist_options_title"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="32dp"
             android:maxLines="1"
             android:ellipsize="end"
-            android:textColor="@color/gGrey"
-            android:textSize="16sp"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            android:layout_gravity="center"
             android:text="@string/new_playlist"/>
 
     </android.support.v7.widget.Toolbar>
-
-    <View
-        android:id="@+id/playlist_options_separator"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#aba9a9"
-        app:layout_constraintTop_toBottomOf="@id/playlist_options_toolbar"
-        android:transitionName="separator"/>
 
 
 
@@ -56,7 +47,7 @@
         android:layout_marginTop="20dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/playlist_options_separator"
+        app:layout_constraintTop_toBottomOf="@id/playlist_options_toolbar"
         app:cardCornerRadius="2dp"
         app:cardElevation="2dp">
 
@@ -78,26 +69,13 @@
         app:layout_constraintTop_toBottomOf="@id/playlist_options_cardview"/>
 
     <TextView
-        android:id="@+id/playlist_options_artist"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingBottom="8dp"
-        android:textColor="@color/gGrey"
-        android:textSize="16sp"
-        app:layout_constraintTop_toBottomOf="@id/playlist_options_empty_space"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/playlist_options_play"
-        android:visibility="gone"/>
-
-    <TextView
         android:id="@+id/playlist_options_play"
         style="@style/playlist_option_item"
         android:text="play"
         app:layout_constraintBottom_toTopOf="@+id/playlist_options_change_title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/playlist_options_artist"
+        app:layout_constraintTop_toBottomOf="@id/playlist_options_empty_space"
         app:layout_constraintVertical_chainStyle="spread_inside" />
 
     <TextView
@@ -146,9 +124,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/playlist_options_create" />
-
-
-
 
 
 </android.support.constraint.ConstraintLayout>

@@ -22,7 +22,8 @@
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:layout_gravity="center_vertical"
-            android:contentDescription="@string/settings"/>
+            android:contentDescription="@string/settings"
+            android:transitionName="back"/>
 
         <TextView
             android:layout_height="wrap_content"
@@ -35,10 +36,11 @@
     </android.support.v7.widget.Toolbar>
 
     <View
-        android:id="@+id/view_below_spinner"
+        android:id="@+id/artists_separator"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/gGrey"/>
+        android:background="@color/gGrey"
+        android:transitionName="separator"/>
 
     <GridView
         android:id="@+id/artists_grid"

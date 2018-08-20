@@ -1,7 +1,11 @@
 package com.mnemo.angler.playlist_manager;
 
 
+import android.content.BroadcastReceiver;
 import android.content.ContentValues;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -13,6 +17,7 @@ import android.support.constraint.Group;
 import android.support.design.widget.Snackbar;
 import android.support.transition.ChangeBounds;
 import android.support.transition.ChangeTransform;
+import android.support.transition.Fade;
 import android.support.transition.Slide;
 import android.support.transition.TransitionSet;
 import android.support.v4.app.Fragment;
@@ -80,17 +85,14 @@ public class PlaylistConfigurationFragment extends Fragment implements LoaderMan
     @BindView(R.id.playlist_conf_list)
     ListView listView;
 
-    @BindView(R.id.playlist_conf_expanded_toolbar)
-    Group expandedToolbar;
-
-    @BindView(R.id.playlist_conf_group_toolbar)
-    Toolbar groupToolbar;
-
     @BindView(R.id.playlist_conf_back)
     ImageButton back;
 
     @Nullable @BindView(R.id.playlist_conf_separator)
     View separator;
+
+    @Nullable @BindView(R.id.playlist_conf_options)
+    ImageView optionsButton;
 
 
     // db and adapter
@@ -112,6 +114,9 @@ public class PlaylistConfigurationFragment extends Fragment implements LoaderMan
     String transitionPrefix;
     private static final int LOADER_TRACK_LIST_ID = 0;
 
+    BroadcastReceiver receiver;
+    IntentFilter intentFilter;
+
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -124,79 +129,27 @@ public class PlaylistConfigurationFragment extends Fragment implements LoaderMan
         orientation = getResources().getConfiguration().orientation;
 
 
-        // Initialize playlist variables based on type
-        type = getArguments().getString("type");
-
-        switch (type){
-
-            case "album":
-
-                image = getArguments().getString("image");
-                title = getArguments().getString("album_name");
-                artist = getArguments().getString("artist");
-
-                localPlaylistName = "album/" + artist + "/" + title;
-
-                break;
-
-            case "artist":
-
-                image = getArguments().getString("image");
-                artist = getArguments().getString("artist");
-
-                title = artist;
-
-                localPlaylistName = "artist/" + artist;
-
-                break;
-
-            case "playlist":
-
-                if (title == null) {
-                    image = getArguments().getString("image");
-                    title = getArguments().getString("playlist_name");
-                }
-
-                dbName = AnglerSQLiteDBHelper.createTrackTableName(title);
-
-                localPlaylistName = "playlist/" + title;
-
-                break;
+        // Initialize playlist variables
+        if (title == null) {
+            image = getArguments().getString("image");
+            title = getArguments().getString("playlist_name");
         }
+
+        dbName = AnglerSQLiteDBHelper.createTrackTableName(title);
+
+        localPlaylistName = "playlist/" + title;
 
 
         // Load cover image
         // Set unique transition name
-        switch (type){
-            case "album":
-                transitionPrefix = artist + " " + title;
-                break;
-
-            case "artist":
-
-                break;
-
-            case "playlist":
-                transitionPrefix = title;
-                break;
-        }
-
+        transitionPrefix = title;
         cardView.setTransitionName(transitionPrefix+ " card");
         imageView.setTransitionName(transitionPrefix + " cover");
 
         updateCover();
 
-
-
         // Assign title
         titleText.setText(title);
-
-        // Fill artist for 'album' type
-        if (type.equals("album")) {
-            TextView artistView = view.findViewById(R.id.playlist_conf_artist);
-            artistView.setVisibility(View.VISIBLE);
-            artistView.setText(artist);
-        }
 
 
 
@@ -208,27 +161,25 @@ public class PlaylistConfigurationFragment extends Fragment implements LoaderMan
 
         // Setup listview with adapter
         listView.setDividerHeight(0);
-        listView.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
 
         // Add add tracks to playlist header to playlist
-        if (type.equals("playlist")){
-            LinearLayout headerAddTracksToPlaylist = (LinearLayout)LayoutInflater.from(getContext()).inflate(R.layout.pm_playlist_add_tracks_header, null, false);
+        LinearLayout headerAddTracksToPlaylist = (LinearLayout)LayoutInflater.from(getContext()).inflate(R.layout.pm_playlist_add_tracks_header, null, false);
 
-            headerAddTracksToPlaylist.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
+        headerAddTracksToPlaylist.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
-                    AddTracksDialogFragment addTracksDialogFragment = new AddTracksDialogFragment();
-                    Bundle argsToAddTracks = new Bundle();
-                    argsToAddTracks.putString("db_name", dbName);
-                    addTracksDialogFragment.setArguments(argsToAddTracks);
+                AddTracksDialogFragment addTracksDialogFragment = new AddTracksDialogFragment();
+                Bundle argsToAddTracks = new Bundle();
+                argsToAddTracks.putString("db_name", dbName);
+                addTracksDialogFragment.setArguments(argsToAddTracks);
 
-                    addTracksDialogFragment.show(getActivity().getSupportFragmentManager(), "Add tracks dialog");
-                }
-            });
+                addTracksDialogFragment.show(getActivity().getSupportFragmentManager(), "Add tracks dialog");
+            }
+        });
 
-            listView.addHeaderView(headerAddTracksToPlaylist);
-        }
+        listView.addHeaderView(headerAddTracksToPlaylist);
+
 
 
         // Load tracks
@@ -237,79 +188,79 @@ public class PlaylistConfigurationFragment extends Fragment implements LoaderMan
 
 
         // Setup menu
-        imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
 
-                PlaylistOptionsFragment playlistOptionsFragment = new PlaylistOptionsFragment();
+                    PlaylistOptionsFragment playlistOptionsFragment = new PlaylistOptionsFragment();
 
-                Bundle args = new Bundle();
-                args.putString("type", type);
-                args.putString("playlist_name", title);
-                args.putString("image", image);
-                args.putBoolean("playlist_inside", true);
+                    Bundle args = new Bundle();
+                    args.putString("type", type);
+                    args.putString("playlist_name", title);
+                    args.putString("image", image);
+                    args.putBoolean("playlist_inside", true);
+                    args.putInt("tracks_count", adapter.getCount());
 
-                if (type.equals("album")){
-                    args.putString("artist", artist);
+
+                    playlistOptionsFragment.setArguments(args);
+
+                    playlistOptionsFragment.setSharedElementEnterTransition(new TransitionSet()
+                            .addTransition(new ChangeBounds())
+                            .addTransition(new ChangeTransform()));
+
+                    playlistOptionsFragment.setEnterTransition(new Slide(Gravity.BOTTOM));
+
+                    getActivity().getSupportFragmentManager().beginTransaction()
+                            .addSharedElement(cardView, transitionPrefix + " card")
+                            .addSharedElement(imageView, transitionPrefix + " cover")
+                            .addSharedElement(titleText, transitionPrefix + " title")
+                            .addSharedElement(separator, "separator")
+                            .addSharedElement(back, "back")
+                            .replace(R.id.frame, playlistOptionsFragment, "playlist_opt_fragment")
+                            .addToBackStack(null)
+                            .commit();
                 }
+            });
+        }else{
 
-                playlistOptionsFragment.setArguments(args);
+            optionsButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
 
-                playlistOptionsFragment.setSharedElementEnterTransition(new TransitionSet()
-                        .addTransition(new ChangeBounds())
-                        .addTransition(new ChangeTransform()));
+                    PlaylistOptionsFragment playlistOptionsFragment = new PlaylistOptionsFragment();
 
-                playlistOptionsFragment.setEnterTransition(new Slide(Gravity.BOTTOM));
-
-                getActivity().getSupportFragmentManager().beginTransaction()
-                        .addSharedElement(cardView, transitionPrefix + " card")
-                        .addSharedElement(imageView, transitionPrefix + " cover")
-                        .addSharedElement(titleText, transitionPrefix + " title")
-                        .addSharedElement(separator, "separator")
-                        .addSharedElement(back, "back")
-                        .replace(R.id.frame,playlistOptionsFragment, "playlist_opt_fragment")
-                        .addToBackStack(null)
-                        .commit();
-            }
-        });
+                    Bundle args = new Bundle();
+                    args.putString("type", type);
+                    args.putString("playlist_name", title);
+                    args.putString("image", image);
+                    args.putBoolean("playlist_inside", true);
+                    args.putInt("tracks_count", adapter.getCount());
 
 
+                    playlistOptionsFragment.setArguments(args);
 
-        // Initialize group button
-        ImageButton groupButton = view.findViewById(R.id.playlist_conf_group);
-        groupButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+                    playlistOptionsFragment.setSharedElementEnterTransition(new TransitionSet()
+                            .addTransition(new ChangeBounds())
+                            .addTransition(new ChangeTransform())
+                            .setDuration(0));
 
-                adapter.setGroup(true);
+                    playlistOptionsFragment.setEnterTransition(new Slide(Gravity.RIGHT));
 
-                expandedToolbar.setVisibility(View.GONE);
-                groupToolbar.setVisibility(View.VISIBLE);
+                    setReenterTransition(new Fade().setStartDelay(300));
 
-                adapter.notifyDataSetChanged();
-            }
-        });
-
-        if (!type.equals("playlist")){
-            groupButton.setVisibility(View.GONE);
+                    getActivity().getSupportFragmentManager().beginTransaction()
+                            .addSharedElement(cardView, transitionPrefix + " card")
+                            .addSharedElement(imageView, transitionPrefix + " cover")
+                            .addSharedElement(titleText, transitionPrefix + " title")
+                            .addSharedElement(back, "back")
+                            .replace(R.id.frame, playlistOptionsFragment, "playlist_opt_fragment")
+                            .addToBackStack(null)
+                            .commit();
+                }
+            });
         }
 
-
-        // Initialize group toolbar buttons
-
-        ImageButton groupBack = view.findViewById(R.id.playlist_conf_group_drawer_back);
-        groupBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                adapter.setGroup(false);
-
-                groupToolbar.setVisibility(View.GONE);
-                expandedToolbar.setVisibility(View.VISIBLE);
-
-                adapter.notifyDataSetChanged();
-            }
-        });
 
 
 
@@ -322,6 +273,30 @@ public class PlaylistConfigurationFragment extends Fragment implements LoaderMan
         });
 
 
+        // Initialize broadcast receiver
+        receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+
+                switch (intent.getAction()){
+                    case "track_changed":
+
+                        if (localPlaylistName.equals(PlaylistManager.currentPlaylistName)) {
+                            listView.setItemChecked(PlaylistManager.position + 1, true);
+                        }
+
+                        break;
+                }
+
+            }
+        };
+
+        intentFilter = new IntentFilter();
+        intentFilter.addAction("track_changed");
+
+        getContext().registerReceiver(receiver, intentFilter);
+
+
         return view;
     }
 
@@ -330,11 +305,6 @@ public class PlaylistConfigurationFragment extends Fragment implements LoaderMan
     public void checkTracksCount(){
 
         tracksCountView.setText("tracks: " + adapter.getCount());
-
-        if (type.equals("album")){
-            //tracksCountView.setText(artist);
-        }else {
-        }
     }
 
     // Updating cover
@@ -389,16 +359,11 @@ public class PlaylistConfigurationFragment extends Fragment implements LoaderMan
             db.close();
         }
 
+        getContext().unregisterReceiver(receiver);
         unbinder.unbind();
 
     }
 
-
-    // Highlighting currently playing tracks
-    public void trackChanged() {
-        PlaybackManager.isCurrentTrackHidden = false;
-        adapter.notifyDataSetChanged();
-    }
 
 
 
@@ -410,27 +375,10 @@ public class PlaylistConfigurationFragment extends Fragment implements LoaderMan
         switch (id){
             case LOADER_TRACK_LIST_ID:
 
-                switch (type){
-                    case "album":
-                        return new CursorLoader(getContext(),
-                              Uri.withAppendedPath(AnglerContract.BASE_CONTENT_URI, SourceEntry.SOURCE_LIBRARY), null,
-                            TrackEntry.COLUMN_ARTIST + " = ? AND " + TrackEntry.COLUMN_ALBUM + " = ?", new String[]{artist, title},
-                            TrackEntry.COLUMN_TITLE + " ASC");
-
-                    case "artist":
-
-                        return new CursorLoader(getContext(),
-                                Uri.withAppendedPath(AnglerContract.BASE_CONTENT_URI, SourceEntry.SOURCE_LIBRARY), null,
-                                TrackEntry.COLUMN_ARTIST + " = ?", new String[]{artist},
-                                TrackEntry.COLUMN_TITLE + " ASC");
-
-                    case "playlist":
-
-                        return new CursorLoader(getContext(),
-                                Uri.withAppendedPath(AnglerContract.BASE_CONTENT_URI, dbName), null,
-                                null, null,
-                                TrackEntry.COLUMN_POSITION + " ASC, " + TrackEntry.COLUMN_TITLE + " ASC, " + TrackEntry.COLUMN_ARTIST + " ASC");
-                }
+            return new CursorLoader(getContext(),
+                    Uri.withAppendedPath(AnglerContract.BASE_CONTENT_URI, dbName), null,
+                    null, null,
+                    TrackEntry.COLUMN_POSITION + " ASC, " + TrackEntry.COLUMN_TITLE + " ASC, " + TrackEntry.COLUMN_ARTIST + " ASC");
 
             default:
                 return null;
@@ -454,7 +402,7 @@ public class PlaylistConfigurationFragment extends Fragment implements LoaderMan
                     }while(data.moveToNext());
                 }
 
-                adapter = new PlaylistCursorAdapter(getContext(), data, type, localPlaylistName, dbName, ids);
+                adapter = new PlaylistCursorAdapter(getContext(), data, dbName, ids);
 
                 adapter.setOnTrackClickedListener(this);
                 adapter.setOnTrackRemoveListener(this);
@@ -462,6 +410,10 @@ public class PlaylistConfigurationFragment extends Fragment implements LoaderMan
                 listView.setAdapter(adapter);
 
                 checkTracksCount();
+
+                if (localPlaylistName.equals(PlaylistManager.currentPlaylistName)) {
+                    listView.setItemChecked(PlaylistManager.position + 1, true);
+                }
 
         }
     }
@@ -539,41 +491,25 @@ public class PlaylistConfigurationFragment extends Fragment implements LoaderMan
 
         int savedPosition = PlaylistManager.position;
 
-
-        switch (type) {
-
-            case "album":
-
-                if (PlaylistManager.currentPlaylistName.equals("album/" + artist + "/" + title)) {
-                    return;
-                }
-
-                PlaylistManager.currentPlaylistName = "album/" + artist + "/" + title;
-                localPlaylistName = "album/" + artist + "/" + title;
-                break;
-
-            case "artist":
-
-                if (PlaylistManager.currentPlaylistName.equals("artist/" + artist)){
-                    return;
-                }
-
-                PlaylistManager.currentPlaylistName = "artist/" + artist;
-                localPlaylistName = "artist/" + artist;
-                break;
-
-            case "playlist":
-
-                if (PlaylistManager.currentPlaylistName.equals("playlist/" + title)){
-                    return;
-                }
-
-                PlaylistManager.currentPlaylistName = "playlist/" + title;
-                localPlaylistName = "playlist/" + title;
-                break;
+        if (PlaylistManager.currentPlaylistName.equals("playlist/" + title)){
+            return;
         }
 
+        PlaylistManager.currentPlaylistName = "playlist/" + title;
+        localPlaylistName = "playlist/" + title;
+
+
         PlaylistManager.position = savedPosition;
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if (localPlaylistName.equals(PlaylistManager.currentPlaylistName)) {
+            listView.setItemChecked(PlaylistManager.position + 1, true);
+        }
     }
 
 }

@@ -2,6 +2,7 @@ package com.mnemo.angler.albums;
 
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -10,6 +11,7 @@ import android.support.transition.ChangeBounds;
 import android.support.transition.ChangeTransform;
 import android.support.transition.Fade;
 import android.support.transition.TransitionSet;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 
 import android.view.LayoutInflater;
@@ -159,7 +161,7 @@ public class AlbumListAdapter extends ArrayAdapter{
                     @Override
                     public void onClick(View view) {
 
-                        PlaylistConfigurationFragment albumDetailFragment = new PlaylistConfigurationFragment();
+                        AlbumConfigurationFragment albumDetailFragment = new AlbumConfigurationFragment();
                         Bundle args = new Bundle();
 
                         args.putString("type", "album");
@@ -180,8 +182,15 @@ public class AlbumListAdapter extends ArrayAdapter{
                         ImageView back = ((MainActivity)context).findViewById(R.id.albums_drawer_back);
                         View separator = ((MainActivity)context).findViewById(R.id.albums_separator);
 
-                        ((AppCompatActivity) context).getSupportFragmentManager().beginTransaction()
-                                .addSharedElement(separator, "separator")
+                        int orientation = context.getResources().getConfiguration().orientation;
+
+                        FragmentTransaction fragmentTransaction = ((AppCompatActivity) context).getSupportFragmentManager().beginTransaction();
+
+                        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+                            fragmentTransaction.addSharedElement(separator, "separator");
+                        }
+
+                        fragmentTransaction
                                 .addSharedElement(back, "back")
                                 .replace(R.id.frame, albumDetailFragment)
                                 .addToBackStack(null)

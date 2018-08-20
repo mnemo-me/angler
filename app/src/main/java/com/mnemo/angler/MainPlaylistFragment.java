@@ -173,7 +173,7 @@ public class MainPlaylistFragment extends ListFragment implements LoaderManager.
 
             case LOADER_PLAYLIST_ID:
 
-                adapter = new PlaylistCursorAdapter(getContext(), data, "main", PlaylistManager.mainPlaylistName, AnglerSQLiteDBHelper.createTrackTableName(PlaylistManager.mainPlaylistName), null);
+                adapter = new PlaylistCursorAdapter(getContext(), data, AnglerSQLiteDBHelper.createTrackTableName(PlaylistManager.mainPlaylistName), null);
 
                 adapter.setOnTrackClickedListener(this);
                 adapter.setOnTrackRemoveListener(this);
@@ -185,6 +185,10 @@ public class MainPlaylistFragment extends ListFragment implements LoaderManager.
                 }
 
                 getListView().setAdapter(adapter);
+
+                if (PlaylistManager.mainPlaylistName.equals(PlaylistManager.currentPlaylistName) && MainActivity.filter.equals(PlaylistManager.playlistFilter)) {
+                    getListView().setItemChecked(PlaylistManager.position, true);
+                }
 
         }
     }
@@ -215,6 +219,15 @@ public class MainPlaylistFragment extends ListFragment implements LoaderManager.
 
     }
 
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if (PlaylistManager.mainPlaylistName.equals(PlaylistManager.currentPlaylistName) && MainActivity.filter.equals(PlaylistManager.playlistFilter)) {
+            getListView().setItemChecked(PlaylistManager.position, true);
+        }
+    }
 
     @Override
     public void onDestroy() {

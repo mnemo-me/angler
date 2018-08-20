@@ -11,6 +11,7 @@ import android.content.Loader;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.media.MediaMetadata;
 import android.media.browse.MediaBrowser;
 import android.media.session.MediaController;
@@ -54,6 +55,7 @@ import java.io.IOException;
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.BindViews;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -76,6 +78,15 @@ public class MainActivity extends AppCompatActivity implements MainPlaylistFragm
 
     @BindView(R.id.media_panel_seek_bar)
     SeekBar seekBar;
+
+    @BindView(R.id.media_panel_progress_time)
+    TextView progressView;
+
+    @BindView(R.id.media_panel_duration_time)
+    TextView durationView;
+
+    @BindViews({R.id.music_player_drawer_item, R.id.playlists_drawer_item, R.id.albums_drawer_item, R.id.artists_drawer_item, R.id.equalizer_drawer_item, R.id.background_drawer_item})
+    List<TextView> drawerItems;
 
 
     // other variables
@@ -137,7 +148,10 @@ public class MainActivity extends AppCompatActivity implements MainPlaylistFragm
             @Override
             public void run() {
                 if (durationMS != 0) {
-                    seekBar.setProgress((int) (AnglerService.seekProgress * 100 / durationMS));
+
+                    long progressTime = AnglerService.seekProgress;
+                    seekBar.setProgress((int)(progressTime * 100 / durationMS));
+                    progressView.setText(convertToTime(progressTime));
                 }
                 seekHandler.postDelayed(this, 100);
             }
@@ -289,6 +303,8 @@ public class MainActivity extends AppCompatActivity implements MainPlaylistFragm
             TextView titleView = findViewById(R.id.media_panel_title);
             titleView.setText(artist + " - " + title);
 
+            durationView.setText(convertToTime(durationMS));
+
         } else {
 
             TextView titleView = findViewById(R.id.media_panel_title);
@@ -297,7 +313,9 @@ public class MainActivity extends AppCompatActivity implements MainPlaylistFragm
             TextView artistView = findViewById(R.id.media_panel_artist);
             artistView.setText(artist);
 
+            durationView.setText(" / " + convertToTime(durationMS));
         }
+
     }
 
 
@@ -408,8 +426,9 @@ public class MainActivity extends AppCompatActivity implements MainPlaylistFragm
     private void createDrawerItemFragment(View v, Fragment fragment, String tag) {
         if (!v.isSelected()) {
             deselectDrawerItem();
+            v.setSelected(true);
+            ((TextView)v).setTypeface(null, Typeface.BOLD);
         }
-        v.setSelected(true);
 
         checkDrawerItemFragment();
 
@@ -434,19 +453,14 @@ public class MainActivity extends AppCompatActivity implements MainPlaylistFragm
 
     // Deselecting selected item in drawer panel and make lines visible
     public void deselectDrawerItem() {
-/*
-         TextView[] drawerItems = new TextView[]{musicPlayerTextView, playlistsTextView, albumsTextView, artistsTextView,
-                 backgroundTextView, equalizerTextView};
 
          for (TextView t : drawerItems){
              if (t.isSelected()){
                  t.setSelected(false);
+                 t.setTypeface(null, Typeface.NORMAL);
              }
          }
 
-        topLine.setVisibility(View.VISIBLE);
-        topLine2.setVisibility(View.VISIBLE);
-        bottomLine.setVisibility(View.VISIBLE);*/
     }
 
     @Override
@@ -459,6 +473,7 @@ public class MainActivity extends AppCompatActivity implements MainPlaylistFragm
     @Override
     public void artistClicked(String artist) {
 
+        filter = "";
         ((SearchView)findViewById(R.id.search_toolbar)).setQuery("", false);
 
         Bundle bundle = new Bundle();
@@ -586,8 +601,13 @@ public class MainActivity extends AppCompatActivity implements MainPlaylistFragm
     //Initializing items in drawer panel and associate them with corresponding Drawer Item Fragment
 
     @OnClick(R.id.music_player_drawer_item)
-    void musicPlayerSelect() {
-        deselectDrawerItem();
+    void musicPlayerSelect(View v) {
+        if (!v.isSelected()) {
+            deselectDrawerItem();
+            v.setSelected(true);
+            ((TextView)v).setTypeface(null, Typeface.BOLD);
+        }
+
         checkDrawerItemFragment();
         onBackPressed();
         findViewById(R.id.main_frame).setVisibility(View.VISIBLE);

@@ -155,32 +155,33 @@ public class PlaylistManagerFragment extends Fragment implements DrawerItem, Loa
                         String playlistName = data.getString(1);
 
                         PlaylistConfigurationFragment playlistConfigurationFragment = new PlaylistConfigurationFragment();
+
                         Bundle args = new Bundle();
-                        args.putString("type", "playlist");
                         args.putString("image",data.getString(2));
                         args.putString("playlist_name", playlistName);
+
                         playlistConfigurationFragment.setArguments(args);
 
                         playlistConfigurationFragment.setSharedElementEnterTransition(new TransitionSet()
                             .addTransition(new ChangeBounds())
                             .addTransition(new ChangeTransform()));
 
-                        playlistConfigurationFragment.setEnterTransition(new Fade().setStartDelay(300));
+                        playlistConfigurationFragment.setEnterTransition(new Fade().setStartDelay(100));
                         playlistConfigurationFragment.setReturnTransition(null);
 
-                        setReenterTransition(new Fade().setStartDelay(200));
+                        setReenterTransition(new Fade().setStartDelay(100));
 
                         FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
 
                         if (orientation == Configuration.ORIENTATION_PORTRAIT) {
                             fragmentTransaction.addSharedElement(separator, "separator");
 
-                        }else{
+                        }else{/*
                             ImageView im = view.findViewById(R.id.playlist_options_image);
                             CardView cardView = view.findViewById(R.id.playlist_options_cardview);
 
                             fragmentTransaction.addSharedElement(cardView, playlistName + " card")
-                                    .addSharedElement(im, playlistName + " cover");
+                                    .addSharedElement(im, playlistName + " cover");*/
                         }
 
                         fragmentTransaction.addSharedElement(back, "back")

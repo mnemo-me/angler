@@ -2,12 +2,14 @@ package com.mnemo.angler.playlist_manager;
 
 
 import android.content.ContentValues;
+import android.content.res.Configuration;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 
+import android.support.annotation.Nullable;
 import android.support.transition.ChangeBounds;
 import android.support.transition.ChangeTransform;
 import android.support.transition.Slide;
@@ -38,30 +40,71 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+
 public class PlaylistOptionsFragment extends Fragment {
 
     boolean isPlaylistNew = false;
     boolean isPlaylistInside;
 
+
+    @BindView(R.id.playlist_options_image)
+    ImageView coverView;
+
+    @BindView(R.id.playlist_options_cardview)
+    CardView cardView;
+
+    @BindView(R.id.playlist_options_title)
+    TextView titleView;
+
+    @BindView(R.id.playlist_options_back)
+    ImageView back;
+
+    @Nullable @BindView(R.id.playlist_options_options)
+    ImageView optionsButton;
+
+    @Nullable @BindView(R.id.playlist_options_tracks_count)
+    TextView tracksCountView;
+
+
+
+    // Options
+    @BindView(R.id.playlist_options_play)
+    TextView play;
+
+    @BindView(R.id.playlist_options_change_title)
+    TextView rename;
+
+    @BindView(R.id.playlist_options_change_cover)
+    TextView changeCover;
+
+    @BindView(R.id.playlist_options_show_tracks)
+    TextView showTracks;
+
+    @BindView(R.id.playlist_options_delete_playlist)
+    TextView deletePlaylist;
+
+    @BindView(R.id.playlist_options_create)
+    TextView create;
+
+
+    // fragment variables
     String type;
 
     String title;
-    TextView titleView;
-
     String image;
-    ImageView coverView;
-    CardView cardView;
-
-    String artist;
-
     String dbName;
-
-    CropIwaResultReceiver resultReceiver;
-
-    ImageView back;
-    View separator;
+    int tracksCount;
 
     String transitionPrefix;
+
+    // CropIwa receiver
+    CropIwaResultReceiver resultReceiver;
+
+    Unbinder unbinder;
+
 
     public PlaylistOptionsFragment() {
         // Required empty public constructor
@@ -74,33 +117,23 @@ public class PlaylistOptionsFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.pm_fragment_playlist_options, container, false);
 
+        unbinder = ButterKnife.bind(this, view);
+
         // Get argument (title, image, isPlaylistInside)
         type = getArguments().getString("type");
         title = getArguments().getString("playlist_name");
         image = getArguments().getString("image");
         isPlaylistInside = getArguments().getBoolean("playlist_inside");
-
-        if (type.equals("album")){
-            artist = getArguments().getString("artist");
-            TextView artistView = view.findViewById(R.id.playlist_options_artist);
-            artistView.setVisibility(View.VISIBLE);
-            artistView.setText(artist);
-        }
-
-        // Get database name
-        dbName = AnglerSQLiteDBHelper.createTrackTableName(title);
+        tracksCount = getArguments().getInt("tracks_count");
 
         // Check is playlist new
         if (title.equals(getResources().getString(R.string.new_playlist))){
             isPlaylistNew = true;
         }
 
-        // Initialize views
-        titleView = view.findViewById(R.id.playlist_options_title);
-        coverView = view.findViewById(R.id.playlist_options_image);
-        cardView = view.findViewById(R.id.playlist_options_cardview);
+        // Get database name
+        dbName = AnglerSQLiteDBHelper.createTrackTableName(title);
 
-        separator = view.findViewById(R.id.playlist_options_separator);
 
 
         // Create temp cover image (for new playlist)
@@ -119,21 +152,7 @@ public class PlaylistOptionsFragment extends Fragment {
         }
 
         // Set unique transition name
-        switch (type){
-            case "album":
-                transitionPrefix = artist + " " + title;
-                break;
-
-            case "artist":
-
-                break;
-
-            case "playlist":
-                transitionPrefix = title;
-                break;
-        }
-
-
+        transitionPrefix = title;
         coverView.setTransitionName(transitionPrefix + " cover");
         cardView.setTransitionName(transitionPrefix + " card");
         titleView.setTransitionName(transitionPrefix + " title");
@@ -165,57 +184,34 @@ public class PlaylistOptionsFragment extends Fragment {
         resultReceiver.register(getContext());
 
 
-        // Fill artist for 'album' type
-        if (type.equals("album")){
-            String artist = getArguments().getString("artist");
-            TextView artistView = view.findViewById(R.id.playlist_options_artist);
-            artistView.setVisibility(View.VISIBLE);
-            artistView.setText(artist);
-        }
+
 
 
         // Configure options
 
         // PLAY
-        TextView play = view.findViewById(R.id.playlist_options_play);
         if (!isPlaylistNew) {
             play.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+
                     PlaybackManager.isCurrentTrackHidden = false;
 
-                    switch (type) {
+                    if (tracksCount != 0) {
+                        if (PlaylistManager.currentPlaylistName.equals("playlist/" + title)) {
+                            return;
+                        }
 
-                        case "album":
-
-                            if (PlaylistManager.currentPlaylistName.equals("album/" + artist + "/" + title)) {
-                                return;
-                            }
-
-                            PlaylistManager.currentPlaylistName = "album/" + artist + "/" + title;
-                            break;
-
-                        case "artist":
-
-                            if (PlaylistManager.currentPlaylistName.equals("artist/" + artist)){
-                                return;
-                            }
-
-                            PlaylistManager.currentPlaylistName = "artist/" + artist;
-                            break;
-
-                        case "playlist":
-
-                            if (PlaylistManager.currentPlaylistName.equals("playlist/" + title)){
-                                return;
-                            }
-
-                            PlaylistManager.currentPlaylistName = "playlist/" + title;
-                            break;
+                        PlaylistManager.currentPlaylistName = "playlist/" + title;
+                    }else{
+                        Toast.makeText(getContext(), R.string.empty_playlist_play_warning, Toast.LENGTH_SHORT).show();
+                        return;
                     }
 
                     PlaylistManager.position = 0;
                     ((MainActivity) getActivity()).trackClicked();
+
+
                 }
             });
         }else{
@@ -223,55 +219,42 @@ public class PlaylistOptionsFragment extends Fragment {
         }
 
         // RENAME
-        TextView rename = view.findViewById(R.id.playlist_options_change_title);
+        rename.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
-        if (type.equals("playlist")) {
-            rename.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
+                PlaylistRenameDialogFragment playlistRenameDialogFragment = new PlaylistRenameDialogFragment();
+                Bundle renameArgs = new Bundle();
+                renameArgs.putString("title", title);
+                playlistRenameDialogFragment.setArguments(renameArgs);
 
-                    PlaylistRenameDialogFragment playlistRenameDialogFragment = new PlaylistRenameDialogFragment();
-                    Bundle renameArgs = new Bundle();
-                    renameArgs.putString("title", title);
-                    playlistRenameDialogFragment.setArguments(renameArgs);
+                playlistRenameDialogFragment.show(getActivity().getSupportFragmentManager(), "Rename dialog");
+            }
+        });
 
-                    playlistRenameDialogFragment.show(getActivity().getSupportFragmentManager(), "Rename dialog");
-                }
-            });
-
-        }else{
-            rename.setVisibility(View.GONE);
-        }
 
         // CHANGE COVER
-        TextView changeCover = view.findViewById(R.id.playlist_options_change_cover);
+         changeCover.setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View view) {
 
-        if (type.equals("playlist")) {
-             changeCover.setOnClickListener(new View.OnClickListener() {
-                 @Override
-                 public void onClick(View view) {
+                 LocalLoadFragment localLoadFragment = new LocalLoadFragment();
+                 Bundle args = new Bundle();
+                 args.putString("image_type", "cover");
+                 localLoadFragment.setArguments(args);
 
-                     LocalLoadFragment localLoadFragment = new LocalLoadFragment();
-                     Bundle args = new Bundle();
-                     args.putString("image_type", "cover");
-                     localLoadFragment.setArguments(args);
+                 localLoadFragment.setEnterTransition(new Slide(Gravity.BOTTOM));
 
-                     localLoadFragment.setEnterTransition(new Slide(Gravity.BOTTOM));
+                 getActivity().getSupportFragmentManager().beginTransaction()
+                         .replace(R.id.full_frame, localLoadFragment)
+                         .addToBackStack(null)
+                         .commit();
+             }
+         });
 
-                     getActivity().getSupportFragmentManager().beginTransaction()
-                             .replace(R.id.full_frame, localLoadFragment)
-                             .addToBackStack(null)
-                             .commit();
-                 }
-             });
-         }else{
-
-            changeCover.setVisibility(View.GONE);
-        }
 
 
         // SHOW TRACKS
-        TextView showTracks = view.findViewById(R.id.playlist_options_show_tracks);
         if (!isPlaylistNew) {
             showTracks.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -289,9 +272,6 @@ public class PlaylistOptionsFragment extends Fragment {
                         args.putString("image", image);
                         args.putString("playlist_name", title);
 
-                        if (type.equals("album")){
-                            args.putString("artist", artist);
-                        }
 
                         playlistConfigurationFragment.setArguments(args);
 
@@ -303,7 +283,6 @@ public class PlaylistOptionsFragment extends Fragment {
                                 .addSharedElement(cardView, transitionPrefix + " card")
                                 .addSharedElement(coverView, transitionPrefix + " cover")
                                 .addSharedElement(titleView, transitionPrefix + " title")
-                                .addSharedElement(separator, "separator")
                                 .addSharedElement(back, "back")
                                 .replace(R.id.frame, playlistConfigurationFragment, "playlist_conf_fragment")
                                 .addToBackStack(null)
@@ -316,33 +295,28 @@ public class PlaylistOptionsFragment extends Fragment {
         }
 
         // DELETE PLAYLIST
-        TextView deletePlaylist = view.findViewById(R.id.playlist_options_delete_playlist);
-        if (type.equals("playlist")) {
-            if (!isPlaylistNew) {
-                deletePlaylist.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
+        if (!isPlaylistNew) {
+            deletePlaylist.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
 
-                        PlaylistDeleteDialogFragment playlistDeleteDialogFragment = new PlaylistDeleteDialogFragment();
-                        Bundle argsToDelete = new Bundle();
-                        argsToDelete.putString("title", title);
-                        argsToDelete.putString("db_name", dbName);
-                        argsToDelete.putBoolean("playlist_inside", isPlaylistInside);
-                        playlistDeleteDialogFragment.setArguments(argsToDelete);
+                    PlaylistDeleteDialogFragment playlistDeleteDialogFragment = new PlaylistDeleteDialogFragment();
+                    Bundle argsToDelete = new Bundle();
+                    argsToDelete.putString("title", title);
+                    argsToDelete.putString("db_name", dbName);
+                    argsToDelete.putBoolean("playlist_inside", isPlaylistInside);
+                    playlistDeleteDialogFragment.setArguments(argsToDelete);
 
-                        playlistDeleteDialogFragment.show(getActivity().getSupportFragmentManager(), "Delete playlist dialog");
-                    }
-                });
-            } else {
-                deletePlaylist.setVisibility(View.INVISIBLE);
-            }
-        }else{
+                    playlistDeleteDialogFragment.show(getActivity().getSupportFragmentManager(), "Delete playlist dialog");
+                }
+            });
+        } else {
             deletePlaylist.setVisibility(View.INVISIBLE);
         }
 
+
         // CREATE PLAYLIST
         if (isPlaylistNew) {
-            TextView create = view.findViewById(R.id.playlist_options_create);
             create.setVisibility(View.VISIBLE);
             create.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -378,10 +352,11 @@ public class PlaylistOptionsFragment extends Fragment {
 
 
                     PlaylistConfigurationFragment playlistConfigurationFragment = new PlaylistConfigurationFragment();
+
                     Bundle args = new Bundle();
-                    args.putString("type", "playlist");
                     args.putString("image", image);
                     args.putString("playlist_name", title);
+
                     playlistConfigurationFragment.setArguments(args);
 
                     playlistConfigurationFragment.setSharedElementEnterTransition(new TransitionSet()
@@ -392,7 +367,6 @@ public class PlaylistOptionsFragment extends Fragment {
                             .addSharedElement(cardView, "card")
                             .addSharedElement(coverView, "cover")
                             .addSharedElement(titleView, "title")
-                            .addSharedElement(separator, "separator")
                             .addSharedElement(back, "back")
                             .replace(R.id.frame, playlistConfigurationFragment, "playlist_conf_fragment")
                             .addToBackStack(null)
@@ -405,22 +379,41 @@ public class PlaylistOptionsFragment extends Fragment {
             });
         }
 
-        if (type.equals("album")){
-            TextView create = view.findViewById(R.id.playlist_options_create);
-            create.setVisibility(View.INVISIBLE);
-        }
+        // Configure back behavior based on orientation
 
-
-
-
-        // Initialize back button
+        final int orientation = getResources().getConfiguration().orientation;
         back = view.findViewById(R.id.playlist_options_back);
+
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                if (orientation == Configuration.ORIENTATION_LANDSCAPE && !isPlaylistNew){
+                    getActivity().getSupportFragmentManager().popBackStack();
+                }
+
                 getActivity().onBackPressed();
             }
         });
+
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE){
+
+            optionsButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    getActivity().onBackPressed();
+                }
+            });
+
+            if (isPlaylistNew) {
+                optionsButton.setVisibility(View.GONE);
+            }
+
+
+            tracksCountView.setText("tracks: " + tracksCount);
+        }
+
+
 
         return view;
     }
@@ -499,7 +492,10 @@ public class PlaylistOptionsFragment extends Fragment {
         if (resultReceiver != null){
             resultReceiver.unregister(getContext());
         }
+
+        unbinder.unbind();
     }
 
 
 }
+
