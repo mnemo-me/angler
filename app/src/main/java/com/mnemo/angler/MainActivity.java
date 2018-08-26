@@ -41,14 +41,20 @@ import android.widget.TextView;
 import com.mnemo.angler.albums.AlbumsFragmentV2;
 import com.mnemo.angler.artists.ArtistsFragment;
 import com.mnemo.angler.background_changer.BackgroundChangerFragmentv2;
-import com.mnemo.angler.background_changer.ImageAssistant;
+import com.mnemo.angler.data.ImageAssistant;
 import com.mnemo.angler.data.AnglerContract;
 import com.mnemo.angler.data.AnglerDBUpdateLoader;
 import com.mnemo.angler.equalizer.EqualizerFragment;
 import com.mnemo.angler.data.AnglerFolder;
-import com.mnemo.angler.playlist_manager.AddTrackToPlaylistDialogFragment;
-import com.mnemo.angler.playlist_manager.LyricsDialogFragment;
-import com.mnemo.angler.playlist_manager.PlaylistManagerFragment;
+import com.mnemo.angler.music_player.ArtistFragment;
+import com.mnemo.angler.music_player.ArtistTrackFragment;
+import com.mnemo.angler.music_player.MusicPlayerFragment;
+import com.mnemo.angler.music_player.MainPlaylistFragment;
+import com.mnemo.angler.playlist_manager.PlaybackManager;
+import com.mnemo.angler.playlist_manager.PlaylistManager;
+import com.mnemo.angler.playlists.AddTrackToPlaylistDialogFragment;
+import com.mnemo.angler.playlists.LyricsDialogFragment;
+import com.mnemo.angler.playlists.PlaylistManagerFragment;
 
 import java.io.File;
 import java.io.IOException;
@@ -164,7 +170,7 @@ public class MainActivity extends AppCompatActivity implements MainPlaylistFragm
         if (savedInstanceState == null) {
 
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.main_frame, new MainFragment(), "Main fragment")
+                    .replace(R.id.main_frame, new MusicPlayerFragment(), "Main fragment")
                     .commit();
 
         }else{

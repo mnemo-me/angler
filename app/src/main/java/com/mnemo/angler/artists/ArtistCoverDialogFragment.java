@@ -12,8 +12,9 @@ import android.view.LayoutInflater;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.mnemo.angler.MainActivity;
 import com.mnemo.angler.R;
-import com.mnemo.angler.background_changer.ImageAssistant;
+import com.mnemo.angler.data.ImageAssistant;
 
 
 
@@ -50,10 +51,17 @@ public class ArtistCoverDialogFragment extends DialogFragment {
             artistView.setTextColor(getResources().getColor(R.color.gGrey));
         }
 
-
         builder.setView(cardView);
 
         return builder.create();
 
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        AlertDialog alertDialog = (AlertDialog)getDialog();
+        alertDialog.getWindow().setLayout((int)(392 * MainActivity.density), (int)(392 * MainActivity.density));
     }
 }

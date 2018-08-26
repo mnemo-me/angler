@@ -2,10 +2,17 @@ package com.mnemo.angler.artists;
 
 
 import android.content.res.Configuration;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.CardView;
@@ -16,20 +23,26 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.mnemo.angler.R;
-import com.mnemo.angler.background_changer.ImageAssistant;
+import com.mnemo.angler.data.ImageAssistant;
+import com.mnemo.angler.data.AnglerContract.*;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
+import static com.mnemo.angler.data.AnglerContract.BASE_CONTENT_URI;
 
-public class ArtistConfigurationFragment extends Fragment {
+
+public class ArtistConfigurationFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
 
     public ArtistConfigurationFragment() {
         // Required empty public constructor
     }
+
+    private static final int LOADER_ARTIST_TRACKS_COUNT_ID = 100;
+    private static final int LOADER_ARTIST_ALBUMS_COUNT_ID = 200;
 
     Unbinder unbinder;
 
@@ -56,6 +69,9 @@ public class ArtistConfigurationFragment extends Fragment {
     String image;
     String artist;
 
+    int tracksCount;
+    int albumsCount;
+
 
     // other variables;
     int orientation;
@@ -77,6 +93,9 @@ public class ArtistConfigurationFragment extends Fragment {
         image = getArguments().getString("image");
         artist = getArguments().getString("artist");
 
+        // Extract artist info (tracks and albums count)
+        getLoaderManager().initLoader(LOADER_ARTIST_TRACKS_COUNT_ID, null, this);
+
         // Load cover image
         int imageHeight;
 
@@ -88,18 +107,8 @@ public class ArtistConfigurationFragment extends Fragment {
 
         ImageAssistant.loadImage(getContext(), image, imageView, imageHeight);
 
-
-        // Assign artist text
-        artistText.setText(artist);
-
-
-        // Initialize tab layout with view pager (tracks, albums, bio)
-        viewPager.setAdapter(new ArtistTabsAdapter(getActivity().getSupportFragmentManager(), artist));
-        tabLayout.setupWithViewPager(viewPager);
-
-
         // Set on click listener on cover
-        imageView.setOnClickListener(new View.OnClickListener() {
+        cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -113,6 +122,9 @@ public class ArtistConfigurationFragment extends Fragment {
                 artistCoverDialogFragment.show(getActivity().getSupportFragmentManager(), "Artist cover fragment");
             }
         });
+
+        // Assign artist text
+        artistText.setText(artist);
 
 
         return view;
@@ -149,4 +161,59 @@ public class ArtistConfigurationFragment extends Fragment {
         getActivity().onBackPressed();
     }
 
+
+    @NonNull
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
+
+        switch (id){
+
+            case LOADER_ARTIST_TRACKS_COUNT_ID:
+
+                return new CursorLoader(getContext(), Uri.withAppendedPath(BASE_CONTENT_URI, SourceEntry.SOURCE_LIBRARY),
+                        null,
+                        TrackEntry.COLUMN_ARTIST + " = ?", new String[]{artist},
+                        null);
+
+            case LOADER_ARTIST_ALBUMS_COUNT_ID:
+
+                return new CursorLoader(getContext(), Uri.withAppendedPath(BASE_CONTENT_URI, "album_list/" + SourceEntry.SOURCE_LIBRARY),
+                        null,
+                        TrackEntry.COLUMN_ARTIST + " = ?", new String[]{artist},
+                        TrackEntry.COLUMN_ALBUM + " ASC");
+
+            default:
+
+                return null;
+        }
+    }
+
+    @Override
+    public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
+
+        switch (loader.getId()){
+
+            case LOADER_ARTIST_TRACKS_COUNT_ID:
+
+                tracksCount = data.getCount();
+                getLoaderManager().initLoader(LOADER_ARTIST_ALBUMS_COUNT_ID, null, this);
+
+                break;
+
+            case  LOADER_ARTIST_ALBUMS_COUNT_ID:
+
+                albumsCount = data.getCount();
+
+                // Initialize tab layout with view pager (tracks, albums, bio)
+                viewPager.setAdapter(new ArtistTabsAdapter(getActivity().getSupportFragmentManager(), artist, tracksCount, albumsCount, orientation));
+                tabLayout.setupWithViewPager(viewPager);
+
+        }
+
+    }
+
+    @Override
+    public void onLoaderReset(@NonNull Loader<Cursor> loader) {
+
+    }
 }

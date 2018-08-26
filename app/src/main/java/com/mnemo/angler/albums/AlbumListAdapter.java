@@ -23,9 +23,9 @@ import android.widget.TextView;
 
 import com.mnemo.angler.MainActivity;
 import com.mnemo.angler.R;
-import com.mnemo.angler.background_changer.ImageAssistant;
+import com.mnemo.angler.artists.ArtistCoverDialogFragment;
+import com.mnemo.angler.data.ImageAssistant;
 import com.mnemo.angler.data.AnglerFolder;
-import com.mnemo.angler.playlist_manager.PlaylistConfigurationFragment;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -197,6 +197,26 @@ public class AlbumListAdapter extends ArrayAdapter{
                                 .commit();
                     }
                 });
+
+
+                constraintLayout.findViewById(albumIdentifier.get(i)).setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View view) {
+
+                        ArtistCoverDialogFragment artistCoverDialogFragment = new ArtistCoverDialogFragment();
+
+                        Bundle args = new Bundle();
+                        args.putString("artist", artist);
+                        args.putString("album", album);
+                        args.putString("image", albumImagePath);
+                        artistCoverDialogFragment.setArguments(args);
+
+                        artistCoverDialogFragment.show(((AppCompatActivity) context).getSupportFragmentManager(), "Album cover fragment");
+
+                        return true;
+                    }
+                });
+
             }else{
                 constraintLayout.findViewById(albumIdentifier.get(i)).setVisibility(View.INVISIBLE);
             }

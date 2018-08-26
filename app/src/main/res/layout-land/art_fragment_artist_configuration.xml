@@ -28,6 +28,12 @@
 
             <View
                 android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="1dp"
+                android:background="@drawable/background_selector"/>
+
+            <View
+                android:layout_width="match_parent"
                 android:layout_height="80dp"
                 android:background="@drawable/skrim_top_to_bottom"/>
 
@@ -56,12 +62,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginEnd="8dp"
+                android:maxWidth="210dp"
                 android:layout_marginBottom="8dp"
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:textColor="#FFFFFF"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:transitionName="title"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -78,6 +84,7 @@
         android:layout_height="48dp"
         android:layout_marginStart="240dp"
         app:tabMode="fixed"
+        app:tabGravity="fill"
         app:tabSelectedTextColor="#FFFFFF"
         app:tabTextColor="@color/gGrey"
         app:tabIndicatorHeight="0dp"

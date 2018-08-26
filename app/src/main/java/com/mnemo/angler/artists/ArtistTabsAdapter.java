@@ -1,5 +1,6 @@
 package com.mnemo.angler.artists;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -12,10 +13,16 @@ public class ArtistTabsAdapter extends FragmentStatePagerAdapter {
 
     private String[] tabs = {"tracks", "albums", "bio"};
     private String artist;
+    private int tracksCount;
+    private int albumsCount;
+    private int orientation;
 
-    ArtistTabsAdapter(FragmentManager fm, String artist) {
+    ArtistTabsAdapter(FragmentManager fm, String artist, int tracksCount, int albumsCount, int orientation) {
         super(fm);
         this.artist = artist;
+        this.tracksCount = tracksCount;
+        this. albumsCount = albumsCount;
+        this.orientation = orientation;
     }
 
     @Override
@@ -58,7 +65,31 @@ public class ArtistTabsAdapter extends FragmentStatePagerAdapter {
     @Nullable
     @Override
     public CharSequence getPageTitle(int position) {
-        return tabs[position];
+
+        String lineShift = "";
+
+        if (orientation == Configuration.ORIENTATION_PORTRAIT){
+            lineShift = "\n";
+        }
+
+        switch (tabs[position]){
+
+            case "tracks":
+
+                return tabs[position] + ": " + lineShift + tracksCount;
+
+            case "albums":
+
+                return tabs[position] + ": " + lineShift + albumsCount;
+
+            case "bio":
+
+                return tabs[position] + lineShift;
+
+            default:
+
+                return null;
+        }
     }
 
     @Override

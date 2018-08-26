@@ -11,8 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="8dp"
-        android:src="@drawable/ic_add_white_24dp"
-        android:alpha="0.5"
+        android:src="@drawable/add_selector"
         android:layout_gravity="center_vertical"/>
 
     <TextView

@@ -21,8 +21,8 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.mnemo.angler.MainActivity;
-import com.mnemo.angler.PlaybackManager;
-import com.mnemo.angler.PlaylistManager;
+import com.mnemo.angler.playlist_manager.PlaybackManager;
+import com.mnemo.angler.playlist_manager.PlaylistManager;
 import com.mnemo.angler.R;
 import com.mnemo.angler.data.AnglerContract.*;
 

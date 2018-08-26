@@ -18,9 +18,8 @@ import com.mnemo.angler.MainActivity;
 import com.mnemo.angler.R;
 import com.mnemo.angler.albums.AlbumConfigurationFragment;
 import com.mnemo.angler.data.AnglerFolder;
-import com.mnemo.angler.playlist_manager.AddTrackToPlaylistDialogFragment;
-import com.mnemo.angler.playlist_manager.LyricsDialogFragment;
-import com.mnemo.angler.playlist_manager.PlaylistConfigurationFragment;
+import com.mnemo.angler.playlists.AddTrackToPlaylistDialogFragment;
+import com.mnemo.angler.playlists.LyricsDialogFragment;
 
 import java.io.File;
 

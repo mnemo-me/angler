@@ -15,6 +15,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,11 +24,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.mnemo.angler.MainActivity;
-import com.mnemo.angler.PlaybackManager;
-import com.mnemo.angler.PlaylistManager;
+import com.mnemo.angler.playlist_manager.PlaybackManager;
+import com.mnemo.angler.playlist_manager.PlaylistManager;
 import com.mnemo.angler.R;
 import com.mnemo.angler.artists.ArtistCoverDialogFragment;
-import com.mnemo.angler.background_changer.ImageAssistant;
+import com.mnemo.angler.data.ImageAssistant;
 import com.mnemo.angler.data.AnglerContract;
 import com.mnemo.angler.data.AnglerContract.*;
 
@@ -43,6 +44,9 @@ public class AlbumConfigurationFragment extends Fragment implements LoaderManage
 
 
     // Bind views via butterknife
+
+    @BindView(R.id.album_conf_cardview)
+    CardView cardView;
 
     @BindView(R.id.album_conf_image)
     ImageView imageView;
@@ -93,7 +97,6 @@ public class AlbumConfigurationFragment extends Fragment implements LoaderManage
 
         orientation = getResources().getConfiguration().orientation;
 
-
         // Initialize album variables
         image = getArguments().getString("image");
         title = getArguments().getString("album_name");
@@ -123,7 +126,7 @@ public class AlbumConfigurationFragment extends Fragment implements LoaderManage
         getLoaderManager().initLoader(LOADER_TRACK_LIST_ID, null, this);
 
         // Set on click listener on cover
-        imageView.setOnClickListener(new View.OnClickListener() {
+        cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 

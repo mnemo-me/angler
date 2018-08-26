@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ImageView
+        android:id="@+id/playlist_creation_image"
+        android:layout_width="180dp"
+        android:layout_height="180dp"
+        android:scaleType="centerCrop"
+        tools:src="@drawable/back3"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <View
+        android:layout_width="180dp"
+        android:layout_height="100dp"
+        android:background="@drawable/skrim"
+        app:layout_constraintBottom_toBottomOf="@id/playlist_creation_image"/>
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="#22000000"
+        app:layout_constraintStart_toEndOf="@id/playlist_creation_image"
+        app:layout_constraintBottom_toBottomOf="@id/playlist_creation_image"/>
+
+    <ImageView
+        android:id="@+id/playlist_creation_load_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/playlist_creation_image"
+        app:layout_constraintBottom_toBottomOf="@id/playlist_creation_image"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="8dp"
+        android:tooltipText="@string/load_image"
+        android:src="@drawable/baseline_burst_mode_white_24dp"/>
+
+    <EditText
+        android:id="@+id/playlist_creation_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/default_margin"
+        android:layout_marginEnd="@dimen/default_margin"
+        android:layout_marginTop="@dimen/default_margin"
+        android:layout_marginBottom="@dimen/default_margin"
+        android:lines="1"
+        android:hint="@string/enter_new_playlist_title"
+        app:layout_constraintStart_toEndOf="@id/playlist_creation_image"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+</android.support.constraint.ConstraintLayout>

@@ -20,7 +20,7 @@ import android.widget.ImageView;
 
 import com.mnemo.angler.R;
 import com.mnemo.angler.albums.AlbumConfigurationFragment;
-import com.mnemo.angler.background_changer.ImageAssistant;
+import com.mnemo.angler.data.ImageAssistant;
 import com.mnemo.angler.data.AnglerContract;
 import com.mnemo.angler.data.AnglerContract.*;
 import com.mnemo.angler.data.AnglerFolder;
@@ -142,7 +142,7 @@ public class ArtistAlbumsFragment extends Fragment implements LoaderManager.Load
                         args.putString("album_name", album);
                         args.putString("artist", artist);
                         albumConfigurationFragment.setArguments(args);
-                        
+
 
                         getActivity().getSupportFragmentManager().beginTransaction()
                                 .replace(R.id.frame, albumConfigurationFragment, "album_conf_fragment")
@@ -150,6 +150,29 @@ public class ArtistAlbumsFragment extends Fragment implements LoaderManager.Load
                                 .commit();
 
 
+                    }
+                });
+
+                albumsGrid.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                    @Override
+                    public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long id) {
+
+                        data.moveToPosition(position);
+
+                        String album = data.getString(3);
+                        String albumImagePath = AnglerFolder.PATH_ALBUM_COVER + File.separator + artist + File.separator + album + ".jpg";
+
+                        ArtistCoverDialogFragment artistCoverDialogFragment = new ArtistCoverDialogFragment();
+
+                        Bundle args = new Bundle();
+                        args.putString("artist", artist);
+                        args.putString("album", album);
+                        args.putString("image", albumImagePath);
+                        artistCoverDialogFragment.setArguments(args);
+
+                        artistCoverDialogFragment.show(getActivity().getSupportFragmentManager(), "Album cover fragment");
+
+                        return true;
                     }
                 });
 

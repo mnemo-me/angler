@@ -14,7 +14,6 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.mnemo.angler.DrawerItem;
@@ -26,6 +25,11 @@ import com.mnemo.angler.data.AnglerContract.TrackEntry;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.Unbinder;
+
 
 public class AlbumsFragmentV2 extends Fragment implements DrawerItem, LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -36,11 +40,14 @@ public class AlbumsFragmentV2 extends Fragment implements DrawerItem, LoaderMana
 
     public static final int LOADER_ALBUM_ID = 0;
 
-    ArrayList<Album> albums;
-
+    @BindView(R.id.albums_list)
     ListView listView;
+
     AlbumListAdapter adapter;
 
+    ArrayList<Album> albums;
+
+    Unbinder unbinder;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -48,24 +55,17 @@ public class AlbumsFragmentV2 extends Fragment implements DrawerItem, LoaderMana
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.alb_fragment_albums, container, false);
 
+        unbinder = ButterKnife.bind(this, view);
+
         albums = new ArrayList<>();
 
         // Setup complex listview (albums inside artists)
-        listView = view.findViewById(R.id.albums_list);
         listView.setDividerHeight(0);
         listView.addHeaderView(LayoutInflater.from(getContext()).inflate(R.layout.alb_album_list_header, null, false));
         listView.addFooterView(LayoutInflater.from(getContext()).inflate(R.layout.alb_album_list_header, null, false));
 
         getLoaderManager().initLoader(LOADER_ALBUM_ID, null, this);
 
-        // Setup drawer menu button
-        ImageView drawerBack = view.findViewById(R.id.albums_drawer_back);
-        drawerBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ((DrawerLayout) getActivity().findViewById(R.id.drawer_layout)).openDrawer(Gravity.START);
-            }
-        });
 
         return view;
     }
@@ -129,6 +129,19 @@ public class AlbumsFragmentV2 extends Fragment implements DrawerItem, LoaderMana
                 break;
         }
 
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+
+        unbinder.unbind();
+    }
+
+    // Setup drawer menu button
+    @OnClick(R.id.albums_drawer_back)
+    void drawerBack(){
+        ((DrawerLayout) getActivity().findViewById(R.id.drawer_layout)).openDrawer(Gravity.START);
     }
 
 }

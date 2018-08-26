@@ -2,6 +2,7 @@ package com.mnemo.angler.background_changer;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.constraint.Group;
@@ -15,6 +16,8 @@ import android.widget.ImageView;
 
 import com.mnemo.angler.MainActivity;
 import com.mnemo.angler.R;
+import com.mnemo.angler.data.ImageAssistant;
+import com.mnemo.angler.local_load.LocalLoadActivity;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -103,15 +106,11 @@ public class BackgroundImageAdapter extends RecyclerView.Adapter<BackgroundImage
 
                 if (holder.getAdapterPosition() == 0){
 
-                    LocalLoadFragment localLoadFragment = new LocalLoadFragment();
-                    Bundle args = new Bundle();
-                    args.putString("image_type", "background");
-                    localLoadFragment.setArguments(args);
+                    Intent intent = new Intent(context, LocalLoadActivity.class);
+                    intent.putExtra("image_type", "background");
 
-                    ((MainActivity)context).getSupportFragmentManager().beginTransaction()
-                            .add(R.id.full_frame, localLoadFragment)
-                            .addToBackStack(null)
-                            .commit();
+                    context.startActivity(intent);
+
                 }else {
 
                     selectedImage = image;
@@ -186,5 +185,9 @@ public class BackgroundImageAdapter extends RecyclerView.Adapter<BackgroundImage
 
     String getSelectedImage() {
         return selectedImage;
+    }
+
+    public void setImages(ArrayList<String> images) {
+        this.images = images;
     }
 }

@@ -5,7 +5,6 @@ package com.mnemo.angler;
 import android.content.Intent;
 import android.media.MediaMetadata;
 import android.media.MediaPlayer;
-import android.media.audiofx.Equalizer;
 import android.media.browse.MediaBrowser;
 import android.media.session.MediaSession;
 import android.media.session.PlaybackState;
@@ -16,6 +15,9 @@ import android.service.media.MediaBrowserService;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+
+import com.mnemo.angler.playlist_manager.PlaybackManager;
+import com.mnemo.angler.playlist_manager.PlaylistManager;
 
 import java.util.ArrayList;
 import java.util.List;

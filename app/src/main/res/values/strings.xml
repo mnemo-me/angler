@@ -60,6 +60,7 @@
     <string name="storage">Storage</string>
     <string name="updating_library">Updating library...</string>
     <string name="new_playlist">New playlist</string>
+    <string name="playlist_name_is_empty">Playlist name is empty</string>
     <string name="playlist_name_reserved">Playlist name reserved</string>
     <string name="playlist_name_in_used">Playlist name already in used</string>
     <string name="too_many_symbols_in_playlist_name">Too many symbols in playlist name</string>
@@ -82,6 +83,10 @@
     <string name="search_empty_artists">no artists found</string>
     <string name="empty_playlist_play_warning">No tracks in this playlist!</string>
     <string name="play">play</string>
+    <string name="save">save</string>
+    <string name="create">create</string>
+    <string name="configure_playlist">Configure playlist</string>
+    <string name="tracks">tracks: </string>
 
 
 </resources>

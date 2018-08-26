@@ -29,7 +29,7 @@ import android.widget.SimpleCursorAdapter;
 
 import com.mnemo.angler.DrawerItem;
 import com.mnemo.angler.R;
-import com.mnemo.angler.background_changer.ImageAssistant;
+import com.mnemo.angler.data.ImageAssistant;
 import com.mnemo.angler.data.AnglerContract.*;
 import com.mnemo.angler.data.AnglerFolder;
 
@@ -170,6 +170,28 @@ public class ArtistsFragment extends Fragment implements DrawerItem, LoaderManag
                                         .commit();
 
 
+                    }
+                });
+
+                gridView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                    @Override
+                    public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long id) {
+
+                        data.moveToPosition(position);
+
+                        String artist = data.getString(1);
+                        String imagePath = AnglerFolder.PATH_ARTIST_IMAGE + File.separator + artist + ".jpg";
+
+                        ArtistCoverDialogFragment artistCoverDialogFragment = new ArtistCoverDialogFragment();
+
+                        Bundle args = new Bundle();
+                        args.putString("artist", artist);
+                        args.putString("image", imagePath);
+                        artistCoverDialogFragment.setArguments(args);
+
+                        artistCoverDialogFragment.show(getActivity().getSupportFragmentManager(), "Artist cover fragment");
+
+                        return true;
                     }
                 });
 
