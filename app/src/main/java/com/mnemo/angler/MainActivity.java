@@ -284,7 +284,7 @@ public class MainActivity extends AppCompatActivity implements ArtistsFragment.A
         });
 
 
-        // Setup seekbar change listener
+        // Setup SeekBar change listener
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -400,11 +400,14 @@ public class MainActivity extends AppCompatActivity implements ArtistsFragment.A
     // Setup add track to playlist and lyrics button based on current metadata
     private void configureTrackButtons(@Nullable MediaMetadataCompat metadata) {
 
+        final Bundle args = MediaAssistant.putMetadataInBundle(metadata);
+
         addTrackToPlaylist.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 AddTrackToPlaylistDialogFragment addTrackToPlaylistDialogFragment = new AddTrackToPlaylistDialogFragment();
+                addTrackToPlaylistDialogFragment.setArguments(args);
                 addTrackToPlaylistDialogFragment.show(getSupportFragmentManager(), "Add track to playlist dialog");
 
             }

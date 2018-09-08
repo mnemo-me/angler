@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
@@ -15,15 +16,18 @@ import android.support.v7.app.AlertDialog;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.mnemo.angler.MainActivity;
 import com.mnemo.angler.R;
+import com.mnemo.angler.data.AnglerSQLiteDBHelper;
 import com.mnemo.angler.data.ImageAssistant;
 import com.mnemo.angler.data.AnglerContract.*;
 
@@ -34,9 +38,31 @@ public class AddTrackToPlaylistDialogFragment extends DialogFragment implements 
     private GridView playlistGrid;
     SimpleCursorAdapter adapter;
 
+    String mediaId;
+    String title;
+    String artist;
+    String album;
+    long duration;
+    String uri;
+
+    AnglerSQLiteDBHelper dbHelper;
+    SQLiteDatabase db;
+
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+
+        // Assign track variables
+        mediaId = getArguments().getString("media_id");
+        title = getArguments().getString("title");
+        artist = getArguments().getString("artist");
+        album = getArguments().getString("album");
+        duration = getArguments().getLong("duration");
+        uri = getArguments().getString("uri");
+
+        dbHelper = new AnglerSQLiteDBHelper(getContext());
+        db = dbHelper.getWritableDatabase();
+
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
@@ -58,11 +84,11 @@ public class AddTrackToPlaylistDialogFragment extends DialogFragment implements 
         }
 
         playlistGrid.setVerticalSpacing((int) (8 * MainActivity.density));
-        playlistGrid.setPadding((int)(4 * MainActivity.density), (int)(4 * MainActivity.density), (int)(4 * MainActivity.density), (int)(4 * MainActivity.density));
+        playlistGrid.setPadding((int)(8 * MainActivity.density), (int)(8 * MainActivity.density), (int)(8 * MainActivity.density), (int)(8 * MainActivity.density));
         playlistGrid.setClipToPadding(false);
         playlistGrid.setGravity(Gravity.CENTER);
 
-        adapter = new SimpleCursorAdapter(getContext(),R.layout.pm_playlist_v2, null,
+        adapter = new SimpleCursorAdapter(getContext(),R.layout.pm_playlist_v2_mod, null,
                 new String[]{PlaylistEntry.COLUMN_IMAGE_RESOURCE, PlaylistEntry.COLUMN_NAME, PlaylistEntry.COLUMN_TRACKS_TABLE},
                 new int[]{R.id.playlist_options_image, R.id.playlist_options_name},0);
 
@@ -71,7 +97,7 @@ public class AddTrackToPlaylistDialogFragment extends DialogFragment implements 
             public boolean setViewValue(View view, Cursor cursor, int i) {
 
                 if (view.getId() == R.id.playlist_options_image){
-                    ImageAssistant.loadImage(getContext(),cursor.getString(2), (ImageView) view, 104);
+                    ImageAssistant.loadImage(getContext(),cursor.getString(2), (ImageView) view, 125);
                     return true;
                 }
                 return false;
@@ -95,6 +121,15 @@ public class AddTrackToPlaylistDialogFragment extends DialogFragment implements 
         builder.setNeutralButton(R.string.create_new_playlist, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
+
+                PlaylistCreationDialogFragment playlistCreationDialogFragment = new PlaylistCreationDialogFragment();
+
+                Bundle args = getArguments();
+                args.putString("action", "create");
+
+                playlistCreationDialogFragment.setArguments(getArguments());
+
+                playlistCreationDialogFragment.show(getActivity().getSupportFragmentManager(), "playlist_creation_dialog_fragment");
 
             }
         });
@@ -128,20 +163,18 @@ public class AddTrackToPlaylistDialogFragment extends DialogFragment implements 
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                         data.moveToPosition(position);
-/*
-                        PlaylistConfigurationFragment playlistConfigurationFragment = new PlaylistConfigurationFragment();
-                        Bundle args = new Bundle();
-                        args.putString("type", "playlist");
-                        args.putString("image",data.getString(2));
-                        args.putString("playlist_name", data.getString(1));
-                        playlistConfigurationFragment.setArguments(args);
 
-                        getActivity().getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.frame,playlistConfigurationFragment, "playlist_conf_fragment")
-                                .addToBackStack(null)
-                                .commit();
+                        Cursor cursor = db.query(data.getString(3),new String[]{"COUNT(_id) As Count"},null, null, null, null, null);
+                        cursor.moveToFirst();
+                        int trackPosition = Integer.parseInt(cursor.getString(0)) + 1;
+                        cursor.close();
 
-*/
+                        dbHelper.insertTrack(db, data.getString(3), title, artist, album, duration, uri, SourceEntry.SOURCE_PHONE_STORAGE, trackPosition);
+
+                        Toast.makeText(getContext(), "'" + artist + " - " + title + "' " + getString(R.string.added_to) + " '" + data.getString(1) + "'", Toast.LENGTH_SHORT).show();
+
+                        dismiss();
+
                     }
                 });
                 break;
@@ -158,6 +191,27 @@ public class AddTrackToPlaylistDialogFragment extends DialogFragment implements 
             case LOADER_PLAYLIST_ID:
                 adapter.swapCursor(null);
                 break;
+        }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        AlertDialog alertDialog = (AlertDialog)getDialog();
+
+        int orientation = getResources().getConfiguration().orientation;
+
+        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            alertDialog.getWindow().setLayout((int) (320 * MainActivity.density), ViewGroup.LayoutParams.MATCH_PARENT);
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+
+        if (db != null){
+            db.close();
         }
     }
 }

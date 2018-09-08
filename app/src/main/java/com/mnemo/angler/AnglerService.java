@@ -313,11 +313,11 @@ public class AnglerService extends MediaBrowserServiceCompat {
 
                     if (oldPosition == queueIndex){
                         queueIndex = newPosition;
-                    }
-
-                    if (newPosition == queueIndex){
+                    }else if (newPosition == queueIndex){
                         queueIndex = oldPosition;
                     }
+
+                    break;
 
             }
         }

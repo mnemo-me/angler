@@ -148,7 +148,7 @@ public class AnglerSQLiteDBHelper extends SQLiteOpenHelper{
 
 
 
-    private void insertTrack(SQLiteDatabase db, String trackTable, String title, String artist, String album,long duration, String uri, String source, long position){
+    public void insertTrack(SQLiteDatabase db, String trackTable, String title, String artist, String album,long duration, String uri, String source, long position){
 
         ContentValues contentValues = new ContentValues();
         contentValues.put("_id",(title + "-" + artist + "-" + album).replace(" ", "_"));
@@ -163,7 +163,7 @@ public class AnglerSQLiteDBHelper extends SQLiteOpenHelper{
     }
 
 
-    private void insertTrack(SQLiteDatabase db, String trackTable, Track track){
+    public void insertTrack(SQLiteDatabase db, String trackTable, Track track){
 
         ContentValues contentValues = new ContentValues();
         contentValues.put("_id",track.getId());

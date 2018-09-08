@@ -298,6 +298,22 @@ public class PlaylistCreationDialogFragment extends DialogFragment {
                         // Create new playlist table
                         dbHelper.createTrackTable(db, AnglerSQLiteDBHelper.createTrackTableName(title));
 
+                        // Insert track in new playlist table (if exist)
+                        Bundle bundle = getArguments();
+                        if (bundle != null){
+
+                            // Assign track variables
+                            String title = getArguments().getString("title");
+                            String artist = getArguments().getString("artist");
+                            String album = getArguments().getString("album");
+                            long duration = getArguments().getLong("duration");
+                            String uri = getArguments().getString("uri");
+
+                            dbHelper.insertTrack(db, dbName, title, artist, album, duration, uri, AnglerContract.SourceEntry.SOURCE_PHONE_STORAGE, 0);
+
+                        }
+
+
                         // Copy new playlist image from temp
                         String newImageName = AnglerFolder.PATH_PLAYLIST_COVER + File.separator + title.replace(" ", "_") + ".jpeg";
                         ImageAssistant.copyImage(image, newImageName);

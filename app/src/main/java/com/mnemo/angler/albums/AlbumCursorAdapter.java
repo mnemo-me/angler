@@ -241,6 +241,10 @@ public class AlbumCursorAdapter extends CursorAdapter {
                                 dialog.dismiss();
 
                                 AddTrackToPlaylistDialogFragment addTrackToPlaylistDialogFragment = new AddTrackToPlaylistDialogFragment();
+
+                                Bundle args = MediaAssistant.putMetadataInBundle(id, title, artist, album, duration, uri);
+                                addTrackToPlaylistDialogFragment.setArguments(args);
+
                                 addTrackToPlaylistDialogFragment.show(((AppCompatActivity)AlbumCursorAdapter.this.mContext).getSupportFragmentManager(), "Add track to playlist dialog");
 
                             }

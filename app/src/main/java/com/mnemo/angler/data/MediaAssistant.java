@@ -76,4 +76,44 @@ public class MediaAssistant {
 
         return metadataBuilder.build();
     }
+
+    public static Bundle putMetadataInBundle(MediaMetadataCompat metadata){
+
+        Bundle bundle = new Bundle();
+
+        String mediaId = metadata.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID);
+        String title = metadata.getString(MediaMetadataCompat.METADATA_KEY_TITLE);
+        String artist = metadata.getString(MediaMetadataCompat.METADATA_KEY_ARTIST);
+        String album = metadata.getString(MediaMetadataCompat.METADATA_KEY_ALBUM);
+        long duration = metadata.getLong(MediaMetadataCompat.METADATA_KEY_DURATION);
+        String uri = metadata.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI);
+
+
+        bundle.putString("media_id", mediaId);
+        bundle.putString("title", title);
+        bundle.putString("artist", artist);
+        bundle.putString("album", album);
+        bundle.putLong("duration", duration);
+        bundle.putString("uri", uri);
+
+        return bundle;
+    }
+
+    public static Bundle putMetadataInBundle(String mediaId, String title, String artist, String album, long duration, String uri){
+
+        Bundle bundle = new Bundle();
+
+        bundle.putString("media_id", mediaId);
+        bundle.putString("title", title);
+        bundle.putString("artist", artist);
+        bundle.putString("album", album);
+        bundle.putLong("duration", duration);
+        bundle.putString("uri", uri);
+
+        return bundle;
+
+
+
+
+    }
 }
