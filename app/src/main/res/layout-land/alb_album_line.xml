@@ -136,7 +136,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/album_line_album_four"
         app:layout_constraintStart_toEndOf="@+id/album_line_album_two"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -175,6 +175,130 @@
 
         <TextView
             android:id="@+id/album_line_album_three_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="2dp"
+            android:ellipsize="end"
+            android:gravity="center_horizontal"
+            android:lines="2"
+            android:textColor="#FFFFFF"
+            android:textSize="12sp"
+            android:transitionName="title"
+            tools:text="Library" />
+
+    </LinearLayout>
+
+
+
+    <LinearLayout
+        android:id="@+id/album_line_album_four"
+        android:layout_width="125dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/album_line_album_five"
+        app:layout_constraintStart_toEndOf="@+id/album_line_album_three"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:transitionName="card"
+            app:cardCornerRadius="2dp"
+            app:cardElevation="2dp">
+
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/album_line_album_four_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="125dp"
+                    android:layout_margin="1dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/back3"
+                    android:transitionName="cover" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="125dp"
+                    android:layout_margin="1dp"
+                    android:background="@drawable/background_selector" />
+
+            </RelativeLayout>
+
+
+        </android.support.v7.widget.CardView>
+
+
+        <TextView
+            android:id="@+id/album_line_album_four_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="2dp"
+            android:ellipsize="end"
+            android:gravity="center_horizontal"
+            android:lines="2"
+            android:textColor="#FFFFFF"
+            android:textSize="12sp"
+            android:transitionName="title"
+            tools:text="Library" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/album_line_album_five"
+        android:layout_width="125dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/album_line_album_four"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:transitionName="card"
+            app:cardCornerRadius="2dp"
+            app:cardElevation="2dp">
+
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/album_line_album_five_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="125dp"
+                    android:layout_margin="1dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/back3"
+                    android:transitionName="cover" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="125dp"
+                    android:layout_margin="1dp"
+                    android:background="@drawable/background_selector" />
+
+            </RelativeLayout>
+
+
+        </android.support.v7.widget.CardView>
+
+
+        <TextView
+            android:id="@+id/album_line_album_five_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="4dp"

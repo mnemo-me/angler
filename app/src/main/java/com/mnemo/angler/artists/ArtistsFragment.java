@@ -47,8 +47,6 @@ public class ArtistsFragment extends Fragment implements DrawerItem, LoaderManag
 
     private static final int LOADER_ARTISTS_ID = 100;
 
-    @Nullable @BindView(R.id.artists_separator)
-    View separator;
 
     @BindView(R.id.artists_drawer_back)
     ImageView back;
@@ -77,6 +75,14 @@ public class ArtistsFragment extends Fragment implements DrawerItem, LoaderManag
         // Load artists
         getLoaderManager().initLoader(LOADER_ARTISTS_ID, null, this);
 
+        // Setup playlist GridView with adapter
+        int orientation = getResources().getConfiguration().orientation;
+
+        if (orientation == Configuration.ORIENTATION_PORTRAIT){
+            gridView.setNumColumns(2);
+        }else{
+            gridView.setNumColumns(3);
+        }
         adapter = new SimpleCursorAdapter(getContext(), R.layout.art_artists, null,
                 new String[]{TrackEntry.COLUMN_ARTIST, TrackEntry.COLUMN_ARTIST}, new int[]{R.id.artist_image, R.id.artist_artist}, 0);
 
@@ -156,18 +162,11 @@ public class ArtistsFragment extends Fragment implements DrawerItem, LoaderManag
 
                         setReenterTransition(new Fade().setStartDelay(100));
 
-                        FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
-
-                        int orientation = getResources().getConfiguration().orientation;
-
-                        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-                            fragmentTransaction.addSharedElement(separator, "separator");
-                        }
-                            fragmentTransaction
-                                .addSharedElement(back, "back")
-                                .replace(R.id.frame, artistConfigurationFragment, "artist_conf_fragment")
-                                        .addToBackStack(null)
-                                        .commit();
+                        getActivity().getSupportFragmentManager().beginTransaction()
+                            .addSharedElement(back, "back")
+                            .replace(R.id.frame, artistConfigurationFragment, "artist_conf_fragment")
+                                    .addToBackStack(null)
+                                    .commit();
 
 
                     }

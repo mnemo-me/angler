@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -23,19 +24,18 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
 import com.mnemo.angler.MainActivity;
-import com.mnemo.angler.playlist_manager.PlaylistManager;
 import com.mnemo.angler.R;
 import com.mnemo.angler.data.AnglerContract.*;
 
 import static com.mnemo.angler.data.AnglerContract.BASE_CONTENT_URI;
 
 
-public class ArtistFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class ArtistsFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     BroadcastReceiver receiver;
     IntentFilter intentFilter;
 
-    public ArtistFragment() {
+    public ArtistsFragment() {
         // Required empty public constructor
     }
 
@@ -86,8 +86,19 @@ public class ArtistFragment extends ListFragment implements LoaderManager.Loader
                 getContext(), R.layout.alb_artist_item, null,
                 new String[] {TrackEntry.COLUMN_ARTIST},
                 new int[] {R.id.artist_item},0);
+
+
+        // Set ListView parameters
+        int orientation = getResources().getConfiguration().orientation;
+
         getListView().setDividerHeight(0);
-        getListView().setPadding(0, (int)(6 * MainActivity.density),0,0);
+
+        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            getListView().setPadding(0, (int) (8 * MainActivity.density), 0, (int) (8 * MainActivity.density));
+        }else{
+            getListView().setPadding(0, (int) (2 * MainActivity.density), 0, (int) (2 * MainActivity.density));
+        }
+
         getListView().setClipToPadding(false);
         getListView().setVerticalScrollBarEnabled(false);
         setListAdapter(adapter);
@@ -105,7 +116,7 @@ public class ArtistFragment extends ListFragment implements LoaderManager.Loader
 
                     case "filter_applied":
 
-                        getLoaderManager().restartLoader(LOADER_ARTISTS_ID, null, ArtistFragment.this);
+                        getLoaderManager().restartLoader(LOADER_ARTISTS_ID, null, ArtistsFragment.this);
                         break;
                 }
 
@@ -140,10 +151,10 @@ public class ArtistFragment extends ListFragment implements LoaderManager.Loader
         switch (id){
             case LOADER_ARTISTS_ID:
                 return new CursorLoader(getContext(),
-                        Uri.withAppendedPath(BASE_CONTENT_URI, "artist_list/" + PlaylistManager.mainPlaylistName),
+                        Uri.withAppendedPath(BASE_CONTENT_URI, "artist_list/" + ((MainActivity)getActivity()).getMainPlaylistName()),
                         new String[] {"_id", TrackEntry.COLUMN_ARTIST},
                         TrackEntry.COLUMN_ARTIST + " LIKE ?",
-                        new String[]{"%" + MainActivity.filter + "%"},
+                        new String[]{"%" + ((MainActivity)getActivity()).getFilter() + "%"},
                         TrackEntry.COLUMN_ARTIST + " ASC");
             default:
                 return null;
@@ -172,7 +183,7 @@ public class ArtistFragment extends ListFragment implements LoaderManager.Loader
                     }
                 });
 
-                if (!MainActivity.filter.equals("")) {
+                if (!((MainActivity)getActivity()).getFilter().equals("")) {
                     setEmptyText(getResources().getText(R.string.search_empty_artists));
                 }
         }

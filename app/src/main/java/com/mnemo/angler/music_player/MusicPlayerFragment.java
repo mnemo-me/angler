@@ -4,7 +4,6 @@ package com.mnemo.angler.music_player;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.database.Cursor;
 import android.os.Bundle;
 
@@ -29,7 +28,6 @@ import android.widget.Spinner;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.jakewharton.rxbinding2.widget.TextViewAfterTextChangeEvent;
 import com.mnemo.angler.MainActivity;
-import com.mnemo.angler.playlist_manager.PlaylistManager;
 import com.mnemo.angler.R;
 import com.mnemo.angler.data.AnglerContract;
 
@@ -64,9 +62,6 @@ public class MusicPlayerFragment extends Fragment implements LoaderManager.Loade
 
     @BindView(R.id.artists)
     View artists;
-
-    @BindView(R.id.view_below_spinner)
-    View separator;
 
     SimpleCursorAdapter adapter;
 
@@ -105,11 +100,6 @@ public class MusicPlayerFragment extends Fragment implements LoaderManager.Loade
                 search.setAlpha(1f);
                 searchView.setVisibility(searchToolbarVisibility);
 
-                int orientation = getResources().getConfiguration().orientation;
-
-                if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                    separator.setVisibility(View.VISIBLE);
-                }
             }
         }
 
@@ -128,7 +118,7 @@ public class MusicPlayerFragment extends Fragment implements LoaderManager.Loade
     private void showArtistList(){
 
         getActivity().getSupportFragmentManager().beginTransaction()
-                .replace(R.id.song_list, new ArtistFragment())
+                .replace(R.id.song_list, new ArtistsFragment())
                 .commit();
     }
 
@@ -165,25 +155,14 @@ public class MusicPlayerFragment extends Fragment implements LoaderManager.Loade
             @Override
             public void onClick(View view) {
 
-                int orientation = getResources().getConfiguration().orientation;
-
                 if (searchView.getVisibility() == View.GONE) {
                     search.setAlpha(1f);
                     searchView.setVisibility(View.VISIBLE);
-
-                    if (orientation == Configuration.ORIENTATION_LANDSCAPE){
-                        separator.setVisibility(View.VISIBLE);
-                    }
-
                 }else{
                     searchView.setQuery("", false);
 
                     search.setAlpha(0.5f);
                     searchView.setVisibility(View.GONE);
-
-                    if (orientation == Configuration.ORIENTATION_LANDSCAPE){
-                        separator.setVisibility(View.GONE);
-                    }
 
                 }
             }
@@ -223,7 +202,7 @@ public class MusicPlayerFragment extends Fragment implements LoaderManager.Loade
             @Override
             public void onNext(TextViewAfterTextChangeEvent textViewAfterTextChangeEvent) {
 
-                MainActivity.filter = textViewAfterTextChangeEvent.editable().toString();
+                ((MainActivity)getActivity()).setFilter(textViewAfterTextChangeEvent.editable().toString());
 
                 Intent intent = new Intent();
                 intent.setAction("filter_applied");
@@ -288,7 +267,7 @@ public class MusicPlayerFragment extends Fragment implements LoaderManager.Loade
                 data.moveToFirst();
 
                 do{
-                    if (data.getString(1).equals(PlaylistManager.mainPlaylistName)){
+                    if (data.getString(1).equals(((MainActivity)getActivity()).getMainPlaylistName())){
                         spinner.setSelection(data.getPosition());
                     }
                 }while (data.moveToNext());
@@ -300,8 +279,8 @@ public class MusicPlayerFragment extends Fragment implements LoaderManager.Loade
 
                         data.moveToPosition(i);
 
-                        PlaylistManager.mainPlaylistName = data.getString(1);
-                        getActivity().getPreferences(Context.MODE_PRIVATE).edit().putString("active_playlist", PlaylistManager.mainPlaylistName).apply();
+                        ((MainActivity)getActivity()).setMainPlaylistName(data.getString(1));
+                        getActivity().getPreferences(Context.MODE_PRIVATE).edit().putString("active_playlist", ((MainActivity)getActivity()).getMainPlaylistName()).apply();
 
                         playlist.setAlpha(1f);
                         artists.setAlpha(0.5f);

@@ -18,6 +18,7 @@ import com.mnemo.angler.MainActivity;
 import com.mnemo.angler.R;
 import com.mnemo.angler.artists.ArtistConfigurationFragment;
 import com.mnemo.angler.data.AnglerFolder;
+import com.mnemo.angler.data.MediaAssistant;
 import com.mnemo.angler.playlists.AddTrackToPlaylistDialogFragment;
 import com.mnemo.angler.playlists.LyricsDialogFragment;
 
@@ -28,17 +29,12 @@ import es.claucookie.miniequalizerlibrary.EqualizerView;
 public class AlbumCursorAdapter extends CursorAdapter {
 
 
-    private onTrackClickListener onTrackClickListener;
+    private String localPlaylistName;
 
 
-
-    public interface onTrackClickListener{
-        void onTrackClicked(int position);
-    }
-
-
-    public AlbumCursorAdapter(Context context, Cursor c) {
+    AlbumCursorAdapter(Context context, Cursor c, String localPlaylistName) {
         super(context, c, true);
+        this.localPlaylistName = localPlaylistName;
     }
 
     @Override
@@ -47,11 +43,10 @@ public class AlbumCursorAdapter extends CursorAdapter {
     }
 
     @Override
-    public void bindView(View view, Context context, Cursor cursor) {
+    public void bindView(View view, Context context, final Cursor cursor) {
 
         final int position = cursor.getPosition();
 
-        final View constraintLayout =  view;
 
         // Extract track's metadata from database
         final String id = cursor.getString(0);
@@ -60,39 +55,40 @@ public class AlbumCursorAdapter extends CursorAdapter {
         final String album = cursor.getString(3);
         final long duration = cursor.getInt(4);
         final String uri = cursor.getString(5);
-        final String source = cursor.getString(6);
 
         // Convert duration to mm:ss format
         String durationInText = MainActivity.convertToTime(duration);
 
+        // Set tag to view
+        view.setTag(id);
 
         // Assign metadata to views
-        TextView titleView = constraintLayout.findViewById(R.id.playlist_song_title);
+        TextView titleView = view.findViewById(R.id.playlist_song_title);
         titleView.setText(title);
 
-        TextView artistView = constraintLayout.findViewById(R.id.playlist_song_artist);
+        TextView artistView = view.findViewById(R.id.playlist_song_artist);
         artistView.setText(artist);
 
-        TextView durationView = constraintLayout.findViewById(R.id.playlist_song_duration);
+        TextView durationView = view.findViewById(R.id.playlist_song_duration);
         durationView.setText(durationInText);
 
         // Set mini equalizer view
-        EqualizerView miniEqualizer = constraintLayout.findViewById(R.id.playilst_song_mimi_equalizer);
+        EqualizerView miniEqualizer = view.findViewById(R.id.playilst_song_mimi_equalizer);
 
 
         // Listeners for track clicks
 
         // OnClickListener
-        constraintLayout.setOnClickListener(new View.OnClickListener() {
+        view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                onTrackClickListener.onTrackClicked(position);
+                ((MainActivity)mContext).playNow(localPlaylistName, position, cursor);
             }
         });
 
         // OnLongClickListener
-        constraintLayout.setOnLongClickListener(new View.OnLongClickListener() {
+        view.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
 
@@ -127,7 +123,44 @@ public class AlbumCursorAdapter extends CursorAdapter {
                 contextMenuPlay.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        onTrackClickListener.onTrackClicked(position);
+
+                        ((MainActivity)mContext).playNow(localPlaylistName, position, cursor);
+
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                dialog.dismiss();
+                            }
+                        }, 300);
+
+                    }
+                });
+
+                // Play next
+                TextView contextMenuPlayNext = bodyLinearLayout.findViewById(R.id.context_menu_play_next);
+                contextMenuPlayNext.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        ((MainActivity)mContext).addToQueue(MediaAssistant.mergeMediaDescription(id, title, artist, album, duration, uri, localPlaylistName), true);
+
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                dialog.dismiss();
+                            }
+                        }, 300);
+
+                    }
+                });
+
+                // Add to queue
+                TextView contextMenuAddToQueue = bodyLinearLayout.findViewById(R.id.context_menu_add_to_queue);
+                contextMenuAddToQueue.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        ((MainActivity)mContext).addToQueue(MediaAssistant.mergeMediaDescription(id, title, artist, album, duration, uri, localPlaylistName), false);
 
                         new Handler().postDelayed(new Runnable() {
                             @Override
@@ -227,9 +260,5 @@ public class AlbumCursorAdapter extends CursorAdapter {
     }
 
 
-    // Setters
-    public void setOnTrackClickedListener(onTrackClickListener onTrackClickListener){
-        this.onTrackClickListener = onTrackClickListener;
-    }
 
 }

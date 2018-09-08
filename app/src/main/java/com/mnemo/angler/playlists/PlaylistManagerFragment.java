@@ -46,9 +46,6 @@ public class PlaylistManagerFragment extends Fragment implements DrawerItem, Loa
     @BindView(R.id.playlist_manager_top_title)
     TextView topTitle;
 
-    @BindView(R.id.playlist_manager_separator)
-    View separator;
-
     @BindView(R.id.playlist_manager_drawer_back)
     ImageView back;
 
@@ -74,6 +71,14 @@ public class PlaylistManagerFragment extends Fragment implements DrawerItem, Loa
         getLoaderManager().initLoader(LOADER_PLAYLIST_ID, null, this);
 
         // Setup playlist GridView with adapter
+        int orientation = getResources().getConfiguration().orientation;
+
+        if (orientation == Configuration.ORIENTATION_PORTRAIT){
+            playlistGrid.setNumColumns(3);
+        }else{
+            playlistGrid.setNumColumns(5);
+        }
+
         adapter = new SimpleCursorAdapter(getContext(),R.layout.pm_playlist_v2, null,
                 new String[]{PlaylistEntry.COLUMN_IMAGE_RESOURCE, PlaylistEntry.COLUMN_NAME, PlaylistEntry.COLUMN_TRACKS_TABLE},
                 new int[]{R.id.playlist_options_image, R.id.playlist_options_name},0);
@@ -156,14 +161,9 @@ public class PlaylistManagerFragment extends Fragment implements DrawerItem, Loa
 
                         setReenterTransition(new Fade().setStartDelay(100));
 
-                        FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
 
-                        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-                            fragmentTransaction.addSharedElement(separator, "separator");
-
-                        }
-
-                        fragmentTransaction.addSharedElement(back, "back")
+                        getActivity().getSupportFragmentManager().beginTransaction()
+                                .addSharedElement(back, "back")
                                 .replace(R.id.frame,playlistConfigurationFragment, "playlist_conf_fragment")
                                 .addToBackStack(null)
                                 .commit();

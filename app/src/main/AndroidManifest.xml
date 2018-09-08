@@ -37,7 +37,7 @@
         <provider
             android:name=".data.AnglerProvider"
             android:authorities="com.mnemo.angler.provider"
-            android:exported="false"></provider>
+            android:exported="false"/>
 
         <activity android:name=".local_load.LocalLoadActivity"></activity>
     </application>

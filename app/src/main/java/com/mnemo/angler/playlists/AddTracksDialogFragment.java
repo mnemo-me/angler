@@ -23,7 +23,6 @@ import android.widget.TextView;
 import com.mnemo.angler.R;
 import com.mnemo.angler.data.AnglerContract;
 import com.mnemo.angler.data.AnglerContract.*;
-import com.mnemo.angler.playlist_manager.Track;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -94,8 +93,6 @@ public class AddTracksDialogFragment extends DialogFragment implements LoaderMan
                     contentValues.put(TrackEntry.COLUMN_POSITION, ++currentPlaylistSize);
 
                     getActivity().getContentResolver().insert(Uri.withAppendedPath(AnglerContract.BASE_CONTENT_URI, dbName), contentValues);
-
-                    ((PlaylistConfigurationFragment) getActivity().getSupportFragmentManager().findFragmentByTag("playlist_conf_fragment")).setCurrentPlaylist();
 
                 }
             }

@@ -12,7 +12,6 @@ import android.widget.LinearLayout;
 
 import com.mnemo.angler.MainActivity;
 import com.mnemo.angler.R;
-import com.mnemo.angler.playlist_manager.Track;
 
 import java.util.ArrayList;
 import java.util.Collections;

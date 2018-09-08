@@ -4,30 +4,37 @@ package com.mnemo.angler;
 
 import android.Manifest;
 import android.app.LoaderManager;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.Loader;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.media.MediaMetadata;
-import android.media.browse.MediaBrowser;
-import android.media.session.MediaController;
-import android.media.session.MediaSession;
-import android.media.session.PlaybackState;
 import android.os.Handler;
+import android.os.RemoteException;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 
+import android.support.v4.media.MediaBrowserCompat;
+import android.support.v4.media.MediaDescriptionCompat;
+import android.support.v4.media.MediaMetadataCompat;
+import android.support.v4.media.session.MediaControllerCompat;
+import android.support.v4.media.session.MediaSessionCompat;
+import android.support.v4.media.session.PlaybackStateCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.SearchView;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -36,25 +43,23 @@ import android.widget.ImageView;
 
 import android.widget.SeekBar;
 import android.widget.TextView;
-
+import android.widget.Toast;
 
 import com.mnemo.angler.albums.AlbumsFragmentV2;
-import com.mnemo.angler.artists.ArtistsFragment;
 import com.mnemo.angler.background_changer.BackgroundChangerFragmentv2;
 import com.mnemo.angler.data.ImageAssistant;
 import com.mnemo.angler.data.AnglerContract;
 import com.mnemo.angler.data.AnglerDBUpdateLoader;
+import com.mnemo.angler.data.MediaAssistant;
 import com.mnemo.angler.equalizer.EqualizerFragment;
 import com.mnemo.angler.data.AnglerFolder;
-import com.mnemo.angler.music_player.ArtistFragment;
+import com.mnemo.angler.music_player.ArtistsFragment;
 import com.mnemo.angler.music_player.ArtistTrackFragment;
 import com.mnemo.angler.music_player.MusicPlayerFragment;
-import com.mnemo.angler.music_player.MainPlaylistFragment;
-import com.mnemo.angler.playlist_manager.PlaybackManager;
-import com.mnemo.angler.playlist_manager.PlaylistManager;
 import com.mnemo.angler.playlists.AddTrackToPlaylistDialogFragment;
 import com.mnemo.angler.playlists.LyricsDialogFragment;
 import com.mnemo.angler.playlists.PlaylistManagerFragment;
+import com.mnemo.angler.queue_manager.QueueDialogFragment;
 
 import java.io.File;
 import java.io.IOException;
@@ -66,10 +71,10 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 
-public class MainActivity extends AppCompatActivity implements MainPlaylistFragment.TrackFragmentListener,ArtistFragment.ArtistFragmentListener, LoaderManager.LoaderCallbacks {
+public class MainActivity extends AppCompatActivity implements ArtistsFragment.ArtistFragmentListener, LoaderManager.LoaderCallbacks {
 
     // Media Browser variable
-    private MediaBrowser mMediaBrowser;
+    private MediaBrowserCompat mMediaBrowser;
 
 
     // Media panel buttons views (initializing with butterknife
@@ -91,6 +96,9 @@ public class MainActivity extends AppCompatActivity implements MainPlaylistFragm
     @BindView(R.id.media_panel_duration_time)
     TextView durationView;
 
+    @BindView(R.id.media_panel_queue)
+    ImageButton queueButton;
+
     @BindViews({R.id.music_player_drawer_item, R.id.playlists_drawer_item, R.id.albums_drawer_item, R.id.artists_drawer_item, R.id.equalizer_drawer_item, R.id.background_drawer_item})
     List<TextView> drawerItems;
 
@@ -98,8 +106,18 @@ public class MainActivity extends AppCompatActivity implements MainPlaylistFragm
     // other variables
     private long durationMS;
     public static float density;
-    public static String filter;
+    private String mainPlaylistName;
+    private String filter = "";
     private static final int LOADER_DB_UPDATE_ID = 1;
+    private String playlistQueue = "";
+    private String queueFilter = "";
+    private String currentTrackPlaylist = "";
+    private String currentMediaId = "";
+
+    BroadcastReceiver receiver;
+    IntentFilter intentFilter;
+    int queuePosition = 0;
+
 
 
     protected void onCreate(final Bundle savedInstanceState) {
@@ -113,15 +131,13 @@ public class MainActivity extends AppCompatActivity implements MainPlaylistFragm
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         density = dm.density;
 
-        filter = "";
-
         ButterKnife.bind(this);
 
         createAppFolder();
 
 
         // Connect to Media Browser Service
-        mMediaBrowser = new MediaBrowser(this, new ComponentName(this, AnglerService.class), clientCallback, null);
+        mMediaBrowser = new MediaBrowserCompat(this, new ComponentName(this, AnglerService.class), clientCallback, null);
 
         if (savedInstanceState == null) {
             Intent intent = new Intent(this, AnglerService.class);
@@ -132,9 +148,9 @@ public class MainActivity extends AppCompatActivity implements MainPlaylistFragm
 
         mMediaBrowser.connect();
 
-        mMediaBrowser.subscribe("media_space", new MediaBrowser.SubscriptionCallback() {
+        mMediaBrowser.subscribe("media_space", new MediaBrowserCompat.SubscriptionCallback() {
             @Override
-            public void onChildrenLoaded(@NonNull String parentId, @NonNull List<MediaBrowser.MediaItem> children) {
+            public void onChildrenLoaded(@NonNull String parentId, @NonNull List<MediaBrowserCompat.MediaItem> children) {
                 super.onChildrenLoaded(parentId, children);
 
                 if (!AnglerService.isDBInitialized) {
@@ -148,7 +164,7 @@ public class MainActivity extends AppCompatActivity implements MainPlaylistFragm
         setupBackground();
 
 
-        // Setup seekbar
+        // Setup SeekBar
         final Handler seekHandler = new Handler();
         Runnable runnable = new Runnable() {
             @Override
@@ -178,23 +194,67 @@ public class MainActivity extends AppCompatActivity implements MainPlaylistFragm
             int mainFrameVisibility = savedInstanceState.getInt("main_frame_visibility");
             findViewById(R.id.main_frame).setVisibility(mainFrameVisibility);
 
+            mainPlaylistName = savedInstanceState.getString("main_playlist_name");
             filter = savedInstanceState.getString("filter");
+            playlistQueue = savedInstanceState.getString("playlist_queue");
+            queueFilter = savedInstanceState.getString("queue_filter");
+            currentTrackPlaylist = savedInstanceState.getString("current_track_playlist");
+            currentMediaId = savedInstanceState.getString("current_media_id");
+            queuePosition = savedInstanceState.getInt("queue_position");
         }
 
+        queueButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
+                if (MediaControllerCompat.getMediaController(MainActivity.this).getQueue().size() > 0){
+                    QueueDialogFragment queueDialogFragment = new QueueDialogFragment();
+                    queueDialogFragment.show(getSupportFragmentManager(), "queue_dialog_fragment");
+                }else{
+                    Toast.makeText(MainActivity.this, R.string.empty_queue, Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+
+
+        // Initialize broadcast receiver
+        receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+
+                switch (intent.getAction()){
+                    case "queue_position_changed":
+
+                        queuePosition = intent.getIntExtra("queue_position", 0);
+
+                        break;
+                }
+
+            }
+        };
+
+        intentFilter = new IntentFilter();
+        intentFilter.addAction("queue_position_changed");
+
+        registerReceiver(receiver, intentFilter);
 
     }
 
     // Media Browser client callbacks
-    MediaBrowser.ConnectionCallback clientCallback = new MediaBrowser.ConnectionCallback() {
+    MediaBrowserCompat.ConnectionCallback clientCallback = new MediaBrowserCompat.ConnectionCallback() {
         @Override
         public void onConnected() {
             super.onConnected();
 
-            MediaSession.Token token = mMediaBrowser.getSessionToken();
-            MediaController mController = new MediaController(MainActivity.this, token);
+            MediaSessionCompat.Token token = mMediaBrowser.getSessionToken();
+            try {
+                MediaControllerCompat mController = new MediaControllerCompat(MainActivity.this, token);
+                MediaControllerCompat.setMediaController(MainActivity.this, mController);
+            }catch (RemoteException e){
+                e.printStackTrace();
+            }
 
-            setMediaController(mController);
 
             buildTransport();
         }
@@ -206,7 +266,7 @@ public class MainActivity extends AppCompatActivity implements MainPlaylistFragm
 
 
         // Setup play/pause button
-        if (getMediaController().getPlaybackState().getState() == PlaybackState.STATE_PLAYING) {
+        if (MediaControllerCompat.getMediaController(this).getPlaybackState().getState() == PlaybackStateCompat.STATE_PLAYING) {
             mPlayPauseButton.setImageResource(R.drawable.ic_pause_black_48dp);
         }
 
@@ -215,10 +275,10 @@ public class MainActivity extends AppCompatActivity implements MainPlaylistFragm
             public void onClick(View v) {
                 int pbState = getMediaController().getPlaybackState().getState();
 
-                if (pbState == PlaybackState.STATE_PLAYING) {
+                if (pbState == PlaybackStateCompat.STATE_PLAYING) {
                     getMediaController().getTransportControls().pause();
                 } else {
-                    getMediaController().getTransportControls().sendCustomAction(PlaybackManager.RESUME, null);
+                    getMediaController().getTransportControls().play();
                 }
             }
         });
@@ -247,25 +307,25 @@ public class MainActivity extends AppCompatActivity implements MainPlaylistFragm
 
 
         // Get current metadata
-        MediaMetadata metadata = getMediaController().getMetadata();
+        MediaMetadataCompat metadata = MediaControllerCompat.getMediaController(MainActivity.this).getMetadata();
 
         if (metadata != null) {
             showDescription(metadata);
             configureTrackButtons(metadata);
         }
 
-        getMediaController().registerCallback(controllerCallback);
+        MediaControllerCompat.getMediaController(MainActivity.this).registerCallback(controllerCallback);
 
     }
 
 
     // Media Controller callbacks
-    MediaController.Callback controllerCallback = new MediaController.Callback() {
+    MediaControllerCompat.Callback controllerCallback = new MediaControllerCompat.Callback() {
         @Override
-        public void onPlaybackStateChanged(@NonNull PlaybackState state) {
+        public void onPlaybackStateChanged(@NonNull PlaybackStateCompat state) {
             super.onPlaybackStateChanged(state);
 
-            if (state.getState() == PlaybackState.STATE_PLAYING) {
+            if (state.getState() == PlaybackStateCompat.STATE_PLAYING) {
                 mPlayPauseButton.setImageResource(R.drawable.ic_pause_black_48dp);
 
             } else {
@@ -276,11 +336,16 @@ public class MainActivity extends AppCompatActivity implements MainPlaylistFragm
         }
 
         @Override
-        public void onMetadataChanged(@Nullable MediaMetadata metadata) {
+        public void onMetadataChanged(@Nullable MediaMetadataCompat metadata) {
             super.onMetadataChanged(metadata);
+
+            currentTrackPlaylist = metadata.getString("track_playlist");
+            currentMediaId = metadata.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID);
 
             Intent intent = new Intent();
             intent.setAction("track_changed");
+            intent.putExtra("track_playlist", currentTrackPlaylist);
+            intent.putExtra("media_id", currentMediaId);
 
             sendBroadcast(intent);
 
@@ -289,11 +354,18 @@ public class MainActivity extends AppCompatActivity implements MainPlaylistFragm
 
 
         }
+
+        @Override
+        public void onQueueChanged(List<MediaSessionCompat.QueueItem> queue) {
+            super.onQueueChanged(queue);
+
+            Log.e("1111", String.valueOf(queue.size()));
+        }
     };
 
 
     // Show current track metadata in views
-    private void showDescription(@Nullable MediaMetadata metadata) {
+    private void showDescription(@Nullable MediaMetadataCompat metadata) {
 
         //set metadata variables
         String title = String.valueOf(metadata.getDescription().getTitle());
@@ -326,7 +398,7 @@ public class MainActivity extends AppCompatActivity implements MainPlaylistFragm
 
 
     // Setup add track to playlist and lyrics button based on current metadata
-    private void configureTrackButtons(@Nullable MediaMetadata metadata) {
+    private void configureTrackButtons(@Nullable MediaMetadataCompat metadata) {
 
         addTrackToPlaylist.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -412,10 +484,14 @@ public class MainActivity extends AppCompatActivity implements MainPlaylistFragm
     protected void onDestroy() {
         super.onDestroy();
 
-        if (getMediaController() != null) {
-            getMediaController().unregisterCallback(controllerCallback);
+        if (MediaControllerCompat.getMediaController(this) != null) {
+            MediaControllerCompat.getMediaController(this).unregisterCallback(controllerCallback);
         }
         mMediaBrowser.disconnect();
+
+        if (receiver != null) {
+            unregisterReceiver(receiver);
+        }
     }
 
 
@@ -423,8 +499,18 @@ public class MainActivity extends AppCompatActivity implements MainPlaylistFragm
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt("main_frame_visibility", findViewById(R.id.main_frame).getVisibility());
+        outState.putString("main_playlist_name", mainPlaylistName);
         outState.putString("filter", filter);
+        outState.putString("playlist_queue", playlistQueue);
+        outState.putString("queue_filter", queueFilter);
+        outState.putString("current_track_playlist", currentTrackPlaylist);
+        outState.putString("current_media_id", currentMediaId);
+        outState.putInt("queue_position", queuePosition);
     }
+
+
+
+
 
 
 
@@ -469,12 +555,65 @@ public class MainActivity extends AppCompatActivity implements MainPlaylistFragm
 
     }
 
-    @Override
-    public void trackClicked() {
 
-        PlaylistManager.playlistFilter = MainActivity.filter;
-        getMediaController().getTransportControls().play();
+
+
+    public void playNow(String playlistName, int position, Cursor cursor){
+
+        if (!playlistName.equals(playlistQueue) || !filter.equals(queueFilter)) {
+
+
+            MediaControllerCompat.getMediaController(this).getTransportControls().sendCustomAction("clear_queue", null);
+
+            for (MediaDescriptionCompat description : MediaAssistant.mergeMediaDescriptionArray(playlistName, cursor)) {
+
+                MediaControllerCompat.getMediaController(this).addQueueItem(description);
+
+            }
+
+            playlistQueue = playlistName;
+            MediaControllerCompat.getMediaController(this).getTransportControls().sendCustomAction("update_queue", null);
+
+        }
+
+        MediaControllerCompat.getMediaController(this).getTransportControls().skipToQueueItem(position);
+
     }
+
+    public void addToQueue(String playlistName, Cursor cursor, boolean isPlayNext){
+
+        int index = 0;
+
+        for (MediaDescriptionCompat description : MediaAssistant.mergeMediaDescriptionArray(playlistName, cursor)) {
+
+            if (isPlayNext){
+                MediaControllerCompat.getMediaController(this).addQueueItem(description, ++index);
+            }else{
+                MediaControllerCompat.getMediaController(this).addQueueItem(description);
+            }
+
+        }
+
+        playlistQueue = "";
+        MediaControllerCompat.getMediaController(this).getTransportControls().sendCustomAction("update_queue", null);
+    }
+
+    public void addToQueue(MediaDescriptionCompat description, boolean isPlayNext){
+
+        if (isPlayNext){
+            MediaControllerCompat.getMediaController(this).addQueueItem(description, 1);
+        }else{
+            MediaControllerCompat.getMediaController(this).addQueueItem(description);
+        }
+
+        playlistQueue = "";
+        MediaControllerCompat.getMediaController(this).getTransportControls().sendCustomAction("update_queue", null);
+    }
+
+
+
+
+
 
     @Override
     public void artistClicked(String artist) {
@@ -496,12 +635,15 @@ public class MainActivity extends AppCompatActivity implements MainPlaylistFragm
     }
 
 
-    // Show/hide methods
-    public void showBackgroundLabel(String label) {
-    }
 
-    public void hideBackgroundLabel() {
-    }
+
+
+
+
+
+
+
+    // Show/hide methods
 
     public void showBackground() {
         findViewById(R.id.background_group).setVisibility(View.VISIBLE);
@@ -511,21 +653,6 @@ public class MainActivity extends AppCompatActivity implements MainPlaylistFragm
         findViewById(R.id.background_group).setVisibility(View.GONE);
     }
 
-    public void showMediaPanel() {
-        findViewById(R.id.media_panel_group).setVisibility(View.VISIBLE);
-    }
-
-    public void hideMediaPanel() {
-        findViewById(R.id.media_panel_group).setVisibility(View.GONE);
-    }
-
-    public void showFrame() {
-        findViewById(R.id.frame).setVisibility(View.VISIBLE);
-    }
-
-    public void hideFrame() {
-        findViewById(R.id.frame).setVisibility(View.GONE);
-    }
 
 
     @Override
@@ -634,7 +761,7 @@ public class MainActivity extends AppCompatActivity implements MainPlaylistFragm
 
     @OnClick(R.id.artists_drawer_item)
     void artistsSelect(View v) {
-        createDrawerItemFragment(v, new ArtistsFragment(), "Artists fragment");
+        createDrawerItemFragment(v, new com.mnemo.angler.artists.ArtistsFragment(), "Artists fragment");
 
     }
 
@@ -666,23 +793,52 @@ public class MainActivity extends AppCompatActivity implements MainPlaylistFragm
 
     @OnClick(R.id.media_panel_repeat)
     void repeat(View v) {
-        getMediaController().getTransportControls().sendCustomAction(PlaybackManager.REPEAT, null);
-        if (PlaybackManager.repeatState) {
+
+        if (MediaControllerCompat.getMediaController(this).getRepeatMode() == 1) {
             v.setAlpha(0.4f);
+            MediaControllerCompat.getMediaController(this).getTransportControls().setRepeatMode(0);
         } else {
             v.setAlpha(0.8f);
+            MediaControllerCompat.getMediaController(this).getTransportControls().setRepeatMode(1);
         }
     }
 
     @OnClick(R.id.media_panel_shuffle)
     void shuffle(View v) {
-
+/*
         getMediaController().getTransportControls().sendCustomAction(PlaybackManager.SHUFFLE, null);
         if (PlaybackManager.shuffleState) {
             v.setAlpha(0.4f);
         } else {
             v.setAlpha(0.8f);
-        }
+        }*/
     }
 
+    public String getMainPlaylistName() {
+        return mainPlaylistName;
+    }
+
+    public void setMainPlaylistName(String mainPlaylistName) {
+        this.mainPlaylistName = mainPlaylistName;
+    }
+
+    public String getFilter() {
+        return filter;
+    }
+
+    public void setFilter(String filter) {
+        this.filter = filter;
+    }
+
+    public String getCurrentTrackPlaylist() {
+        return currentTrackPlaylist;
+    }
+
+    public String getCurrentMediaId() {
+        return currentMediaId;
+    }
+
+    public int getQueuePosition() {
+        return queuePosition;
+    }
 }

@@ -11,14 +11,15 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,15 +31,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.mnemo.angler.MainActivity;
-import com.mnemo.angler.playlist_manager.PlaybackManager;
-import com.mnemo.angler.playlist_manager.PlaylistManager;
 import com.mnemo.angler.R;
 import com.mnemo.angler.data.ImageAssistant;
 import com.mnemo.angler.data.AnglerContract;
 import com.mnemo.angler.data.AnglerContract.TrackEntry;
 import com.mnemo.angler.data.AnglerFolder;
 import com.mnemo.angler.data.AnglerSQLiteDBHelper;
-import com.mnemo.angler.playlist_manager.Track;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -48,7 +46,7 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 
-public class PlaylistConfigurationFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, PlaylistCursorAdapter.onTrackClickListener, PlaylistCursorAdapter.onTrackRemoveListener {
+public class PlaylistConfigurationFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, PlaylistCursorAdapter.onTrackRemoveListener {
 
 
     public PlaylistConfigurationFragment() {
@@ -79,15 +77,10 @@ public class PlaylistConfigurationFragment extends Fragment implements LoaderMan
     @BindView(R.id.playlist_conf_back)
     ImageButton back;
 
-    @Nullable @BindView(R.id.playlist_conf_separator)
-    View separator;
-
-    @Nullable @BindView(R.id.playlist_conf_options)
-    ImageView optionsButton;
-
+    @BindView(R.id.playlist_conf_play_all)
+    LinearLayout playAllButton;
 
     // db and adapter
-    SQLiteDatabase db;
     PlaylistCursorAdapter adapter;
 
 
@@ -111,7 +104,7 @@ public class PlaylistConfigurationFragment extends Fragment implements LoaderMan
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        final View view = inflater.inflate(R.layout.pm_fragment_playlist_configuration, container, false);
+        View view = inflater.inflate(R.layout.pm_fragment_playlist_configuration, container, false);
 
         unbinder = ButterKnife.bind(this, view);
 
@@ -142,13 +135,7 @@ public class PlaylistConfigurationFragment extends Fragment implements LoaderMan
 
 
 
-
-        // Initialize db
-        final AnglerSQLiteDBHelper dbHelper = new AnglerSQLiteDBHelper(getContext());
-        db = dbHelper.getWritableDatabase();
-
-
-        // Setup listview with adapter
+        // Setup ListView with adapter
         listView.setDividerHeight(0);
 
         // Add add tracks to playlist header to playlist
@@ -213,9 +200,17 @@ public class PlaylistConfigurationFragment extends Fragment implements LoaderMan
                 switch (intent.getAction()){
                     case "track_changed":
 
-                        if (localPlaylistName.equals(PlaylistManager.currentPlaylistName)) {
-                            listView.setItemChecked(PlaylistManager.position + 1, true);
+                        String trackPlaylist = intent.getStringExtra("track_playlist");
+                        String mediaId = intent.getStringExtra("media_id");
+
+                        if (trackPlaylist.equals(localPlaylistName)) {
+                            try {
+                                listView.setItemChecked(listView.getPositionForView(listView.findViewWithTag(mediaId)), true);
+                            }catch (NullPointerException e){
+                                e.printStackTrace();
+                            }
                         }
+
 
                         break;
                 }
@@ -236,7 +231,7 @@ public class PlaylistConfigurationFragment extends Fragment implements LoaderMan
     // Track counter
     public void checkTracksCount(){
 
-        tracksCountView.setText(getString(R.string.tracks) + adapter.getCount());
+        tracksCountView.setText(getString(R.string.tracks) + " " + adapter.getCount());
     }
 
     // Updating cover
@@ -247,7 +242,7 @@ public class PlaylistConfigurationFragment extends Fragment implements LoaderMan
         if (orientation == Configuration.ORIENTATION_PORTRAIT){
             imageHeight = 125;
         }else{
-            imageHeight = 240;
+            imageHeight = 200;
         }
 
         ImageAssistant.loadImage(getContext(), image, imageView, imageHeight);
@@ -289,10 +284,6 @@ public class PlaylistConfigurationFragment extends Fragment implements LoaderMan
     public void onDestroyView() {
         super.onDestroyView();
 
-        if (db != null){
-            db.close();
-        }
-
         getContext().unregisterReceiver(receiver);
         unbinder.unbind();
 
@@ -321,7 +312,7 @@ public class PlaylistConfigurationFragment extends Fragment implements LoaderMan
     }
 
     @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+    public void onLoadFinished(Loader<Cursor> loader, final Cursor data) {
 
         switch (loader.getId()){
             case LOADER_TRACK_LIST_ID:
@@ -336,18 +327,21 @@ public class PlaylistConfigurationFragment extends Fragment implements LoaderMan
                     }while(data.moveToNext());
                 }
 
-                adapter = new PlaylistCursorAdapter(getContext(), data, dbName, ids);
+                adapter = new PlaylistCursorAdapter(getContext(), data, "playlist", localPlaylistName, dbName, ids);
 
-                adapter.setOnTrackClickedListener(this);
                 adapter.setOnTrackRemoveListener(this);
 
                 listView.setAdapter(adapter);
 
                 checkTracksCount();
 
-                if (localPlaylistName.equals(PlaylistManager.currentPlaylistName)) {
-                    listView.setItemChecked(PlaylistManager.position + 1, true);
-                }
+
+                playAllButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        playAll(data);
+                    }
+                });
 
         }
     }
@@ -364,24 +358,9 @@ public class PlaylistConfigurationFragment extends Fragment implements LoaderMan
 
 
     @Override
-    public void onTrackClicked(int position) {
-
-        PlaybackManager.isCurrentTrackHidden = false;
-        setCurrentPlaylist();
-
-        PlaylistManager.position = position;
-        ((MainActivity)getActivity()).trackClicked();
-
-    }
-
-    @Override
     public void onTrackRemove(final int position , final Track trackToRemove, final boolean isCurrentTrack) {
 
-        if (isCurrentTrack) {
-            PlaybackManager.isCurrentTrackHidden = true;
-        }
 
-        setCurrentPlaylist();
 
         Snackbar snackbar = Snackbar.make(getView(), R.string.track_removed, Snackbar.LENGTH_LONG);
         snackbar.setAction(R.string.undo, new View.OnClickListener() {
@@ -403,7 +382,7 @@ public class PlaylistConfigurationFragment extends Fragment implements LoaderMan
 
                 adapter.incrementPositions(position - 1);
 
-                setCurrentPlaylist();
+
 /*
                 if (AnglerService.mPlaylistManager.getCurrentPosition() >= position - 1) {
                     AnglerService.mPlaylistManager.incrementCurrentPosition();
@@ -421,29 +400,74 @@ public class PlaylistConfigurationFragment extends Fragment implements LoaderMan
     }
 
 
-    public void setCurrentPlaylist() {
 
-        int savedPosition = PlaylistManager.position;
+    void playAll(final Cursor data){
 
-        if (PlaylistManager.currentPlaylistName.equals("playlist/" + title)){
-            return;
-        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 
-        PlaylistManager.currentPlaylistName = "playlist/" + title;
-        localPlaylistName = "playlist/" + title;
+        LinearLayout bodyLayout = (LinearLayout)LayoutInflater.from(getContext()).inflate(R.layout.pm_play_all_context_menu, null, false);
+        builder.setView(bodyLayout);
 
+        final AlertDialog dialog = builder.create();
+        dialog.show();
 
-        PlaylistManager.position = savedPosition;
+        // Contextual menu
+
+        // Play now
+        TextView playNow = bodyLayout.findViewById(R.id.play_all_play_now);
+        playNow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                ((MainActivity)getActivity()).playNow(localPlaylistName, 0, data);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        dialog.dismiss();
+                    }
+                }, 300);
+            }
+        });
+
+        // Play next
+        TextView playNext = bodyLayout.findViewById(R.id.play_all_play_next);
+        playNext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                ((MainActivity)getActivity()).addToQueue(localPlaylistName, data, true);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        dialog.dismiss();
+                    }
+                }, 300);
+            }
+        });
+
+        // Add to queue
+        TextView addToQueue = bodyLayout.findViewById(R.id.play_all_add_to_queue);
+        addToQueue.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                ((MainActivity)getActivity()).addToQueue(localPlaylistName, data, false);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        dialog.dismiss();
+                    }
+                }, 300);
+            }
+        });
     }
+
 
 
     @Override
     public void onResume() {
         super.onResume();
 
-        if (localPlaylistName.equals(PlaylistManager.currentPlaylistName)) {
-            listView.setItemChecked(PlaylistManager.position + 1, true);
-        }
     }
 
 }

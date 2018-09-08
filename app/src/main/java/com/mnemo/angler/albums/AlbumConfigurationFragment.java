@@ -10,22 +10,23 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.mnemo.angler.MainActivity;
-import com.mnemo.angler.playlist_manager.PlaybackManager;
-import com.mnemo.angler.playlist_manager.PlaylistManager;
 import com.mnemo.angler.R;
 import com.mnemo.angler.artists.ArtistCoverDialogFragment;
 import com.mnemo.angler.data.ImageAssistant;
@@ -38,7 +39,7 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 
 
-public class AlbumConfigurationFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, AlbumCursorAdapter.onTrackClickListener {
+public class AlbumConfigurationFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
 
     Unbinder unbinder;
 
@@ -62,6 +63,9 @@ public class AlbumConfigurationFragment extends Fragment implements LoaderManage
 
     @BindView(R.id.album_conf_list)
     ListView listView;
+
+    @BindView(R.id.album_conf_play_all)
+    LinearLayout playAllButton;
 
 
     AlbumCursorAdapter adapter;
@@ -152,8 +156,15 @@ public class AlbumConfigurationFragment extends Fragment implements LoaderManage
                 switch (intent.getAction()){
                     case "track_changed":
 
-                        if (localPlaylistName.equals(PlaylistManager.currentPlaylistName)) {
-                            listView.setItemChecked(PlaylistManager.position, true);
+                        String trackPlaylist = intent.getStringExtra("track_playlist");
+                        String mediaId = intent.getStringExtra("media_id");
+
+                        if (trackPlaylist.equals(localPlaylistName)) {
+                            try {
+                                listView.setItemChecked(listView.getPositionForView(listView.findViewWithTag(mediaId)), true);
+                            }catch (NullPointerException e){
+                                e.printStackTrace();
+                            }
                         }
 
                         break;
@@ -170,20 +181,6 @@ public class AlbumConfigurationFragment extends Fragment implements LoaderManage
         return view;
     }
 
-
-    @Override
-    public void onTrackClicked(int position) {
-
-        PlaybackManager.isCurrentTrackHidden = false;
-
-        if (!PlaylistManager.currentPlaylistName.equals("album/" + artist + "/" + title)) {
-            PlaylistManager.currentPlaylistName = "album/" + artist + "/" + title;
-        }
-
-        PlaylistManager.position = position;
-        ((MainActivity)getActivity()).trackClicked();
-
-    }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
@@ -203,22 +200,24 @@ public class AlbumConfigurationFragment extends Fragment implements LoaderManage
     }
 
     @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+    public void onLoadFinished(Loader<Cursor> loader, final Cursor data) {
 
         switch (loader.getId()){
             case LOADER_TRACK_LIST_ID:
 
-                adapter = new AlbumCursorAdapter(getContext(), data);
+                adapter = new AlbumCursorAdapter(getContext(), data, localPlaylistName);
 
-                adapter.setOnTrackClickedListener(this);
 
                 listView.setAdapter(adapter);
 
-                tracksCountView.setText("tracks: " + adapter.getCount());
+                tracksCountView.setText(getString(R.string.tracks) + " " + adapter.getCount());
 
-                if (localPlaylistName.equals(PlaylistManager.currentPlaylistName)) {
-                    listView.setItemChecked(PlaylistManager.position, true);
-                }
+                playAllButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        playAll(data);
+                    }
+                });
 
         }
     }
@@ -260,5 +259,66 @@ public class AlbumConfigurationFragment extends Fragment implements LoaderManage
     @OnClick(R.id.album_conf_back)
     void back(){
         getActivity().onBackPressed();
+    }
+
+    void playAll(final Cursor data){
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+
+        LinearLayout bodyLayout = (LinearLayout)LayoutInflater.from(getContext()).inflate(R.layout.pm_play_all_context_menu, null, false);
+        builder.setView(bodyLayout);
+
+        final AlertDialog dialog = builder.create();
+        dialog.show();
+
+        // Contextual menu
+
+        // Play now
+        TextView playNow = bodyLayout.findViewById(R.id.play_all_play_now);
+        playNow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                ((MainActivity)getActivity()).playNow(localPlaylistName, 0, data);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        dialog.dismiss();
+                    }
+                }, 300);
+            }
+        });
+
+        // Play next
+        TextView playNext = bodyLayout.findViewById(R.id.play_all_play_next);
+        playNext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                ((MainActivity)getActivity()).addToQueue(localPlaylistName, data, true);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        dialog.dismiss();
+                    }
+                }, 300);
+            }
+        });
+
+        // Add to queue
+        TextView addToQueue = bodyLayout.findViewById(R.id.play_all_add_to_queue);
+        addToQueue.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                ((MainActivity)getActivity()).addToQueue(localPlaylistName, data, false);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        dialog.dismiss();
+                    }
+                }, 300);
+            }
+        });
     }
 }

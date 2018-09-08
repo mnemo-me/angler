@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -21,24 +22,20 @@ import android.widget.AbsListView;
 import android.widget.TextView;
 
 import com.mnemo.angler.MainActivity;
-import com.mnemo.angler.playlist_manager.PlaybackManager;
-import com.mnemo.angler.playlist_manager.PlaylistManager;
 import com.mnemo.angler.R;
 import com.mnemo.angler.data.AnglerContract;
 import com.mnemo.angler.data.AnglerContract.*;
 import com.mnemo.angler.data.AnglerSQLiteDBHelper;
 import com.mnemo.angler.playlists.PlaylistCursorAdapter;
-import com.mnemo.angler.playlist_manager.Track;
+import com.mnemo.angler.playlists.Track;
 
 
-public class ArtistTrackFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor>, PlaylistCursorAdapter.onTrackClickListener, PlaylistCursorAdapter.onTrackRemoveListener {
+public class ArtistTrackFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor>, PlaylistCursorAdapter.onTrackRemoveListener {
 
     public ArtistTrackFragment() {
         // Required empty public constructor
     }
 
-
-    private MainPlaylistFragment.TrackFragmentListener trackListener;
 
     private String artist;
     private String localPlaylistName;
@@ -52,11 +49,6 @@ public class ArtistTrackFragment extends ListFragment implements LoaderManager.L
     BroadcastReceiver receiver;
     IntentFilter intentFilter;
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        trackListener = (MainPlaylistFragment.TrackFragmentListener) context;
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -82,7 +74,7 @@ public class ArtistTrackFragment extends ListFragment implements LoaderManager.L
             artist = savedInstanceState.getString("artist");
         }
 
-        localPlaylistName = "playlist_artist/" + PlaylistManager.mainPlaylistName.replace("/", "\\") + "/" + artist.replace("/", "\\");
+        localPlaylistName = "playlist_artist/" + ((MainActivity)getActivity()).getMainPlaylistName().replace("/", "\\") + "/" + artist.replace("/", "\\");
 
         // Setup empty text
         setEmptyText("");
@@ -92,9 +84,17 @@ public class ArtistTrackFragment extends ListFragment implements LoaderManager.L
 
         getLoaderManager().initLoader(LOADER_ARTIST_PLAYLIST_ID, null, this);
 
+        // Set ListView parameters
+        int orientation = getResources().getConfiguration().orientation;
 
         getListView().setDividerHeight(0);
-        getListView().setPadding(0, (int)(8 * MainActivity.density),0,(int)(8 * MainActivity.density));
+
+        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            getListView().setPadding(0, (int) (8 * MainActivity.density), 0, (int) (8 * MainActivity.density));
+        }else{
+            getListView().setPadding(0, (int) (4 * MainActivity.density), 0, (int) (4 * MainActivity.density));
+        }
+
         getListView().setClipToPadding(false);
         getListView().setVerticalScrollBarEnabled(false);
         getListView().setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
@@ -112,8 +112,15 @@ public class ArtistTrackFragment extends ListFragment implements LoaderManager.L
                 switch (intent.getAction()){
                     case "track_changed":
 
-                        if (localPlaylistName.equals(PlaylistManager.currentPlaylistName)) {
-                            getListView().setItemChecked(PlaylistManager.position, true);
+                        String trackPlaylist = intent.getStringExtra("track_playlist");
+                        String mediaId = intent.getStringExtra("media_id");
+
+                        if (trackPlaylist.equals(localPlaylistName)){
+                            try {
+                                getListView().setItemChecked(getListView().getPositionForView(getListView().findViewWithTag(mediaId)), true);
+                            }catch (NullPointerException e){
+                                e.printStackTrace();
+                            }
                         }
 
                         break;
@@ -167,7 +174,7 @@ public class ArtistTrackFragment extends ListFragment implements LoaderManager.L
                         Uri.withAppendedPath(AnglerContract.BASE_CONTENT_URI, localPlaylistName),
                         null,
                         TrackEntry.COLUMN_TITLE + " LIKE ?",
-                        new String[]{"%" + MainActivity.filter + "%"},
+                        new String[]{"%" + ((MainActivity)getActivity()).getFilter() + "%"},
                         TrackEntry.COLUMN_TITLE + " ASC");
             default:
                 return null;
@@ -175,25 +182,22 @@ public class ArtistTrackFragment extends ListFragment implements LoaderManager.L
     }
 
     @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+    public void onLoadFinished(Loader<Cursor> loader, final Cursor data) {
 
         switch (loader.getId()){
             case LOADER_ARTIST_PLAYLIST_ID:
 
-                adapter = new PlaylistCursorAdapter(getContext(), data, AnglerSQLiteDBHelper.createTrackTableName(PlaylistManager.mainPlaylistName), null);
+                adapter = new PlaylistCursorAdapter(getContext(), data, "playlist", localPlaylistName,
+                        AnglerSQLiteDBHelper.createTrackTableName(((MainActivity)getActivity()).getMainPlaylistName()) ,null);
 
-                adapter.setOnTrackClickedListener(this);
                 adapter.setOnTrackRemoveListener(this);
 
-                if (!MainActivity.filter.equals("")) {
+                if (!((MainActivity)getActivity()).getFilter().equals("")) {
                     setEmptyText(getResources().getText(R.string.search_empty_tracks));
                 }
 
                 getListView().setAdapter(adapter);
 
-                if (localPlaylistName.equals(PlaylistManager.currentPlaylistName) && MainActivity.filter.equals(PlaylistManager.playlistFilter)) {
-                    getListView().setItemChecked(PlaylistManager.position, true);
-                }
         }
     }
 
@@ -206,17 +210,7 @@ public class ArtistTrackFragment extends ListFragment implements LoaderManager.L
         }
     }
 
-    @Override
-    public void onTrackClicked(int position) {
 
-        PlaybackManager.isCurrentTrackHidden = false;
-
-        PlaylistManager.currentPlaylistName = localPlaylistName;
-        PlaylistManager.position = position;
-
-        trackListener.trackClicked();
-
-    }
 
     @Override
     public void onTrackRemove(int position, Track trackToRemove, boolean isCurrentTrack) {
@@ -228,9 +222,6 @@ public class ArtistTrackFragment extends ListFragment implements LoaderManager.L
     public void onResume() {
         super.onResume();
 
-        if (localPlaylistName.equals(PlaylistManager.currentPlaylistName) && MainActivity.filter.equals(PlaylistManager.playlistFilter)) {
-            getListView().setItemChecked(PlaylistManager.position, true);
-        }
     }
 
     @Override

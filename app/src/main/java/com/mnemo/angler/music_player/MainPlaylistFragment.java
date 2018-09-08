@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -16,37 +17,30 @@ import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.media.session.MediaControllerCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.TextView;
 
+import com.mnemo.angler.AnglerService;
 import com.mnemo.angler.MainActivity;
-import com.mnemo.angler.playlist_manager.PlaybackManager;
-import com.mnemo.angler.playlist_manager.PlaylistManager;
 import com.mnemo.angler.R;
 import com.mnemo.angler.data.AnglerContract;
 import com.mnemo.angler.data.AnglerContract.*;
 import com.mnemo.angler.data.AnglerSQLiteDBHelper;
 import com.mnemo.angler.playlists.PlaylistCursorAdapter;
-import com.mnemo.angler.playlist_manager.Track;
+import com.mnemo.angler.playlists.Track;
 
 
-public class MainPlaylistFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor>, PlaylistCursorAdapter.onTrackClickListener, PlaylistCursorAdapter.onTrackRemoveListener {
+public class MainPlaylistFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor>,  PlaylistCursorAdapter.onTrackRemoveListener {
 
 
     public MainPlaylistFragment() {
         // Required empty public constructor
     }
 
-    public interface TrackFragmentListener {
-        void trackClicked();
-        void showBackgroundLabel(String label);
-        void hideBackgroundLabel();
-    }
-
-    private TrackFragmentListener trackListener;
 
     private PlaylistCursorAdapter adapter;
 
@@ -61,16 +55,14 @@ public class MainPlaylistFragment extends ListFragment implements LoaderManager.
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        trackListener = (TrackFragmentListener) context;
     }
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        /*
-        restore scrolls state
-         */
+
+        //restore scroll state
         if (savedInstanceState != null){
             state = savedInstanceState.getParcelable("state");
         }
@@ -82,6 +74,8 @@ public class MainPlaylistFragment extends ListFragment implements LoaderManager.
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+
+
         // Setup empty text
         setEmptyText("");
         TextView emptyText = (TextView) getListView().getEmptyView();
@@ -90,8 +84,18 @@ public class MainPlaylistFragment extends ListFragment implements LoaderManager.
 
         getLoaderManager().initLoader(LOADER_PLAYLIST_ID, null, this);
 
+
+        // Set ListView parameters
+        int orientation = getResources().getConfiguration().orientation;
+
         getListView().setDividerHeight(0);
-        getListView().setPadding(0, (int)(8 * MainActivity.density),0,(int)(8 * MainActivity.density));
+
+        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            getListView().setPadding(0, (int) (8 * MainActivity.density), 0, (int) (8 * MainActivity.density));
+        }else{
+            getListView().setPadding(0, (int) (4 * MainActivity.density), 0, (int) (4 * MainActivity.density));
+        }
+
         getListView().setClipToPadding(false);
         getListView().setVerticalScrollBarEnabled(false);
         getListView().setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
@@ -112,9 +116,17 @@ public class MainPlaylistFragment extends ListFragment implements LoaderManager.
                 switch (intent.getAction()){
                     case "track_changed":
 
-                        if (PlaylistManager.mainPlaylistName.equals(PlaylistManager.currentPlaylistName)) {
-                            getListView().setItemChecked(PlaylistManager.position, true);
+                        String trackPlaylist = intent.getStringExtra("track_playlist");
+                        String mediaId = intent.getStringExtra("media_id");
+
+                        if (trackPlaylist.equals(((MainActivity)getActivity()).getMainPlaylistName())) {
+                            try {
+                                getListView().setItemChecked(getListView().getPositionForView(getListView().findViewWithTag(mediaId)), true);
+                            }catch (NullPointerException e){
+                                e.printStackTrace();
+                            }
                         }
+
 
                         break;
 
@@ -160,10 +172,10 @@ public class MainPlaylistFragment extends ListFragment implements LoaderManager.
         switch (id){
             case LOADER_PLAYLIST_ID:
                     return new CursorLoader(getContext(),
-                            Uri.withAppendedPath(AnglerContract.BASE_CONTENT_URI, AnglerSQLiteDBHelper.createTrackTableName(PlaylistManager.mainPlaylistName)),
+                            Uri.withAppendedPath(AnglerContract.BASE_CONTENT_URI, AnglerSQLiteDBHelper.createTrackTableName(((MainActivity)getActivity()).getMainPlaylistName())),
                             null,
                             TrackEntry.COLUMN_TITLE + " LIKE ?",
-                            new String[]{"%" + MainActivity.filter + "%"},
+                            new String[]{"%" + ((MainActivity)getActivity()).getFilter() + "%"},
                             TrackEntry.COLUMN_POSITION + " ASC, " + TrackEntry.COLUMN_TITLE + " ASC, " + TrackEntry.COLUMN_ARTIST + " ASC");
                 default:
                     return null;
@@ -171,18 +183,19 @@ public class MainPlaylistFragment extends ListFragment implements LoaderManager.
     }
 
     @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+    public void onLoadFinished(Loader<Cursor> loader, final Cursor data) {
 
         switch (loader.getId()){
 
             case LOADER_PLAYLIST_ID:
 
-                adapter = new PlaylistCursorAdapter(getContext(), data, AnglerSQLiteDBHelper.createTrackTableName(PlaylistManager.mainPlaylistName), null);
+                adapter = new PlaylistCursorAdapter(getContext(), data, "music_player", ((MainActivity)getActivity()).getMainPlaylistName(),
+                        AnglerSQLiteDBHelper.createTrackTableName(((MainActivity)getActivity()).getMainPlaylistName()), null);
 
-                adapter.setOnTrackClickedListener(this);
+
                 adapter.setOnTrackRemoveListener(this);
 
-                if (MainActivity.filter.equals("")) {
+                if (((MainActivity)getActivity()).getFilter().equals("")) {
                     setEmptyText(getResources().getText(R.string.empty_playlist));
                 }else{
                     setEmptyText(getResources().getText(R.string.search_empty_tracks));
@@ -190,9 +203,13 @@ public class MainPlaylistFragment extends ListFragment implements LoaderManager.
 
                 getListView().setAdapter(adapter);
 
-                if (PlaylistManager.mainPlaylistName.equals(PlaylistManager.currentPlaylistName) && MainActivity.filter.equals(PlaylistManager.playlistFilter)) {
-                    getListView().setItemChecked(PlaylistManager.position, true);
+                // Initialize queue on first launch
+                if (!AnglerService.isQueueInitialized){
+                    ((MainActivity)getActivity()).addToQueue(((MainActivity)getActivity()).getMainPlaylistName(), data, false);
+                    MediaControllerCompat.getMediaController(getActivity()).getTransportControls().prepare();
+                    AnglerService.isQueueInitialized = true;
                 }
+
 
         }
     }
@@ -206,17 +223,6 @@ public class MainPlaylistFragment extends ListFragment implements LoaderManager.
         }
     }
 
-    @Override
-    public void onTrackClicked(int position) {
-
-        PlaybackManager.isCurrentTrackHidden = false;
-
-        PlaylistManager.currentPlaylistName = PlaylistManager.mainPlaylistName;
-        PlaylistManager.position = position;
-
-        trackListener.trackClicked();
-
-    }
 
     @Override
     public void onTrackRemove(int position, Track trackToRemove, boolean isCurrentTrack) {
@@ -228,9 +234,7 @@ public class MainPlaylistFragment extends ListFragment implements LoaderManager.
     public void onResume() {
         super.onResume();
 
-        if (PlaylistManager.mainPlaylistName.equals(PlaylistManager.currentPlaylistName) && MainActivity.filter.equals(PlaylistManager.playlistFilter)) {
-            getListView().setItemChecked(PlaylistManager.position, true);
-        }
+
     }
 
     @Override

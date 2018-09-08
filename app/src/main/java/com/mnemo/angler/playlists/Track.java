@@ -1,4 +1,4 @@
-package com.mnemo.angler.playlist_manager;
+package com.mnemo.angler.playlists;
 
 
 import android.support.annotation.NonNull;

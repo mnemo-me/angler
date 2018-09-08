@@ -12,7 +12,8 @@
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:elevation="4dp"
-        app:contentInsetStart="0dp">
+        app:contentInsetStart="0dp"
+        android:background="#22FFFFFF">
 
         <ImageView
             android:id="@+id/albums_drawer_back"
@@ -35,13 +36,6 @@
             android:text="@string/albums" />
 
     </android.support.v7.widget.Toolbar>
-
-    <View
-        android:id="@+id/albums_separator"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/gGrey"
-        android:transitionName="separator"/>
 
     <ListView
         android:id="@+id/albums_list"

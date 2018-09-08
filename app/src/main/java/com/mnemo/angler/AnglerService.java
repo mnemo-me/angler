@@ -3,38 +3,41 @@ package com.mnemo.angler;
 
 
 import android.content.Intent;
-import android.media.MediaMetadata;
 import android.media.MediaPlayer;
-import android.media.browse.MediaBrowser;
-import android.media.session.MediaSession;
-import android.media.session.PlaybackState;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.service.media.MediaBrowserService;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.media.MediaBrowserCompat;
+import android.support.v4.media.MediaBrowserServiceCompat;
+import android.support.v4.media.MediaDescriptionCompat;
+import android.support.v4.media.MediaMetadataCompat;
+import android.support.v4.media.session.MediaSessionCompat;
+import android.support.v4.media.session.PlaybackStateCompat;
 
 
-import com.mnemo.angler.playlist_manager.PlaybackManager;
-import com.mnemo.angler.playlist_manager.PlaylistManager;
+import com.mnemo.angler.data.MediaAssistant;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class AnglerService extends MediaBrowserService {
+public class AnglerService extends MediaBrowserServiceCompat {
 
-    private MediaSession mMediaSession;
+    private MediaSessionCompat mMediaSession;
     private MediaPlayer mMediaPlayer;
     //public static Equalizer mEqualizer;
-    private PlaylistManager mPlaylistManager;
+
     private AnglerNotificationManager mAnglerNotificationManager;
+
+    private ArrayList<MediaSessionCompat.QueueItem> queue;
+    private int queueIndex = 0;
+
     public static long seekProgress;
     public static boolean isSeekAvailable;
-    private String activePlaylist;
 
     public static boolean isDBInitialized = false;
+    public static boolean isQueueInitialized = false;
 
 
     public void onCreate() {
@@ -44,9 +47,17 @@ public class AnglerService extends MediaBrowserService {
         /*
         Setup media session on service, set playback state and callbacks
          */
-        mMediaSession = new MediaSession(this, "Angler Service");
-        mMediaSession.setPlaybackState(new PlaybackState.Builder()
-                .setActions(PlaybackState.ACTION_PLAY | PlaybackState.ACTION_PLAY_PAUSE | PlaybackState.ACTION_PAUSE).build());
+        mMediaSession = new MediaSessionCompat(this, "Angler Service");
+        mMediaSession.setPlaybackState(new PlaybackStateCompat.Builder()
+                .setActions(
+                                    PlaybackStateCompat.ACTION_PLAY |
+                                    PlaybackStateCompat.ACTION_PLAY_PAUSE |
+                                    PlaybackStateCompat.ACTION_PAUSE |
+                                    PlaybackStateCompat.STATE_PLAYING).build());
+        mMediaSession.setFlags(
+                MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS |
+                MediaSessionCompat.FLAG_HANDLES_QUEUE_COMMANDS |
+                MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS);
         mMediaSession.setCallback(anglerServiceCallback);
 
 
@@ -84,12 +95,103 @@ public class AnglerService extends MediaBrowserService {
     /*
     Initialize media session callbacks (play, pause, stop, etc)
      */
-    MediaSession.Callback anglerServiceCallback = new MediaSession.Callback() {
+    MediaSessionCompat.Callback anglerServiceCallback = new MediaSessionCompat.Callback() {
+
+        MediaMetadataCompat metadata;
+
+        // queue methods
+        @Override
+        public void onAddQueueItem(MediaDescriptionCompat description) {
+
+            MediaSessionCompat.QueueItem queueItem = new MediaSessionCompat.QueueItem(description, description.hashCode());
+            queue.add(queueItem);
+        }
+
+        @Override
+        public void onAddQueueItem(MediaDescriptionCompat description, int index) {
+
+            MediaSessionCompat.QueueItem queueItem = new MediaSessionCompat.QueueItem(description, description.hashCode());
+            queue.add(queueIndex + index, queueItem);
+        }
+
+        @Override
+        public void onRemoveQueueItem(MediaDescriptionCompat description) {
+
+            String mediaId = description.getMediaId();
+
+            for (MediaSessionCompat.QueueItem queueItem : queue){
+
+                if (queueItem.getDescription().getMediaId().equals(mediaId)){
+
+                    int index = queue.indexOf(queueItem);
+
+                    if (index <= queueIndex){
+                        queueIndex--;
+                    }
+
+                    queue.remove(queueItem);
+                    break;
+                }
+            }
+
+            mMediaSession.setQueue(queue);
+        }
+
+        @Override
+        public void onRemoveQueueItemAt(int index) {
+
+            if (index <= queueIndex){
+                queueIndex--;
+            }
+            queue.remove(index);
+            mMediaSession.setQueue(queue);
+        }
+
+
+
+
+
+        // control playback methods
+        @Override
+        public void onPrepare() {
+
+            if (queueIndex < 0 && queue.isEmpty()){
+                return;
+            }
+
+            metadata = getCurrentMetadata();
+            mMediaSession.setMetadata(metadata);
+
+            if (!mMediaSession.isActive()){
+                mMediaSession.setActive(true);
+            }
+
+            Intent intent = new Intent();
+            intent.setAction("queue_position_changed");
+            intent.putExtra("queue_position", queueIndex);
+
+            sendBroadcast(intent);
+        }
+
+
         @Override
         public void onPlay() {
-            super.onPlay();
-                onPlayFromMediaId(mPlaylistManager.getCurrentId(),null);
+
+            onPrepare();
+
+            if (mMediaPlayer != null){
+                mMediaPlayer.release();
+            }
+
+            mMediaPlayer = MediaPlayer.create(AnglerService.this, metadata.getDescription().getMediaUri());
+            mMediaPlayer.start();
+            mMediaPlayer.setOnCompletionListener(onCompletionListener);
+
+            mAnglerNotificationManager.createNotification();
+
         }
+
+
 
         @Override
         public void onPause() {
@@ -97,8 +199,8 @@ public class AnglerService extends MediaBrowserService {
 
             mMediaPlayer.pause();
 
-            mMediaSession.setPlaybackState(new PlaybackState.Builder()
-                .setState(PlaybackState.STATE_PAUSED,PlaybackState.PLAYBACK_POSITION_UNKNOWN,0).build());
+            mMediaSession.setPlaybackState(new PlaybackStateCompat.Builder()
+                .setState(PlaybackStateCompat.STATE_PAUSED,PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN,0).build());
 
             mAnglerNotificationManager.unregisterCallback();
             stopForeground(false);
@@ -110,96 +212,113 @@ public class AnglerService extends MediaBrowserService {
 
             mAnglerNotificationManager.unregisterCallback();
             mMediaSession.setActive(false);
+            mMediaSession.release();
             mMediaPlayer.stop();
             stopSelf();
 
         }
 
-        @Override
-        public void onPlayFromMediaId(String mediaId, Bundle extras) {
-            super.onPlayFromMediaId(mediaId, extras);
-
-            mMediaSession.setActive(true);
-
-            MediaMetadata metadata = mPlaylistManager.getCurrentMetadata();
-            mMediaSession.setMetadata(metadata);
-
-            mMediaSession.setPlaybackState(new PlaybackState.Builder()
-                    .setState(PlaybackState.STATE_PLAYING,PlaybackState.PLAYBACK_POSITION_UNKNOWN,0).build());
 
 
-            Uri mediaUri = metadata.getDescription().getMediaUri();
 
-
-            if (mMediaPlayer != null) {
-                mMediaPlayer.release();
-            }
-            mMediaPlayer = MediaPlayer.create(AnglerService.this, mediaUri);
-            mMediaPlayer.start();
-            mMediaPlayer.setOnCompletionListener(onCompletionListener);
-
-            mAnglerNotificationManager.createNotification();
-
-        }
-
-
+        // skip methods
         @Override
         public void onSkipToPrevious() {
             super.onSkipToPrevious();
 
-            if (!PlaybackManager.shuffleState) {
-                PlaylistManager.position--;
+            if (queueIndex == 0){
+                queueIndex = queue.size() - 1;
+            }else{
+                queueIndex--;
             }
 
-            onPlayFromMediaId(mPlaylistManager.getCurrentId(), null);
+            onPlay();
         }
 
         @Override
         public void onSkipToNext() {
             super.onSkipToNext();
 
-            if (!PlaybackManager.shuffleState) {
-                PlaylistManager.position++;
+            if (queueIndex == queue.size() -1){
+                queueIndex = 0;
+            }else{
+                queueIndex++;
             }
 
-            onPlayFromMediaId(mPlaylistManager.getCurrentId(), null);
+            onPlay();
         }
 
         @Override
-        public void onCustomAction(@NonNull String action, @Nullable Bundle extras) {
-            super.onCustomAction(action, extras);
-
-            switch(action){
-                case PlaybackManager.REPEAT:
-                    if (mMediaPlayer != null) {
-                        PlaybackManager.repeatState = !PlaybackManager.repeatState;
-                    }
-                    break;
-                case PlaybackManager.SHUFFLE:
-                    PlaybackManager.shuffleState = !PlaybackManager.shuffleState;
-                    break;
-                case PlaybackManager.RESUME:
-                    mMediaSession.setActive(true);
-
-                    if (mMediaPlayer == null){
-                        PlaylistManager.position = 0;
-                        onPlayFromMediaId(mPlaylistManager.getCurrentId(),null);
-                    }
-
-                    mMediaPlayer.start();
-                    mMediaPlayer.setOnCompletionListener(onCompletionListener);
-
-                    mMediaSession.setPlaybackState(new PlaybackState.Builder()
-                            .setState(PlaybackState.STATE_PLAYING, PlaybackState.PLAYBACK_POSITION_UNKNOWN, 0).build());
-                    break;
-            }
+        public void onSkipToQueueItem(long id) {
+            queueIndex = (int)id;
+            onPlay();
         }
 
+
+
+
+        // repeat / shuffle
+        @Override
+        public void onSetRepeatMode(int repeatMode) {
+            super.onSetRepeatMode(repeatMode);
+        }
+
+        @Override
+        public void onSetShuffleMode(int shuffleMode) {
+            super.onSetShuffleMode(shuffleMode);
+        }
+
+
+
+        // SeekBar method
         @Override
         public void onSeekTo(long pos) {
             super.onSeekTo(pos);
             if (mMediaPlayer != null) {
                 mMediaPlayer.seekTo((int) (pos * mMediaPlayer.getDuration() / 100));
+            }
+        }
+
+
+
+        // custom actions
+        @Override
+        public void onCustomAction(@NonNull String action, @Nullable Bundle extras) {
+            super.onCustomAction(action, extras);
+
+            switch(action){
+
+                case "clear_queue":
+
+                    if (queue != null){
+                        queue.clear();
+                    }
+
+                    break;
+
+                case "update_queue":
+
+                    mMediaSession.setQueue(queue);
+
+                    break;
+
+                case "replace_queue_items":
+
+                    int oldPosition = extras.getInt("old_position");
+                    int newPosition = extras.getInt("new_position");
+
+                    MediaSessionCompat.QueueItem queueItem = queue.get(oldPosition);
+                    queue.remove(oldPosition);
+                    queue.add(newPosition, queueItem);
+
+                    if (oldPosition == queueIndex){
+                        queueIndex = newPosition;
+                    }
+
+                    if (newPosition == queueIndex){
+                        queueIndex = oldPosition;
+                    }
+
             }
         }
 
@@ -215,22 +334,18 @@ public class AnglerService extends MediaBrowserService {
         return new BrowserRoot("media_space", null);
     }
 
-    @Override
-    public void onLoadChildren(@NonNull String parentId, @NonNull Result<List<MediaBrowser.MediaItem>> result) {
 
-        result.sendResult(new ArrayList<MediaBrowser.MediaItem>());
+    @Override
+    public void onLoadChildren(@NonNull String parentId, @NonNull Result<List<MediaBrowserCompat.MediaItem>> result) {
+        result.sendResult(new ArrayList<MediaBrowserCompat.MediaItem>());
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        activePlaylist = intent.getExtras().getString("active_playlist");
 
-        /*
-        Initialize playlist manager and notification manager
-        Both are custom helper classes
-         */
-        mPlaylistManager = new PlaylistManager(getContentResolver(), activePlaylist);
+        // Initialize qu_queue and notification manager
+        queue = new ArrayList<>();
         mAnglerNotificationManager = new AnglerNotificationManager(this);
 
         return super.onStartCommand(intent, flags, startId);
@@ -239,14 +354,20 @@ public class AnglerService extends MediaBrowserService {
     private MediaPlayer.OnCompletionListener onCompletionListener = new MediaPlayer.OnCompletionListener() {
         @Override
         public void onCompletion(MediaPlayer mp) {
-            if(!PlaybackManager.repeatState) {
+
+            if (queue.size() > 0) {
                 anglerServiceCallback.onSkipToNext();
-            }else{
-                anglerServiceCallback.onPlayFromMediaId(mPlaylistManager.getCurrentId(),null);
             }
         }
     };
 
 
+    private MediaMetadataCompat getCurrentMetadata(){
+
+        MediaSessionCompat.QueueItem queueItem = queue.get(queueIndex);
+        MediaDescriptionCompat description = queueItem.getDescription();
+
+        return MediaAssistant.extractMetadata(description);
+    }
 
 }

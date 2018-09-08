@@ -43,7 +43,16 @@ public class AlbumListAdapter extends ArrayAdapter{
         super(context, 0, albums);
 
         this.context = context;
-        albumsInLine = 3;
+
+        int orientation = context.getResources().getConfiguration().orientation;
+
+        if (orientation == Configuration.ORIENTATION_PORTRAIT){
+            albumsInLine = 3;
+        }else{
+            albumsInLine = 5;
+        }
+
+
 
         TreeSet<String> artists = new TreeSet<>();
         for (Album album : albums){
@@ -126,16 +135,22 @@ public class AlbumListAdapter extends ArrayAdapter{
         albumIdentifier.add(R.id.album_line_album_one);
         albumIdentifier.add(R.id.album_line_album_two);
         albumIdentifier.add(R.id.album_line_album_three);
+        albumIdentifier.add(R.id.album_line_album_four);
+        albumIdentifier.add(R.id.album_line_album_five);
 
         ArrayList<Integer> albumImageIdentifier = new ArrayList<>();
         albumImageIdentifier.add(R.id.album_line_album_one_image);
         albumImageIdentifier.add(R.id.album_line_album_two_image);
         albumImageIdentifier.add(R.id.album_line_album_three_image);
+        albumImageIdentifier.add(R.id.album_line_album_four_image);
+        albumImageIdentifier.add(R.id.album_line_album_five_image);
 
         ArrayList<Integer> albumTextIdentifier = new ArrayList<>();
         albumTextIdentifier.add(R.id.album_line_album_one_name);
         albumTextIdentifier.add(R.id.album_line_album_two_name);
         albumTextIdentifier.add(R.id.album_line_album_three_name);
+        albumTextIdentifier.add(R.id.album_line_album_four_name);
+        albumTextIdentifier.add(R.id.album_line_album_five_name);
 
 
         for (int i = 0; i < albumsInLine; i ++) {
@@ -180,15 +195,9 @@ public class AlbumListAdapter extends ArrayAdapter{
 
 
                         ImageView back = ((MainActivity)context).findViewById(R.id.albums_drawer_back);
-                        View separator = ((MainActivity)context).findViewById(R.id.albums_separator);
-
-                        int orientation = context.getResources().getConfiguration().orientation;
 
                         FragmentTransaction fragmentTransaction = ((AppCompatActivity) context).getSupportFragmentManager().beginTransaction();
 
-                        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-                            fragmentTransaction.addSharedElement(separator, "separator");
-                        }
 
                         fragmentTransaction
                                 .addSharedElement(back, "back")

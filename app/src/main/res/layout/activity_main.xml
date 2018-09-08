@@ -77,6 +77,7 @@
             android:id="@+id/media_panel_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:maxWidth="356dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="8dp"
             android:paddingStart="28dp"
@@ -90,6 +91,13 @@
             app:layout_constraintStart_toStartOf="parent"
             tools:text="Marylin Manson - Sweet dreams" />
 
+        <ImageButton
+            android:id="@+id/media_panel_queue"
+            style="@style/playlist_media_button"
+            app:layout_constraintStart_toStartOf="@id/media_panel_shuffle"
+            app:layout_constraintBottom_toTopOf="@id/media_panel_seek_bar"
+            android:src="@drawable/baseline_queue_music_black_24dp"/>
+
 
         <!-- seekbar and time views -->
         <SeekBar
@@ -98,7 +106,8 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:progressBackgroundTint="#22000000"
-            android:progressTint="@color/colorAccent"
+            android:progressTint="@color/colorAccentLight"
+            android:thumbTint="@color/colorAccentLight"
             app:layout_constraintBottom_toTopOf="@+id/media_panel_play_pause"
             app:layout_constraintStart_toEndOf="@id/media_panel_progress_time"
             app:layout_constraintEnd_toStartOf="@id/media_panel_duration_time"/>

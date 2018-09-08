@@ -17,13 +17,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.mnemo.angler.MainActivity;
-import com.mnemo.angler.playlist_manager.PlaylistManager;
 import com.mnemo.angler.R;
 import com.mnemo.angler.albums.AlbumConfigurationFragment;
 import com.mnemo.angler.artists.ArtistConfigurationFragment;
 import com.mnemo.angler.data.AnglerContract;
 import com.mnemo.angler.data.AnglerFolder;
-import com.mnemo.angler.playlist_manager.Track;
+import com.mnemo.angler.data.AnglerSQLiteDBHelper;
+import com.mnemo.angler.data.MediaAssistant;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -32,25 +32,25 @@ import es.claucookie.miniequalizerlibrary.EqualizerView;
 
 public class PlaylistCursorAdapter extends CursorAdapter {
 
+    private String type;
+
+    private String localPlaylistName;
     private String localDBName;
 
-    private onTrackClickListener onTrackClickListener;
     private onTrackRemoveListener onTrackRemoveListener;
 
     // ids
     private ArrayList<String> ids;
 
 
-    public interface onTrackClickListener{
-        void onTrackClicked(int position);
-    }
-
     public interface onTrackRemoveListener{
         void onTrackRemove(int position, Track trackToRemove, boolean isCurrentTrack);
     }
 
-    public PlaylistCursorAdapter(Context context, Cursor c, String localDBName, ArrayList<String> ids) {
+    public PlaylistCursorAdapter(Context context, Cursor c, String type, String localPlaylistName, String localDBName, ArrayList<String> ids) {
         super(context, c, true);
+        this.type = type;
+        this.localPlaylistName = localPlaylistName;
         this.localDBName = localDBName;
         this.ids = ids;
     }
@@ -61,11 +61,9 @@ public class PlaylistCursorAdapter extends CursorAdapter {
     }
 
     @Override
-    public void bindView(View view, Context context, Cursor cursor) {
+    public void bindView(View view, Context context, final Cursor cursor) {
 
         final int position = cursor.getPosition();
-
-        final View constraintLayout =  view;
 
         // Extract track's metadata from database
         final String id = cursor.getString(0);
@@ -82,35 +80,37 @@ public class PlaylistCursorAdapter extends CursorAdapter {
         // Convert duration to mm:ss format
         String durationInText = MainActivity.convertToTime(duration);
 
+        // Set tag to view
+        view.setTag(id);
 
         // Assign metadata to views
-        TextView titleView = constraintLayout.findViewById(R.id.playlist_song_title);
+        TextView titleView = view.findViewById(R.id.playlist_song_title);
         titleView.setText(title);
 
-        TextView artistView = constraintLayout.findViewById(R.id.playlist_song_artist);
+        TextView artistView = view.findViewById(R.id.playlist_song_artist);
         artistView.setText(artist);
 
-        TextView durationView = constraintLayout.findViewById(R.id.playlist_song_duration);
+        TextView durationView = view.findViewById(R.id.playlist_song_duration);
         durationView.setText(durationInText);
 
         // Set mini equalizer view
-        EqualizerView miniEqualizer = constraintLayout.findViewById(R.id.playilst_song_mimi_equalizer);
+        EqualizerView miniEqualizer = view.findViewById(R.id.playilst_song_mimi_equalizer);
 
 
 
         // Listeners for track clicks
 
         // OnClickListener
-        constraintLayout.setOnClickListener(new View.OnClickListener() {
+        view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                onTrackClickListener.onTrackClicked(position);
+                ((MainActivity)mContext).playNow(localPlaylistName, position, cursor);
             }
         });
 
         // OnLongClickListener
-        constraintLayout.setOnLongClickListener(new View.OnLongClickListener() {
+        view.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
 
@@ -145,7 +145,44 @@ public class PlaylistCursorAdapter extends CursorAdapter {
                 contextMenuPlay.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        onTrackClickListener.onTrackClicked(position);
+
+                        ((MainActivity)mContext).playNow(localPlaylistName, position, cursor);
+
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                dialog.dismiss();
+                            }
+                        }, 300);
+
+                    }
+                });
+
+                // Play next
+                TextView contextMenuPlayNext = bodyLinearLayout.findViewById(R.id.context_menu_play_next);
+                contextMenuPlayNext.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        ((MainActivity)mContext).addToQueue(MediaAssistant.mergeMediaDescription(id, title, artist, album, duration, uri, localPlaylistName), true);
+
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                dialog.dismiss();
+                            }
+                        }, 300);
+
+                    }
+                });
+
+                // Add to queue
+                TextView contextMenuAddToQueue = bodyLinearLayout.findViewById(R.id.context_menu_add_to_queue);
+                contextMenuAddToQueue.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        ((MainActivity)mContext).addToQueue(MediaAssistant.mergeMediaDescription(id, title, artist, album, duration, uri, localPlaylistName), false);
 
                         new Handler().postDelayed(new Runnable() {
                             @Override
@@ -269,35 +306,15 @@ public class PlaylistCursorAdapter extends CursorAdapter {
                 });
 
 
-                // Move
-                TextView contextMenuMove = bodyLinearLayout.findViewById(R.id.context_menu_move);
-                contextMenuMove.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                dialog.dismiss();
-                            }
-                        }, 300);
-                    }
-                });
-
-
                 // Remove
                 TextView contextMenuRemove = bodyLinearLayout.findViewById(R.id.context_menu_remove_from_playlist);
                 contextMenuRemove.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
 
-                        int currentPositionBeforeRemoving = PlaylistManager.position;
 
                         boolean isCurrentTrack = false;
 
-                        if (currentPositionBeforeRemoving == position){
-                            isCurrentTrack = true;
-                        }
 /*
                         if (currentPositionBeforeRemoving >= holder.getAdapterPosition()){
                             AnglerService.mPlaylistManager.decrementCurrentPosition();
@@ -329,8 +346,10 @@ public class PlaylistCursorAdapter extends CursorAdapter {
                 // Set visibility of contextual menu items
                 contextMenuGoToAlbum.setVisibility(View.VISIBLE);
                 contextMenuGoToArtist.setVisibility(View.VISIBLE);
-                contextMenuMove.setVisibility(View.VISIBLE);
-                contextMenuRemove.setVisibility(View.VISIBLE);
+
+                if (type.equals("playlist")) {
+                    contextMenuRemove.setVisibility(View.VISIBLE);
+                }
 
 
 
@@ -374,9 +393,6 @@ public class PlaylistCursorAdapter extends CursorAdapter {
 
 
     // Setters
-    public void setOnTrackClickedListener(onTrackClickListener onTrackClickListener){
-        this.onTrackClickListener = onTrackClickListener;
-    }
 
     public void setOnTrackRemoveListener(onTrackRemoveListener onTrackRemoveListener) {
         this.onTrackRemoveListener = onTrackRemoveListener;

@@ -11,16 +11,15 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.MediaMetadata;
-import android.media.session.MediaController;
-import android.media.session.MediaSession;
-import android.media.session.PlaybackState;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import android.os.RemoteException;
 import android.support.annotation.Nullable;
+import android.support.v4.media.MediaMetadataCompat;
+import android.support.v4.media.session.MediaControllerCompat;
+import android.support.v4.media.session.MediaSessionCompat;
+import android.support.v4.media.session.PlaybackStateCompat;
 
 import com.mnemo.angler.data.AnglerFolder;
-import com.mnemo.angler.playlist_manager.PlaybackManager;
 
 import java.io.File;
 
@@ -37,12 +36,12 @@ class AnglerNotificationManager {
     private String channelId = "angler_service_channel";
 
     private AnglerService anglerService;
-    private MediaController mediaController;
-    private MediaController.TransportControls transportControls;
+    private MediaControllerCompat mediaController;
+    private MediaControllerCompat.TransportControls transportControls;
     private BroadcastReceiver noiseReceiver;
     private IntentFilter intentFilter;
 
-    MediaSession.Token token;
+    MediaSessionCompat.Token token;
 
     //private RemoteViews notificationView;
 
@@ -55,8 +54,12 @@ class AnglerNotificationManager {
         Creating Media Controller and get Transport Controls to control Media Session through Media Session Callbacks
          */
         token = anglerService.getSessionToken();
-        mediaController = new MediaController(anglerService, token);
-        transportControls = mediaController.getTransportControls();
+        try {
+            mediaController = new MediaControllerCompat(anglerService, token);
+            transportControls = mediaController.getTransportControls();
+        }catch (RemoteException e){
+            e.printStackTrace();
+        }
 
         /*
         Creating Broadcast Receiver to manage intents, getting from Notification and run corresponding Transport Controls action
@@ -69,7 +72,7 @@ class AnglerNotificationManager {
 
                 switch (action){
                     case ACTION_PLAY:
-                        transportControls.sendCustomAction(PlaybackManager.RESUME, null);
+                        transportControls.play();
                         break;
                     case ACTION_PAUSE:
                         transportControls.pause();
@@ -124,7 +127,7 @@ class AnglerNotificationManager {
         /*
         Get metadata via Media Controller
          */
-        MediaMetadata metadata = mediaController.getMetadata();
+        MediaMetadataCompat metadata = mediaController.getMetadata();
         String title = String.valueOf(metadata.getDescription().getTitle());
         String artist = String.valueOf(metadata.getDescription().getSubtitle());
         String album = String.valueOf(metadata.getDescription().getDescription());
@@ -158,7 +161,7 @@ class AnglerNotificationManager {
                 .addAction(new Notification.Action(R.drawable.ic_skip_next_black_24dp, "next",
                         PendingIntent.getBroadcast(anglerService, 0, new Intent(ACTION_NEXT), 0)))
                 .setStyle(new Notification.MediaStyle()
-                    .setMediaSession(token)
+                    //.setMediaSession(token)
                     .setShowActionsInCompactView(0,1,2))
                 .setContentIntent(PendingIntent.getActivity(anglerService,1, contentIntent,0))
                 .setDeleteIntent(PendingIntent.getBroadcast(anglerService,0,new Intent(ACTION_STOP),PendingIntent.FLAG_CANCEL_CURRENT))
@@ -203,15 +206,15 @@ class AnglerNotificationManager {
     /*
     Notification callbacks recreating Notification on playback state change
      */
-    private MediaController.Callback notificationCallback = new MediaController.Callback() {
+    private MediaControllerCompat.Callback notificationCallback = new MediaControllerCompat.Callback() {
         @Override
-        public void onPlaybackStateChanged(@NonNull PlaybackState state) {
+        public void onPlaybackStateChanged(PlaybackStateCompat state) {
             super.onPlaybackStateChanged(state);
             createNotification();
         }
 
         @Override
-        public void onMetadataChanged(@Nullable MediaMetadata metadata) {
+        public void onMetadataChanged(@Nullable MediaMetadataCompat metadata) {
             super.onMetadataChanged(metadata);
         }
     };

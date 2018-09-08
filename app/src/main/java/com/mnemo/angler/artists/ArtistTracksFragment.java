@@ -21,8 +21,6 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.mnemo.angler.MainActivity;
-import com.mnemo.angler.playlist_manager.PlaybackManager;
-import com.mnemo.angler.playlist_manager.PlaylistManager;
 import com.mnemo.angler.R;
 import com.mnemo.angler.data.AnglerContract.*;
 
@@ -33,7 +31,7 @@ import butterknife.Unbinder;
 import static com.mnemo.angler.data.AnglerContract.BASE_CONTENT_URI;
 
 
-public class ArtistTracksFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, ArtistTrackCursorAdapter.onTrackClickListener {
+public class ArtistTracksFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
 
 
     public ArtistTracksFragment() {
@@ -82,11 +80,17 @@ public class ArtistTracksFragment extends Fragment implements LoaderManager.Load
                 switch (intent.getAction()){
                     case "track_changed":
 
-                        if (localPlaylistName.equals(PlaylistManager.currentPlaylistName)) {
-                            trackList.setItemChecked(PlaylistManager.position, true);
-                        }
+                        String trackPlaylist = intent.getStringExtra("track_playlist");
+                        String mediaId = intent.getStringExtra("media_id");
 
-                        break;
+                        if (trackPlaylist.equals(localPlaylistName)) {
+                            try {
+                                trackList.setItemChecked(trackList.getPositionForView(trackList.findViewWithTag(mediaId)), true);
+                            }catch (NullPointerException e){
+                                e.printStackTrace();
+                            }
+                        }
+           break;
                 }
 
             }
@@ -119,15 +123,14 @@ public class ArtistTracksFragment extends Fragment implements LoaderManager.Load
     }
 
     @Override
-    public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
+    public void onLoadFinished(@NonNull Loader<Cursor> loader, final Cursor data) {
 
             switch (loader.getId()){
 
                 case LOADER_TRACK_LIST_ID:
 
-                    adapter = new ArtistTrackCursorAdapter(getContext(), data);
+                    adapter = new ArtistTrackCursorAdapter(getContext(), data, localPlaylistName);
 
-                    adapter.setOnTrackClickedListener(this);
 
                     trackList.setAdapter(adapter);
 
@@ -145,27 +148,13 @@ public class ArtistTracksFragment extends Fragment implements LoaderManager.Load
         }
     }
 
-    @Override
-    public void onTrackClicked(int position) {
 
-        PlaybackManager.isCurrentTrackHidden = false;
-
-        if (!PlaylistManager.currentPlaylistName.equals("artist/" + artist)){
-            PlaylistManager.currentPlaylistName = "artist/" + artist;
-        }
-
-        PlaylistManager.position = position;
-        ((MainActivity)getActivity()).trackClicked();
-    }
 
 
     @Override
     public void onResume() {
         super.onResume();
-/*
-        if (localPlaylistName.equals(PlaylistManager.currentPlaylistName)) {
-            trackList.setItemChecked(PlaylistManager.position, true);
-        }*/
+
     }
 
     @Override

@@ -66,15 +66,16 @@
     <es.claucookie.miniequalizerlibrary.EqualizerView
         xmlns:custom="http://schemas.android.com/apk/res-auto"
         android:id="@+id/playilst_song_mimi_equalizer"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
         android:layout_marginEnd="8dp"
+        android:layout_marginBottom="4dp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         custom:animDuration="3500"
-        custom:foregroundColor="@color/colorAccent" />
+        custom:foregroundColor="@color/colorAccentLight" />
 
 
 </android.support.constraint.ConstraintLayout>

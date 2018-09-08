@@ -12,7 +12,7 @@ import android.os.Environment;
 import android.webkit.MimeTypeMap;
 
 import com.mnemo.angler.data.AnglerContract.*;
-import com.mnemo.angler.playlist_manager.Track;
+import com.mnemo.angler.playlists.Track;
 
 import java.io.File;
 import java.util.ArrayList;

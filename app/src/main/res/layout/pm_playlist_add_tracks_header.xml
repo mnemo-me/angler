@@ -5,7 +5,8 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:paddingStart="12dp"
-    android:paddingEnd="8dp">
+    android:paddingEnd="8dp"
+    android:paddingTop="4dp">
 
     <ImageView
         android:layout_width="wrap_content"
@@ -16,8 +17,9 @@
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="52dp"
-        android:gravity="center_vertical"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/default_margin"
+        android:paddingBottom="@dimen/default_margin"
         android:textSize="12sp"
         android:textColor="@color/selected_grey_white"
         android:text="@string/add_tracks_to_playlist"/>
