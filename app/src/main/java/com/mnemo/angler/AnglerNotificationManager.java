@@ -1,7 +1,6 @@
 package com.mnemo.angler;
 
 
-import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -11,9 +10,11 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.support.annotation.Nullable;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.MediaSessionCompat;
@@ -147,22 +148,23 @@ class AnglerNotificationManager {
         /*
         Configure Notification Builder
          */
-        Notification.Builder mBuilder = new Notification.Builder(anglerService, channelId)
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(anglerService, channelId)
                 .setSmallIcon(R.mipmap.mm)
-                .setVisibility(Notification.VISIBILITY_PUBLIC)
+                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setContentTitle(title)
                 .setContentText(artist)
                 .setSubText(album)
                 .setLargeIcon(albumImage)
-                .addAction(new Notification.Action(R.drawable.ic_skip_previous_black_24dp, "previous",
+                .addAction(new NotificationCompat.Action(R.drawable.ic_skip_previous_black_24dp, "previous",
                         PendingIntent.getBroadcast(anglerService, 0, new Intent(ACTION_PREV), 0)))
-                .addAction(new Notification.Action(R.drawable.ic_pause_black_24dp, "pause",
+                .addAction(new NotificationCompat.Action(R.drawable.ic_pause_black_24dp, "pause",
                         PendingIntent.getBroadcast(anglerService, 0, new Intent(ACTION_PAUSE), 0)))
-                .addAction(new Notification.Action(R.drawable.ic_skip_next_black_24dp, "next",
+                .addAction(new NotificationCompat.Action(R.drawable.ic_skip_next_black_24dp, "next",
                         PendingIntent.getBroadcast(anglerService, 0, new Intent(ACTION_NEXT), 0)))
-                .setStyle(new Notification.MediaStyle()
-                    //.setMediaSession(token)
-                    .setShowActionsInCompactView(0,1,2))
+                .setShowWhen(false)
+                .setStyle(new android.support.v4.media.app.NotificationCompat.MediaStyle()
+                        .setMediaSession(token)
+                        .setShowActionsInCompactView(0,1,2))
                 .setContentIntent(PendingIntent.getActivity(anglerService,1, contentIntent,0))
                 .setDeleteIntent(PendingIntent.getBroadcast(anglerService,0,new Intent(ACTION_STOP),PendingIntent.FLAG_CANCEL_CURRENT))
                 .setOngoing(false);
@@ -171,15 +173,13 @@ class AnglerNotificationManager {
         // Bind Notification with Angler Service
         anglerService.startForeground(191, mBuilder.build());
 
-        /*
-        register Notification Callback
-         */
+
+        // register Notification Callback
         mediaController.registerCallback(notificationCallback);
     }
 
-    /*
-    Unregister receiver and callback
-     */
+
+    // Unregister receiver and callback
     void unregisterCallback(){
         mediaController.unregisterCallback(notificationCallback);
     }

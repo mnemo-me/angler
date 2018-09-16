@@ -3,7 +3,9 @@ package com.mnemo.angler;
 
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.MediaPlayer;
+import android.media.audiofx.Equalizer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -18,6 +20,7 @@ import android.support.v4.media.session.PlaybackStateCompat;
 
 import com.mnemo.angler.data.MediaAssistant;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +29,11 @@ public class AnglerService extends MediaBrowserServiceCompat {
 
     private MediaSessionCompat mMediaSession;
     private MediaPlayer mMediaPlayer;
-    //public static Equalizer mEqualizer;
+    private Equalizer mEqualizer;
+
+    private ArrayList<Integer> bandsFrequencies;
+    private ArrayList<String> equalizerPresets;
+
 
     private AnglerNotificationManager mAnglerNotificationManager;
 
@@ -86,7 +93,9 @@ public class AnglerService extends MediaBrowserServiceCompat {
 
 
         mMediaPlayer = new MediaPlayer();
-        //mEqualizer = new Equalizer(0, mMediaPlayer.getAudioSessionId());
+
+        // Setup equalizer
+        setupEqualizer();
 
     }
 
@@ -179,15 +188,18 @@ public class AnglerService extends MediaBrowserServiceCompat {
 
             onPrepare();
 
-            if (mMediaPlayer != null){
-                mMediaPlayer.release();
+            try {
+                mMediaPlayer.reset();
+                mMediaPlayer.setDataSource(AnglerService.this, metadata.getDescription().getMediaUri());
+                mMediaPlayer.prepare();
+                mMediaPlayer.start();
+                mMediaPlayer.setOnCompletionListener(onCompletionListener);
+
+                mAnglerNotificationManager.createNotification();
+
+            }catch (IOException e){
+                e.printStackTrace();
             }
-
-            mMediaPlayer = MediaPlayer.create(AnglerService.this, metadata.getDescription().getMediaUri());
-            mMediaPlayer.start();
-            mMediaPlayer.setOnCompletionListener(onCompletionListener);
-
-            mAnglerNotificationManager.createNotification();
 
         }
 
@@ -319,6 +331,37 @@ public class AnglerService extends MediaBrowserServiceCompat {
 
                     break;
 
+                case "equalizer_on_off":
+
+                    boolean onOffState = extras.getBoolean("on_off_state");
+                    mEqualizer.setEnabled(onOffState);
+
+                    break;
+
+                case "equalizer_change_preset":
+
+                    short presetNumber = extras.getShort("preset_number");
+
+                    mEqualizer.usePreset(presetNumber);
+
+                    Intent intent = new Intent();
+                    for (short i = 0; i < bandsFrequencies.size(); i++){
+                        intent.putExtra("band_" + i + "_level", mEqualizer.getBandLevel(i));
+                    }
+                    intent.setAction("equalizer_preset_changed");
+                    sendBroadcast(intent);
+
+                    break;
+
+                case "equalizer_change_band_level":
+
+                    short bandNumber = extras.getShort("band_number");
+                    short bandLevel = extras.getShort("band_level");
+
+                    mEqualizer.setBandLevel(bandNumber, bandLevel);
+
+                    break;
+
             }
         }
 
@@ -344,7 +387,7 @@ public class AnglerService extends MediaBrowserServiceCompat {
     public int onStartCommand(Intent intent, int flags, int startId) {
 
 
-        // Initialize qu_queue and notification manager
+        // Initialize queue and notification manager
         queue = new ArrayList<>();
         mAnglerNotificationManager = new AnglerNotificationManager(this);
 
@@ -370,4 +413,69 @@ public class AnglerService extends MediaBrowserServiceCompat {
         return MediaAssistant.extractMetadata(description);
     }
 
+
+    private void setupEqualizer(){
+
+        SharedPreferences sharedPreferences = getSharedPreferences("equalizer_pref", MODE_PRIVATE);
+
+        mEqualizer = new Equalizer(0, mMediaPlayer.getAudioSessionId());
+
+        // get equalizer variables and attach them to media session
+        short lowerEqualizerBandLevel = mEqualizer.getBandLevelRange()[0];
+        short upperEqualizerBandLevel = mEqualizer.getBandLevelRange()[1];
+
+
+        bandsFrequencies = new ArrayList<>();
+
+        for (short i = 0; i < mEqualizer.getNumberOfBands(); i ++){
+            bandsFrequencies.add(mEqualizer.getCenterFreq(i));
+        }
+
+
+        equalizerPresets = new ArrayList<>();
+
+        for (short i = 0; i < mEqualizer.getNumberOfPresets(); i++){
+            equalizerPresets.add(mEqualizer.getPresetName(i));
+        }
+
+
+        Bundle bundle = new Bundle();
+        bundle.putShort("lower_equalizer_band_level", lowerEqualizerBandLevel);
+        bundle.putShort("upper_equalizer_band_level", upperEqualizerBandLevel);
+        bundle.putIntegerArrayList("bands_frequencies", bandsFrequencies);
+        bundle.putStringArrayList("equalizer_presets", equalizerPresets);
+
+        mMediaSession.setExtras(bundle);
+
+
+        // configure equalizer from shared preferences
+        boolean onOffState = sharedPreferences.getBoolean("on_off_state", false);
+        mEqualizer.setEnabled(onOffState);
+
+        if (onOffState){
+
+            short presetNumber = (short) sharedPreferences.getInt("active_preset", 0);
+
+            if (presetNumber != 0){
+
+                Bundle extras = new Bundle();
+                extras.putShort("preset_number", (short)(presetNumber - 1));
+
+                mMediaSession.getController().getTransportControls().sendCustomAction("equalizer_change_preset", extras);
+            }else{
+
+                for (short i = 0; i < bandsFrequencies.size(); i++){
+
+                    short bandLevel = (short)sharedPreferences.getInt("band_" + i + "_level", 0);
+
+                    Bundle extras = new Bundle();
+                    extras.putShort("band_" + i + "_level", bandLevel);
+
+                    mMediaSession.getController().getTransportControls().sendCustomAction("equalizer_change_band_level", extras);
+                }
+            }
+        }
+
+
+    }
 }

@@ -99,13 +99,13 @@
             android:src="@drawable/baseline_queue_music_black_24dp"/>
 
 
-        <!-- seekbar and time views -->
+        <!-- SeekBar and time views -->
         <SeekBar
             android:id="@+id/media_panel_seek_bar"
             android:layout_width="330dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:progressBackgroundTint="#22000000"
+            android:progressBackgroundTint="@color/gGrey"
             android:progressTint="@color/colorAccentLight"
             android:thumbTint="@color/colorAccentLight"
             app:layout_constraintBottom_toTopOf="@+id/media_panel_play_pause"

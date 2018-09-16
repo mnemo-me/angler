@@ -38,17 +38,28 @@
             android:id="@+id/equalizer_on_off"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/default_margin"
             android:layout_gravity="end"
             android:src="@drawable/ic_layers_black_24dp"/>
-
 
     </android.support.v7.widget.Toolbar>
 
     <FrameLayout
         android:id="@+id/eq_frame"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintTop_toBottomOf="@id/equalizer_toolbar"
+        app:layout_constraintStart_toEndOf="@id/eq_frame_2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <FrameLayout
+        android:id="@+id/eq_frame_2"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/equalizer_toolbar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/eq_frame"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
 

@@ -118,7 +118,7 @@ public class MainActivity extends AppCompatActivity implements ArtistsFragment.A
     IntentFilter intentFilter;
     int queuePosition = 0;
 
-
+    private Bundle serviceBundle;
 
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -141,7 +141,6 @@ public class MainActivity extends AppCompatActivity implements ArtistsFragment.A
 
         if (savedInstanceState == null) {
             Intent intent = new Intent(this, AnglerService.class);
-            intent.putExtra("active_playlist", getPreferences(Context.MODE_PRIVATE).getString("active_playlist", AnglerContract.SourceEntry.SOURCE_LIBRARY));
             startService(intent);
 
         }
@@ -201,6 +200,7 @@ public class MainActivity extends AppCompatActivity implements ArtistsFragment.A
             currentTrackPlaylist = savedInstanceState.getString("current_track_playlist");
             currentMediaId = savedInstanceState.getString("current_media_id");
             queuePosition = savedInstanceState.getInt("queue_position");
+            serviceBundle = savedInstanceState.getBundle("service_bundle");
         }
 
         queueButton.setOnClickListener(new View.OnClickListener() {
@@ -251,6 +251,11 @@ public class MainActivity extends AppCompatActivity implements ArtistsFragment.A
             try {
                 MediaControllerCompat mController = new MediaControllerCompat(MainActivity.this, token);
                 MediaControllerCompat.setMediaController(MainActivity.this, mController);
+
+                if (serviceBundle == null) {
+                    serviceBundle = MediaControllerCompat.getMediaController(MainActivity.this).getExtras();
+                }
+
             }catch (RemoteException e){
                 e.printStackTrace();
             }
@@ -509,6 +514,7 @@ public class MainActivity extends AppCompatActivity implements ArtistsFragment.A
         outState.putString("current_track_playlist", currentTrackPlaylist);
         outState.putString("current_media_id", currentMediaId);
         outState.putInt("queue_position", queuePosition);
+        outState.putBundle("service_bundle", serviceBundle);
     }
 
 
@@ -843,5 +849,9 @@ public class MainActivity extends AppCompatActivity implements ArtistsFragment.A
 
     public int getQueuePosition() {
         return queuePosition;
+    }
+
+    public Bundle getServiceBundle() {
+        return serviceBundle;
     }
 }

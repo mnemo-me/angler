@@ -4,7 +4,6 @@ package com.mnemo.angler.queue_manager;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.constraint.ConstraintLayout;
 import android.support.v4.media.MediaDescriptionCompat;
 import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.MediaSessionCompat;
@@ -21,6 +20,8 @@ import com.mnemo.angler.R;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import es.claucookie.miniequalizerlibrary.EqualizerView;
 
 public class QueueAdapter extends RecyclerView.Adapter<QueueAdapter.ViewHolder> implements DragAndDropCallback.OnDragAndDropListener{
@@ -32,11 +33,27 @@ public class QueueAdapter extends RecyclerView.Adapter<QueueAdapter.ViewHolder> 
 
     static class ViewHolder extends RecyclerView.ViewHolder{
 
-        private ConstraintLayout constraintLayout;
+        @BindView(R.id.queue_track_title)
+        TextView titleView;
 
-        ViewHolder(ConstraintLayout constraintLayout) {
-            super(constraintLayout);
-            this.constraintLayout = constraintLayout;
+        @BindView(R.id.queue_track_artist)
+        TextView artistView;
+
+        @BindView(R.id.queue_track_duration)
+        TextView durationView;
+
+        @BindView(R.id.queue_track_play_selector)
+        ImageView playSelector;
+
+        @BindView(R.id.queue_track_delete)
+        FrameLayout deleteTrack;
+
+        @BindView(R.id.queue_track_mini_equalizer)
+        EqualizerView equalizerView;
+
+        ViewHolder(View view) {
+            super(view);
+            ButterKnife.bind(this, view);
         }
     }
 
@@ -56,59 +73,49 @@ public class QueueAdapter extends RecyclerView.Adapter<QueueAdapter.ViewHolder> 
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-        ConstraintLayout constraintLayout = (ConstraintLayout) LayoutInflater.from(parent.getContext()).inflate(R.layout.qu_queue_track, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.qu_queue_track, parent, false);
 
-        return new ViewHolder(constraintLayout);
+        return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
 
-        MediaSessionCompat.QueueItem queueItem = queue.get(position);
-        final MediaDescriptionCompat description = queueItem.getDescription();
+        MediaSessionCompat.QueueItem queueItem = queue.get(holder.getAdapterPosition());
+        MediaDescriptionCompat description = queueItem.getDescription();
 
         // extract metadata
         String title = description.getTitle().toString();
         String artist = description.getSubtitle().toString();
 
         Bundle bundle = description.getExtras();
-        String album = bundle.getString("album");
         long duration = bundle.getLong("duration");
 
-        String uri = description.getMediaUri().toString();
-
         // Assign metadata to views
-        TextView titleView = holder.constraintLayout.findViewById(R.id.queue_track_title);
-        titleView.setText(title);
-
-        TextView artistView = holder.constraintLayout.findViewById(R.id.queue_track_artist);
-        artistView.setText(artist);
-
-        TextView durationView = holder.constraintLayout.findViewById(R.id.queue_track_duration);
-        durationView.setText(MainActivity.convertToTime(duration));
+        holder.titleView.setText(title);
+        holder.artistView.setText(artist);
+        holder.durationView.setText(MainActivity.convertToTime(duration));
 
         // Activate selector and miniequalizer views
-        ImageView playSelector = holder.constraintLayout.findViewById(R.id.queue_track_play_selector);
-        EqualizerView equalizerView = holder.constraintLayout.findViewById(R.id.queue_track_mini_equalizer);
-
         if (position == queuePosition){
-            playSelector.setVisibility(View.VISIBLE);
-            equalizerView.setVisibility(View.VISIBLE);
-            durationView.setVisibility(View.GONE);
+            holder.playSelector.setVisibility(View.VISIBLE);
+            holder.equalizerView.setVisibility(View.VISIBLE);
+            holder.durationView.setVisibility(View.GONE);
 
-            equalizerView.animateBars();
+            holder.equalizerView.animateBars();
 
         }else{
-            if (playSelector.getVisibility() == View.VISIBLE){
-                playSelector.setVisibility(View.GONE);
-                equalizerView.setVisibility(View.GONE);
-                durationView.setVisibility(View.VISIBLE);
+
+            if (holder.playSelector.getVisibility() == View.VISIBLE){
+                holder.playSelector.setVisibility(View.GONE);
+                holder.equalizerView.setVisibility(View.GONE);
+                holder.durationView.setVisibility(View.VISIBLE);
             }
         }
 
 
 
-        holder.constraintLayout.setOnClickListener(new View.OnClickListener() {
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 MediaControllerCompat.getMediaController((MainActivity)context).getTransportControls().skipToQueueItem(holder.getAdapterPosition());
@@ -116,8 +123,7 @@ public class QueueAdapter extends RecyclerView.Adapter<QueueAdapter.ViewHolder> 
         });
 
         // Delete track button
-        FrameLayout deleteTrack = holder.constraintLayout.findViewById(R.id.queue_track_delete);
-        deleteTrack.setOnClickListener(new View.OnClickListener() {
+        holder.deleteTrack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 

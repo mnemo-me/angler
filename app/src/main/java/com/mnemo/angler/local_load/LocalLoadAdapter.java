@@ -12,7 +12,7 @@ public class LocalLoadAdapter extends FragmentStatePagerAdapter {
 
     private ArrayList<String> imageFolders;
 
-    public LocalLoadAdapter(FragmentManager fm, ArrayList<String> imageFolders) {
+    LocalLoadAdapter(FragmentManager fm, ArrayList<String> imageFolders) {
         super(fm);
         this.imageFolders = imageFolders;
     }

@@ -67,27 +67,27 @@
         app:layout_constraintTop_toBottomOf="@id/background_changer_toolbar"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBarWrapper
+    <TextView
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="8dp"
-        android:layout_gravity="center_horizontal"
-        app:layout_constraintStart_toEndOf="@id/background_changer_toolbar"
-        android:visibility="gone">
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/default_margin"
+        android:textColor="@color/gGrey"
+        android:text="@string/opacity"
+        app:layout_constraintBottom_toTopOf="@id/overlay_seekbar"
+        app:layout_constraintStart_toStartOf="parent"/>
 
-        <com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBar
-            android:id="@+id/overlay_seekbar"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:max="255"
-            android:splitTrack="false"
-            app:seekBarRotation="CW270"
-            android:progressTint="@color/colorAccent"
-            android:thumbTint="@color/colorAccent"/>
-
-    </com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBarWrapper>
+    <SeekBar
+        android:id="@+id/overlay_seekbar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:max="255"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/background_changer_recycler_view"
+        android:progressTint="@color/colorAccentLight"
+        android:thumbTint="@color/colorAccentLight"
+        android:progressBackgroundTint="#FFFFFF"/>
 
 
 </android.support.constraint.ConstraintLayout>

@@ -4,9 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.constraint.Group;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,15 +21,25 @@ import com.mnemo.angler.local_load.LocalLoadActivity;
 import java.io.File;
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class BackgroundImageAdapter extends RecyclerView.Adapter<BackgroundImageAdapter.ViewHolder>{
 
     static class ViewHolder extends RecyclerView.ViewHolder{
 
-        private CardView cardView;
+        @BindView(R.id.background)
+        ImageView background;
 
-        ViewHolder(CardView cardView){
-            super(cardView);
-            this.cardView = cardView;
+        @BindView(R.id.background_add_image)
+        Group addImage;
+
+        @BindView(R.id.background_delete_image)
+        ImageButton deleteImage;
+
+        ViewHolder(View view){
+            super(view);
+            ButterKnife.bind(this, view);
         }
     }
 
@@ -43,64 +52,62 @@ public class BackgroundImageAdapter extends RecyclerView.Adapter<BackgroundImage
 
     private Context context;
     private ArrayList<String> images;
+    private String currentBackground;
     private String selectedImage;
     private OnImageClickListener onImageClickListener;
+
+    private int orientation;
 
     BackgroundImageAdapter(Context context, ArrayList<String> images) {
         this.context = context;
         this.images = images;
+
+        currentBackground = ((Activity) context).getPreferences(Context.MODE_PRIVATE).getString("background", null);
+        orientation = context.getResources().getConfiguration().orientation;
     }
 
     @Override
-    public BackgroundImageAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    @NonNull
+    public BackgroundImageAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-        CardView cardView = (CardView) LayoutInflater.from(parent.getContext()).inflate(R.layout.bg_background_item, parent, false);
-        return new BackgroundImageAdapter.ViewHolder(cardView);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.bg_background_item, parent, false);
+        return new BackgroundImageAdapter.ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
-
-        ImageView background = holder.cardView.findViewById(R.id.background);
+    public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
 
         final String image = images.get(position);
 
-        if (image.equals(((Activity) context).getPreferences(Context.MODE_PRIVATE).getString("background", null))){
-            holder.cardView.setActivated(true);
-            if (image.equals(selectedImage)){
-                holder.cardView.setSelected(true);
-            }else{
-                holder.cardView.setSelected(false);
-            }
+        if (image.equals(currentBackground)){
+            holder.itemView.setActivated(true);
         }else{
-            holder.cardView.setActivated(false);
-            if (image.equals(selectedImage)){
-                holder.cardView.setSelected(true);
-            }else{
-                holder.cardView.setSelected(false);
-            }
+            holder.itemView.setActivated(false);
         }
 
-        final int orientation = context.getResources().getConfiguration().orientation;
+        if (image.equals(selectedImage)){
+            holder.itemView.setSelected(true);
+        }else{
+            holder.itemView.setSelected(false);
+        }
+
 
         if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-            ImageAssistant.loadImage(context, image, background, 120);
+            ImageAssistant.loadImage(context, image, holder.background, 120);
         } else {
-            ImageAssistant.loadImage(context, image.replace("port", "land"), background, 120);
+            ImageAssistant.loadImage(context, image.replace("port", "land"), holder.background, 120);
         }
 
-
-        Group addImage = holder.cardView.findViewById(R.id.background_add_image);
 
         if (holder.getAdapterPosition() != 0) {
-            if (addImage.getVisibility() == View.VISIBLE){
-                addImage.setVisibility(View.GONE);
+            if (holder.addImage.getVisibility() == View.VISIBLE){
+                holder.addImage.setVisibility(View.GONE);
             }
         }else{
-            addImage.setVisibility(View.VISIBLE);
+            holder.addImage.setVisibility(View.VISIBLE);
         }
 
-        background.setOnClickListener(new View.OnClickListener() {
+        holder.background.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -122,17 +129,15 @@ public class BackgroundImageAdapter extends RecyclerView.Adapter<BackgroundImage
         });
 
         // Setup delete image button
-        ImageButton deleteImage = holder.cardView.findViewById(R.id.background_delete_image);
-
         if (image.startsWith("R.drawable.")){
-            deleteImage.setVisibility(View.GONE);
+            holder.deleteImage.setVisibility(View.GONE);
         }else{
-            if (deleteImage.getVisibility() == View.GONE){
-                deleteImage.setVisibility(View.VISIBLE);
+            if (holder.deleteImage.getVisibility() == View.GONE){
+                holder.deleteImage.setVisibility(View.VISIBLE);
             }
         }
 
-        deleteImage.setOnClickListener(new View.OnClickListener() {
+        holder.deleteImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
