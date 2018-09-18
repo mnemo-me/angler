@@ -49,26 +49,23 @@ public class ImageFolderAdapter extends RecyclerView.Adapter<ImageFolderAdapter.
 
         ImageAssistant.loadImage(context, images.get(position), (ImageView)holder.itemView, 120);
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        holder.itemView.setOnClickListener(v -> {
 
-                ImageCarouselFragment imageCarouselFragment = new ImageCarouselFragment();
-                Bundle args = new Bundle();
-                args.putStringArrayList("images",images);
-                args.putString("image",images.get(holder.getAdapterPosition()));
-                args.putInt("position", holder.getAdapterPosition());
-                imageCarouselFragment.setArguments(args);
+            ImageCarouselFragment imageCarouselFragment = new ImageCarouselFragment();
+            Bundle args = new Bundle();
+            args.putStringArrayList("images",images);
+            args.putString("image",images.get(holder.getAdapterPosition()));
+            args.putInt("position", holder.getAdapterPosition());
+            imageCarouselFragment.setArguments(args);
 
-                imageCarouselFragment.setSharedElementEnterTransition(new Fade());
+            imageCarouselFragment.setSharedElementEnterTransition(new Fade());
 
-                ((AppCompatActivity)context).getSupportFragmentManager().beginTransaction()
-                        .addSharedElement(holder.itemView, context.getResources().getString(R.string.local_load_image_transition) + holder.getAdapterPosition())
-                        .add(R.id.full_frame, imageCarouselFragment)
-                        .addToBackStack(null)
-                        .commit();
+            ((AppCompatActivity)context).getSupportFragmentManager().beginTransaction()
+                    .addSharedElement(holder.itemView, context.getResources().getString(R.string.local_load_image_transition) + holder.getAdapterPosition())
+                    .add(R.id.full_frame, imageCarouselFragment)
+                    .addToBackStack(null)
+                    .commit();
 
-            }
         });
 
     }

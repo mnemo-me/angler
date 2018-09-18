@@ -22,11 +22,8 @@ public class LyricsDialogFragment extends DialogFragment {
 
         builder.setMessage("In development");
 
-        builder.setNegativeButton(R.string.close, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
+        builder.setNegativeButton(R.string.close, (dialogInterface, i) -> {
 
-            }
         });
 
         return builder.create();

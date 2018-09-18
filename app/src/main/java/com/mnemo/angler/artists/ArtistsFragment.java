@@ -86,31 +86,23 @@ public class ArtistsFragment extends Fragment implements DrawerItem, LoaderManag
         adapter = new SimpleCursorAdapter(getContext(), R.layout.art_artists, null,
                 new String[]{TrackEntry.COLUMN_ARTIST, TrackEntry.COLUMN_ARTIST}, new int[]{R.id.artist_image, R.id.artist_artist}, 0);
 
-        adapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
-            @Override
-            public boolean setViewValue(View view, Cursor cursor, int i) {
+        adapter.setViewBinder((view12, cursor, i) -> {
 
-                if (view.getId() == R.id.artist_image){
+            if (view12.getId() == R.id.artist_image){
 
-                    String imagePath = AnglerFolder.PATH_ARTIST_IMAGE + File.separator + cursor.getString(1) + ".jpg";
-                    ImageAssistant.loadImage(getContext(), imagePath, (ImageView)view, 200);
+                String imagePath = AnglerFolder.PATH_ARTIST_IMAGE + File.separator + cursor.getString(1) + ".jpg";
+                ImageAssistant.loadImage(getContext(), imagePath, (ImageView) view12, 200);
 
-                    return true;
-                }
-                return false;
+                return true;
             }
+            return false;
         });
         gridView.setAdapter(adapter);
 
 
 
         // Setup drawer menu button
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ((DrawerLayout) getActivity().findViewById(R.id.drawer_layout)).openDrawer(Gravity.START);
-            }
-        });
+        back.setOnClickListener(view1 -> ((DrawerLayout) getActivity().findViewById(R.id.drawer_layout)).openDrawer(Gravity.START));
 
         return view;
     }
@@ -137,61 +129,55 @@ public class ArtistsFragment extends Fragment implements DrawerItem, LoaderManag
             case LOADER_ARTISTS_ID:
                 adapter.swapCursor(data);
 
-                gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                gridView.setOnItemClickListener((parent, view, position, id) -> {
 
-                        data.moveToPosition(position);
+                    data.moveToPosition(position);
 
-                        String artist = data.getString(1);
-                        String imagePath = AnglerFolder.PATH_ARTIST_IMAGE + File.separator + artist + ".jpg";
+                    String artist = data.getString(1);
+                    String imagePath = AnglerFolder.PATH_ARTIST_IMAGE + File.separator + artist + ".jpg";
 
-                        ArtistConfigurationFragment artistConfigurationFragment = new ArtistConfigurationFragment();
-                        Bundle args = new Bundle();
-                        args.putString("image", imagePath);
-                        args.putString("artist", data.getString(1));
-                        artistConfigurationFragment.setArguments(args);
+                    ArtistConfigurationFragment artistConfigurationFragment = new ArtistConfigurationFragment();
+                    Bundle args = new Bundle();
+                    args.putString("image", imagePath);
+                    args.putString("artist", data.getString(1));
+                    artistConfigurationFragment.setArguments(args);
 
-                        artistConfigurationFragment.setSharedElementEnterTransition(new TransitionSet()
-                            .addTransition(new ChangeBounds())
-                            .addTransition(new ChangeTransform()));
+                    artistConfigurationFragment.setSharedElementEnterTransition(new TransitionSet()
+                        .addTransition(new ChangeBounds())
+                        .addTransition(new ChangeTransform()));
 
 
-                        artistConfigurationFragment.setEnterTransition(new Fade().setStartDelay(100));
-                        artistConfigurationFragment.setReturnTransition(null);
+                    artistConfigurationFragment.setEnterTransition(new Fade().setStartDelay(100));
+                    artistConfigurationFragment.setReturnTransition(null);
 
-                        setReenterTransition(new Fade().setStartDelay(100));
+                    setReenterTransition(new Fade().setStartDelay(100));
 
-                        getActivity().getSupportFragmentManager().beginTransaction()
-                            .addSharedElement(back, "back")
-                            .replace(R.id.frame, artistConfigurationFragment, "artist_conf_fragment")
-                                    .addToBackStack(null)
-                                    .commit();
+                    getActivity().getSupportFragmentManager().beginTransaction()
+                        .addSharedElement(back, "back")
+                        .replace(R.id.frame, artistConfigurationFragment, "artist_conf_fragment")
+                                .addToBackStack(null)
+                                .commit();
 
 
-                    }
                 });
 
-                gridView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-                    @Override
-                    public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long id) {
+                gridView.setOnItemLongClickListener((adapterView, view, position, id) -> {
 
-                        data.moveToPosition(position);
+                    data.moveToPosition(position);
 
-                        String artist = data.getString(1);
-                        String imagePath = AnglerFolder.PATH_ARTIST_IMAGE + File.separator + artist + ".jpg";
+                    String artist = data.getString(1);
+                    String imagePath = AnglerFolder.PATH_ARTIST_IMAGE + File.separator + artist + ".jpg";
 
-                        ArtistCoverDialogFragment artistCoverDialogFragment = new ArtistCoverDialogFragment();
+                    ArtistCoverDialogFragment artistCoverDialogFragment = new ArtistCoverDialogFragment();
 
-                        Bundle args = new Bundle();
-                        args.putString("artist", artist);
-                        args.putString("image", imagePath);
-                        artistCoverDialogFragment.setArguments(args);
+                    Bundle args = new Bundle();
+                    args.putString("artist", artist);
+                    args.putString("image", imagePath);
+                    artistCoverDialogFragment.setArguments(args);
 
-                        artistCoverDialogFragment.show(getActivity().getSupportFragmentManager(), "Artist cover fragment");
+                    artistCoverDialogFragment.show(getActivity().getSupportFragmentManager(), "Artist cover fragment");
 
-                        return true;
-                    }
+                    return true;
                 });
 
                 break;

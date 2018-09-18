@@ -203,6 +203,7 @@ public class MainPlaylistFragment extends ListFragment implements LoaderManager.
 
                 getListView().setAdapter(adapter);
 
+
                 // Initialize queue on first launch
                 if (!AnglerService.isQueueInitialized){
                     ((MainActivity)getActivity()).addToQueue(((MainActivity)getActivity()).getMainPlaylistName(), data, false);

@@ -107,24 +107,21 @@ public class BackgroundImageAdapter extends RecyclerView.Adapter<BackgroundImage
             holder.addImage.setVisibility(View.VISIBLE);
         }
 
-        holder.background.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        holder.background.setOnClickListener(v -> {
 
-                if (holder.getAdapterPosition() == 0){
+            if (holder.getAdapterPosition() == 0){
 
-                    Intent intent = new Intent(context, LocalLoadActivity.class);
-                    intent.putExtra("image_type", "background");
+                Intent intent = new Intent(context, LocalLoadActivity.class);
+                intent.putExtra("image_type", "background");
 
-                    context.startActivity(intent);
+                context.startActivity(intent);
 
-                }else {
+            }else {
 
-                    selectedImage = image;
-                    notifyDataSetChanged();
+                selectedImage = image;
+                notifyDataSetChanged();
 
-                    onImageClickListener.onImageClick(image);
-                }
+                onImageClickListener.onImageClick(image);
             }
         });
 
@@ -137,41 +134,37 @@ public class BackgroundImageAdapter extends RecyclerView.Adapter<BackgroundImage
             }
         }
 
-        holder.deleteImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        holder.deleteImage.setOnClickListener(view -> {
 
-                File fileToDeletePort = new File(image);
-                fileToDeletePort.delete();
+            File fileToDeletePort = new File(image);
+            fileToDeletePort.delete();
 
-                File fileToDeleteLand = new File(image.replace("port", "land"));
-                fileToDeleteLand.delete();
+            File fileToDeleteLand = new File(image.replace("port", "land"));
+            fileToDeleteLand.delete();
 
-                String backgroundImage = ((Activity) context).getPreferences(Context.MODE_PRIVATE).getString("background", "R.drawable.back");
+            String backgroundImage = ((Activity) context).getPreferences(Context.MODE_PRIVATE).getString("background", "R.drawable.back");
 
-                if (!backgroundImage.startsWith("R.drawable.")) {
-                    if (!new File(backgroundImage).exists()) {
-                        backgroundImage = "R.drawable.back";
-                        onImageClickListener.onImageClick(backgroundImage);
-                        ImageView background = ((MainActivity) context).findViewById(R.id.main_fragment_background);
+            if (!backgroundImage.startsWith("R.drawable.")) {
+                if (!new File(backgroundImage).exists()) {
+                    backgroundImage = "R.drawable.back";
+                    onImageClickListener.onImageClick(backgroundImage);
+                    ImageView background = ((MainActivity) context).findViewById(R.id.main_fragment_background);
 
-                        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-                            ImageAssistant.loadImage(context, backgroundImage, background, 520);
-                        } else {
-                            ImageAssistant.loadImage(context, backgroundImage.replace("port", "land"), background, 203);
-                        }
+                    if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+                        ImageAssistant.loadImage(context, backgroundImage, background, 520);
+                    } else {
+                        ImageAssistant.loadImage(context, backgroundImage.replace("port", "land"), background, 203);
                     }
                 }
-
-                if (images.get(holder.getAdapterPosition()).equals(selectedImage)){
-                    onImageClickListener.onImageClick(backgroundImage);
-                }
-
-
-                images.remove(holder.getAdapterPosition());
-                notifyItemRemoved(holder.getAdapterPosition());
             }
 
+            if (images.get(holder.getAdapterPosition()).equals(selectedImage)){
+                onImageClickListener.onImageClick(backgroundImage);
+            }
+
+
+            images.remove(holder.getAdapterPosition());
+            notifyItemRemoved(holder.getAdapterPosition());
         });
 
 

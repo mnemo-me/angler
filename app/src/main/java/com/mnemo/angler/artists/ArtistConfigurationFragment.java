@@ -108,19 +108,16 @@ public class ArtistConfigurationFragment extends Fragment implements LoaderManag
         ImageAssistant.loadImage(getContext(), image, imageView, imageHeight);
 
         // Set on click listener on cover
-        cardView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        cardView.setOnClickListener(view1 -> {
 
-                ArtistCoverDialogFragment artistCoverDialogFragment = new ArtistCoverDialogFragment();
+            ArtistCoverDialogFragment artistCoverDialogFragment = new ArtistCoverDialogFragment();
 
-                Bundle args = new Bundle();
-                args.putString("artist", artist);
-                args.putString("image", image);
-                artistCoverDialogFragment.setArguments(args);
+            Bundle args = new Bundle();
+            args.putString("artist", artist);
+            args.putString("image", image);
+            artistCoverDialogFragment.setArguments(args);
 
-                artistCoverDialogFragment.show(getActivity().getSupportFragmentManager(), "Artist cover fragment");
-            }
+            artistCoverDialogFragment.show(getActivity().getSupportFragmentManager(), "Artist cover fragment");
         });
 
         // Assign artist text

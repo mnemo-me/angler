@@ -72,20 +72,17 @@ public class ArtistAlbumsFragment extends Fragment implements LoaderManager.Load
                 new String[]{TrackEntry.COLUMN_ALBUM, TrackEntry.COLUMN_ALBUM},
                 new int[]{R.id.album_image, R.id.album_name},0);
 
-        adapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
-            @Override
-            public boolean setViewValue(View view, Cursor cursor, int i) {
+        adapter.setViewBinder((view1, cursor, i) -> {
 
-                if (view.getId() == R.id.album_image){
+            if (view1.getId() == R.id.album_image){
 
-                    String albumImagePath = AnglerFolder.PATH_ALBUM_COVER + File.separator + artist + File.separator + cursor.getString(3) + ".jpg";
+                String albumImagePath = AnglerFolder.PATH_ALBUM_COVER + File.separator + artist + File.separator + cursor.getString(3) + ".jpg";
 
-                    ImageAssistant.loadImage(getContext(),albumImagePath, (ImageView) view, 125);
+                ImageAssistant.loadImage(getContext(),albumImagePath, (ImageView) view1, 125);
 
-                    return true;
-                }
-                return false;
+                return true;
             }
+            return false;
         });
 
         albumsGrid.setAdapter(adapter);
@@ -126,54 +123,48 @@ public class ArtistAlbumsFragment extends Fragment implements LoaderManager.Load
 
                 adapter.swapCursor(data);
 
-                albumsGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                albumsGrid.setOnItemClickListener((parent, view, position, id) -> {
 
-                        data.moveToPosition(position);
+                    data.moveToPosition(position);
 
-                        String album = data.getString(3);
-                        String albumImagePath = AnglerFolder.PATH_ALBUM_COVER + File.separator + artist + File.separator + album + ".jpg";
+                    String album = data.getString(3);
+                    String albumImagePath = AnglerFolder.PATH_ALBUM_COVER + File.separator + artist + File.separator + album + ".jpg";
 
-                        AlbumConfigurationFragment albumConfigurationFragment = new AlbumConfigurationFragment();
+                    AlbumConfigurationFragment albumConfigurationFragment = new AlbumConfigurationFragment();
 
-                        Bundle args = new Bundle();
-                        args.putString("image", albumImagePath);
-                        args.putString("album_name", album);
-                        args.putString("artist", artist);
-                        albumConfigurationFragment.setArguments(args);
+                    Bundle args = new Bundle();
+                    args.putString("image", albumImagePath);
+                    args.putString("album_name", album);
+                    args.putString("artist", artist);
+                    albumConfigurationFragment.setArguments(args);
 
 
-                        getActivity().getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.frame, albumConfigurationFragment, "album_conf_fragment")
-                                .addToBackStack(null)
-                                .commit();
+                    getActivity().getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.frame, albumConfigurationFragment, "album_conf_fragment")
+                            .addToBackStack(null)
+                            .commit();
 
 
-                    }
                 });
 
-                albumsGrid.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-                    @Override
-                    public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long id) {
+                albumsGrid.setOnItemLongClickListener((adapterView, view, position, id) -> {
 
-                        data.moveToPosition(position);
+                    data.moveToPosition(position);
 
-                        String album = data.getString(3);
-                        String albumImagePath = AnglerFolder.PATH_ALBUM_COVER + File.separator + artist + File.separator + album + ".jpg";
+                    String album = data.getString(3);
+                    String albumImagePath = AnglerFolder.PATH_ALBUM_COVER + File.separator + artist + File.separator + album + ".jpg";
 
-                        ArtistCoverDialogFragment artistCoverDialogFragment = new ArtistCoverDialogFragment();
+                    ArtistCoverDialogFragment artistCoverDialogFragment = new ArtistCoverDialogFragment();
 
-                        Bundle args = new Bundle();
-                        args.putString("artist", artist);
-                        args.putString("album", album);
-                        args.putString("image", albumImagePath);
-                        artistCoverDialogFragment.setArguments(args);
+                    Bundle args = new Bundle();
+                    args.putString("artist", artist);
+                    args.putString("album", album);
+                    args.putString("image", albumImagePath);
+                    artistCoverDialogFragment.setArguments(args);
 
-                        artistCoverDialogFragment.show(getActivity().getSupportFragmentManager(), "Album cover fragment");
+                    artistCoverDialogFragment.show(getActivity().getSupportFragmentManager(), "Album cover fragment");
 
-                        return true;
-                    }
+                    return true;
                 });
 
                 break;

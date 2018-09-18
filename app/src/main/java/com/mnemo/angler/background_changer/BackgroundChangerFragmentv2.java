@@ -143,17 +143,14 @@ public class BackgroundChangerFragmentv2 extends Fragment implements DrawerItem 
         // Initialize recycler view and background image adapter for it
         backgroundImageAdapter = new BackgroundImageAdapter(getActivity(), images);
 
-        backgroundImageAdapter.setOnImageClickListener(new BackgroundImageAdapter.OnImageClickListener() {
-            @Override
-            public void onImageClick(final String image) {
+        backgroundImageAdapter.setOnImageClickListener(image1 -> {
 
-                if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-                    ImageAssistant.loadImage(getContext(), image, background, imageHeight);
-                }else{
-                    ImageAssistant.loadImage(getContext(), image.replace("port", "land"), background, imageHeight);
-                }
-
+            if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+                ImageAssistant.loadImage(getContext(), image1, background, imageHeight);
+            }else{
+                ImageAssistant.loadImage(getContext(), image1.replace("port", "land"), background, imageHeight);
             }
+
         });
 
         recyclerView.setAdapter(backgroundImageAdapter);
@@ -171,34 +168,31 @@ public class BackgroundChangerFragmentv2 extends Fragment implements DrawerItem 
 
 
         // Setup select button
-        select.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        select.setOnClickListener(view1 -> {
 
-                SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+            SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
 
-                String selectedBackgroundImage = backgroundImageAdapter.getSelectedImage();
+            String selectedBackgroundImage = backgroundImageAdapter.getSelectedImage();
 
-                if (selectedBackgroundImage != null){
-                    sharedPref.edit().putString("background", selectedBackgroundImage).apply();
+            if (selectedBackgroundImage != null){
+                sharedPref.edit().putString("background", selectedBackgroundImage).apply();
 
-                    ImageView background = getActivity().findViewById(R.id.main_fragment_background);
+                ImageView background = getActivity().findViewById(R.id.main_fragment_background);
 
-                    if (orientation == Configuration.ORIENTATION_PORTRAIT){
-                        ImageAssistant.loadImage(getContext(), selectedBackgroundImage, background, imageHeight);
-                    }else{
-                        ImageAssistant.loadImage(getContext(), selectedBackgroundImage.replace("port", "land"), background, imageHeight);
-                    }
-
+                if (orientation == Configuration.ORIENTATION_PORTRAIT){
+                    ImageAssistant.loadImage(getContext(), selectedBackgroundImage, background, imageHeight);
+                }else{
+                    ImageAssistant.loadImage(getContext(), selectedBackgroundImage.replace("port", "land"), background, imageHeight);
                 }
 
-                sharedPref.edit().putInt("overlay", seekBar.getProgress()).apply();
-
-                ((MainActivity)getActivity()).setOverlay(seekBar.getProgress());
-
-
-                getActivity().onBackPressed();
             }
+
+            sharedPref.edit().putInt("overlay", seekBar.getProgress()).apply();
+
+            ((MainActivity)getActivity()).setOverlay(seekBar.getProgress());
+
+
+            getActivity().onBackPressed();
         });
 
         // CropIwa result receiver updating image cover when new cover cropped

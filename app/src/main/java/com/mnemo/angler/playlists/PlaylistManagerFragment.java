@@ -83,30 +83,22 @@ public class PlaylistManagerFragment extends Fragment implements DrawerItem, Loa
                 new String[]{PlaylistEntry.COLUMN_IMAGE_RESOURCE, PlaylistEntry.COLUMN_NAME, PlaylistEntry.COLUMN_TRACKS_TABLE},
                 new int[]{R.id.playlist_options_image, R.id.playlist_options_name},0);
 
-        adapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
-            @Override
-            public boolean setViewValue(View view, Cursor cursor, int i) {
+        adapter.setViewBinder((view12, cursor, i) -> {
 
-                if (view.getId() == R.id.playlist_options_image){
-                    ImageAssistant.loadImage(getContext(),cursor.getString(2), (ImageView) view, 125);
-                    view.setTransitionName(cursor.getString(1) + " cover");
+            if (view12.getId() == R.id.playlist_options_image){
+                ImageAssistant.loadImage(getContext(),cursor.getString(2), (ImageView) view12, 125);
+                view12.setTransitionName(cursor.getString(1) + " cover");
 
-                    ((CardView)view.getParent().getParent()).setTransitionName(cursor.getString(1) + " card");
-                    return true;
-                }
-                return false;
+                ((CardView) view12.getParent().getParent()).setTransitionName(cursor.getString(1) + " card");
+                return true;
             }
+            return false;
         });
 
         playlistGrid.setAdapter(adapter);
 
 
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ((DrawerLayout) getActivity().findViewById(R.id.drawer_layout)).openDrawer(Gravity.START);
-            }
-        });
+        back.setOnClickListener(view1 -> ((DrawerLayout) getActivity().findViewById(R.id.drawer_layout)).openDrawer(Gravity.START));
 
         return view;
     }
@@ -136,63 +128,57 @@ public class PlaylistManagerFragment extends Fragment implements DrawerItem, Loa
 
                 final int orientation = getResources().getConfiguration().orientation;
 
-                playlistGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                playlistGrid.setOnItemClickListener((parent, view, position, id) -> {
 
-                        data.moveToPosition(position);
+                    data.moveToPosition(position);
 
-                        String playlistName = data.getString(1);
+                    String playlistName = data.getString(1);
 
-                        PlaylistConfigurationFragment playlistConfigurationFragment = new PlaylistConfigurationFragment();
+                    PlaylistConfigurationFragment playlistConfigurationFragment = new PlaylistConfigurationFragment();
 
-                        Bundle args = new Bundle();
-                        args.putString("image",data.getString(2));
-                        args.putString("playlist_name", playlistName);
+                    Bundle args = new Bundle();
+                    args.putString("image",data.getString(2));
+                    args.putString("playlist_name", playlistName);
 
-                        playlistConfigurationFragment.setArguments(args);
+                    playlistConfigurationFragment.setArguments(args);
 
-                        playlistConfigurationFragment.setSharedElementEnterTransition(new TransitionSet()
-                            .addTransition(new ChangeBounds())
-                            .addTransition(new ChangeTransform()));
+                    playlistConfigurationFragment.setSharedElementEnterTransition(new TransitionSet()
+                        .addTransition(new ChangeBounds())
+                        .addTransition(new ChangeTransform()));
 
-                        playlistConfigurationFragment.setEnterTransition(new Fade().setStartDelay(100));
-                        playlistConfigurationFragment.setReturnTransition(null);
+                    playlistConfigurationFragment.setEnterTransition(new Fade().setStartDelay(100));
+                    playlistConfigurationFragment.setReturnTransition(null);
 
-                        setReenterTransition(new Fade().setStartDelay(100));
+                    setReenterTransition(new Fade().setStartDelay(100));
 
 
-                        getActivity().getSupportFragmentManager().beginTransaction()
-                                .addSharedElement(back, "back")
-                                .replace(R.id.frame,playlistConfigurationFragment, "playlist_conf_fragment")
-                                .addToBackStack(null)
-                                .commit();
+                    getActivity().getSupportFragmentManager().beginTransaction()
+                            .addSharedElement(back, "back")
+                            .replace(R.id.frame,playlistConfigurationFragment, "playlist_conf_fragment")
+                            .addToBackStack(null)
+                            .commit();
 
 
-                    }
                 });
 
-                playlistGrid.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-                    @Override
-                    public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long id) {
+                playlistGrid.setOnItemLongClickListener((adapterView, view, position, id) -> {
 
-                        data.moveToPosition(position);
+                    data.moveToPosition(position);
 
-                        String title = data.getString(1);
-                        String image = data.getString(2);
+                    String title = data.getString(1);
+                    String image = data.getString(2);
 
-                        PlaylistCreationDialogFragment playlistCreationDialogFragment = new PlaylistCreationDialogFragment();
+                    PlaylistCreationDialogFragment playlistCreationDialogFragment = new PlaylistCreationDialogFragment();
 
-                        Bundle args = new Bundle();
-                        args.putString("action", "change");
-                        args.putString("title", title);
-                        args.putString("image", image);
-                        playlistCreationDialogFragment.setArguments(args);
+                    Bundle args = new Bundle();
+                    args.putString("action", "change");
+                    args.putString("title", title);
+                    args.putString("image", image);
+                    playlistCreationDialogFragment.setArguments(args);
 
-                        playlistCreationDialogFragment.show(getActivity().getSupportFragmentManager(), "playlist_creation_dialog_fragment");
+                    playlistCreationDialogFragment.show(getActivity().getSupportFragmentManager(), "playlist_creation_dialog_fragment");
 
-                        return true;
-                    }
+                    return true;
                 });
 
                 break;

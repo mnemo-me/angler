@@ -130,20 +130,17 @@ public class AlbumConfigurationFragment extends Fragment implements LoaderManage
         getLoaderManager().initLoader(LOADER_TRACK_LIST_ID, null, this);
 
         // Set on click listener on cover
-        cardView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        cardView.setOnClickListener(view1 -> {
 
-                ArtistCoverDialogFragment artistCoverDialogFragment = new ArtistCoverDialogFragment();
+            ArtistCoverDialogFragment artistCoverDialogFragment = new ArtistCoverDialogFragment();
 
-                Bundle args = new Bundle();
-                args.putString("artist", artist);
-                args.putString("album", title);
-                args.putString("image", image);
-                artistCoverDialogFragment.setArguments(args);
+            Bundle args = new Bundle();
+            args.putString("artist", artist);
+            args.putString("album", title);
+            args.putString("image", image);
+            artistCoverDialogFragment.setArguments(args);
 
-                artistCoverDialogFragment.show(getActivity().getSupportFragmentManager(), "Album cover fragment");
-            }
+            artistCoverDialogFragment.show(getActivity().getSupportFragmentManager(), "Album cover fragment");
         });
 
 
@@ -212,12 +209,7 @@ public class AlbumConfigurationFragment extends Fragment implements LoaderManage
 
                 tracksCountView.setText(getString(R.string.tracks) + " " + adapter.getCount());
 
-                playAllButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        playAll(data);
-                    }
-                });
+                playAllButton.setOnClickListener(view -> playAll(data));
 
         }
     }
@@ -275,50 +267,26 @@ public class AlbumConfigurationFragment extends Fragment implements LoaderManage
 
         // Play now
         TextView playNow = bodyLayout.findViewById(R.id.play_all_play_now);
-        playNow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        playNow.setOnClickListener(view -> {
 
-                ((MainActivity)getActivity()).playNow(localPlaylistName, 0, data);
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        dialog.dismiss();
-                    }
-                }, 300);
-            }
+            ((MainActivity)getActivity()).playNow(localPlaylistName, 0, data);
+            new Handler().postDelayed(() -> dialog.dismiss(), 300);
         });
 
         // Play next
         TextView playNext = bodyLayout.findViewById(R.id.play_all_play_next);
-        playNext.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        playNext.setOnClickListener(view -> {
 
-                ((MainActivity)getActivity()).addToQueue(localPlaylistName, data, true);
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        dialog.dismiss();
-                    }
-                }, 300);
-            }
+            ((MainActivity)getActivity()).addToQueue(localPlaylistName, data, true);
+            new Handler().postDelayed(() -> dialog.dismiss(), 300);
         });
 
         // Add to queue
         TextView addToQueue = bodyLayout.findViewById(R.id.play_all_add_to_queue);
-        addToQueue.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        addToQueue.setOnClickListener(view -> {
 
-                ((MainActivity)getActivity()).addToQueue(localPlaylistName, data, false);
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        dialog.dismiss();
-                    }
-                }, 300);
-            }
+            ((MainActivity)getActivity()).addToQueue(localPlaylistName, data, false);
+            new Handler().postDelayed(() -> dialog.dismiss(), 300);
         });
     }
 }

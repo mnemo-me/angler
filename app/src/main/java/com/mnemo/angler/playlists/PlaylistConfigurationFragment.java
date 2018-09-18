@@ -141,17 +141,14 @@ public class PlaylistConfigurationFragment extends Fragment implements LoaderMan
         // Add add tracks to playlist header to playlist
         LinearLayout headerAddTracksToPlaylist = (LinearLayout)LayoutInflater.from(getContext()).inflate(R.layout.pm_playlist_add_tracks_header, null, false);
 
-        headerAddTracksToPlaylist.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        headerAddTracksToPlaylist.setOnClickListener(view13 -> {
 
-                AddTracksDialogFragment addTracksDialogFragment = new AddTracksDialogFragment();
-                Bundle argsToAddTracks = new Bundle();
-                argsToAddTracks.putString("db_name", dbName);
-                addTracksDialogFragment.setArguments(argsToAddTracks);
+            AddTracksDialogFragment addTracksDialogFragment = new AddTracksDialogFragment();
+            Bundle argsToAddTracks = new Bundle();
+            argsToAddTracks.putString("db_name", dbName);
+            addTracksDialogFragment.setArguments(argsToAddTracks);
 
-                addTracksDialogFragment.show(getActivity().getSupportFragmentManager(), "Add tracks dialog");
-            }
+            addTracksDialogFragment.show(getActivity().getSupportFragmentManager(), "Add tracks dialog");
         });
 
         listView.addHeaderView(headerAddTracksToPlaylist);
@@ -164,32 +161,24 @@ public class PlaylistConfigurationFragment extends Fragment implements LoaderMan
 
 
         // Setup menu
-        cardView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        cardView.setOnClickListener(view12 -> {
 
-                PlaylistCreationDialogFragment playlistCreationDialogFragment = new PlaylistCreationDialogFragment();
+            PlaylistCreationDialogFragment playlistCreationDialogFragment = new PlaylistCreationDialogFragment();
 
-                Bundle args = new Bundle();
-                args.putString("action", "change");
-                args.putString("title", title);
-                args.putString("image", image);
-                playlistCreationDialogFragment.setArguments(args);
+            Bundle args = new Bundle();
+            args.putString("action", "change");
+            args.putString("title", title);
+            args.putString("image", image);
+            playlistCreationDialogFragment.setArguments(args);
 
-                playlistCreationDialogFragment.show(getActivity().getSupportFragmentManager(), "playlist_creation_dialog_fragment");
-            }
+            playlistCreationDialogFragment.show(getActivity().getSupportFragmentManager(), "playlist_creation_dialog_fragment");
         });
 
 
 
 
         // Initialize back button
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getActivity().onBackPressed();
-            }
-        });
+        back.setOnClickListener(view1 -> getActivity().onBackPressed());
 
 
         // Initialize broadcast receiver
@@ -336,12 +325,7 @@ public class PlaylistConfigurationFragment extends Fragment implements LoaderMan
                 checkTracksCount();
 
 
-                playAllButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        playAll(data);
-                    }
-                });
+                playAllButton.setOnClickListener(view -> playAll(data));
 
         }
     }
@@ -363,38 +347,35 @@ public class PlaylistConfigurationFragment extends Fragment implements LoaderMan
 
 
         Snackbar snackbar = Snackbar.make(getView(), R.string.track_removed, Snackbar.LENGTH_LONG);
-        snackbar.setAction(R.string.undo, new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        snackbar.setAction(R.string.undo, view -> {
 
-                ContentValues contentValues = new ContentValues();
-                contentValues.put("_id", trackToRemove.getId());
-                contentValues.put(TrackEntry.COLUMN_TITLE, trackToRemove.getTitle());
-                contentValues.put(TrackEntry.COLUMN_ARTIST, trackToRemove.getArtist());
-                contentValues.put(TrackEntry.COLUMN_ALBUM, trackToRemove.getAlbum());
-                contentValues.put(TrackEntry.COLUMN_DURATION, trackToRemove.getDuration());
-                contentValues.put(TrackEntry.COLUMN_URI, trackToRemove.getUri());
-                contentValues.put(TrackEntry.COLUMN_SOURCE, trackToRemove.getSource());
-                contentValues.put(TrackEntry.COLUMN_POSITION, position);
+            ContentValues contentValues = new ContentValues();
+            contentValues.put("_id", trackToRemove.getId());
+            contentValues.put(TrackEntry.COLUMN_TITLE, trackToRemove.getTitle());
+            contentValues.put(TrackEntry.COLUMN_ARTIST, trackToRemove.getArtist());
+            contentValues.put(TrackEntry.COLUMN_ALBUM, trackToRemove.getAlbum());
+            contentValues.put(TrackEntry.COLUMN_DURATION, trackToRemove.getDuration());
+            contentValues.put(TrackEntry.COLUMN_URI, trackToRemove.getUri());
+            contentValues.put(TrackEntry.COLUMN_SOURCE, trackToRemove.getSource());
+            contentValues.put(TrackEntry.COLUMN_POSITION, position);
 
 
-                getActivity().getContentResolver().insert(Uri.withAppendedPath(AnglerContract.BASE_CONTENT_URI, dbName), contentValues);
+            getActivity().getContentResolver().insert(Uri.withAppendedPath(AnglerContract.BASE_CONTENT_URI, dbName), contentValues);
 
-                adapter.incrementPositions(position - 1);
+            adapter.incrementPositions(position - 1);
 
 
 /*
-                if (AnglerService.mPlaylistManager.getCurrentPosition() >= position - 1) {
-                    AnglerService.mPlaylistManager.incrementCurrentPosition();
-                }
+            if (AnglerService.mPlaylistManager.getCurrentPosition() >= position - 1) {
+                AnglerService.mPlaylistManager.incrementCurrentPosition();
+            }
 
-                if (PlaybackManager.isCurrentTrackHidden && AnglerService.mPlaylistManager.getCurrentPosition() == position - 2){
-                    AnglerService.mPlaylistManager.incrementCurrentPosition();
-                    PlaybackManager.isCurrentTrackHidden = false;
-                }
+            if (PlaybackManager.isCurrentTrackHidden && AnglerService.mPlaylistManager.getCurrentPosition() == position - 2){
+                AnglerService.mPlaylistManager.incrementCurrentPosition();
+                PlaybackManager.isCurrentTrackHidden = false;
+            }
 */
 
-            }
         });
         snackbar.show();
     }
@@ -415,50 +396,26 @@ public class PlaylistConfigurationFragment extends Fragment implements LoaderMan
 
         // Play now
         TextView playNow = bodyLayout.findViewById(R.id.play_all_play_now);
-        playNow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        playNow.setOnClickListener(view -> {
 
-                ((MainActivity)getActivity()).playNow(localPlaylistName, 0, data);
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        dialog.dismiss();
-                    }
-                }, 300);
-            }
+            ((MainActivity)getActivity()).playNow(localPlaylistName, 0, data);
+            new Handler().postDelayed(() -> dialog.dismiss(), 300);
         });
 
         // Play next
         TextView playNext = bodyLayout.findViewById(R.id.play_all_play_next);
-        playNext.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        playNext.setOnClickListener(view -> {
 
-                ((MainActivity)getActivity()).addToQueue(localPlaylistName, data, true);
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        dialog.dismiss();
-                    }
-                }, 300);
-            }
+            ((MainActivity)getActivity()).addToQueue(localPlaylistName, data, true);
+            new Handler().postDelayed(() -> dialog.dismiss(), 300);
         });
 
         // Add to queue
         TextView addToQueue = bodyLayout.findViewById(R.id.play_all_add_to_queue);
-        addToQueue.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        addToQueue.setOnClickListener(view -> {
 
-                ((MainActivity)getActivity()).addToQueue(localPlaylistName, data, false);
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        dialog.dismiss();
-                    }
-                }, 300);
-            }
+            ((MainActivity)getActivity()).addToQueue(localPlaylistName, data, false);
+            new Handler().postDelayed(() -> dialog.dismiss(), 300);
         });
     }
 

@@ -127,44 +127,35 @@ public class MusicPlayerFragment extends Fragment implements LoaderManager.Loade
     private void configureNavigationButtons(){
 
 
-        playlist.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        playlist.setOnClickListener(v -> {
 
-                playlist.setAlpha(1f);
-                artists.setAlpha(0.5f);
+            playlist.setAlpha(1f);
+            artists.setAlpha(0.5f);
 
-                showLibrary();
-            }
+            showLibrary();
         });
 
 
-        artists.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        artists.setOnClickListener(v -> {
 
-                artists.setAlpha(1f);
-                playlist.setAlpha(0.5f);
+            artists.setAlpha(1f);
+            playlist.setAlpha(0.5f);
 
-                showArtistList();
-            }
+            showArtistList();
         });
 
         // configure search button
-        search.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        search.setOnClickListener(view -> {
 
-                if (searchView.getVisibility() == View.GONE) {
-                    search.setAlpha(1f);
-                    searchView.setVisibility(View.VISIBLE);
-                }else{
-                    searchView.setQuery("", false);
+            if (searchView.getVisibility() == View.GONE) {
+                search.setAlpha(1f);
+                searchView.setVisibility(View.VISIBLE);
+            }else{
+                searchView.setQuery("", false);
 
-                    search.setAlpha(0.5f);
-                    searchView.setVisibility(View.GONE);
+                search.setAlpha(0.5f);
+                searchView.setVisibility(View.GONE);
 
-                }
             }
         });
     }
@@ -180,14 +171,11 @@ public class MusicPlayerFragment extends Fragment implements LoaderManager.Loade
         searchView.setIconified(false);
         searchView.clearFocus();
 
-        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
-            @Override
-            public boolean onClose() {
+        searchView.setOnCloseListener(() -> {
 
-                searchView.setIconified(false);
-                searchView.clearFocus();
-                return false;
-            }
+            searchView.setIconified(false);
+            searchView.clearFocus();
+            return false;
         });
 
 

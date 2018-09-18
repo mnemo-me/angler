@@ -172,58 +172,52 @@ public class AlbumListAdapter extends ArrayAdapter{
                 TextView textOne = constraintLayout.findViewById(albumTextIdentifier.get(i));
                 textOne.setText(album);
 
-                constraintLayout.findViewById(albumIdentifier.get(i)).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
+                constraintLayout.findViewById(albumIdentifier.get(i)).setOnClickListener(view -> {
 
-                        AlbumConfigurationFragment albumDetailFragment = new AlbumConfigurationFragment();
-                        Bundle args = new Bundle();
+                    AlbumConfigurationFragment albumDetailFragment = new AlbumConfigurationFragment();
+                    Bundle args = new Bundle();
 
-                        args.putString("type", "album");
-                        args.putString("image", albumImagePath);
-                        args.putString("album_name", album);
-                        args.putString("artist", artist);
+                    args.putString("type", "album");
+                    args.putString("image", albumImagePath);
+                    args.putString("album_name", album);
+                    args.putString("artist", artist);
 
-                        albumDetailFragment.setArguments(args);
+                    albumDetailFragment.setArguments(args);
 
-                        albumDetailFragment.setSharedElementEnterTransition(new TransitionSet()
-                                .addTransition(new ChangeBounds())
-                                .addTransition(new ChangeTransform()));
+                    albumDetailFragment.setSharedElementEnterTransition(new TransitionSet()
+                            .addTransition(new ChangeBounds())
+                            .addTransition(new ChangeTransform()));
 
-                        albumDetailFragment.setEnterTransition(new Fade().setStartDelay(300));
-                        albumDetailFragment.setReturnTransition(null);
+                    albumDetailFragment.setEnterTransition(new Fade().setStartDelay(300));
+                    albumDetailFragment.setReturnTransition(null);
 
 
-                        ImageView back = ((MainActivity)context).findViewById(R.id.albums_drawer_back);
+                    ImageView back = ((MainActivity)context).findViewById(R.id.albums_drawer_back);
 
-                        FragmentTransaction fragmentTransaction = ((AppCompatActivity) context).getSupportFragmentManager().beginTransaction();
+                    FragmentTransaction fragmentTransaction = ((AppCompatActivity) context).getSupportFragmentManager().beginTransaction();
 
 
-                        fragmentTransaction
-                                .addSharedElement(back, "back")
-                                .replace(R.id.frame, albumDetailFragment)
-                                .addToBackStack(null)
-                                .commit();
-                    }
+                    fragmentTransaction
+                            .addSharedElement(back, "back")
+                            .replace(R.id.frame, albumDetailFragment)
+                            .addToBackStack(null)
+                            .commit();
                 });
 
 
-                constraintLayout.findViewById(albumIdentifier.get(i)).setOnLongClickListener(new View.OnLongClickListener() {
-                    @Override
-                    public boolean onLongClick(View view) {
+                constraintLayout.findViewById(albumIdentifier.get(i)).setOnLongClickListener(view -> {
 
-                        ArtistCoverDialogFragment artistCoverDialogFragment = new ArtistCoverDialogFragment();
+                    ArtistCoverDialogFragment artistCoverDialogFragment = new ArtistCoverDialogFragment();
 
-                        Bundle args = new Bundle();
-                        args.putString("artist", artist);
-                        args.putString("album", album);
-                        args.putString("image", albumImagePath);
-                        artistCoverDialogFragment.setArguments(args);
+                    Bundle args = new Bundle();
+                    args.putString("artist", artist);
+                    args.putString("album", album);
+                    args.putString("image", albumImagePath);
+                    artistCoverDialogFragment.setArguments(args);
 
-                        artistCoverDialogFragment.show(((AppCompatActivity) context).getSupportFragmentManager(), "Album cover fragment");
+                    artistCoverDialogFragment.show(((AppCompatActivity) context).getSupportFragmentManager(), "Album cover fragment");
 
-                        return true;
-                    }
+                    return true;
                 });
 
             }else{

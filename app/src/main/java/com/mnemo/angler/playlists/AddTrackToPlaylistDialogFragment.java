@@ -92,16 +92,13 @@ public class AddTrackToPlaylistDialogFragment extends DialogFragment implements 
                 new String[]{PlaylistEntry.COLUMN_IMAGE_RESOURCE, PlaylistEntry.COLUMN_NAME, PlaylistEntry.COLUMN_TRACKS_TABLE},
                 new int[]{R.id.playlist_options_image, R.id.playlist_options_name},0);
 
-        adapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
-            @Override
-            public boolean setViewValue(View view, Cursor cursor, int i) {
+        adapter.setViewBinder((view, cursor, i) -> {
 
-                if (view.getId() == R.id.playlist_options_image){
-                    ImageAssistant.loadImage(getContext(),cursor.getString(2), (ImageView) view, 125);
-                    return true;
-                }
-                return false;
+            if (view.getId() == R.id.playlist_options_image){
+                ImageAssistant.loadImage(getContext(),cursor.getString(2), (ImageView) view, 125);
+                return true;
             }
+            return false;
         });
 
         getLoaderManager().initLoader(LOADER_PLAYLIST_ID, null, this);
@@ -111,27 +108,21 @@ public class AddTrackToPlaylistDialogFragment extends DialogFragment implements 
         builder.setView(playlistGrid);
 
 
-        builder.setNegativeButton(R.string.close, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
+        builder.setNegativeButton(R.string.close, (dialogInterface, i) -> {
 
-            }
         });
 
-        builder.setNeutralButton(R.string.create_new_playlist, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
+        builder.setNeutralButton(R.string.create_new_playlist, (dialogInterface, i) -> {
 
-                PlaylistCreationDialogFragment playlistCreationDialogFragment = new PlaylistCreationDialogFragment();
+            PlaylistCreationDialogFragment playlistCreationDialogFragment = new PlaylistCreationDialogFragment();
 
-                Bundle args = getArguments();
-                args.putString("action", "create");
+            Bundle args = getArguments();
+            args.putString("action", "create");
 
-                playlistCreationDialogFragment.setArguments(getArguments());
+            playlistCreationDialogFragment.setArguments(getArguments());
 
-                playlistCreationDialogFragment.show(getActivity().getSupportFragmentManager(), "playlist_creation_dialog_fragment");
+            playlistCreationDialogFragment.show(getActivity().getSupportFragmentManager(), "playlist_creation_dialog_fragment");
 
-            }
         });
 
         return builder.create();
@@ -158,24 +149,21 @@ public class AddTrackToPlaylistDialogFragment extends DialogFragment implements 
             case LOADER_PLAYLIST_ID:
                 adapter.swapCursor(data);
 
-                playlistGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                playlistGrid.setOnItemClickListener((parent, view, position, id) -> {
 
-                        data.moveToPosition(position);
+                    data.moveToPosition(position);
 
-                        Cursor cursor = db.query(data.getString(3),new String[]{"COUNT(_id) As Count"},null, null, null, null, null);
-                        cursor.moveToFirst();
-                        int trackPosition = Integer.parseInt(cursor.getString(0)) + 1;
-                        cursor.close();
+                    Cursor cursor = db.query(data.getString(3),new String[]{"COUNT(_id) As Count"},null, null, null, null, null);
+                    cursor.moveToFirst();
+                    int trackPosition = Integer.parseInt(cursor.getString(0)) + 1;
+                    cursor.close();
 
-                        dbHelper.insertTrack(db, data.getString(3), title, artist, album, duration, uri, SourceEntry.SOURCE_PHONE_STORAGE, trackPosition);
+                    dbHelper.insertTrack(db, data.getString(3), title, artist, album, duration, uri, SourceEntry.SOURCE_PHONE_STORAGE, trackPosition);
 
-                        Toast.makeText(getContext(), "'" + artist + " - " + title + "' " + getString(R.string.added_to) + " '" + data.getString(1) + "'", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "'" + artist + " - " + title + "' " + getString(R.string.added_to) + " '" + data.getString(1) + "'", Toast.LENGTH_SHORT).show();
 
-                        dismiss();
+                    dismiss();
 
-                    }
                 });
                 break;
 

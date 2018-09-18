@@ -172,15 +172,12 @@ public class ArtistsFragment extends ListFragment implements LoaderManager.Loade
                 /*
                 move to selected artist tracks fragment
                  */
-                getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                getListView().setOnItemClickListener((adapterView, view, i, l) -> {
 
-                        data.moveToPosition(i);
-                        String artist = data.getString(1);
+                    data.moveToPosition(i);
+                    String artist = data.getString(1);
 
-                        artistFragmentListener.artistClicked(artist);
-                    }
+                    artistFragmentListener.artistClicked(artist);
                 });
 
                 if (!((MainActivity)getActivity()).getFilter().equals("")) {

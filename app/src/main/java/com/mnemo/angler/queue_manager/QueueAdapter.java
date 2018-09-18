@@ -115,23 +115,15 @@ public class QueueAdapter extends RecyclerView.Adapter<QueueAdapter.ViewHolder> 
 
 
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                MediaControllerCompat.getMediaController((MainActivity)context).getTransportControls().skipToQueueItem(holder.getAdapterPosition());
-            }
-        });
+        holder.itemView.setOnClickListener(view -> MediaControllerCompat.getMediaController((MainActivity)context).getTransportControls().skipToQueueItem(holder.getAdapterPosition()));
 
         // Delete track button
-        holder.deleteTrack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        holder.deleteTrack.setOnClickListener(view -> {
 
-                MediaControllerCompat.getMediaController((MainActivity)context).removeQueueItemAt(holder.getAdapterPosition());
-                queue.remove(holder.getAdapterPosition());
-                notifyItemRemoved(holder.getAdapterPosition());
-                onQueueRemovedListener.onQueueRemove();
-            }
+            MediaControllerCompat.getMediaController((MainActivity)context).removeQueueItemAt(holder.getAdapterPosition());
+            queue.remove(holder.getAdapterPosition());
+            notifyItemRemoved(holder.getAdapterPosition());
+            onQueueRemovedListener.onQueueRemove();
         });
 
     }

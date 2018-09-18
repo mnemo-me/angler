@@ -101,264 +101,193 @@ public class PlaylistCursorAdapter extends CursorAdapter {
         // Listeners for track clicks
 
         // OnClickListener
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                ((MainActivity)mContext).playNow(localPlaylistName, position, cursor);
-            }
-        });
+        view.setOnClickListener(view110 -> ((MainActivity)mContext).playNow(localPlaylistName, position, cursor));
 
         // OnLongClickListener
-        view.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
+        view.setOnLongClickListener(view19 -> {
 
-                // Build contextual menu dialog
-                AlertDialog.Builder builder = new AlertDialog.Builder(PlaylistCursorAdapter.this.mContext);
+            // Build contextual menu dialog
+            AlertDialog.Builder builder = new AlertDialog.Builder(PlaylistCursorAdapter.this.mContext);
 
-                // Set title
-                LinearLayout titleLayout = (LinearLayout) LayoutInflater.from(PlaylistCursorAdapter.this.mContext).inflate(R.layout.pm_track_context_menu_title, null, false);
+            // Set title
+            LinearLayout titleLayout = (LinearLayout) LayoutInflater.from(PlaylistCursorAdapter.this.mContext).inflate(R.layout.pm_track_context_menu_title, null, false);
 
-                TextView contextMenuTitle = titleLayout.findViewById(R.id.context_menu_title);
-                contextMenuTitle.setText(title);
+            TextView contextMenuTitle = titleLayout.findViewById(R.id.context_menu_title);
+            contextMenuTitle.setText(title);
 
-                TextView contextMenuTitleArtist = titleLayout.findViewById(R.id.context_menu_title_artist);
-                contextMenuTitleArtist.setText(artist);
+            TextView contextMenuTitleArtist = titleLayout.findViewById(R.id.context_menu_title_artist);
+            contextMenuTitleArtist.setText(artist);
 
-                builder.setCustomTitle(titleLayout);
+            builder.setCustomTitle(titleLayout);
 
 
-                // Set body
-                LinearLayout bodyLinearLayout = (LinearLayout) LayoutInflater.from(PlaylistCursorAdapter.this.mContext).inflate(R.layout.pm_track_context_menu, null, false);
+            // Set body
+            LinearLayout bodyLinearLayout = (LinearLayout) LayoutInflater.from(PlaylistCursorAdapter.this.mContext).inflate(R.layout.pm_track_context_menu, null, false);
 
-                builder.setView(bodyLinearLayout);
-                final AlertDialog dialog = builder.create();
-                dialog.show();
+            builder.setView(bodyLinearLayout);
+            final AlertDialog dialog = builder.create();
+            dialog.show();
 
 
 
-                // Contextual menu
+            // Contextual menu
 
-                // Play
-                TextView contextMenuPlay = bodyLinearLayout.findViewById(R.id.context_menu_play);
-                contextMenuPlay.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
+            // Play
+            TextView contextMenuPlay = bodyLinearLayout.findViewById(R.id.context_menu_play);
+            contextMenuPlay.setOnClickListener(view18 -> {
 
-                        ((MainActivity)mContext).playNow(localPlaylistName, position, cursor);
+                ((MainActivity)mContext).playNow(localPlaylistName, position, cursor);
 
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                dialog.dismiss();
-                            }
-                        }, 300);
+                new Handler().postDelayed(() -> dialog.dismiss(), 300);
 
+            });
+
+            // Play next
+            TextView contextMenuPlayNext = bodyLinearLayout.findViewById(R.id.context_menu_play_next);
+            contextMenuPlayNext.setOnClickListener(view17 -> {
+
+                ((MainActivity)mContext).addToQueue(MediaAssistant.mergeMediaDescription(id, title, artist, album, duration, uri, localPlaylistName), true);
+
+                new Handler().postDelayed(() -> dialog.dismiss(), 300);
+
+            });
+
+            // Add to queue
+            TextView contextMenuAddToQueue = bodyLinearLayout.findViewById(R.id.context_menu_add_to_queue);
+            contextMenuAddToQueue.setOnClickListener(view16 -> {
+
+                ((MainActivity)mContext).addToQueue(MediaAssistant.mergeMediaDescription(id, title, artist, album, duration, uri, localPlaylistName), false);
+
+                new Handler().postDelayed(() -> dialog.dismiss(), 300);
+
+            });
+
+
+            // Lyrics
+            TextView contextMenuLyrics = bodyLinearLayout.findViewById(R.id.context_menu_lyrics);
+            contextMenuLyrics.setOnClickListener(view15 -> new Handler().postDelayed(() -> {
+                dialog.dismiss();
+
+                LyricsDialogFragment lyricsDialogFragment = new LyricsDialogFragment();
+                lyricsDialogFragment.show(((AppCompatActivity)PlaylistCursorAdapter.this.mContext).getSupportFragmentManager(), "Lyrics dialog");
+
+            }, 300));
+
+
+            // Go to album
+            TextView contextMenuGoToAlbum = bodyLinearLayout.findViewById(R.id.context_menu_go_to_album);
+            contextMenuGoToAlbum.setOnClickListener(view14 -> {
+
+                final AlbumConfigurationFragment albumConfigurationFragment = new AlbumConfigurationFragment();
+
+                Bundle args = new Bundle();
+                args.putString("image", albumImagePath);
+                args.putString("album_name", album);
+                args.putString("artist", artist);
+
+                albumConfigurationFragment.setArguments(args);
+
+                new Handler().postDelayed(() -> {
+                    dialog.dismiss();
+
+                    if (((MainActivity)mContext).findViewById(R.id.main_frame).getVisibility() == View.VISIBLE) {
+                        ((MainActivity) mContext).findViewById(R.id.main_frame).setVisibility(View.GONE);
                     }
-                });
 
-                // Play next
-                TextView contextMenuPlayNext = bodyLinearLayout.findViewById(R.id.context_menu_play_next);
-                contextMenuPlayNext.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
+                    ((AppCompatActivity)mContext).getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.frame, albumConfigurationFragment, "album_conf_fragment")
+                            .addToBackStack(null)
+                            .commit();
+                }, 300);
 
-                        ((MainActivity)mContext).addToQueue(MediaAssistant.mergeMediaDescription(id, title, artist, album, duration, uri, localPlaylistName), true);
+            });
 
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                dialog.dismiss();
-                            }
-                        }, 300);
 
+            // Go to artist
+            TextView contextMenuGoToArtist = bodyLinearLayout.findViewById(R.id.context_menu_go_to_artist);
+            contextMenuGoToArtist.setOnClickListener(view13 -> {
+
+                String imagePath = AnglerFolder.PATH_ARTIST_IMAGE + File.separator + artist + ".jpg";
+
+                final ArtistConfigurationFragment artistConfigurationFragment = new ArtistConfigurationFragment();
+
+                Bundle args = new Bundle();
+                args.putString("image", imagePath);
+                args.putString("artist", artist);
+                artistConfigurationFragment.setArguments(args);
+
+
+                new Handler().postDelayed(() -> {
+                    dialog.dismiss();
+
+                    if (((MainActivity)mContext).findViewById(R.id.main_frame).getVisibility() == View.VISIBLE) {
+                        ((MainActivity) mContext).findViewById(R.id.main_frame).setVisibility(View.GONE);
                     }
-                });
 
-                // Add to queue
-                TextView contextMenuAddToQueue = bodyLinearLayout.findViewById(R.id.context_menu_add_to_queue);
-                contextMenuAddToQueue.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
+                    ((AppCompatActivity) PlaylistCursorAdapter.this.mContext).getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.frame,artistConfigurationFragment, "artist_conf_fragment")
+                            .addToBackStack(null)
+                            .commit();
+                }, 300);
 
-                        ((MainActivity)mContext).addToQueue(MediaAssistant.mergeMediaDescription(id, title, artist, album, duration, uri, localPlaylistName), false);
-
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                dialog.dismiss();
-                            }
-                        }, 300);
-
-                    }
-                });
+            });
 
 
-                // Lyrics
-                TextView contextMenuLyrics = bodyLinearLayout.findViewById(R.id.context_menu_lyrics);
-                contextMenuLyrics.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
+            // Add to playlist
+            TextView contextMenuAdd = bodyLinearLayout.findViewById(R.id.context_menu_add);
+            contextMenuAdd.setOnClickListener(view12 -> new Handler().postDelayed(() -> {
+                dialog.dismiss();
 
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                dialog.dismiss();
+                AddTrackToPlaylistDialogFragment addTrackToPlaylistDialogFragment = new AddTrackToPlaylistDialogFragment();
 
-                                LyricsDialogFragment lyricsDialogFragment = new LyricsDialogFragment();
-                                lyricsDialogFragment.show(((AppCompatActivity)PlaylistCursorAdapter.this.mContext).getSupportFragmentManager(), "Lyrics dialog");
+                Bundle args = MediaAssistant.putMetadataInBundle(id, title, artist, album, duration, uri);
+                addTrackToPlaylistDialogFragment.setArguments(args);
 
-                            }
-                        }, 300);
-                    }
-                });
+                addTrackToPlaylistDialogFragment.show(((AppCompatActivity)PlaylistCursorAdapter.this.mContext).getSupportFragmentManager(), "Add track to playlist dialog");
+
+            }, 300));
 
 
-                // Go to album
-                TextView contextMenuGoToAlbum = bodyLinearLayout.findViewById(R.id.context_menu_go_to_album);
-                contextMenuGoToAlbum.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-
-                        final AlbumConfigurationFragment albumConfigurationFragment = new AlbumConfigurationFragment();
-
-                        Bundle args = new Bundle();
-                        args.putString("image", albumImagePath);
-                        args.putString("album_name", album);
-                        args.putString("artist", artist);
-
-                        albumConfigurationFragment.setArguments(args);
-
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                dialog.dismiss();
-
-                                if (((MainActivity)mContext).findViewById(R.id.main_frame).getVisibility() == View.VISIBLE) {
-                                    ((MainActivity) mContext).findViewById(R.id.main_frame).setVisibility(View.GONE);
-                                }
-
-                                ((AppCompatActivity)mContext).getSupportFragmentManager().beginTransaction()
-                                        .replace(R.id.frame, albumConfigurationFragment, "album_conf_fragment")
-                                        .addToBackStack(null)
-                                        .commit();
-                            }
-                        }, 300);
-
-                    }
-                });
+            // Remove
+            TextView contextMenuRemove = bodyLinearLayout.findViewById(R.id.context_menu_remove_from_playlist);
+            contextMenuRemove.setOnClickListener(view1 -> {
 
 
-                // Go to artist
-                TextView contextMenuGoToArtist = bodyLinearLayout.findViewById(R.id.context_menu_go_to_artist);
-                contextMenuGoToArtist.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-
-                        String imagePath = AnglerFolder.PATH_ARTIST_IMAGE + File.separator + artist + ".jpg";
-
-                        final ArtistConfigurationFragment artistConfigurationFragment = new ArtistConfigurationFragment();
-
-                        Bundle args = new Bundle();
-                        args.putString("image", imagePath);
-                        args.putString("artist", artist);
-                        artistConfigurationFragment.setArguments(args);
-
-
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                dialog.dismiss();
-
-                                if (((MainActivity)mContext).findViewById(R.id.main_frame).getVisibility() == View.VISIBLE) {
-                                    ((MainActivity) mContext).findViewById(R.id.main_frame).setVisibility(View.GONE);
-                                }
-
-                                ((AppCompatActivity) PlaylistCursorAdapter.this.mContext).getSupportFragmentManager().beginTransaction()
-                                        .replace(R.id.frame,artistConfigurationFragment, "artist_conf_fragment")
-                                        .addToBackStack(null)
-                                        .commit();
-                            }
-                        }, 300);
-
-                    }
-                });
-
-
-                // Add to playlist
-                TextView contextMenuAdd = bodyLinearLayout.findViewById(R.id.context_menu_add);
-                contextMenuAdd.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                dialog.dismiss();
-
-                                AddTrackToPlaylistDialogFragment addTrackToPlaylistDialogFragment = new AddTrackToPlaylistDialogFragment();
-
-                                Bundle args = MediaAssistant.putMetadataInBundle(id, title, artist, album, duration, uri);
-                                addTrackToPlaylistDialogFragment.setArguments(args);
-
-                                addTrackToPlaylistDialogFragment.show(((AppCompatActivity)PlaylistCursorAdapter.this.mContext).getSupportFragmentManager(), "Add track to playlist dialog");
-
-                            }
-                        }, 300);
-                    }
-                });
-
-
-                // Remove
-                TextView contextMenuRemove = bodyLinearLayout.findViewById(R.id.context_menu_remove_from_playlist);
-                contextMenuRemove.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-
-
-                        boolean isCurrentTrack = false;
+                boolean isCurrentTrack = false;
 
 /*
-                        if (currentPositionBeforeRemoving >= holder.getAdapterPosition()){
-                            AnglerService.mPlaylistManager.decrementCurrentPosition();
-                        }
+                if (currentPositionBeforeRemoving >= holder.getAdapterPosition()){
+                    AnglerService.mPlaylistManager.decrementCurrentPosition();
+                }
 */
 
-                        Track trackToRemove = new Track(id, title, artist, album, duration, uri, source);
+                Track trackToRemove = new Track(id, title, artist, album, duration, uri, source);
 
-                        PlaylistCursorAdapter.this.mContext.getContentResolver().delete(Uri.withAppendedPath(AnglerContract.BASE_CONTENT_URI, localDBName),
-                                "_id = ?", new String[]{ids.get(position)});
+                PlaylistCursorAdapter.this.mContext.getContentResolver().delete(Uri.withAppendedPath(AnglerContract.BASE_CONTENT_URI, localDBName),
+                        "_id = ?", new String[]{ids.get(position)});
 
-                        decrementPositions(position);
+                decrementPositions(position);
 
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                dialog.dismiss();
-                            }
-                        }, 300);
+                new Handler().postDelayed(() -> dialog.dismiss(), 300);
 
-                        onTrackRemoveListener.onTrackRemove(position + 1, trackToRemove, isCurrentTrack);
+                onTrackRemoveListener.onTrackRemove(position + 1, trackToRemove, isCurrentTrack);
 
-                    }
-                });
+            });
 
 
 
 
-                // Set visibility of contextual menu items
-                contextMenuGoToAlbum.setVisibility(View.VISIBLE);
-                contextMenuGoToArtist.setVisibility(View.VISIBLE);
+            // Set visibility of contextual menu items
+            contextMenuGoToAlbum.setVisibility(View.VISIBLE);
+            contextMenuGoToArtist.setVisibility(View.VISIBLE);
 
-                if (type.equals("playlist")) {
-                    contextMenuRemove.setVisibility(View.VISIBLE);
-                }
-
-
-
-                return true;
+            if (type.equals("playlist")) {
+                contextMenuRemove.setVisibility(View.VISIBLE);
             }
+
+
+
+            return true;
         });
 
 

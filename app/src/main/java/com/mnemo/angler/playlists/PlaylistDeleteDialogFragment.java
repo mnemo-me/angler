@@ -35,36 +35,30 @@ public class PlaylistDeleteDialogFragment extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         builder.setMessage(R.string.delete_playlist_answer)
-                .setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
+                .setPositiveButton(R.string.delete, (dialogInterface, i) -> {
 
-                        // Deleting playlist from database with cover image
-                        AnglerSQLiteDBHelper dbHelper = new AnglerSQLiteDBHelper(getContext());
-                        db = dbHelper.getWritableDatabase();
+                    // Deleting playlist from database with cover image
+                    AnglerSQLiteDBHelper dbHelper = new AnglerSQLiteDBHelper(getContext());
+                    db = dbHelper.getWritableDatabase();
 
-                        db.execSQL("DROP TABLE IF EXISTS " + dbName + ";");
+                    db.execSQL("DROP TABLE IF EXISTS " + dbName + ";");
 
-                        getActivity().getContentResolver().delete(PlaylistEntry.CONTENT_URI, PlaylistEntry.COLUMN_NAME + " = ?", new String[]{title});
+                    getActivity().getContentResolver().delete(PlaylistEntry.CONTENT_URI, PlaylistEntry.COLUMN_NAME + " = ?", new String[]{title});
 
-                        File cover = new File(AnglerFolder.PATH_PLAYLIST_COVER + File.separator + title.replace(" ", "_") + ".jpeg");
-                        cover.delete();
+                    File cover = new File(AnglerFolder.PATH_PLAYLIST_COVER + File.separator + title.replace(" ", "_") + ".jpeg");
+                    cover.delete();
 
-                        Toast.makeText(getContext(), "Playlist '" + title + "' deleted", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Playlist '" + title + "' deleted", Toast.LENGTH_SHORT).show();
 
 
-                        PlaylistConfigurationFragment playlistConfigurationFragment = (PlaylistConfigurationFragment) getActivity().getSupportFragmentManager().findFragmentByTag("playlist_conf_fragment");
+                    PlaylistConfigurationFragment playlistConfigurationFragment = (PlaylistConfigurationFragment) getActivity().getSupportFragmentManager().findFragmentByTag("playlist_conf_fragment");
 
-                        if (playlistConfigurationFragment != null){
-                            getActivity().onBackPressed();
-                        }
+                    if (playlistConfigurationFragment != null){
+                        getActivity().onBackPressed();
                     }
                 })
-                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
+                .setNegativeButton(R.string.cancel, (dialogInterface, i) -> {
 
-                    }
                 });
 
         return builder.create();

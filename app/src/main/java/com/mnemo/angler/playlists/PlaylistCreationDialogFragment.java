@@ -154,28 +154,22 @@ public class PlaylistCreationDialogFragment extends DialogFragment {
 
 
         // Cancel button
-        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
+        builder.setNegativeButton(R.string.cancel, (dialogInterface, i) -> {
 
-            }
         });
 
 
         // Delete playlist button (change only)
         if (action.equals("change")) {
-            builder.setNeutralButton(R.string.delete, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
+            builder.setNeutralButton(R.string.delete, (dialogInterface, i) -> {
 
-                    PlaylistDeleteDialogFragment playlistDeleteDialogFragment = new PlaylistDeleteDialogFragment();
-                    Bundle argsToDelete = new Bundle();
-                    argsToDelete.putString("title", title);
-                    argsToDelete.putString("db_name", dbName);
-                    playlistDeleteDialogFragment.setArguments(argsToDelete);
+                PlaylistDeleteDialogFragment playlistDeleteDialogFragment = new PlaylistDeleteDialogFragment();
+                Bundle argsToDelete = new Bundle();
+                argsToDelete.putString("title", title);
+                argsToDelete.putString("db_name", dbName);
+                playlistDeleteDialogFragment.setArguments(argsToDelete);
 
-                    playlistDeleteDialogFragment.show(getActivity().getSupportFragmentManager(), "Delete playlist dialog");
-                }
+                playlistDeleteDialogFragment.show(getActivity().getSupportFragmentManager(), "Delete playlist dialog");
             });
         }
 
@@ -197,16 +191,13 @@ public class PlaylistCreationDialogFragment extends DialogFragment {
 
 
         // CHANGE COVER
-        loadImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        loadImage.setOnClickListener(view -> {
 
-                Intent intent = new Intent(getActivity(), LocalLoadActivity.class);
-                intent.putExtra("image_type", "cover");
-                intent.putExtra("cover_image", image);
+            Intent intent = new Intent(getActivity(), LocalLoadActivity.class);
+            intent.putExtra("image_type", "cover");
+            intent.putExtra("cover_image", image);
 
-                startActivity(intent);
-            }
+            startActivity(intent);
         });
 
 
@@ -277,157 +268,149 @@ public class PlaylistCreationDialogFragment extends DialogFragment {
 
             case "create":
 
-                positiveButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
+                positiveButton.setOnClickListener(view -> {
 
-                        title = editText.getText().toString();
+                    title = editText.getText().toString();
 
-                        if(!checkPlaylistName(title)){
-                            return;
-                        }
+                    if(!checkPlaylistName(title)){
+                        return;
+                    }
 
 
-                        // Get access to db
-                        AnglerSQLiteDBHelper dbHelper = new AnglerSQLiteDBHelper(getContext());
-                        SQLiteDatabase db = dbHelper.getWritableDatabase();
+                    // Get access to db
+                    AnglerSQLiteDBHelper dbHelper = new AnglerSQLiteDBHelper(getContext());
+                    SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-                        dbName = AnglerSQLiteDBHelper.createTrackTableName(title);
-
-
-                        // Create new playlist table
-                        dbHelper.createTrackTable(db, AnglerSQLiteDBHelper.createTrackTableName(title));
-
-                        // Insert track in new playlist table (if exist)
-                        Bundle bundle = getArguments();
-                        if (bundle != null){
-
-                            // Assign track variables
-                            String title = getArguments().getString("title");
-                            String artist = getArguments().getString("artist");
-                            String album = getArguments().getString("album");
-                            long duration = getArguments().getLong("duration");
-                            String uri = getArguments().getString("uri");
-
-                            dbHelper.insertTrack(db, dbName, title, artist, album, duration, uri, AnglerContract.SourceEntry.SOURCE_PHONE_STORAGE, 0);
-
-                        }
+                    dbName = AnglerSQLiteDBHelper.createTrackTableName(title);
 
 
-                        // Copy new playlist image from temp
-                        String newImageName = AnglerFolder.PATH_PLAYLIST_COVER + File.separator + title.replace(" ", "_") + ".jpeg";
-                        ImageAssistant.copyImage(image, newImageName);
+                    // Create new playlist table
+                    dbHelper.createTrackTable(db, AnglerSQLiteDBHelper.createTrackTableName(title));
 
+                    // Insert track in new playlist table (if exist)
+                    Bundle bundle = getArguments();
+                    if (bundle != null){
 
-                        // Register new playlist in playlists table
-                        ContentValues contentValues = new ContentValues();
-                        contentValues.put(AnglerContract.PlaylistEntry.COLUMN_NAME, title);
-                        contentValues.put(AnglerContract.PlaylistEntry.COLUMN_IMAGE_RESOURCE,newImageName);
-                        contentValues.put(AnglerContract.PlaylistEntry.COLUMN_TRACKS_TABLE, AnglerSQLiteDBHelper.createTrackTableName(title));
-                        contentValues.put(AnglerContract.PlaylistEntry.COLUMN_DEFAULT_PLAYLIST, 0);
-                        getActivity().getContentResolver().insert(AnglerContract.PlaylistEntry.CONTENT_URI, contentValues);
+                        // Assign track variables
+                        String title = getArguments().getString("title");
+                        String artist = getArguments().getString("artist");
+                        String album = getArguments().getString("album");
+                        long duration = getArguments().getLong("duration");
+                        String uri = getArguments().getString("uri");
 
-
-                        Toast.makeText(getContext(), "Playlist '" + title + "' created", Toast.LENGTH_SHORT).show();
-
-                        db.close();
-
-
-                        // Open new playlist
-                        PlaylistConfigurationFragment playlistConfigurationFragment = new PlaylistConfigurationFragment();
-
-                        Bundle args = new Bundle();
-                        args.putString("image", image);
-                        args.putString("playlist_name", title);
-
-                        playlistConfigurationFragment.setArguments(args);
-
-                        getActivity().getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.frame, playlistConfigurationFragment, "playlist_conf_fragment")
-                                .addToBackStack(null)
-                                .commit();
-
-                        dismiss();
+                        dbHelper.insertTrack(db, dbName, title, artist, album, duration, uri, AnglerContract.SourceEntry.SOURCE_PHONE_STORAGE, 0);
 
                     }
+
+
+                    // Copy new playlist image from temp
+                    String newImageName = AnglerFolder.PATH_PLAYLIST_COVER + File.separator + title.replace(" ", "_") + ".jpeg";
+                    ImageAssistant.copyImage(image, newImageName);
+
+
+                    // Register new playlist in playlists table
+                    ContentValues contentValues = new ContentValues();
+                    contentValues.put(AnglerContract.PlaylistEntry.COLUMN_NAME, title);
+                    contentValues.put(AnglerContract.PlaylistEntry.COLUMN_IMAGE_RESOURCE,newImageName);
+                    contentValues.put(AnglerContract.PlaylistEntry.COLUMN_TRACKS_TABLE, AnglerSQLiteDBHelper.createTrackTableName(title));
+                    contentValues.put(AnglerContract.PlaylistEntry.COLUMN_DEFAULT_PLAYLIST, 0);
+                    getActivity().getContentResolver().insert(AnglerContract.PlaylistEntry.CONTENT_URI, contentValues);
+
+
+                    Toast.makeText(getContext(), "Playlist '" + title + "' created", Toast.LENGTH_SHORT).show();
+
+                    db.close();
+
+
+                    // Open new playlist
+                    PlaylistConfigurationFragment playlistConfigurationFragment = new PlaylistConfigurationFragment();
+
+                    Bundle args = new Bundle();
+                    args.putString("image", image);
+                    args.putString("playlist_name", title);
+
+                    playlistConfigurationFragment.setArguments(args);
+
+                    getActivity().getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.frame, playlistConfigurationFragment, "playlist_conf_fragment")
+                            .addToBackStack(null)
+                            .commit();
+
+                    dismiss();
+
                 });
 
                 break;
 
             case "change":
 
-                positiveButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
+                positiveButton.setOnClickListener(view -> {
 
-                        // Change title
-                        String newTitle = editText.getText().toString();
+                    // Change title
+                    String newTitle = editText.getText().toString();
 
-                        if (!title.equals(newTitle)){
-                            if(!checkPlaylistName(newTitle)){
-                                return;
-                            }
-
-                            String oldTitle = title;
-                            title = newTitle;
-
-                            // Get access to db
-                            AnglerSQLiteDBHelper dbHelper = new AnglerSQLiteDBHelper(getContext());
-                            SQLiteDatabase db = dbHelper.getWritableDatabase();
-
-                            // Rename db table
-                            String oldDbName = dbName;
-                            dbName = AnglerSQLiteDBHelper.createTrackTableName(title);
-
-                            db.execSQL("ALTER TABLE " + oldDbName + " RENAME TO " + dbName + ";");
-
-                            // Rename cover image
-                            String oldImage = image;
-                            image = AnglerFolder.PATH_PLAYLIST_COVER + File.separator + title.replace(" ", "_") + ".jpeg";
-
-                            File oldImageFile = new File(oldImage);
-                            oldImageFile.renameTo(new File(image));
-
-                            // Save changes in playlists table
-                            ContentValues contentValues = new ContentValues();
-                            contentValues.put(AnglerContract.PlaylistEntry.COLUMN_NAME, title);
-                            contentValues.put(AnglerContract.PlaylistEntry.COLUMN_IMAGE_RESOURCE, image);
-                            contentValues.put(AnglerContract.PlaylistEntry.COLUMN_TRACKS_TABLE, dbName);
-
-                            getActivity().getContentResolver().update(AnglerContract.PlaylistEntry.CONTENT_URI, contentValues, AnglerContract.PlaylistEntry.COLUMN_NAME + " = ?", new String[]{oldTitle});
-
-                            db.close();
-
-                            // Change title in playlist configuration fragment
-                            PlaylistConfigurationFragment playlistConfigurationFragment = (PlaylistConfigurationFragment) getActivity().getSupportFragmentManager().findFragmentByTag("playlist_conf_fragment");
-
-                            if (playlistConfigurationFragment != null){
-                                playlistConfigurationFragment.changeTitle(title);
-                            }
-
+                    if (!title.equals(newTitle)){
+                        if(!checkPlaylistName(newTitle)){
+                            return;
                         }
 
+                        String oldTitle = title;
+                        title = newTitle;
 
-                        // Change playlist cover
-                        if (isCoverChanged) {
-                            ImageAssistant.copyImage(tempImage, image);
+                        // Get access to db
+                        AnglerSQLiteDBHelper dbHelper = new AnglerSQLiteDBHelper(getContext());
+                        SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-                            // Change cover in playlist configuration fragment
-                            PlaylistConfigurationFragment playlistConfigurationFragment = (PlaylistConfigurationFragment) getActivity().getSupportFragmentManager().findFragmentByTag("playlist_conf_fragment");
+                        // Rename db table
+                        String oldDbName = dbName;
+                        dbName = AnglerSQLiteDBHelper.createTrackTableName(title);
 
-                            if (playlistConfigurationFragment != null){
-                                playlistConfigurationFragment.updateCover();
-                            }else{
+                        db.execSQL("ALTER TABLE " + oldDbName + " RENAME TO " + dbName + ";");
 
-                                PlaylistManagerFragment playlistManagerFragment = (PlaylistManagerFragment) getActivity().getSupportFragmentManager().findFragmentByTag("Playlists fragment");
-                                playlistManagerFragment.updateGrid();
-                            }
+                        // Rename cover image
+                        String oldImage = image;
+                        image = AnglerFolder.PATH_PLAYLIST_COVER + File.separator + title.replace(" ", "_") + ".jpeg";
+
+                        File oldImageFile = new File(oldImage);
+                        oldImageFile.renameTo(new File(image));
+
+                        // Save changes in playlists table
+                        ContentValues contentValues = new ContentValues();
+                        contentValues.put(AnglerContract.PlaylistEntry.COLUMN_NAME, title);
+                        contentValues.put(AnglerContract.PlaylistEntry.COLUMN_IMAGE_RESOURCE, image);
+                        contentValues.put(AnglerContract.PlaylistEntry.COLUMN_TRACKS_TABLE, dbName);
+
+                        getActivity().getContentResolver().update(AnglerContract.PlaylistEntry.CONTENT_URI, contentValues, AnglerContract.PlaylistEntry.COLUMN_NAME + " = ?", new String[]{oldTitle});
+
+                        db.close();
+
+                        // Change title in playlist configuration fragment
+                        PlaylistConfigurationFragment playlistConfigurationFragment = (PlaylistConfigurationFragment) getActivity().getSupportFragmentManager().findFragmentByTag("playlist_conf_fragment");
+
+                        if (playlistConfigurationFragment != null){
+                            playlistConfigurationFragment.changeTitle(title);
                         }
-
-                        dismiss();
 
                     }
 
+
+                    // Change playlist cover
+                    if (isCoverChanged) {
+                        ImageAssistant.copyImage(tempImage, image);
+
+                        // Change cover in playlist configuration fragment
+                        PlaylistConfigurationFragment playlistConfigurationFragment = (PlaylistConfigurationFragment) getActivity().getSupportFragmentManager().findFragmentByTag("playlist_conf_fragment");
+
+                        if (playlistConfigurationFragment != null){
+                            playlistConfigurationFragment.updateCover();
+                        }else{
+
+                            PlaylistManagerFragment playlistManagerFragment = (PlaylistManagerFragment) getActivity().getSupportFragmentManager().findFragmentByTag("Playlists fragment");
+                            playlistManagerFragment.updateGrid();
+                        }
+                    }
+
+                    dismiss();
 
                 });
 

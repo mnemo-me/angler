@@ -125,37 +125,34 @@ public class AddTracksExpandableListAdapter extends BaseExpandableListAdapter{
             checkBox.setEnabled(false);
         }
 
-        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+        checkBox.setOnCheckedChangeListener((compoundButton, b1) -> {
 
 
-                if (b){
-                    if (!artistChecked.contains(artist)) {
-                        artistChecked.add(artist);
+            if (b1){
+                if (!artistChecked.contains(artist)) {
+                    artistChecked.add(artist);
 
-                        for (Track track : tracksToAdd){
-                            if (track.getArtist().equals(artist)){
-                                if (!newTracks.contains(track)){
-                                    newTracks.add(track);
-                                }
+                    for (Track track : tracksToAdd){
+                        if (track.getArtist().equals(artist)){
+                            if (!newTracks.contains(track)){
+                                newTracks.add(track);
                             }
                         }
                     }
-                    notifyDataSetChanged();
-                }else{
-                    artistChecked.remove(artist);
-                    for (Track track : tracksToAdd){
-                        if (track.getArtist().equals(artist)){
-                            newTracks.remove(track);
-                        }
-                    }
-                    notifyDataSetChanged();
-
                 }
+                notifyDataSetChanged();
+            }else{
+                artistChecked.remove(artist);
+                for (Track track : tracksToAdd){
+                    if (track.getArtist().equals(artist)){
+                        newTracks.remove(track);
+                    }
+                }
+                notifyDataSetChanged();
 
-                onTrackCountChangeListener.onTrackCountChange();
             }
+
+            onTrackCountChangeListener.onTrackCountChange();
         });
         return linearLayout;
     }
@@ -181,41 +178,38 @@ public class AddTracksExpandableListAdapter extends BaseExpandableListAdapter{
 
         checkBox.setEnabled(!track.isAlreadyAdded());
 
-        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+        checkBox.setOnCheckedChangeListener((compoundButton, b1) -> {
 
 
-                if (b){
-                    if (!newTracks.contains(track)) {
-                        newTracks.add(track);
+            if (b1){
+                if (!newTracks.contains(track)) {
+                    newTracks.add(track);
 
-                        boolean isArtistNeedToAddInList = true;
+                    boolean isArtistNeedToAddInList = true;
 
-                        for (Track trackForCheck : tracksToAdd){
-                            if (trackForCheck.getArtist().equals(artist)){
-                                if (!newTracks.contains(trackForCheck)){
-                                    isArtistNeedToAddInList = false;
-                                    break;
-                                }
+                    for (Track trackForCheck : tracksToAdd){
+                        if (trackForCheck.getArtist().equals(artist)){
+                            if (!newTracks.contains(trackForCheck)){
+                                isArtistNeedToAddInList = false;
+                                break;
                             }
                         }
-
-                        if (isArtistNeedToAddInList && !artistChecked.contains(artist)){
-                            artistChecked.add(artist);
-                            notifyDataSetChanged();
-                        }
                     }
-                }else{
-                    newTracks.remove(track);
-                    if (artistChecked.contains(artist)){
-                        artistChecked.remove(artist);
+
+                    if (isArtistNeedToAddInList && !artistChecked.contains(artist)){
+                        artistChecked.add(artist);
                         notifyDataSetChanged();
                     }
                 }
-
-                onTrackCountChangeListener.onTrackCountChange();
+            }else{
+                newTracks.remove(track);
+                if (artistChecked.contains(artist)){
+                    artistChecked.remove(artist);
+                    notifyDataSetChanged();
+                }
             }
+
+            onTrackCountChangeListener.onTrackCountChange();
         });
 
         return linearLayout;

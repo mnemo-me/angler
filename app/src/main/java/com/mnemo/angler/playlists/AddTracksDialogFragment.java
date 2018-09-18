@@ -73,36 +73,30 @@ public class AddTracksDialogFragment extends DialogFragment implements LoaderMan
 
         builder.setView(expandableListView);
 
-        builder.setPositiveButton(R.string.add, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
+        builder.setPositiveButton(R.string.add, (dialogInterface, i) -> {
 
-                ContentValues contentValues = new ContentValues();
+            ContentValues contentValues = new ContentValues();
 
-                int currentPlaylistSize = alreadyAddedTracksIds.size();
+            int currentPlaylistSize = alreadyAddedTracksIds.size();
 
-                for (Track track : adapter.getNewTracks()) {
+            for (Track track : adapter.getNewTracks()) {
 
-                    contentValues.put("_id", track.getId());
-                    contentValues.put(TrackEntry.COLUMN_TITLE, track.getTitle());
-                    contentValues.put(TrackEntry.COLUMN_ARTIST, track.getArtist());
-                    contentValues.put(TrackEntry.COLUMN_ALBUM, track.getAlbum());
-                    contentValues.put(TrackEntry.COLUMN_DURATION, track.getDuration());
-                    contentValues.put(TrackEntry.COLUMN_URI, track.getUri());
-                    contentValues.put(TrackEntry.COLUMN_SOURCE, track.getSource());
-                    contentValues.put(TrackEntry.COLUMN_POSITION, ++currentPlaylistSize);
+                contentValues.put("_id", track.getId());
+                contentValues.put(TrackEntry.COLUMN_TITLE, track.getTitle());
+                contentValues.put(TrackEntry.COLUMN_ARTIST, track.getArtist());
+                contentValues.put(TrackEntry.COLUMN_ALBUM, track.getAlbum());
+                contentValues.put(TrackEntry.COLUMN_DURATION, track.getDuration());
+                contentValues.put(TrackEntry.COLUMN_URI, track.getUri());
+                contentValues.put(TrackEntry.COLUMN_SOURCE, track.getSource());
+                contentValues.put(TrackEntry.COLUMN_POSITION, ++currentPlaylistSize);
 
-                    getActivity().getContentResolver().insert(Uri.withAppendedPath(AnglerContract.BASE_CONTENT_URI, dbName), contentValues);
+                getActivity().getContentResolver().insert(Uri.withAppendedPath(AnglerContract.BASE_CONTENT_URI, dbName), contentValues);
 
-                }
             }
         });
 
-        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
+        builder.setNegativeButton(R.string.cancel, (dialogInterface, i) -> {
 
-            }
         });
 
 
@@ -172,15 +166,12 @@ public class AddTracksDialogFragment extends DialogFragment implements LoaderMan
                 adapter = new AddTracksExpandableListAdapter(getContext(), tracksToAdd);
 
 
-                adapter.setOnTrackCountChangeListener(new AddTracksExpandableListAdapter.OnTrackCountChangeListener() {
-                    @Override
-                    public void onTrackCountChange() {
-                        if (adapter.getNewTracks().size() == 0){
-                            ((AlertDialog)getDialog()).getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
-                        }else{
-                            if (!((AlertDialog)getDialog()).getButton(AlertDialog.BUTTON_POSITIVE).isEnabled()) {
-                                ((AlertDialog) getDialog()).getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
-                            }
+                adapter.setOnTrackCountChangeListener(() -> {
+                    if (adapter.getNewTracks().size() == 0){
+                        ((AlertDialog)getDialog()).getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+                    }else{
+                        if (!((AlertDialog)getDialog()).getButton(AlertDialog.BUTTON_POSITIVE).isEnabled()) {
+                            ((AlertDialog) getDialog()).getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
                         }
                     }
                 });
@@ -191,18 +182,15 @@ public class AddTracksDialogFragment extends DialogFragment implements LoaderMan
                     expandableListView.expandGroup(i);
                 }
 
-                expandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
-                    @Override
-                    public boolean onGroupClick(ExpandableListView expandableListView, View view, int i, long l) {
+                expandableListView.setOnGroupClickListener((expandableListView, view, i, l) -> {
 
-                        if (expandableListView.isGroupExpanded(i)){
-                            expandableListView.collapseGroup(i);
-                        }else{
-                            expandableListView.expandGroup(i);
-                        }
-
-                        return true;
+                    if (expandableListView.isGroupExpanded(i)){
+                        expandableListView.collapseGroup(i);
+                    }else{
+                        expandableListView.expandGroup(i);
                     }
+
+                    return true;
                 });
 
                 break;

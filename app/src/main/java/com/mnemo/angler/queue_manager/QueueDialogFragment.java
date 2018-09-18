@@ -60,16 +60,13 @@ public class QueueDialogFragment extends DialogFragment {
         LinearLayout linearLayout = (LinearLayout) LayoutInflater.from(getContext()).inflate(R.layout.qu_queue, null, false);
         recyclerView = linearLayout.findViewById(R.id.queue_recycler_view);
         adapter = new QueueAdapter(getContext(), queue);
-        adapter.setOnQueueRemovedListener(new QueueAdapter.OnQueueRemovedListener() {
-            @Override
-            public void onQueueRemove() {
+        adapter.setOnQueueRemovedListener(() -> {
 
-                if (Integer.parseInt(countView.getText().toString()) > 1) {
-                    countView.setText(String.valueOf(Integer.parseInt(countView.getText().toString()) - 1));
-                }else{
-                    dismiss();
-                    Toast.makeText(getContext(), R.string.empty_queue, Toast.LENGTH_SHORT).show();
-                }
+            if (Integer.parseInt(countView.getText().toString()) > 1) {
+                countView.setText(String.valueOf(Integer.parseInt(countView.getText().toString()) - 1));
+            }else{
+                dismiss();
+                Toast.makeText(getContext(), R.string.empty_queue, Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -89,11 +86,8 @@ public class QueueDialogFragment extends DialogFragment {
 
 
         // Set Negative button
-        builder.setNegativeButton(getString(R.string.close), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
+        builder.setNegativeButton(getString(R.string.close), (dialogInterface, i) -> {
 
-            }
         });
 
         recyclerView.scrollToPosition(((MainActivity)getActivity()).getQueuePosition());

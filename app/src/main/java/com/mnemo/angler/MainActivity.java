@@ -48,7 +48,6 @@ import android.widget.Toast;
 import com.mnemo.angler.albums.AlbumsFragmentV2;
 import com.mnemo.angler.background_changer.BackgroundChangerFragmentv2;
 import com.mnemo.angler.data.ImageAssistant;
-import com.mnemo.angler.data.AnglerContract;
 import com.mnemo.angler.data.AnglerDBUpdateLoader;
 import com.mnemo.angler.data.MediaAssistant;
 import com.mnemo.angler.equalizer.EqualizerFragment;
@@ -75,6 +74,7 @@ public class MainActivity extends AppCompatActivity implements ArtistsFragment.A
 
     // Media Browser variable
     private MediaBrowserCompat mMediaBrowser;
+
 
 
     // Media panel buttons views (initializing with butterknife
@@ -152,6 +152,7 @@ public class MainActivity extends AppCompatActivity implements ArtistsFragment.A
             public void onChildrenLoaded(@NonNull String parentId, @NonNull List<MediaBrowserCompat.MediaItem> children) {
                 super.onChildrenLoaded(parentId, children);
 
+
                 if (!AnglerService.isDBInitialized) {
                     getLoaderManager().initLoader(LOADER_DB_UPDATE_ID, null, MainActivity.this);
                 }
@@ -203,16 +204,13 @@ public class MainActivity extends AppCompatActivity implements ArtistsFragment.A
             serviceBundle = savedInstanceState.getBundle("service_bundle");
         }
 
-        queueButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        queueButton.setOnClickListener(view -> {
 
-                if (MediaControllerCompat.getMediaController(MainActivity.this).getQueue().size() > 0){
-                    QueueDialogFragment queueDialogFragment = new QueueDialogFragment();
-                    queueDialogFragment.show(getSupportFragmentManager(), "queue_dialog_fragment");
-                }else{
-                    Toast.makeText(MainActivity.this, R.string.empty_queue, Toast.LENGTH_SHORT).show();
-                }
+            if (MediaControllerCompat.getMediaController(MainActivity.this).getQueue().size() > 0){
+                QueueDialogFragment queueDialogFragment = new QueueDialogFragment();
+                queueDialogFragment.show(getSupportFragmentManager(), "queue_dialog_fragment");
+            }else{
+                Toast.makeText(MainActivity.this, R.string.empty_queue, Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -249,6 +247,7 @@ public class MainActivity extends AppCompatActivity implements ArtistsFragment.A
 
             MediaSessionCompat.Token token = mMediaBrowser.getSessionToken();
             try {
+
                 MediaControllerCompat mController = new MediaControllerCompat(MainActivity.this, token);
                 MediaControllerCompat.setMediaController(MainActivity.this, mController);
 
@@ -275,16 +274,13 @@ public class MainActivity extends AppCompatActivity implements ArtistsFragment.A
             mPlayPauseButton.setImageResource(R.drawable.ic_pause_black_48dp);
         }
 
-        mPlayPauseButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int pbState = getMediaController().getPlaybackState().getState();
+        mPlayPauseButton.setOnClickListener(v -> {
+            int pbState = getMediaController().getPlaybackState().getState();
 
-                if (pbState == PlaybackStateCompat.STATE_PLAYING) {
-                    getMediaController().getTransportControls().pause();
-                } else {
-                    getMediaController().getTransportControls().play();
-                }
+            if (pbState == PlaybackStateCompat.STATE_PLAYING) {
+                getMediaController().getTransportControls().pause();
+            } else {
+                getMediaController().getTransportControls().play();
             }
         });
 
@@ -407,25 +403,19 @@ public class MainActivity extends AppCompatActivity implements ArtistsFragment.A
 
         final Bundle args = MediaAssistant.putMetadataInBundle(metadata);
 
-        addTrackToPlaylist.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        addTrackToPlaylist.setOnClickListener(view -> {
 
-                AddTrackToPlaylistDialogFragment addTrackToPlaylistDialogFragment = new AddTrackToPlaylistDialogFragment();
-                addTrackToPlaylistDialogFragment.setArguments(args);
-                addTrackToPlaylistDialogFragment.show(getSupportFragmentManager(), "Add track to playlist dialog");
+            AddTrackToPlaylistDialogFragment addTrackToPlaylistDialogFragment = new AddTrackToPlaylistDialogFragment();
+            addTrackToPlaylistDialogFragment.setArguments(args);
+            addTrackToPlaylistDialogFragment.show(getSupportFragmentManager(), "Add track to playlist dialog");
 
-            }
         });
 
-        showLyrics.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        showLyrics.setOnClickListener(view -> {
 
-                LyricsDialogFragment lyricsDialogFragment = new LyricsDialogFragment();
-                lyricsDialogFragment.show(getSupportFragmentManager(), "Lyrics dialog");
+            LyricsDialogFragment lyricsDialogFragment = new LyricsDialogFragment();
+            lyricsDialogFragment.show(getSupportFragmentManager(), "Lyrics dialog");
 
-            }
         });
     }
 
