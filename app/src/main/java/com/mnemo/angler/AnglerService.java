@@ -5,7 +5,10 @@ package com.mnemo.angler;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.MediaPlayer;
+import android.media.audiofx.BassBoost;
 import android.media.audiofx.Equalizer;
+import android.media.audiofx.LoudnessEnhancer;
+import android.media.audiofx.Virtualizer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -16,6 +19,7 @@ import android.support.v4.media.MediaDescriptionCompat;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
+import android.util.Log;
 
 
 import com.mnemo.angler.data.MediaAssistant;
@@ -29,7 +33,11 @@ public class AnglerService extends MediaBrowserServiceCompat {
 
     private MediaSessionCompat mMediaSession;
     private MediaPlayer mMediaPlayer;
+
     private Equalizer mEqualizer;
+    private Virtualizer mVirtualizer;
+    private BassBoost mBassBoost;
+    private LoudnessEnhancer mAmplifier;
 
     private ArrayList<Integer> bandsFrequencies;
     private ArrayList<String> equalizerPresets;
@@ -94,9 +102,9 @@ public class AnglerService extends MediaBrowserServiceCompat {
 
         mMediaPlayer = new MediaPlayer();
 
-        // Setup equalizer
+        // Setup equalizer and audio effects
         setupEqualizer();
-
+        setupAudioEffects();
     }
 
 
@@ -333,8 +341,8 @@ public class AnglerService extends MediaBrowserServiceCompat {
 
                 case "equalizer_on_off":
 
-                    boolean onOffState = extras.getBoolean("on_off_state");
-                    mEqualizer.setEnabled(onOffState);
+                    boolean equalizerOnOffState = extras.getBoolean("on_off_state");
+                    mEqualizer.setEnabled(equalizerOnOffState);
 
                     break;
 
@@ -359,6 +367,55 @@ public class AnglerService extends MediaBrowserServiceCompat {
                     short bandLevel = extras.getShort("band_level");
 
                     mEqualizer.setBandLevel(bandNumber, bandLevel);
+
+                    break;
+
+
+                case "virtualizer_on_off":
+
+                    boolean virtualizerOnOffState = extras.getBoolean("on_off_state");
+                    mVirtualizer.setEnabled(virtualizerOnOffState);
+
+                    break;
+
+                case "virtualizer_change_band_level":
+
+                    short virtualizerLevel = extras.getShort("virtualizer_band_level");
+                    mVirtualizer.setStrength(virtualizerLevel);
+
+                    Log.e("43434", String.valueOf(mVirtualizer.getRoundedStrength()));
+
+                    break;
+
+                case "bass_boost_on_off":
+
+                    boolean bassBoostOnOffState = extras.getBoolean("on_off_state");
+                    mVirtualizer.setEnabled(bassBoostOnOffState);
+
+                    break;
+
+                case "bass_boost_change_band_level":
+
+                    short bassBoostLevel = extras.getShort("bass_boost_band_level");
+                    mBassBoost.setStrength(bassBoostLevel);
+
+                    Log.e("43434", String.valueOf(mBassBoost.getRoundedStrength()));
+
+                    break;
+
+                case "amplifier_on_off":
+
+                    boolean amplifierOnOffState = extras.getBoolean("on_off_state");
+                    mVirtualizer.setEnabled(amplifierOnOffState);
+
+                    break;
+
+                case "amplifier_change_band_level":
+
+                    short amplifierLevel = extras.getShort("amplifier_band_level");
+                    mAmplifier.setTargetGain(amplifierLevel);
+
+                    Log.e("43434", String.valueOf(mAmplifier.getTargetGain()));
 
                     break;
 
@@ -416,8 +473,6 @@ public class AnglerService extends MediaBrowserServiceCompat {
 
     private void setupEqualizer(){
 
-        SharedPreferences sharedPreferences = getSharedPreferences("equalizer_pref", MODE_PRIVATE);
-
         mEqualizer = new Equalizer(0, mMediaPlayer.getAudioSessionId());
 
         // get equalizer variables and attach them to media session
@@ -449,6 +504,8 @@ public class AnglerService extends MediaBrowserServiceCompat {
 
 
         // configure equalizer from shared preferences
+        SharedPreferences sharedPreferences = getSharedPreferences("equalizer_pref", MODE_PRIVATE);
+
         boolean onOffState = sharedPreferences.getBoolean("on_off_state", false);
         mEqualizer.setEnabled(onOffState);
 
@@ -476,6 +533,40 @@ public class AnglerService extends MediaBrowserServiceCompat {
             }
         }
 
+    }
+
+
+    private void setupAudioEffects(){
+
+        mVirtualizer = new Virtualizer(0, mMediaPlayer.getAudioSessionId());
+        mBassBoost = new BassBoost(0, mMediaPlayer.getAudioSessionId());
+        mAmplifier = new LoudnessEnhancer(mMediaPlayer.getAudioSessionId());
+
+        // configure audio effects from shared preferences
+        SharedPreferences sharedPreferences = getSharedPreferences("equalizer_pref", MODE_PRIVATE);
+
+        // Virtualizer
+        boolean virtualizerOnOffState = sharedPreferences.getBoolean("virtualizer_on_off_state", false);
+        mVirtualizer.setEnabled(virtualizerOnOffState);
+
+        short virtualizerStrength = (short)sharedPreferences.getInt("virtualizer_strength", 0);
+        mVirtualizer.setStrength(virtualizerStrength);
+
+
+        // Bass boost
+        boolean bassBoostOnOffState = sharedPreferences.getBoolean("bass_boost_on_off_state", false);
+        mBassBoost.setEnabled(bassBoostOnOffState);
+
+        short bassBoostStrength = (short)sharedPreferences.getInt("bass_boost_strength", 0);
+        mBassBoost.setStrength(bassBoostStrength);
+
+
+        // Amplifier
+        boolean amplifierOnOffState = sharedPreferences.getBoolean("amplifier_on_off_state", false);
+        mAmplifier.setEnabled(amplifierOnOffState);
+
+        short amplifierGain = (short)sharedPreferences.getInt("amplifier_gain", 0);
+        mAmplifier.setTargetGain(amplifierGain);
 
     }
 }

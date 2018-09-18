@@ -77,6 +77,7 @@ public class MainActivity extends AppCompatActivity implements ArtistsFragment.A
     private MediaBrowserCompat mMediaBrowser;
 
 
+
     // Media panel buttons views (initializing with butterknife
     @BindView(R.id.media_panel_play_pause)
     ImageButton mPlayPauseButton;
@@ -151,6 +152,7 @@ public class MainActivity extends AppCompatActivity implements ArtistsFragment.A
             @Override
             public void onChildrenLoaded(@NonNull String parentId, @NonNull List<MediaBrowserCompat.MediaItem> children) {
                 super.onChildrenLoaded(parentId, children);
+
 
                 if (!AnglerService.isDBInitialized) {
                     getLoaderManager().initLoader(LOADER_DB_UPDATE_ID, null, MainActivity.this);
@@ -249,6 +251,7 @@ public class MainActivity extends AppCompatActivity implements ArtistsFragment.A
 
             MediaSessionCompat.Token token = mMediaBrowser.getSessionToken();
             try {
+
                 MediaControllerCompat mController = new MediaControllerCompat(MainActivity.this, token);
                 MediaControllerCompat.setMediaController(MainActivity.this, mController);
 
