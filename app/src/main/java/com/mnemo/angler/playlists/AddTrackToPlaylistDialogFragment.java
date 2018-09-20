@@ -158,7 +158,7 @@ public class AddTrackToPlaylistDialogFragment extends DialogFragment implements 
                     int trackPosition = Integer.parseInt(cursor.getString(0)) + 1;
                     cursor.close();
 
-                    dbHelper.insertTrack(db, data.getString(3), title, artist, album, duration, uri, SourceEntry.SOURCE_PHONE_STORAGE, trackPosition);
+                    dbHelper.insertTrack(db, data.getString(3), title, artist, album, duration, uri, trackPosition);
 
                     Toast.makeText(getContext(), "'" + artist + " - " + title + "' " + getString(R.string.added_to) + " '" + data.getString(1) + "'", Toast.LENGTH_SHORT).show();
 

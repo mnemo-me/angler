@@ -172,7 +172,7 @@ public class AnglerService extends MediaBrowserServiceCompat {
         @Override
         public void onPrepare() {
 
-            if (queueIndex < 0 && queue.isEmpty()){
+            if (queueIndex < 0 || queue.isEmpty()){
                 return;
             }
 

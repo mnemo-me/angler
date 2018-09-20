@@ -196,11 +196,15 @@ public class BandsFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
-                if (i != 0 && sharedPreferences.getInt("active_preset", 0) + 1 == i) {
+                if (i != 0) {
                     Bundle extras = new Bundle();
                     extras.putShort("preset_number", (short) (i - 1));
 
-                    MediaControllerCompat.getMediaController(getActivity()).getTransportControls().sendCustomAction("equalizer_change_preset", extras);
+                    try {
+                        MediaControllerCompat.getMediaController(getActivity()).getTransportControls().sendCustomAction("equalizer_change_preset", extras);
+                    }catch (NullPointerException e){
+                        e.printStackTrace();
+                    }
                 }
             }
 

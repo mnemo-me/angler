@@ -186,7 +186,7 @@ public class AlbumConfigurationFragment extends Fragment implements LoaderManage
             case LOADER_TRACK_LIST_ID:
 
                 return new CursorLoader(getContext(),
-                      Uri.withAppendedPath(AnglerContract.BASE_CONTENT_URI, SourceEntry.SOURCE_LIBRARY), null,
+                      Uri.withAppendedPath(AnglerContract.BASE_CONTENT_URI, PlaylistEntry.LIBRARY), null,
                     TrackEntry.COLUMN_ARTIST + " = ? AND " + TrackEntry.COLUMN_ALBUM + " = ?", new String[]{artist, title},
                     TrackEntry.COLUMN_TITLE + " ASC");
 

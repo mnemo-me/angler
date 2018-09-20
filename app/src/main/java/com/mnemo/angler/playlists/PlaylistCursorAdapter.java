@@ -261,7 +261,7 @@ public class PlaylistCursorAdapter extends CursorAdapter {
                 }
 */
 
-                Track trackToRemove = new Track(id, title, artist, album, duration, uri, source);
+                Track trackToRemove = new Track(id, title, artist, album, duration, uri);
 
                 PlaylistCursorAdapter.this.mContext.getContentResolver().delete(Uri.withAppendedPath(AnglerContract.BASE_CONTENT_URI, localDBName),
                         "_id = ?", new String[]{ids.get(position)});

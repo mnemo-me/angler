@@ -19,7 +19,6 @@ import android.widget.ListView;
 import com.mnemo.angler.DrawerItem;
 import com.mnemo.angler.R;
 import com.mnemo.angler.data.AnglerContract;
-import com.mnemo.angler.data.AnglerContract.SourceEntry;
 import com.mnemo.angler.data.AnglerContract.TrackEntry;
 
 import java.util.ArrayList;
@@ -77,7 +76,7 @@ public class AlbumsFragmentV2 extends Fragment implements DrawerItem, LoaderMana
         switch (id){
             case LOADER_ALBUM_ID:
                 return new CursorLoader(getContext(),
-                        Uri.withAppendedPath(AnglerContract.BASE_CONTENT_URI, "album_list/" + SourceEntry.SOURCE_LIBRARY),
+                        Uri.withAppendedPath(AnglerContract.BASE_CONTENT_URI, "album_list/" + AnglerContract.PlaylistEntry.LIBRARY),
                         new String[]{"_id",TrackEntry.COLUMN_ARTIST, TrackEntry.COLUMN_ALBUM, TrackEntry.COLUMN_URI},
                         null, null,
                         TrackEntry.COLUMN_ALBUM + " ASC");

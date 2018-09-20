@@ -78,7 +78,7 @@ public class AnglerProvider extends ContentProvider{
                 if (projection != null) {
                     if (projection.length == 2) {
                         if (projection[0].equals("_id") && projection[1].equals(AnglerContract.TrackEntry.COLUMN_ARTIST)) {
-                            cursor = db.query(AnglerContract.SourceEntry.SOURCE_LIBRARY, projection,
+                            cursor = db.query(AnglerContract.PlaylistEntry.LIBRARY, projection,
                                     AnglerContract.TrackEntry.COLUMN_ARTIST + " = ? AND " + AnglerContract.TrackEntry.COLUMN_ALBUM + " = ?", new String[]{artist, album},
                                     AnglerContract.TrackEntry.COLUMN_ARTIST, null, sortOrder);
                             break;
@@ -86,7 +86,7 @@ public class AnglerProvider extends ContentProvider{
                     }
                 }
 
-                cursor = db.query(AnglerContract.SourceEntry.SOURCE_LIBRARY, projection,
+                cursor = db.query(AnglerContract.PlaylistEntry.LIBRARY, projection,
                         AnglerContract.TrackEntry.COLUMN_ARTIST + " = ? AND " + AnglerContract.TrackEntry.COLUMN_ALBUM + " = ?", new String[]{artist, album},
                         null, null,
                         AnglerContract.TrackEntry.COLUMN_TITLE + " ASC");
@@ -102,7 +102,7 @@ public class AnglerProvider extends ContentProvider{
 
             case ARTIST:
 
-                cursor = db.query(AnglerContract.SourceEntry.SOURCE_LIBRARY, projection,
+                cursor = db.query(AnglerContract.PlaylistEntry.LIBRARY, projection,
                         AnglerContract.TrackEntry.COLUMN_ARTIST + " = ?", new String[]{uri.getPath().substring(8)},
                         null, null,
                         AnglerContract.TrackEntry.COLUMN_TITLE + " ASC");

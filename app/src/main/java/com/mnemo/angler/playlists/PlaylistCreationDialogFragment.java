@@ -230,9 +230,7 @@ public class PlaylistCreationDialogFragment extends DialogFragment {
         }
 
         // Check is this name reserved by other sources
-        if (AnglerContract.SourceEntry.SOURCES.contains(playlistName.replace(" ", "_"))
-                || AnglerContract.SourceEntry.SOURCES.contains(playlistName.substring(0,1).toUpperCase() + playlistName.replace(" ", "_").substring(1))
-                || playlistName.equals(getResources().getString(R.string.new_playlist))) {
+        if (playlistName.equals("Library") || playlistName.equals(getResources().getString(R.string.new_playlist))) {
 
             Toast.makeText(getContext(), getString(R.string.playlist_name_reserved), Toast.LENGTH_SHORT).show();
             return false;
@@ -298,7 +296,7 @@ public class PlaylistCreationDialogFragment extends DialogFragment {
                         long duration = getArguments().getLong("duration");
                         String uri = getArguments().getString("uri");
 
-                        dbHelper.insertTrack(db, dbName, title, artist, album, duration, uri, AnglerContract.SourceEntry.SOURCE_PHONE_STORAGE, 0);
+                        dbHelper.insertTrack(db, dbName, title, artist, album, duration, uri, 0);
 
                     }
 

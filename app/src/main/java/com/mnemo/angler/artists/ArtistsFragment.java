@@ -7,13 +7,11 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.transition.ChangeBounds;
 import android.support.transition.ChangeTransform;
 import android.support.transition.Fade;
 import android.support.transition.TransitionSet;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -22,7 +20,6 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.SimpleCursorAdapter;
@@ -113,7 +110,7 @@ public class ArtistsFragment extends Fragment implements DrawerItem, LoaderManag
 
         switch (id) {
             case LOADER_ARTISTS_ID:
-                return new CursorLoader(getContext(), Uri.withAppendedPath(BASE_CONTENT_URI, "artist_list/" + SourceEntry.SOURCE_LIBRARY),
+                return new CursorLoader(getContext(), Uri.withAppendedPath(BASE_CONTENT_URI, "artist_list/" + PlaylistEntry.LIBRARY),
                         new String[]{"_id", TrackEntry.COLUMN_ARTIST},
                         null, null,
                         TrackEntry.COLUMN_ARTIST + " ASC");

@@ -11,18 +11,16 @@ public class Track implements Comparable{
     private String album;
     private long duration;
     private String uri;
-    private String source;
 
     private boolean isAlreadyAdded;
 
-    public Track(String id, String title, String artist, String album, long duration, String uri, String source) {
+    public Track(String id, String title, String artist, String album, long duration, String uri) {
         this.id = id;
         this.title = title;
         this.artist = artist;
         this.album = album;
         this.duration = duration;
         this.uri = uri;
-        this.source = source;
 
         isAlreadyAdded = false;
     }
@@ -53,10 +51,6 @@ public class Track implements Comparable{
 
     public String getUri() {
         return uri;
-    }
-
-    public String getSource() {
-        return source;
     }
 
     public boolean isAlreadyAdded() {

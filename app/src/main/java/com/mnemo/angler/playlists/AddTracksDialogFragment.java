@@ -3,7 +3,6 @@ package com.mnemo.angler.playlists;
 
 import android.app.Dialog;
 import android.content.ContentValues;
-import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.net.Uri;
@@ -15,7 +14,6 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.widget.ExpandableListView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -87,7 +85,6 @@ public class AddTracksDialogFragment extends DialogFragment implements LoaderMan
                 contentValues.put(TrackEntry.COLUMN_ALBUM, track.getAlbum());
                 contentValues.put(TrackEntry.COLUMN_DURATION, track.getDuration());
                 contentValues.put(TrackEntry.COLUMN_URI, track.getUri());
-                contentValues.put(TrackEntry.COLUMN_SOURCE, track.getSource());
                 contentValues.put(TrackEntry.COLUMN_POSITION, ++currentPlaylistSize);
 
                 getActivity().getContentResolver().insert(Uri.withAppendedPath(AnglerContract.BASE_CONTENT_URI, dbName), contentValues);
@@ -110,7 +107,7 @@ public class AddTracksDialogFragment extends DialogFragment implements LoaderMan
         switch (id){
             case LOADER_ADD_TRACKS_ID:
                 return new CursorLoader(getContext(),
-                        Uri.withAppendedPath(BASE_CONTENT_URI, SourceEntry.SOURCE_LIBRARY), null,
+                        Uri.withAppendedPath(BASE_CONTENT_URI, PlaylistEntry.LIBRARY), null,
                         null,null,null);
             case LOADER_ALREADY_ADDED_TRACKS_ID:
                 return new CursorLoader(getContext(),
@@ -136,7 +133,7 @@ public class AddTracksDialogFragment extends DialogFragment implements LoaderMan
 
                 do {
                     tracksToAdd.add(new Track(data.getString(0), data.getString(1), data.getString(2), data.getString(3),
-                            data.getLong(4), data.getString(5), data.getString(6)));
+                            data.getLong(4), data.getString(5)));
                 } while (data.moveToNext());
 
                 Collections.sort(tracksToAdd);

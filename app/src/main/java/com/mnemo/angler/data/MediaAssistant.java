@@ -15,21 +15,25 @@ public class MediaAssistant {
 
         ArrayList<MediaDescriptionCompat> descriptions = new ArrayList<>();
 
-        cursor.moveToFirst();
+        if (cursor.getCount() > 0 ) {
 
-        do {
+            cursor.moveToFirst();
 
-            String mediaId = cursor.getString(0);
-            String title = cursor.getString(1);
-            String artist = cursor.getString(2);
-            String album = cursor.getString(3);
-            long duration = cursor.getLong(4);
-            String uri = cursor.getString(5);
+            do {
+
+                String mediaId = cursor.getString(0);
+                String title = cursor.getString(1);
+                String artist = cursor.getString(2);
+                String album = cursor.getString(3);
+                long duration = cursor.getLong(4);
+                String uri = cursor.getString(5);
 
 
-            descriptions.add(mergeMediaDescription(mediaId, title, artist, album, duration, uri, playlist));
+                descriptions.add(mergeMediaDescription(mediaId, title, artist, album, duration, uri, playlist));
 
-        } while (cursor.moveToNext());
+            } while (cursor.moveToNext());
+
+        }
 
         return descriptions;
     }

@@ -14,7 +14,6 @@ import android.support.v4.widget.SimpleCursorAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
 
@@ -106,7 +105,7 @@ public class ArtistAlbumsFragment extends Fragment implements LoaderManager.Load
             case LOADER_ARTIST_ALBUMS_ID:
 
                 return new CursorLoader(getContext(),
-                        Uri.withAppendedPath(AnglerContract.BASE_CONTENT_URI, "album_list/" + SourceEntry.SOURCE_LIBRARY),
+                        Uri.withAppendedPath(AnglerContract.BASE_CONTENT_URI, "album_list/" + PlaylistEntry.LIBRARY),
                         null,
                         TrackEntry.COLUMN_ARTIST + " = ?", new String[]{artist},
                         TrackEntry.COLUMN_ALBUM + " ASC");

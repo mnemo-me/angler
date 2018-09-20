@@ -356,7 +356,6 @@ public class PlaylistConfigurationFragment extends Fragment implements LoaderMan
             contentValues.put(TrackEntry.COLUMN_ALBUM, trackToRemove.getAlbum());
             contentValues.put(TrackEntry.COLUMN_DURATION, trackToRemove.getDuration());
             contentValues.put(TrackEntry.COLUMN_URI, trackToRemove.getUri());
-            contentValues.put(TrackEntry.COLUMN_SOURCE, trackToRemove.getSource());
             contentValues.put(TrackEntry.COLUMN_POSITION, position);
 
 

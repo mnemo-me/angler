@@ -20,7 +20,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
-import com.mnemo.angler.MainActivity;
 import com.mnemo.angler.R;
 import com.mnemo.angler.data.AnglerContract.*;
 
@@ -113,7 +112,7 @@ public class ArtistTracksFragment extends Fragment implements LoaderManager.Load
             case LOADER_TRACK_LIST_ID:
 
                 return new CursorLoader(getContext(),
-                        Uri.withAppendedPath(BASE_CONTENT_URI, SourceEntry.SOURCE_LIBRARY), null,
+                        Uri.withAppendedPath(BASE_CONTENT_URI, PlaylistEntry.LIBRARY), null,
                         TrackEntry.COLUMN_ARTIST + " = ?", new String[]{artist},
                         TrackEntry.COLUMN_TITLE + " ASC");
 

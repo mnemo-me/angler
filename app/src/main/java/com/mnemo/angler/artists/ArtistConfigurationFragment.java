@@ -167,14 +167,14 @@ public class ArtistConfigurationFragment extends Fragment implements LoaderManag
 
             case LOADER_ARTIST_TRACKS_COUNT_ID:
 
-                return new CursorLoader(getContext(), Uri.withAppendedPath(BASE_CONTENT_URI, SourceEntry.SOURCE_LIBRARY),
+                return new CursorLoader(getContext(), Uri.withAppendedPath(BASE_CONTENT_URI, PlaylistEntry.LIBRARY),
                         null,
                         TrackEntry.COLUMN_ARTIST + " = ?", new String[]{artist},
                         null);
 
             case LOADER_ARTIST_ALBUMS_COUNT_ID:
 
-                return new CursorLoader(getContext(), Uri.withAppendedPath(BASE_CONTENT_URI, "album_list/" + SourceEntry.SOURCE_LIBRARY),
+                return new CursorLoader(getContext(), Uri.withAppendedPath(BASE_CONTENT_URI, "album_list/" + PlaylistEntry.LIBRARY),
                         null,
                         TrackEntry.COLUMN_ARTIST + " = ?", new String[]{artist},
                         TrackEntry.COLUMN_ALBUM + " ASC");
