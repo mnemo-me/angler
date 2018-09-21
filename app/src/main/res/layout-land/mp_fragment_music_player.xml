@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.mnemo.angler.music_player.MusicPlayerFragment">
+    tools:context=".drawer_items_fragments.music_player.MusicPlayerFragment">
 
     <View
         android:id="@+id/main_fragment_spinner_layout"

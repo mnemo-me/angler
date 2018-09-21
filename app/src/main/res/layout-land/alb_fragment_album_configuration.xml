@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.mnemo.angler.albums.AlbumConfigurationFragment">
+    tools:context=".drawer_items_fragments.albums.AlbumConfigurationFragment">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/album_conf_toolbar"

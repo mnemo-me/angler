@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.mnemo.angler.artists.ArtistAlbumsFragment">
+    tools:context=".drawer_items_fragments.artists.ArtistAlbumsFragment">
 
 
     <GridView

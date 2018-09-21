@@ -4,7 +4,6 @@ package com.mnemo.angler.queue_manager;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
@@ -23,7 +22,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.mnemo.angler.MainActivity;
+import com.mnemo.angler.main_activity.MainActivity;
 import com.mnemo.angler.R;
 
 import java.util.ArrayList;
@@ -90,7 +89,7 @@ public class QueueDialogFragment extends DialogFragment {
 
         });
 
-        recyclerView.scrollToPosition(((MainActivity)getActivity()).getQueuePosition());
+        recyclerView.scrollToPosition(((MainActivity)getActivity()).getAnglerClient().getQueuePosition());
 
         return builder.create();
     }

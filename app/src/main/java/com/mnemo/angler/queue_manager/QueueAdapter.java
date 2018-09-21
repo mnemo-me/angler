@@ -15,8 +15,9 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.mnemo.angler.MainActivity;
+import com.mnemo.angler.main_activity.MainActivity;
 import com.mnemo.angler.R;
+import com.mnemo.angler.util.MediaAssistant;
 
 import java.util.ArrayList;
 
@@ -61,7 +62,7 @@ public class QueueAdapter extends RecyclerView.Adapter<QueueAdapter.ViewHolder> 
     QueueAdapter(Context context, ArrayList<MediaSessionCompat.QueueItem> queue) {
         this.context = context;
         this.queue = queue;
-        this.queuePosition = ((MainActivity)context).getQueuePosition();
+        this.queuePosition = ((MainActivity)context).getAnglerClient().getQueuePosition();
     }
 
     public interface OnQueueRemovedListener{
@@ -94,7 +95,7 @@ public class QueueAdapter extends RecyclerView.Adapter<QueueAdapter.ViewHolder> 
         // Assign metadata to views
         holder.titleView.setText(title);
         holder.artistView.setText(artist);
-        holder.durationView.setText(MainActivity.convertToTime(duration));
+        holder.durationView.setText(MediaAssistant.convertToTime(duration));
 
         // Activate selector and miniequalizer views
         if (position == queuePosition){

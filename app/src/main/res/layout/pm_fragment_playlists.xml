@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:clickable="true"
-    tools:context="com.mnemo.angler.playlists.PlaylistManagerFragment">
+    tools:context=".drawer_items_fragments.playlists.PlaylistManagerFragment">
 
     <android.support.v7.widget.Toolbar
         android:layout_width="match_parent"
