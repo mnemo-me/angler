@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.mnemo.angler.drawer_items_fragments.DrawerItem">
+    tools:context=".ui.main_activity.fragments.DrawerItem">
 
 
     <View

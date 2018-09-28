@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".drawer_items_fragments.equalizer.BandsFragment">
+    tools:context=".ui.main_activity.fragments.equalizer.BandsFragment">
 
     <Spinner
         android:id="@+id/bands_spinner"

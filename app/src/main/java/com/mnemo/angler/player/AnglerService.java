@@ -22,7 +22,7 @@ import android.support.v4.media.session.PlaybackStateCompat;
 import android.util.Log;
 
 
-import com.mnemo.angler.util.MediaAssistant;
+import com.mnemo.angler.utils.MediaAssistant;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -33,6 +33,8 @@ public class AnglerService extends MediaBrowserServiceCompat {
 
     private MediaSessionCompat mMediaSession;
     private MediaPlayer mMediaPlayer;
+
+    private boolean isPaused = false;
 
     private Equalizer mEqualizer;
     private Virtualizer mVirtualizer;
@@ -170,44 +172,63 @@ public class AnglerService extends MediaBrowserServiceCompat {
         @Override
         public void onPrepare() {
 
-            if (queueIndex < 0 || queue.isEmpty()){
+            if (queueIndex < 0 || queue.isEmpty()) {
                 return;
             }
 
             metadata = getCurrentMetadata();
             mMediaSession.setMetadata(metadata);
 
-            if (!mMediaSession.isActive()){
+            if (!mMediaSession.isActive()) {
                 mMediaSession.setActive(true);
             }
-
-            Intent intent = new Intent();
-            intent.setAction("queue_position_changed");
-            intent.putExtra("queue_position", queueIndex);
-
-            sendBroadcast(intent);
         }
 
 
         @Override
         public void onPlay() {
 
-            onPrepare();
-
             mMediaSession.setPlaybackState(new PlaybackStateCompat.Builder()
-                .setState(PlaybackStateCompat.STATE_PLAYING,PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN,0).build());
+                    .setState(PlaybackStateCompat.STATE_PLAYING, PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN, 0).build());
 
-            try {
-                mMediaPlayer.reset();
-                mMediaPlayer.setDataSource(AnglerService.this, metadata.getDescription().getMediaUri());
-                mMediaPlayer.prepare();
+            if (isPaused){
+
+                isPaused = false;
                 mMediaPlayer.start();
-                mMediaPlayer.setOnCompletionListener(onCompletionListener);
 
-                mAnglerNotificationManager.createNotification();
+            }else {
 
-            }catch (IOException e){
-                e.printStackTrace();
+                onPrepare();
+
+                try {
+                    if (mMediaPlayer.isPlaying()) {
+                        mMediaPlayer.stop();
+                    }
+                    mMediaPlayer.reset();
+                    mMediaPlayer.setOnCompletionListener(mediaPlayer -> {
+                        if (queue.size() > 0) {
+                            anglerServiceCallback.onSkipToNext();
+                        }
+                    });
+                    mMediaPlayer.setOnPreparedListener(mediaPlayer -> {
+                        mMediaPlayer.start();
+                        //mAnglerNotificationManager.createNotification();
+
+                        Intent intent = new Intent();
+
+                        intent.setAction("queue_position_changed");
+                        intent.putExtra("queue_position", queueIndex);
+
+                        sendBroadcast(intent);
+
+                    });
+                    mMediaPlayer.setDataSource(AnglerService.this, metadata.getDescription().getMediaUri());
+                    mMediaPlayer.prepareAsync();
+
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
 
         }
@@ -219,6 +240,7 @@ public class AnglerService extends MediaBrowserServiceCompat {
             super.onPause();
 
             mMediaPlayer.pause();
+            isPaused = true;
 
             mMediaSession.setPlaybackState(new PlaybackStateCompat.Builder()
                 .setState(PlaybackStateCompat.STATE_PAUSED,PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN,0).build());
@@ -252,7 +274,7 @@ public class AnglerService extends MediaBrowserServiceCompat {
             }else{
                 queueIndex--;
             }
-
+            isPaused = false;
             onPlay();
         }
 
@@ -266,12 +288,15 @@ public class AnglerService extends MediaBrowserServiceCompat {
                 queueIndex++;
             }
 
+            isPaused = false;
             onPlay();
         }
 
         @Override
         public void onSkipToQueueItem(long id) {
             queueIndex = (int)id;
+
+            isPaused = false;
             onPlay();
         }
 
@@ -452,15 +477,6 @@ public class AnglerService extends MediaBrowserServiceCompat {
         return super.onStartCommand(intent, flags, startId);
     }
 
-    private MediaPlayer.OnCompletionListener onCompletionListener = new MediaPlayer.OnCompletionListener() {
-        @Override
-        public void onCompletion(MediaPlayer mp) {
-
-            if (queue.size() > 0) {
-                anglerServiceCallback.onSkipToNext();
-            }
-        }
-    };
 
 
     private MediaMetadataCompat getCurrentMetadata(){

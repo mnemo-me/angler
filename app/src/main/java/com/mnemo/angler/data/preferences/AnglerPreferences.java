@@ -33,4 +33,8 @@ public class AnglerPreferences {
     public int getBackgroundOpacity(){
         return appPreferences.getInt("overlay", 203);
     }
+
+    public void setMainPlaylist(String playlist){
+        appPreferences.edit().putString("main_playlist", playlist).apply();
+    }
 }

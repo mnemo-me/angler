@@ -21,7 +21,7 @@ import android.support.v4.media.session.PlaybackStateCompat;
 
 import com.mnemo.angler.R;
 import com.mnemo.angler.data.file_storage.AnglerFolder;
-import com.mnemo.angler.main_activity.MainActivity;
+import com.mnemo.angler.ui.main_activity.activity.MainActivity;
 
 import java.io.File;
 

@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".drawer_items_fragments.local_load.ImageFolderFragment">
+    tools:context=".ui.local_load_activity.fragments.ImageFolderFragment">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/image_folder_recycler_view"

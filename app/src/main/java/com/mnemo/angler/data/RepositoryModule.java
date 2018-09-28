@@ -36,7 +36,7 @@ public class RepositoryModule {
     @Provides
     @Singleton
     AnglerDB provideDB(){
-        return new AnglerDB();
+        return new AnglerDB(provideContext());
     }
 
     @Provides

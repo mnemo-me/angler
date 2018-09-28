@@ -19,8 +19,9 @@ import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 
-import com.mnemo.angler.main_activity.MainActivity;
-import com.mnemo.angler.util.MediaAssistant;
+import com.mnemo.angler.data.database.Entities.Track;
+import com.mnemo.angler.ui.main_activity.activity.MainActivity;
+import com.mnemo.angler.utils.MediaAssistant;
 
 import java.util.List;
 
@@ -30,14 +31,10 @@ public class AnglerClient{
     private MediaBrowserCompat mMediaBrowser;
     private MediaControllerCompat mController;
 
-
-    private String mainPlaylistName;
-    private String filter = "";
     private String playlistQueue = "";
     private int queuePosition = 0;
     private String queueFilter = "";
     private String currentTrackPlaylist = "";
-    private String currentMediaId = "";
 
     private long durationMS;
 
@@ -74,6 +71,7 @@ public class AnglerClient{
 
 
     public void connect(){
+
         mMediaBrowser.connect();
 
         // Initialize broadcast receiver
@@ -99,6 +97,7 @@ public class AnglerClient{
     }
 
     public void disconnect(){
+
         mController.unregisterCallback(controllerCallback);
         mMediaBrowser.disconnect();
         context.unregisterReceiver(receiver);
@@ -126,12 +125,34 @@ public class AnglerClient{
 
     public void playNow(String playlistName, int position, Cursor cursor){
 
-        if (!playlistName.equals(playlistQueue) || !filter.equals(queueFilter)) {
+        if (!playlistName.equals(playlistQueue) || !((MainActivity)context).getFilter().equals(queueFilter)) {
 
 
             mController.getTransportControls().sendCustomAction("clear_queue", null);
 
             for (MediaDescriptionCompat description : MediaAssistant.mergeMediaDescriptionArray(playlistName, cursor)) {
+
+                mController.addQueueItem(description);
+
+            }
+
+            playlistQueue = playlistName;
+            mController.getTransportControls().sendCustomAction("update_queue", null);
+
+        }
+
+        mController.getTransportControls().skipToQueueItem(position);
+
+    }
+
+    public void playNow(String playlistName, int position, List<Track> tracks){
+
+        if (!playlistName.equals(playlistQueue) || !((MainActivity)context).getFilter().equals(queueFilter)) {
+
+
+            mController.getTransportControls().sendCustomAction("clear_queue", null);
+
+            for (MediaDescriptionCompat description : MediaAssistant.mergeMediaDescriptionArray(playlistName, tracks)) {
 
                 mController.addQueueItem(description);
 
@@ -227,6 +248,25 @@ public class AnglerClient{
 
                 if (metadata != null) {
                     showMetadata(metadata);
+
+                    String mediaId = metadata.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID);
+/*
+                    Intent idIntent = new Intent();
+                    idIntent.setAction("track_changed");
+                    idIntent.putExtra("track_playlist", currentTrackPlaylist);
+                    idIntent.putExtra("media_id", mediaId);
+
+                    context.sendBroadcast(idIntent);*/
+
+
+                    int playbackState = mController.getPlaybackState().getState();
+/*
+                    Intent pbIntent = new Intent();
+                    pbIntent.setAction("playback_state_changed");
+                    pbIntent.putExtra("playback_state", playbackState);
+
+                    context.sendBroadcast(pbIntent);*/
+
                 }
 
             }catch (RemoteException e){
@@ -244,19 +284,26 @@ public class AnglerClient{
             super.onPlaybackStateChanged(state);
 
             setPlayPause(state.getState());
+
+            Intent intent = new Intent();
+            intent.setAction("playback_state_changed");
+            intent.putExtra("playback_state", state.getState());
+
+            context.sendBroadcast(intent);
         }
 
         @Override
         public void onMetadataChanged(@Nullable MediaMetadataCompat metadata) {
             super.onMetadataChanged(metadata);
 
+            String mediaId = metadata.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID);
+
             currentTrackPlaylist = metadata.getString("track_playlist");
-            currentMediaId = metadata.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID);
 
             Intent intent = new Intent();
             intent.setAction("track_changed");
             intent.putExtra("track_playlist", currentTrackPlaylist);
-            intent.putExtra("media_id", currentMediaId);
+            intent.putExtra("media_id", mediaId);
 
             context.sendBroadcast(intent);
 
@@ -292,22 +339,6 @@ public class AnglerClient{
 
 
     // getters/setters
-    public void setMainPlaylistName(String mainPlaylistName) {
-        this.mainPlaylistName = mainPlaylistName;
-    }
-
-    public void setFilter(String filter) {
-        this.filter = filter;
-    }
-
-    public String getMainPlaylistName() {
-        return mainPlaylistName;
-    }
-
-    public String getFilter() {
-        return filter;
-    }
-
     public int getQueuePosition() {
         return queuePosition;
     }
@@ -321,12 +352,9 @@ public class AnglerClient{
     private void openClientServiceBundle(Bundle bundle){
 
         if (bundle != null) {
-            mainPlaylistName = bundle.getString("main_playlist_name");
-            filter = bundle.getString("filter");
             playlistQueue = bundle.getString("playlist_queue");
             queueFilter = bundle.getString("queue_filter");
             currentTrackPlaylist = bundle.getString("current_track_playlist");
-            currentMediaId = bundle.getString("current_media_id");
             queuePosition = bundle.getInt("queue_position");
             serviceBundle = bundle.getBundle("service_bundle");
         }
@@ -335,12 +363,9 @@ public class AnglerClient{
     public Bundle getClientBundle(){
 
         Bundle bundle = new Bundle();
-        bundle.putString("main_playlist_name", mainPlaylistName);
-        bundle.putString("filter", filter);
         bundle.putString("playlist_queue", playlistQueue);
         bundle.putString("queue_filter", queueFilter);
         bundle.putString("current_track_playlist", currentTrackPlaylist);
-        bundle.putString("current_media_id", currentMediaId);
         bundle.putInt("queue_position", queuePosition);
         bundle.putBundle("service_bundle", serviceBundle);
 
@@ -349,5 +374,25 @@ public class AnglerClient{
 
     public Bundle getServiceBundle() {
         return serviceBundle;
+    }
+
+    public String getCurrentMediaId(){
+        if (mController != null) {
+            if (mController.getMetadata() != null) {
+                return mController.getMetadata().getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID);
+            }else{
+                return "";
+            }
+        }else{
+            return "";
+        }
+    }
+
+    public int getPlaybackState(){
+        if (mController != null) {
+            return mController.getPlaybackState().getState();
+        }else{
+            return PlaybackStateCompat.STATE_PAUSED;
+        }
     }
 }

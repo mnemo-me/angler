@@ -5,7 +5,6 @@ import android.content.ContentResolver;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
-import java.util.ArrayList;
 
 public final class AnglerContract {
 
@@ -49,7 +48,6 @@ public final class AnglerContract {
         public static final String COLUMN_ALBUM = "album";
         public static final String COLUMN_DURATION = "duration";
         public static final String COLUMN_URI = "uri";
-        public static final String COLUMN_SOURCE = "source";
         public static final String COLUMN_POSITION = "position";
     }
 }

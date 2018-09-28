@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:clickable="true"
-    tools:context=".drawer_items_fragments.albums.AlbumsFragmentV2">
+    tools:context=".ui.main_activity.fragments.albums.AlbumsFragmentV2">
 
     <android.support.v7.widget.Toolbar
         android:layout_width="match_parent"

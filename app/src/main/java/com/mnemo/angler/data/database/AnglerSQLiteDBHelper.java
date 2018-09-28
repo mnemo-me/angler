@@ -2,22 +2,14 @@ package com.mnemo.angler.data.database;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.media.MediaMetadataRetriever;
-import android.net.Uri;
-import android.os.Environment;
-import android.webkit.MimeTypeMap;
 
 import com.mnemo.angler.data.file_storage.AnglerFolder;
 import com.mnemo.angler.data.networking.AnglerMediaScrobbler;
-import com.mnemo.angler.drawer_items_fragments.playlists.Track;
+import com.mnemo.angler.ui.main_activity.fragments.playlists.Track;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 
 public class AnglerSQLiteDBHelper extends SQLiteOpenHelper{
 
@@ -113,48 +105,11 @@ public class AnglerSQLiteDBHelper extends SQLiteOpenHelper{
 
 
     // recursively retrieve metadata from phone storage and add to local track table
-    private HashMap<String, Track> gatherAudioTracks(String path) {
+    private void gatherAudioTracks(String path) {
 
-        HashMap<String, Track> trackMap = new HashMap<>();
-
-        File directory = new File(path);
-        ArrayList<String> tracks = new ArrayList<>(Arrays.asList(directory.list()));
-
-        if (directory.getName().startsWith(".") || tracks.contains(".nomedia")){
-            return trackMap;
-        }
-
-        MediaMetadataRetriever mRetriever = new MediaMetadataRetriever();
-
-        for (String track : tracks) {
-
-            File temp = new File(path + File.separator + track);
-
-            if (temp.isDirectory()) {
-
-                trackMap.putAll(gatherAudioTracks(path + File.separator + track));
-
-            } else {
-
-                String extension = MimeTypeMap.getFileExtensionFromUrl(Uri.fromFile(temp).toString());
-                String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
-
-                if (mimeType != null) {
-                    if (mimeType.startsWith("audio/")) {
-
-                        try {
-                            mRetriever.setDataSource(path + File.separator + track);
-                        }catch (Exception e){
-                            continue;
-                        }
-
-                        String title = mRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE);
-                        String artist = mRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
-                        String album = mRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM);
-                        long duration = Long.parseLong(mRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION));
-                        String id = (title + "-" + artist + "-" + album).replace(" ", "_");
-
-                        String uri = path + File.separator + track;
+        String artist = null;
+        String album = null;
+        String uri = null;
 
                         if (artist != null) {
 
@@ -173,131 +128,13 @@ public class AnglerSQLiteDBHelper extends SQLiteOpenHelper{
                             }
 
 
-                            trackMap.put(id, new Track(id, title, artist, album, duration, uri));
-                        }
-                    }
-                }
-            }
+
         }
 
-        return trackMap;
+
     }
 
 
-    void updateSources(){
-
-        // update library
-        HashMap<String, Track> localTracks = gatherAudioTracks(Environment.getExternalStorageDirectory().getPath());
-
-        for (Track track : localTracks.values()){
-
-             Cursor cursor = context.getContentResolver().query(Uri.withAppendedPath(AnglerContract.BASE_CONTENT_URI, AnglerContract.PlaylistEntry.LIBRARY),
-                    null,
-                    "_id = ?", new String[]{track.getId()}, null);
-
-             if (cursor.getCount() == 0){
-
-                 // insert new track in library
-                 context.getContentResolver().insert(Uri.withAppendedPath(AnglerContract.BASE_CONTENT_URI, AnglerContract.PlaylistEntry.LIBRARY),
-                         putTrackInContentValues(track));
-
-             }else{
-
-                 cursor.moveToFirst();
-
-                 String uri = cursor.getString(5);
-
-                 if (!uri.equals(track.getUri())){
-
-                     // update track in library if it was moved
-                     context.getContentResolver().update(Uri.withAppendedPath(AnglerContract.BASE_CONTENT_URI, AnglerContract.PlaylistEntry.LIBRARY),
-                             putTrackInContentValues(track), "_id = ?", new String[]{track.getId()});
-                 }
-             }
-
-             cursor.close();
-        }
-
-
-        // delete tracks from library
-        Cursor deletionCursor = context.getContentResolver().query(Uri.withAppendedPath(AnglerContract.BASE_CONTENT_URI, AnglerContract.PlaylistEntry.LIBRARY),
-                null, null, null, null);
-
-        if (deletionCursor.getCount() != 0){
-
-            deletionCursor.moveToFirst();
-
-            do{
-                if (!localTracks.containsKey(deletionCursor.getString(0))){
-
-                    context.getContentResolver().delete(Uri.withAppendedPath(AnglerContract.BASE_CONTENT_URI, AnglerContract.PlaylistEntry.LIBRARY),
-                            "_id = ?", new String[]{deletionCursor.getString(0)});
-                }
-
-            }while (deletionCursor.moveToNext());
-        }
-
-        deletionCursor.close();
-
-
-
-        // update playlists
-        Cursor playlistsCursor = context.getContentResolver().query(Uri.withAppendedPath(AnglerContract.BASE_CONTENT_URI, AnglerContract.PlaylistEntry.TABLE_NAME),
-                null, AnglerContract.PlaylistEntry.COLUMN_DEFAULT_PLAYLIST + "= 0", null, null);
-
-
-        if (playlistsCursor.getCount() != 0){
-
-            playlistsCursor.moveToFirst();
-
-            do{
-                String tracksTable = playlistsCursor.getString(playlistsCursor.getColumnIndex(AnglerContract.PlaylistEntry.COLUMN_TRACKS_TABLE));
-
-                Cursor tracksTableCursor = context.getContentResolver().query(Uri.withAppendedPath(AnglerContract.BASE_CONTENT_URI, tracksTable),
-                        null, null, null, null);
-
-                if (tracksTableCursor.getCount() != 0){
-
-                    tracksTableCursor.moveToFirst();
-
-                    do {
-                        String checkingId = tracksTableCursor.getString(0);
-
-                        if (!localTracks.containsKey(checkingId)){
-
-                            // delete track from table
-                            context.getContentResolver().delete(Uri.withAppendedPath(AnglerContract.BASE_CONTENT_URI, tracksTable),
-                                    "_id = ?", new String[]{checkingId});
-                        }else{
-
-                            String uri = tracksTableCursor.getString(5);
-
-                            Track track = localTracks.get(checkingId);
-
-                            if (!uri.equals(track.getUri())){
-
-                                 // update track in table if it was moved
-                                 context.getContentResolver().update(Uri.withAppendedPath(AnglerContract.BASE_CONTENT_URI, tracksTable),
-                                         putTrackInContentValues(track), "_id = ?", new String[]{checkingId});
-                            }
-
-                        }
-
-
-
-                    }while (tracksTableCursor.moveToNext());
-
-
-                    tracksTableCursor.close();
-                }
-
-
-            }while(playlistsCursor.moveToNext());
-        }
-
-        playlistsCursor.close();
-
-    }
 
 
 
