@@ -23,7 +23,7 @@ import com.mnemo.angler.ui.main_activity.classes.DrawerItem;
 import com.mnemo.angler.ui.main_activity.activity.MainActivity;
 import com.mnemo.angler.R;
 import com.mnemo.angler.data.file_storage.AnglerFolder;
-import com.mnemo.angler.utils.ImageAssistant;
+import com.mnemo.angler.util.ImageAssistant;
 import com.mnemo.angler.ui.local_load_activity.fragments.ImageFolderFragment;
 import com.steelkiwi.cropiwa.image.CropIwaResultReceiver;
 

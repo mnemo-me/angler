@@ -11,7 +11,7 @@ import android.widget.ImageView;
 
 import com.mnemo.angler.R;
 import com.mnemo.angler.ui.local_load_activity.activity.LocalLoadActivity;
-import com.mnemo.angler.utils.ImageAssistant;
+import com.mnemo.angler.util.ImageAssistant;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

@@ -25,8 +25,8 @@ import com.mnemo.angler.data.database.Entities.Track;
 import com.mnemo.angler.ui.main_activity.activity.MainActivity;
 import com.mnemo.angler.R;
 import com.mnemo.angler.ui.main_activity.adapters.TrackAdapter;
-import com.mnemo.angler.ui.main_activity.fragments.artists.ArtistCoverDialogFragment;
-import com.mnemo.angler.utils.ImageAssistant;
+import com.mnemo.angler.ui.main_activity.misc.ArtistCoverDialogFragment;
+import com.mnemo.angler.util.ImageAssistant;
 
 import java.util.List;
 
@@ -196,7 +196,7 @@ public class AlbumConfigurationFragment extends Fragment implements AlbumConfigu
 
 
     // Setup listeners
-    // Set open cover
+    // Setup open cover
     @OnClick(R.id.album_conf_cardview)
     void openCover() {
 

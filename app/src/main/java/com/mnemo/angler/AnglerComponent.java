@@ -4,8 +4,13 @@ import com.mnemo.angler.data.AnglerRepository;
 import com.mnemo.angler.data.RepositoryModule;
 import com.mnemo.angler.ui.main_activity.fragments.albums.album_configuration.AlbumConfigurationPresenter;
 import com.mnemo.angler.ui.main_activity.fragments.albums.albums.AlbumsPresenter;
-import com.mnemo.angler.ui.main_activity.fragments.music_player.artist_tracks.ArtistTracksPresenter;
-import com.mnemo.angler.ui.main_activity.fragments.music_player.artists.ArtistsPresenter;
+import com.mnemo.angler.ui.main_activity.fragments.artists.artist_albums.ArtistAlbumsPresenter;
+import com.mnemo.angler.ui.main_activity.fragments.artists.artist_bio.ArtistBioPresenter;
+import com.mnemo.angler.ui.main_activity.fragments.artists.artist_tracks.ArtistTracksPresenter;
+import com.mnemo.angler.ui.main_activity.fragments.artists.artists.ArtistsPresenter;
+import com.mnemo.angler.ui.main_activity.fragments.artists.artist_configuration.ArtistConfigurationPresenter;
+import com.mnemo.angler.ui.main_activity.fragments.music_player.artist_tracks.PlaylistArtistTracksPresenter;
+import com.mnemo.angler.ui.main_activity.fragments.music_player.artists.PlaylistArtistsPresenter;
 import com.mnemo.angler.ui.main_activity.fragments.music_player.main_playlist.MainPlaylistPresenter;
 import com.mnemo.angler.ui.main_activity.fragments.music_player.music_player.MusicPlayerPresenter;
 import com.mnemo.angler.ui.main_activity.activity.MainActivityPresenter;
@@ -28,8 +33,8 @@ public interface AnglerComponent {
 
     void injectMusicPlayerPresenter(MusicPlayerPresenter musicPlayerPresenter);
     void injectMainPlaylistPresenter(MainPlaylistPresenter mainPlaylistPresenter);
-    void injectArtistsPresenter(ArtistsPresenter artistsPresenter);
-    void injectArtistTracksPresenter(ArtistTracksPresenter artistTracksPresenter);
+    void injectPlaylistArtistsPresenter(PlaylistArtistsPresenter playlistArtistsPresenter);
+    void injectPlaylistArtistTracksPresenter(PlaylistArtistTracksPresenter playlistArtistTracksPresenter);
 
     void injectPlaylistsPresenter(PlaylistsPresenter playlistsPresenter);
     void injectPlaylistCreatePresenter(PlaylistCreatePresenter playlistCreatePresenter);
@@ -39,5 +44,11 @@ public interface AnglerComponent {
 
     void injectAlbumsPresenter(AlbumsPresenter albumsPresenter);
     void injectAlbumConfigurationPresenter(AlbumConfigurationPresenter albumConfigurationPresenter);
+
+    void injectArtistsPresenter(ArtistsPresenter artistsPresenter);
+    void injectArtistConfigurationPresenter(ArtistConfigurationPresenter artistConfigurationPresenter);
+    void injectArtistTracksPresenter(ArtistTracksPresenter artistTracksPresenter);
+    void injectArtistAlbumsPresenter(ArtistAlbumsPresenter artistAlbumsPresenter);
+    void injectArtistBioPresenter(ArtistBioPresenter artistBioPresenter);
 
 }

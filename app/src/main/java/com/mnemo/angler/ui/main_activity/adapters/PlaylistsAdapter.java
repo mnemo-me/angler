@@ -16,7 +16,7 @@ import com.mnemo.angler.data.database.Entities.Playlist;
 import com.mnemo.angler.ui.main_activity.activity.MainActivity;
 import com.mnemo.angler.ui.main_activity.fragments.playlists.playlist_configuration.PlaylistConfigurationFragment;
 import com.mnemo.angler.ui.main_activity.fragments.playlists.playlist_create.PlaylistCreationDialogFragment;
-import com.mnemo.angler.utils.ImageAssistant;
+import com.mnemo.angler.util.ImageAssistant;
 
 import java.util.List;
 

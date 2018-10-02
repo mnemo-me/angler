@@ -1,4 +1,4 @@
-package com.mnemo.angler.utils;
+package com.mnemo.angler.util;
 
 
 import android.database.Cursor;

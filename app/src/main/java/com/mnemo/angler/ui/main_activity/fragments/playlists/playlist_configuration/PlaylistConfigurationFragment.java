@@ -27,7 +27,7 @@ import com.mnemo.angler.R;
 import com.mnemo.angler.ui.main_activity.activity.MainActivity;
 import com.mnemo.angler.ui.main_activity.adapters.TrackAdapter;
 import com.mnemo.angler.ui.main_activity.fragments.playlists.playlist_create.PlaylistCreationDialogFragment;
-import com.mnemo.angler.utils.ImageAssistant;
+import com.mnemo.angler.util.ImageAssistant;
 import com.mnemo.angler.data.file_storage.AnglerFolder;
 
 import java.io.File;
@@ -186,9 +186,9 @@ public class PlaylistConfigurationFragment extends Fragment implements PlaylistC
         DrawerLayout drawerLayout = getActivity().findViewById(R.id.drawer_layout);
         drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
 
-        presenter.deattachView();
-
         getActivity().unregisterReceiver(receiver);
+
+        presenter.deattachView();
     }
 
     @Override

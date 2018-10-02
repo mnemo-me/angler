@@ -21,7 +21,7 @@ import android.support.v4.media.session.PlaybackStateCompat;
 
 import com.mnemo.angler.data.database.Entities.Track;
 import com.mnemo.angler.ui.main_activity.activity.MainActivity;
-import com.mnemo.angler.utils.MediaAssistant;
+import com.mnemo.angler.util.MediaAssistant;
 
 import java.util.List;
 

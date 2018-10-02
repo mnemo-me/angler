@@ -29,18 +29,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mnemo.angler.ui.main_activity.fragments.albums.albums.AlbumsFragment;
-import com.mnemo.angler.ui.main_activity.fragments.artists.ArtistsFragment;
+import com.mnemo.angler.ui.main_activity.fragments.artists.artists.ArtistsFragment;
 import com.mnemo.angler.ui.main_activity.fragments.music_player.music_player.MusicPlayerFragment;
 import com.mnemo.angler.player.AnglerClient;
 import com.mnemo.angler.ui.main_activity.classes.DrawerItem;
 import com.mnemo.angler.R;
 import com.mnemo.angler.ui.main_activity.fragments.background_changer.BackgroundChangerFragmentv2;
 import com.mnemo.angler.queue.QueueDialogFragment;
-import com.mnemo.angler.utils.ImageAssistant;
-import com.mnemo.angler.utils.MediaAssistant;
+import com.mnemo.angler.util.ImageAssistant;
+import com.mnemo.angler.util.MediaAssistant;
 import com.mnemo.angler.ui.main_activity.fragments.equalizer.EqualizerFragment;
 
-import com.mnemo.angler.ui.main_activity.fragments.music_player.artist_tracks.ArtistTracksFragment;
+import com.mnemo.angler.ui.main_activity.fragments.music_player.artist_tracks.PlaylistPlaylistArtistTracksFragment;
 import com.mnemo.angler.ui.main_activity.misc.AddTrackToPlaylistDialogFragment;
 import com.mnemo.angler.ui.main_activity.fragments.playlists.playlists.PlaylistsFragment;
 
@@ -230,7 +230,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
 
         if (drawer.isDrawerOpen(Gravity.START)) {
             drawer.closeDrawer(Gravity.START);
-        } else if (backStackCount == 1 || (backStackCount == 2 && getSupportFragmentManager().findFragmentById(R.id.song_list) instanceof ArtistTracksFragment)) {
+        } else if (backStackCount == 1 || (backStackCount == 2 && getSupportFragmentManager().findFragmentById(R.id.song_list) instanceof PlaylistPlaylistArtistTracksFragment)) {
             findViewById(R.id.main_frame).setVisibility(View.VISIBLE);
 
             super.onBackPressed();

@@ -16,7 +16,7 @@ import com.mnemo.angler.R;
 import com.mnemo.angler.data.database.Entities.Track;
 import com.mnemo.angler.ui.main_activity.activity.MainActivity;
 import com.mnemo.angler.ui.main_activity.fragments.playlists.add_tracks_to_playlist.AddTracksDialogFragment;
-import com.mnemo.angler.utils.MediaAssistant;
+import com.mnemo.angler.util.MediaAssistant;
 
 import java.util.List;
 

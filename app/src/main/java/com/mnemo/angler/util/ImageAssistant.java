@@ -1,4 +1,4 @@
-package com.mnemo.angler.utils;
+package com.mnemo.angler.util;
 
 import android.content.Context;
 import android.graphics.BitmapFactory;
@@ -8,9 +8,6 @@ import com.bumptech.glide.signature.ObjectKey;
 import com.mnemo.angler.ui.main_activity.activity.MainActivity;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 public class ImageAssistant {
 

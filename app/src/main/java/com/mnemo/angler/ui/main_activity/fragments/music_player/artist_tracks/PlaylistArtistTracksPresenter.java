@@ -14,16 +14,16 @@ import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
-public class ArtistTracksPresenter extends BasePresenter{
+public class PlaylistArtistTracksPresenter extends BasePresenter{
 
     @Inject
     AnglerRepository repository;
 
     private List<Track> tracks;
 
-    ArtistTracksPresenter() {
+    PlaylistArtistTracksPresenter() {
 
-        AnglerApp.getAnglerComponent().injectArtistTracksPresenter(this);
+        AnglerApp.getAnglerComponent().injectPlaylistArtistTracksPresenter(this);
     }
 
     // load artist tracks from database
@@ -34,7 +34,7 @@ public class ArtistTracksPresenter extends BasePresenter{
             tracks = artistTracks;
 
             if (getView() != null) {
-                applyFilter(((ArtistTracksFragment)getView()).getFilter());
+                applyFilter(((PlaylistPlaylistArtistTracksFragment)getView()).getFilter());
             }
         });
     }
@@ -44,7 +44,7 @@ public class ArtistTracksPresenter extends BasePresenter{
 
         if (filter.equals("")){
 
-            ((ArtistTracksView)getView()).setTracks(tracks);
+            ((PlaylistArtistTracksView)getView()).setTracks(tracks);
 
         }else {
 
@@ -53,7 +53,7 @@ public class ArtistTracksPresenter extends BasePresenter{
                     .observeOn(AndroidSchedulers.mainThread())
                     .filter(track -> (track.getTitle().toLowerCase().contains(filter.toLowerCase())))
                     .toList()
-                    .subscribe(tracks -> ((ArtistTracksView)getView()).setTracks(tracks));
+                    .subscribe(tracks -> ((PlaylistArtistTracksView)getView()).setTracks(tracks));
         }
     }
 }

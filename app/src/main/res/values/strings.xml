@@ -101,5 +101,6 @@
     <string name="bass_boost">Bass boost</string>
     <string name="amplifier">Amplifier</string>
     <string name="created">created</string>
+    <string name="bio">bio</string>
 
 </resources>

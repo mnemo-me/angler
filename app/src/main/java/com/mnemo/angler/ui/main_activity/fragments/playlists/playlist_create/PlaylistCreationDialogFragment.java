@@ -23,7 +23,7 @@ import com.mnemo.angler.R;
 import com.mnemo.angler.ui.main_activity.fragments.playlists.playlist_configuration.PlaylistConfigurationFragment;
 import com.mnemo.angler.ui.main_activity.fragments.playlists.playlist_delete.PlaylistDeleteDialogFragment;
 import com.mnemo.angler.ui.main_activity.fragments.playlists.playlists.PlaylistsFragment;
-import com.mnemo.angler.utils.ImageAssistant;
+import com.mnemo.angler.util.ImageAssistant;
 import com.mnemo.angler.ui.local_load_activity.activity.LocalLoadActivity;
 import com.steelkiwi.cropiwa.image.CropIwaResultReceiver;
 

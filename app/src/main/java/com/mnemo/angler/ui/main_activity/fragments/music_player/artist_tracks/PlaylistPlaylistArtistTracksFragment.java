@@ -23,13 +23,13 @@ import com.mnemo.angler.ui.main_activity.adapters.TrackAdapter;
 import java.util.List;
 
 
-public class ArtistTracksFragment extends Fragment implements ArtistTracksView {
+public class PlaylistPlaylistArtistTracksFragment extends Fragment implements PlaylistArtistTracksView {
 
-    public ArtistTracksFragment() {
+    public PlaylistPlaylistArtistTracksFragment() {
         // Required empty public constructor
     }
 
-    ArtistTracksPresenter presenter;
+    PlaylistArtistTracksPresenter presenter;
 
     private String artist;
     private String localPlaylistName;
@@ -87,7 +87,7 @@ public class ArtistTracksFragment extends Fragment implements ArtistTracksView {
         localPlaylistName = "playlist_artist/" + ((MainActivity)getActivity()).getMainPlaylistName()
                 .replace("/", "\\") + "/" + artist.replace("/", "\\");
 
-        presenter = new ArtistTracksPresenter();
+        presenter = new PlaylistArtistTracksPresenter();
         presenter.attachView(this);
 
         // load artist tracks

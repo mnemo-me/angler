@@ -1,4 +1,4 @@
-package com.mnemo.angler.ui.main_activity.fragments.artists;
+package com.mnemo.angler.ui.main_activity.misc;
 
 
 import android.app.Dialog;
@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import com.mnemo.angler.ui.main_activity.activity.MainActivity;
 import com.mnemo.angler.R;
-import com.mnemo.angler.utils.ImageAssistant;
+import com.mnemo.angler.util.ImageAssistant;
 
 
 

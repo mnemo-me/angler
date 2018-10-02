@@ -22,7 +22,7 @@ import android.support.v4.media.session.PlaybackStateCompat;
 import android.util.Log;
 
 
-import com.mnemo.angler.utils.MediaAssistant;
+import com.mnemo.angler.util.MediaAssistant;
 
 import java.io.IOException;
 import java.util.ArrayList;

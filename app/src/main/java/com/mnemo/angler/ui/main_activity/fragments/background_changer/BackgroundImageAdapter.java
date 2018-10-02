@@ -15,7 +15,7 @@ import android.widget.ImageView;
 
 import com.mnemo.angler.ui.main_activity.activity.MainActivity;
 import com.mnemo.angler.R;
-import com.mnemo.angler.utils.ImageAssistant;
+import com.mnemo.angler.util.ImageAssistant;
 import com.mnemo.angler.ui.local_load_activity.activity.LocalLoadActivity;
 
 import java.io.File;

@@ -17,7 +17,7 @@ import android.widget.TextView;
 
 import com.mnemo.angler.ui.main_activity.activity.MainActivity;
 import com.mnemo.angler.R;
-import com.mnemo.angler.utils.MediaAssistant;
+import com.mnemo.angler.util.MediaAssistant;
 
 import java.util.ArrayList;
 

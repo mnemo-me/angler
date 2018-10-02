@@ -19,20 +19,20 @@ import android.view.ViewGroup;
 
 import com.mnemo.angler.R;
 import com.mnemo.angler.ui.main_activity.activity.MainActivity;
-import com.mnemo.angler.ui.main_activity.adapters.ArtistsAdapter;
-import com.mnemo.angler.ui.main_activity.fragments.music_player.artist_tracks.ArtistTracksFragment;
+import com.mnemo.angler.ui.main_activity.adapters.PlaylistArtistsAdapter;
+import com.mnemo.angler.ui.main_activity.fragments.music_player.artist_tracks.PlaylistPlaylistArtistTracksFragment;
 import com.mnemo.angler.ui.main_activity.fragments.music_player.music_player.MusicPlayerFragment;
 
 import java.util.List;
 
 
-public class ArtistsFragment extends Fragment implements ArtistsView{
+public class PlaylistArtistsFragment extends Fragment implements PlaylistArtistsView {
 
-    ArtistsPresenter presenter;
+    PlaylistArtistsPresenter presenter;
 
     RecyclerView recyclerView;
     LinearLayoutManager linearLayoutManager;
-    private ArtistsAdapter adapter;
+    private PlaylistArtistsAdapter adapter;
 
     BroadcastReceiver receiver;
     IntentFilter intentFilter;
@@ -42,7 +42,7 @@ public class ArtistsFragment extends Fragment implements ArtistsView{
     private String filter;
     private String selectedArtist = "";
 
-    public ArtistsFragment() {
+    public PlaylistArtistsFragment() {
         // Required empty public constructor
     }
 
@@ -84,7 +84,7 @@ public class ArtistsFragment extends Fragment implements ArtistsView{
         super.onViewCreated(view, savedInstanceState);
 
         // bind Presenter to View
-        presenter = new ArtistsPresenter();
+        presenter = new PlaylistArtistsPresenter();
         presenter.attachView(this);
 
         // load artists
@@ -150,7 +150,7 @@ public class ArtistsFragment extends Fragment implements ArtistsView{
     @Override
     public void setArtists(List<String> artists) {
 
-        adapter = new ArtistsAdapter(getContext(), artists);
+        adapter = new PlaylistArtistsAdapter(getContext(), artists);
         adapter.setOnArtistSelectedListener(this::openArtistTracks);
         adapter.setArtist(selectedArtist);
         recyclerView.setAdapter(adapter);
@@ -171,22 +171,22 @@ public class ArtistsFragment extends Fragment implements ArtistsView{
             ((SearchView)getActivity().findViewById(R.id.search_toolbar)).setQuery("", false);
         }
 
-        ArtistTracksFragment artistTracksFragment = new ArtistTracksFragment();
+        PlaylistPlaylistArtistTracksFragment playlistArtistTracksFragment = new PlaylistPlaylistArtistTracksFragment();
 
         Bundle args = new Bundle();
         args.putString("artist", artist);
 
-        artistTracksFragment.setArguments(args);
+        playlistArtistTracksFragment.setArguments(args);
 
         if (orientation == Configuration.ORIENTATION_PORTRAIT) {
             getParentFragment().getChildFragmentManager().beginTransaction()
-                    .replace(R.id.song_list, artistTracksFragment, "artist_track_fragment")
+                    .replace(R.id.song_list, playlistArtistTracksFragment, "artist_track_fragment")
                     .addToBackStack(null)
                     .commit();
         }else{
 
             getParentFragment().getChildFragmentManager().beginTransaction()
-                    .replace(R.id.artist_song_list, artistTracksFragment, "artist_track_fragment")
+                    .replace(R.id.artist_song_list, playlistArtistTracksFragment, "artist_track_fragment")
                     .commit();
         }
 

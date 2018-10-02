@@ -25,14 +25,12 @@ import android.widget.Spinner;
 
 import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.jakewharton.rxbinding2.widget.TextViewAfterTextChangeEvent;
-import com.mnemo.angler.data.database.Entities.Playlist;
-import com.mnemo.angler.ui.main_activity.fragments.music_player.artist_tracks.ArtistTracksFragment;
-import com.mnemo.angler.ui.main_activity.fragments.music_player.artists.ArtistsFragment;
+import com.mnemo.angler.ui.main_activity.fragments.music_player.artist_tracks.PlaylistPlaylistArtistTracksFragment;
+import com.mnemo.angler.ui.main_activity.fragments.music_player.artists.PlaylistArtistsFragment;
 import com.mnemo.angler.ui.main_activity.fragments.music_player.main_playlist.MainPlaylistFragment;
 import com.mnemo.angler.ui.main_activity.activity.MainActivity;
 import com.mnemo.angler.R;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -242,20 +240,20 @@ public class MusicPlayerFragment extends Fragment implements MusicPlayerView {
             // open artists or artist tracks fragment
             if (artistSelected != null) {
 
-                ArtistTracksFragment artistTracksFragment = new ArtistTracksFragment();
+                PlaylistPlaylistArtistTracksFragment playlistArtistTracksFragment = new PlaylistPlaylistArtistTracksFragment();
 
                 Bundle args = new Bundle();
                 args.putString("artist", artistSelected);
 
-                artistTracksFragment.setArguments(args);
+                playlistArtistTracksFragment.setArguments(args);
 
                 getChildFragmentManager().beginTransaction()
-                    .replace(R.id.song_list, artistTracksFragment, "artist_track_fragment")
+                    .replace(R.id.song_list, playlistArtistTracksFragment, "artist_track_fragment")
                     .commit();
             }else {
 
                 getChildFragmentManager().beginTransaction()
-                        .replace(R.id.song_list, new ArtistsFragment(), "artists_fragment")
+                        .replace(R.id.song_list, new PlaylistArtistsFragment(), "artists_fragment")
                         .commit();
             }
         }else{
@@ -277,7 +275,7 @@ public class MusicPlayerFragment extends Fragment implements MusicPlayerView {
             }
 
             // open artists fragment
-            transaction.replace(R.id.artist_list, new ArtistsFragment(), "artists_fragment");
+            transaction.replace(R.id.artist_list, new PlaylistArtistsFragment(), "artists_fragment");
             transaction.commit();
 
             // show separator
@@ -286,15 +284,15 @@ public class MusicPlayerFragment extends Fragment implements MusicPlayerView {
             // open artist track fragment
             if (artistSelected != null){
 
-                ArtistTracksFragment artistTracksFragment = new ArtistTracksFragment();
+                PlaylistPlaylistArtistTracksFragment playlistArtistTracksFragment = new PlaylistPlaylistArtistTracksFragment();
 
                 Bundle args = new Bundle();
                 args.putString("artist", artistSelected);
 
-                artistTracksFragment.setArguments(args);
+                playlistArtistTracksFragment.setArguments(args);
 
                 getChildFragmentManager().beginTransaction()
-                    .replace(R.id.artist_song_list, artistTracksFragment, "artist_track_fragment")
+                    .replace(R.id.artist_song_list, playlistArtistTracksFragment, "artist_track_fragment")
                     .commit();
             }
         }

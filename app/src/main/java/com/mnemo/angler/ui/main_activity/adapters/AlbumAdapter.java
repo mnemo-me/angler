@@ -17,8 +17,8 @@ import com.mnemo.angler.data.file_storage.AnglerFolder;
 import com.mnemo.angler.ui.main_activity.activity.MainActivity;
 import com.mnemo.angler.ui.main_activity.classes.Album;
 import com.mnemo.angler.ui.main_activity.fragments.albums.album_configuration.AlbumConfigurationFragment;
-import com.mnemo.angler.ui.main_activity.fragments.artists.ArtistCoverDialogFragment;
-import com.mnemo.angler.utils.ImageAssistant;
+import com.mnemo.angler.ui.main_activity.misc.ArtistCoverDialogFragment;
+import com.mnemo.angler.util.ImageAssistant;
 
 import java.io.File;
 import java.util.ArrayList;

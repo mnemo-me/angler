@@ -3,20 +3,10 @@ package com.mnemo.angler.ui.main_activity.misc;
 
 import android.os.Bundle;
 import android.app.Fragment;
-import android.os.Handler;
-import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
-import com.mnemo.angler.R;
-import com.mnemo.angler.data.file_storage.AnglerFolder;
-import com.mnemo.angler.ui.main_activity.activity.MainActivity;
-import com.mnemo.angler.ui.main_activity.fragments.artists.ArtistConfigurationFragment;
-import com.mnemo.angler.utils.MediaAssistant;
-
-import java.io.File;
 
 /**
  * A simple {@link Fragment} subclass.

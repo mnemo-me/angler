@@ -1,14 +1,15 @@
-package com.mnemo.angler.ui.main_activity.fragments.artists;
+package com.mnemo.angler.ui.main_activity.fragments.artists.artist_bio;
 
 
 import android.os.Bundle;
 
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
-import com.mnemo.angler.R;
 
 
 public class ArtistBioFragment extends Fragment {
@@ -20,13 +21,13 @@ public class ArtistBioFragment extends Fragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.art_fragment_artist_bio, container, false);
+
+        TextView textView = new TextView(getContext());
 
 
-        return view;
+        return textView;
     }
 
 }

@@ -14,7 +14,7 @@ import com.mnemo.angler.R;
 import java.util.List;
 
 
-public class ArtistsAdapter extends RecyclerView.Adapter<ArtistsAdapter.ViewHolder>{
+public class PlaylistArtistsAdapter extends RecyclerView.Adapter<PlaylistArtistsAdapter.ViewHolder>{
 
     private Context context;
     private List<String> artists;
@@ -33,7 +33,7 @@ public class ArtistsAdapter extends RecyclerView.Adapter<ArtistsAdapter.ViewHold
         }
     }
 
-    public ArtistsAdapter(Context context, List<String> artists) {
+    public PlaylistArtistsAdapter(Context context, List<String> artists) {
         this.context = context;
         this.artists = artists;
     }
