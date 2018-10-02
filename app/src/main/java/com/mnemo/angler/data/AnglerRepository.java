@@ -99,6 +99,10 @@ public class AnglerRepository {
         anglerDB.loadPlaylist(playlist, listener);
     }
 
+    public void loadAlbumTracks(String artist, String album, AnglerDB.AlbumTracksLoadListener listener){
+        anglerDB.loadAlbumTracks(artist, album, listener);
+    }
+
     public void loadArtists(String playlist, AnglerDB.ArtistsLoadListener listener){
         anglerDB.loadArtists(playlist, listener);
     }
@@ -148,4 +152,5 @@ public class AnglerRepository {
     public void addTracksToPlaylist(String playlist, HashMap<Track, Integer> tracks){
         anglerDB.addTracksToPlaylist(playlist, tracks);
     }
+
 }

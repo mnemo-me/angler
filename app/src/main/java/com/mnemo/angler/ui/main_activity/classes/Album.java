@@ -1,4 +1,4 @@
-package com.mnemo.angler.ui.main_activity.fragments.albums;
+package com.mnemo.angler.ui.main_activity.classes;
 
 
 import android.support.annotation.NonNull;
@@ -8,7 +8,7 @@ public class Album implements Comparable{
     private String album;
     private String artist;
 
-    Album(String album, String artist) {
+    public Album(String album, String artist) {
         this.album = album;
         this.artist = artist;
     }

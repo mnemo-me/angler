@@ -24,7 +24,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.SimpleCursorAdapter;
 
-import com.mnemo.angler.ui.main_activity.fragments.DrawerItem;
+import com.mnemo.angler.ui.main_activity.classes.DrawerItem;
 import com.mnemo.angler.R;
 import com.mnemo.angler.utils.ImageAssistant;
 import com.mnemo.angler.data.database.AnglerContract.*;

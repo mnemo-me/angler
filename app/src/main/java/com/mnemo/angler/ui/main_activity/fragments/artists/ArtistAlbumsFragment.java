@@ -18,7 +18,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 
 import com.mnemo.angler.R;
-import com.mnemo.angler.ui.main_activity.fragments.albums.AlbumConfigurationFragment;
+import com.mnemo.angler.ui.main_activity.fragments.albums.album_configuration.AlbumConfigurationFragment;
 import com.mnemo.angler.utils.ImageAssistant;
 import com.mnemo.angler.data.database.AnglerContract;
 import com.mnemo.angler.data.database.AnglerContract.*;

@@ -17,7 +17,7 @@ import android.view.ViewGroup;
 import com.mnemo.angler.data.database.Entities.Playlist;
 import com.mnemo.angler.ui.main_activity.adapters.PlaylistsAdapter;
 import com.mnemo.angler.R;
-import com.mnemo.angler.ui.main_activity.fragments.DrawerItem;
+import com.mnemo.angler.ui.main_activity.classes.DrawerItem;
 import com.mnemo.angler.ui.main_activity.fragments.playlists.playlist_create.PlaylistCreationDialogFragment;
 
 import java.util.List;

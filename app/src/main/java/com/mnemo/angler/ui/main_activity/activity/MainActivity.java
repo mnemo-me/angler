@@ -28,12 +28,12 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.mnemo.angler.ui.main_activity.fragments.albums.albums.AlbumsFragment;
 import com.mnemo.angler.ui.main_activity.fragments.artists.ArtistsFragment;
 import com.mnemo.angler.ui.main_activity.fragments.music_player.music_player.MusicPlayerFragment;
 import com.mnemo.angler.player.AnglerClient;
-import com.mnemo.angler.ui.main_activity.fragments.DrawerItem;
+import com.mnemo.angler.ui.main_activity.classes.DrawerItem;
 import com.mnemo.angler.R;
-import com.mnemo.angler.ui.main_activity.fragments.albums.AlbumsFragmentV2;
 import com.mnemo.angler.ui.main_activity.fragments.background_changer.BackgroundChangerFragmentv2;
 import com.mnemo.angler.queue.QueueDialogFragment;
 import com.mnemo.angler.utils.ImageAssistant;
@@ -455,7 +455,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
 
     @OnClick(R.id.albums_drawer_item)
     void albumsSelect(View v) {
-        createDrawerItemFragment(v, new AlbumsFragmentV2(), "Albums fragment");
+        createDrawerItemFragment(v, new AlbumsFragment(), "Albums fragment");
 
     }
 

@@ -19,7 +19,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 
-import com.mnemo.angler.ui.main_activity.fragments.DrawerItem;
+import com.mnemo.angler.ui.main_activity.classes.DrawerItem;
 import com.mnemo.angler.ui.main_activity.activity.MainActivity;
 import com.mnemo.angler.R;
 import com.mnemo.angler.data.file_storage.AnglerFolder;

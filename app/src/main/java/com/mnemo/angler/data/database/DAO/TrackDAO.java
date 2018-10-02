@@ -33,6 +33,9 @@ public interface TrackDAO {
     @Query("SELECT * FROM tracks WHERE artist=:artist AND _id IN (:tracksId) ORDER BY title ASC")
     Flowable<List<Track>> getTracksByArtist(List<String> tracksId, String artist);
 
+    @Query("SELECT * FROM tracks WHERE artist=:artist AND album=:album ORDER BY title ASC")
+    Flowable<List<Track>> getAlbumTracks(String artist, String album);
+
     @Insert
     void insert(Track... tracks);
 

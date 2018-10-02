@@ -50,6 +50,10 @@ public class AnglerDB{
         void artistTracksLoaded(List<Track> tracks);
     }
 
+    public interface AlbumTracksLoadListener{
+        void albumTracksLoaded(List<Track> tracks);
+    }
+
     public interface PlaylistCheckedTracksLoadListener{
         void checkedTracksLoaded(HashMap<Track, Boolean> tracks);
     }
@@ -255,6 +259,14 @@ public class AnglerDB{
                     });
 
         }
+    }
+
+    public void loadAlbumTracks(String artist, String album, AlbumTracksLoadListener listener){
+
+        db.trackDAO().getAlbumTracks(artist, album)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(listener::albumTracksLoaded);
     }
 
     public void insertPlaylist(String title, String cover){

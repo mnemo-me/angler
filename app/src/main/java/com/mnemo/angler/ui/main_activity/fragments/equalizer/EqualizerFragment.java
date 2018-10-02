@@ -18,7 +18,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Switch;
 
-import com.mnemo.angler.ui.main_activity.fragments.DrawerItem;
+import com.mnemo.angler.ui.main_activity.classes.DrawerItem;
 import com.mnemo.angler.R;
 
 import butterknife.BindView;

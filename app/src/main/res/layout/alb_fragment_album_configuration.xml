@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.main_activity.fragments.albums.AlbumConfigurationFragment">
+    tools:context=".ui.main_activity.fragments.albums.album_configuration.AlbumConfigurationFragment">
 
     <View
         android:id="@+id/album_conf_white_skrim"
@@ -136,15 +136,14 @@
     </LinearLayout>
 
 
-    <ListView
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/album_conf_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="160dp"
         android:paddingTop="50dp"
         android:paddingBottom="4dp"
-        android:clipToPadding="false"
-        android:choiceMode="singleChoice"/>
+        android:clipToPadding="false"/>
 
 
 </android.support.constraint.ConstraintLayout>

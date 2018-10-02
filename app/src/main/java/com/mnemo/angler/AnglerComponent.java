@@ -2,6 +2,8 @@ package com.mnemo.angler;
 
 import com.mnemo.angler.data.AnglerRepository;
 import com.mnemo.angler.data.RepositoryModule;
+import com.mnemo.angler.ui.main_activity.fragments.albums.album_configuration.AlbumConfigurationPresenter;
+import com.mnemo.angler.ui.main_activity.fragments.albums.albums.AlbumsPresenter;
 import com.mnemo.angler.ui.main_activity.fragments.music_player.artist_tracks.ArtistTracksPresenter;
 import com.mnemo.angler.ui.main_activity.fragments.music_player.artists.ArtistsPresenter;
 import com.mnemo.angler.ui.main_activity.fragments.music_player.main_playlist.MainPlaylistPresenter;
@@ -34,5 +36,8 @@ public interface AnglerComponent {
     void injectPlaylistConfigurationPresenter(PlaylistConfigurationPresenter playlistConfigurationPresenter);
     void injectAddTracksPresenter(AddTracksPresenter addTracksPresenter);
     void injectPlaylistDeletePresenter(PlaylistDeletePresenter playlistDeletePresenter);
+
+    void injectAlbumsPresenter(AlbumsPresenter albumsPresenter);
+    void injectAlbumConfigurationPresenter(AlbumConfigurationPresenter albumConfigurationPresenter);
 
 }

@@ -16,7 +16,7 @@ import android.widget.TextView;
 
 import com.mnemo.angler.ui.main_activity.activity.MainActivity;
 import com.mnemo.angler.R;
-import com.mnemo.angler.ui.main_activity.fragments.albums.AlbumConfigurationFragment;
+import com.mnemo.angler.ui.main_activity.fragments.albums.album_configuration.AlbumConfigurationFragment;
 import com.mnemo.angler.data.file_storage.AnglerFolder;
 import com.mnemo.angler.utils.MediaAssistant;
 import com.mnemo.angler.ui.main_activity.misc.AddTrackToPlaylistDialogFragment;

@@ -1,4 +1,4 @@
-package com.mnemo.angler.ui.main_activity.fragments;
+package com.mnemo.angler.ui.main_activity.classes;
 
 
 // Interface-marker for recognizing drawer items

@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:clickable="true"
-    tools:context=".ui.main_activity.fragments.albums.AlbumsFragmentV2">
+    tools:context=".ui.main_activity.fragments.albums.albums.AlbumsFragment">
 
     <android.support.v7.widget.Toolbar
         android:layout_width="match_parent"
@@ -37,11 +37,10 @@
 
     </android.support.v7.widget.Toolbar>
 
-    <ListView
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/albums_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:listSelector="@android:color/transparent"/>
+        android:layout_height="match_parent"/>
 
 
 </LinearLayout>
