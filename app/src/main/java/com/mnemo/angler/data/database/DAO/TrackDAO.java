@@ -18,14 +18,20 @@ public interface TrackDAO {
     @Query("SELECT * FROM tracks ORDER BY title ASC")
     Flowable<List<Track>> getTracks();
 
-    @Query("SELECT * FROM tracks WHERE _id IN (:trackIds)")
-    List<Track> getTracks(List<String> trackIds);
+    @Query("SELECT * FROM tracks WHERE _id IN (:tracksId)")
+    List<Track> getTracks(List<String> tracksId);
 
     @Query("SELECT artist FROM tracks GROUP BY artist ORDER BY artist ASC")
     Flowable<List<String>> getArtists();
 
+    @Query("SELECT artist FROM tracks WHERE _id IN (:tracksId) GROUP BY artist ORDER BY artist ASC")
+    Flowable<List<String>> getArtists(List<String> tracksId);
+
     @Query("SELECT * FROM tracks WHERE artist=:artist ORDER BY title ASC")
     Flowable<List<Track>> getTracksByArtist(String artist);
+
+    @Query("SELECT * FROM tracks WHERE artist=:artist AND _id IN (:tracksId) ORDER BY title ASC")
+    Flowable<List<Track>> getTracksByArtist(List<String> tracksId, String artist);
 
     @Insert
     void insert(Track... tracks);

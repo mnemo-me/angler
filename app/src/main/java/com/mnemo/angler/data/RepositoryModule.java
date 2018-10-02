@@ -48,7 +48,7 @@ public class RepositoryModule {
     @Provides
     @Singleton
     AnglerFileStorage provideFileStorage(){
-        return new AnglerFileStorage();
+        return new AnglerFileStorage(provideContext());
     }
 
     @Provides

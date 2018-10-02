@@ -1,4 +1,4 @@
-package com.mnemo.angler.ui.main_activity.fragments.playlists;
+package com.mnemo.angler.ui.main_activity.misc;
 
 
 import android.app.Dialog;

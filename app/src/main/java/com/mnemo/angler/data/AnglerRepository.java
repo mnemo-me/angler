@@ -9,6 +9,8 @@ import com.mnemo.angler.data.networking.AnglerNetworking;
 import com.mnemo.angler.data.preferences.AnglerPreferences;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -50,6 +52,7 @@ public class AnglerRepository {
     }
 
 
+    // Shared preferences methods
     public String getBackgroundImage(){
 
        String backgroundImage = anglerPreferences.getBackgroundImage();
@@ -75,8 +78,21 @@ public class AnglerRepository {
     }
 
 
-    public void loadPlaylists(AnglerDB.PlaylistsUpdateListener listener){
-        anglerDB.loadPlaylists(listener);
+
+    // File storage methods
+    public void createTempImage(){
+        anglerFileStorage.createTempImage();
+    }
+
+
+
+    // Database methods
+    public void loadPlaylistTitles(AnglerDB.PlaylistsUpdateListener listener){
+        anglerDB.loadPlaylistTitles(listener);
+    }
+
+    public void loadPlaylistsCreatedByUser(AnglerDB.UserPlaylistsUpdateListener listener){
+        anglerDB.loadPlaylistsCreatedByUser(listener);
     }
 
     public void loadPlaylist(String playlist, AnglerDB.PlaylistLoadListener listener){
@@ -89,5 +105,47 @@ public class AnglerRepository {
 
     public void loadArtistTracksFromPlaylist(String playlist, String artist, AnglerDB.ArtistTracksLoadListener listener){
         anglerDB.loadArtistTracksFromPlaylist(playlist, artist, listener);
+    }
+
+    public void loadCheckedPlaylistTracks(String playlist, AnglerDB.PlaylistCheckedTracksLoadListener listener){
+        anglerDB.loadCheckedPlaylistTracks(playlist, listener);
+    }
+
+    public void createPlaylist(String playlist){
+
+        String coverImageName = anglerFileStorage.generatePlaylistCoverImageName(playlist);
+
+        anglerDB.insertPlaylist(playlist, coverImageName);
+        anglerFileStorage.copyImage(AnglerFileStorage.getTempImageName(), coverImageName);
+    }
+
+    public void deletePlaylist(String playlist){
+
+        anglerDB.deletePlaylist(playlist);
+        anglerFileStorage.deleteCoverImage(playlist);
+    }
+
+    public String getTempImageName(){
+        return  AnglerFileStorage.getTempImageName();
+    }
+
+    public void renamePlaylist(String oldTitle, String newTitle){
+
+        String oldImageName = anglerFileStorage.generatePlaylistCoverImageName(oldTitle);
+        String newImageName = anglerFileStorage.generatePlaylistCoverImageName(newTitle);
+
+        anglerFileStorage.renameCover(oldImageName, newImageName);
+
+        anglerDB.updatePlaylist(oldTitle, newTitle, newImageName);
+        anglerDB.updatePlaylistLink(oldTitle, newTitle);
+    }
+
+    public void updateCover(String image){
+
+        anglerFileStorage.copyImage(AnglerFileStorage.getTempImageName(), image);
+    }
+
+    public void addTracksToPlaylist(String playlist, HashMap<Track, Integer> tracks){
+        anglerDB.addTracksToPlaylist(playlist, tracks);
     }
 }

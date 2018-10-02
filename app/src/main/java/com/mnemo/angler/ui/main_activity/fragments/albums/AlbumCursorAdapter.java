@@ -19,8 +19,8 @@ import com.mnemo.angler.R;
 import com.mnemo.angler.ui.main_activity.fragments.artists.ArtistConfigurationFragment;
 import com.mnemo.angler.data.file_storage.AnglerFolder;
 import com.mnemo.angler.utils.MediaAssistant;
-import com.mnemo.angler.ui.main_activity.fragments.playlists.AddTrackToPlaylistDialogFragment;
-import com.mnemo.angler.ui.main_activity.fragments.playlists.LyricsDialogFragment;
+import com.mnemo.angler.ui.main_activity.misc.AddTrackToPlaylistDialogFragment;
+import com.mnemo.angler.ui.main_activity.misc.LyricsDialogFragment;
 
 import java.io.File;
 

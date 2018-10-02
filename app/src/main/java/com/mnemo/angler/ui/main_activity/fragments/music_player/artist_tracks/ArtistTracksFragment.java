@@ -113,7 +113,7 @@ public class ArtistTracksFragment extends Fragment implements ArtistTracksView {
                         String trackPlaylist = intent.getStringExtra("track_playlist");
                         String mediaId = intent.getStringExtra("media_id");
 
-                        if (trackPlaylist.equals(localPlaylistName)) {
+                        if (trackPlaylist.equals(((MainActivity)getActivity()).getMainPlaylistName())) {
                             try {
                                 adapter.setTrack(mediaId);
                             } catch (NullPointerException e) {
@@ -161,14 +161,7 @@ public class ArtistTracksFragment extends Fragment implements ArtistTracksView {
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        /*try {
-            Parcelable state = getListView().onSaveInstanceState();
-            outState.putParcelable("state", state);
 
-        }catch(IllegalStateException e){
-            e.printStackTrace();
-        }
-*/
         outState.putString("artist", artist);
     }
 
@@ -177,13 +170,13 @@ public class ArtistTracksFragment extends Fragment implements ArtistTracksView {
     @Override
     public void setTracks(List<Track> artistTracks) {
 
-        adapter = new TrackAdapter(getContext(), localPlaylistName, artistTracks);
+        adapter = new TrackAdapter(getContext(), localPlaylistName, artistTracks, false);
         recyclerView.setAdapter(adapter);
 
-        adapter.setTrack(((MainActivity)getActivity()).getCurrentMediaId());
-        adapter.setPlaybackState(((MainActivity)getActivity()).getPlaybackState());
-
-        //linearLayoutManager.onRestoreInstanceState(state);
+        if (((MainActivity)getActivity()).getCurrentPlaylistName().equals(((MainActivity)getActivity()).getMainPlaylistName())) {
+            adapter.setTrack(((MainActivity) getActivity()).getCurrentMediaId());
+            adapter.setPlaybackState(((MainActivity) getActivity()).getPlaybackState());
+        }
     }
 
     @Override

@@ -57,25 +57,5 @@ public class ImageAssistant {
         }
     }
 
-    // Method for copying images in folder (for new playlist)
-    public static void copyImage(String inputFileName, String outputFileName){
 
-        File inputFile = new File(inputFileName);
-        try {
-            FileInputStream inputStream = new FileInputStream(inputFile);
-            FileOutputStream outputStream = new FileOutputStream(outputFileName);
-
-            byte[] buff = new byte[1024];
-            int length;
-
-            while ((length = inputStream.read(buff)) > 0){
-                outputStream.write(buff,0, length);
-            }
-            inputStream.close();
-            outputStream.flush();
-            outputStream.close();
-        }catch(IOException e){
-            e.printStackTrace();
-        }
-    }
 }

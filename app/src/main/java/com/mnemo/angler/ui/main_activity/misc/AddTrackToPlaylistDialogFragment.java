@@ -1,4 +1,4 @@
-package com.mnemo.angler.ui.main_activity.fragments.playlists;
+package com.mnemo.angler.ui.main_activity.misc;
 
 
 import android.app.Dialog;
@@ -25,6 +25,7 @@ import android.widget.Toast;
 import com.mnemo.angler.ui.main_activity.activity.MainActivity;
 import com.mnemo.angler.R;
 import com.mnemo.angler.data.database.AnglerSQLiteDBHelper;
+import com.mnemo.angler.ui.main_activity.fragments.playlists.playlist_create.PlaylistCreationDialogFragment;
 import com.mnemo.angler.utils.ImageAssistant;
 import com.mnemo.angler.data.database.AnglerContract.*;
 

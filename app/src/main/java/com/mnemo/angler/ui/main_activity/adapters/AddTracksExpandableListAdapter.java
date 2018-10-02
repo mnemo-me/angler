@@ -1,4 +1,4 @@
-package com.mnemo.angler.ui.main_activity.fragments.playlists;
+package com.mnemo.angler.ui.main_activity.adapters;
 
 
 import android.content.Context;
@@ -9,20 +9,24 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
 
+import com.mnemo.angler.data.database.Entities.Track;
 import com.mnemo.angler.ui.main_activity.activity.MainActivity;
 import com.mnemo.angler.R;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 
 public class AddTracksExpandableListAdapter extends BaseExpandableListAdapter{
 
     private Context context;
-    private ArrayList<Track> tracksToAdd;
+    private HashMap<Track, Boolean> checkedTracks;
     private ArrayList<String> artists;
-    private ArrayList<Track> newTracks;
     private ArrayList<String> artistChecked;
     private ArrayList<String> mutedArtists;
+    private ArrayList<Track> newTracks;
+
 
     private OnTrackCountChangeListener onTrackCountChangeListener;
 
@@ -31,22 +35,25 @@ public class AddTracksExpandableListAdapter extends BaseExpandableListAdapter{
         void onTrackCountChange();
     }
 
-    AddTracksExpandableListAdapter(Context context, ArrayList<Track> tracksToAdd) {
+    public AddTracksExpandableListAdapter(Context context, HashMap<Track, Boolean> checkedTracks) {
         this.context = context;
-        this.tracksToAdd = tracksToAdd;
+        this.checkedTracks = checkedTracks;
 
+        // Get artist list
         artists = new ArrayList<>();
-        for (Track track : tracksToAdd){
+        for (Track track : checkedTracks.keySet()){
             if (!artists.contains(track.getArtist())){
                 artists.add(track.getArtist());
             }
         }
         Collections.sort(artists);
 
+        // Check artists
         artistChecked = new ArrayList<>();
         mutedArtists = new ArrayList<>();
         addPreCheckedArtists();
 
+        // Initialize track list to insert
         newTracks = new ArrayList<>();
     }
 
@@ -60,7 +67,7 @@ public class AddTracksExpandableListAdapter extends BaseExpandableListAdapter{
 
         int count = 0;
 
-        for (Track track : tracksToAdd){
+        for (Track track : checkedTracks.keySet()){
             if (track.getArtist().equals(artists.get(i))){
                 count++;
             }
@@ -79,13 +86,12 @@ public class AddTracksExpandableListAdapter extends BaseExpandableListAdapter{
 
         ArrayList<Track> artistTracks = new ArrayList<>();
 
-        for (Track track : tracksToAdd){
+        for (Track track : checkedTracks.keySet()){
             if (track.getArtist().equals(artists.get(i))){
                 artistTracks.add(track);
             }
         }
-
-        Collections.sort(artistTracks);
+        artistTracks.sort(Comparator.comparing(Track::getTitle));
 
         return artistTracks.get(i1);
     }
@@ -108,30 +114,35 @@ public class AddTracksExpandableListAdapter extends BaseExpandableListAdapter{
     @Override
     public View getGroupView(int i, boolean b, View view, ViewGroup viewGroup) {
 
+        // Inflate artist view
         LinearLayout linearLayout = (LinearLayout) LayoutInflater.from(context).inflate(R.layout.pm_add_track_d, viewGroup, false);
 
+        // Get artist variable
+        String artist = artists.get(i);
+
+        // Setup checkbox
         CheckBox checkBox = linearLayout.findViewById(R.id.add_track_artist);
-
-        final String artist = artists.get(i);
-
         checkBox.setText(artist);
 
+        // Set checked
         if (artistChecked.contains(artist)){
             checkBox.setChecked(true);
         }
 
+        // Set muted
         if (mutedArtists.contains(artist)){
             checkBox.setEnabled(false);
         }
 
-        checkBox.setOnCheckedChangeListener((compoundButton, b1) -> {
+        // Set listener
+        checkBox.setOnCheckedChangeListener((compoundButton, checked) -> {
 
+            if (checked){
 
-            if (b1){
                 if (!artistChecked.contains(artist)) {
                     artistChecked.add(artist);
 
-                    for (Track track : tracksToAdd){
+                    for (Track track : checkedTracks.keySet()){
                         if (track.getArtist().equals(artist)){
                             if (!newTracks.contains(track)){
                                 newTracks.add(track);
@@ -139,54 +150,62 @@ public class AddTracksExpandableListAdapter extends BaseExpandableListAdapter{
                         }
                     }
                 }
+
                 notifyDataSetChanged();
+
             }else{
+
                 artistChecked.remove(artist);
-                for (Track track : tracksToAdd){
+                for (Track track : checkedTracks.keySet()){
                     if (track.getArtist().equals(artist)){
                         newTracks.remove(track);
                     }
                 }
-                notifyDataSetChanged();
 
+                notifyDataSetChanged();
             }
 
             onTrackCountChangeListener.onTrackCountChange();
         });
+
         return linearLayout;
     }
 
     @Override
     public View getChildView(int i, int i1, boolean b, View view, ViewGroup viewGroup) {
 
+        // Inflate track view
         LinearLayout linearLayout = (LinearLayout) LayoutInflater.from(context).inflate(R.layout.pm_add_track_d, viewGroup, false);
         linearLayout.setPadding((int)(62 * MainActivity.density), 0, 0, 0);
 
-        final String artist = artists.get(i);
+        // Get artist and track variables
+        String artist = artists.get(i);
+        Track track = (Track)getChild(i, i1);
 
+        // Setup track checkbox
         CheckBox checkBox = linearLayout.findViewById(R.id.add_track_artist);
-        final Track track = (Track)getChild(i, i1);
-
         checkBox.setText(track.getTitle());
 
-        checkBox.setChecked(track.isAlreadyAdded());
+        // Set checked and muted for already added tracks
+        checkBox.setChecked(checkedTracks.get(track));
+        checkBox.setEnabled(!checkedTracks.get(track));
 
-        if (!track.isAlreadyAdded()){
+        // Set checked for tracks candidates to add
+        if (!checkedTracks.get(track)){
             checkBox.setChecked(newTracks.contains(track));
         }
 
-        checkBox.setEnabled(!track.isAlreadyAdded());
+        // Set listener
+        checkBox.setOnCheckedChangeListener((compoundButton, checked) -> {
 
-        checkBox.setOnCheckedChangeListener((compoundButton, b1) -> {
+            if (checked){
 
-
-            if (b1){
                 if (!newTracks.contains(track)) {
                     newTracks.add(track);
 
                     boolean isArtistNeedToAddInList = true;
 
-                    for (Track trackForCheck : tracksToAdd){
+                    for (Track trackForCheck : checkedTracks.keySet()){
                         if (trackForCheck.getArtist().equals(artist)){
                             if (!newTracks.contains(trackForCheck)){
                                 isArtistNeedToAddInList = false;
@@ -201,6 +220,7 @@ public class AddTracksExpandableListAdapter extends BaseExpandableListAdapter{
                     }
                 }
             }else{
+
                 newTracks.remove(track);
                 if (artistChecked.contains(artist)){
                     artistChecked.remove(artist);
@@ -219,23 +239,17 @@ public class AddTracksExpandableListAdapter extends BaseExpandableListAdapter{
         return true;
     }
 
-    ArrayList<Track> getNewTracks() {
-        return newTracks;
-    }
 
-    void setOnTrackCountChangeListener(OnTrackCountChangeListener trackCountChangeListener) {
-        this.onTrackCountChangeListener = trackCountChangeListener;
-    }
-
+    // Add prechecked artists in artist checked list
     private void addPreCheckedArtists(){
 
         for (String artist : artists) {
 
             boolean isArtistNeedToAddInList = true;
 
-            for (Track trackForCheck : tracksToAdd) {
+            for (Track trackForCheck : checkedTracks.keySet()) {
                 if (trackForCheck.getArtist().equals(artist)) {
-                    if (!trackForCheck.isAlreadyAdded()) {
+                    if (!checkedTracks.get(trackForCheck)) {
                         isArtistNeedToAddInList = false;
                         break;
                     }
@@ -248,5 +262,16 @@ public class AddTracksExpandableListAdapter extends BaseExpandableListAdapter{
             }
         }
 
+    }
+
+    // Get tracks to add
+    public ArrayList<Track> getNewTracks() {
+        return newTracks;
+    }
+
+
+    // Set track count changed listener
+    public void setOnTrackCountChangeListener(OnTrackCountChangeListener trackCountChangeListener) {
+        this.onTrackCountChangeListener = trackCountChangeListener;
     }
 }

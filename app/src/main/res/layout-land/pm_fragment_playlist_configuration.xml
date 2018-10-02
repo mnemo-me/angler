@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.main_activity.fragments.playlists.PlaylistConfigurationFragment">
+    tools:context=".ui.main_activity.fragments.playlists.playlist_configuration.PlaylistConfigurationFragment">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/playlist_conf_toolbar"
@@ -118,7 +118,7 @@
     </LinearLayout>
 
 
-    <ListView
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/playlist_conf_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -126,8 +126,7 @@
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginStart="280dp"
         android:layout_marginTop="48dp"
-        android:clipToPadding="false"
-        android:choiceMode="singleChoice"/>
+        android:clipToPadding="false" />
 
 
 </android.support.constraint.ConstraintLayout>

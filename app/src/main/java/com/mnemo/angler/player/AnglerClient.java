@@ -34,7 +34,6 @@ public class AnglerClient{
     private String playlistQueue = "";
     private int queuePosition = 0;
     private String queueFilter = "";
-    private String currentTrackPlaylist = "";
 
     private long durationMS;
 
@@ -297,12 +296,13 @@ public class AnglerClient{
             super.onMetadataChanged(metadata);
 
             String mediaId = metadata.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID);
+            String trackPlaylist = metadata.getString("track_playlist");
 
-            currentTrackPlaylist = metadata.getString("track_playlist");
+            ((MainActivity)context).setCurrentPlaylistName(trackPlaylist);
 
             Intent intent = new Intent();
             intent.setAction("track_changed");
-            intent.putExtra("track_playlist", currentTrackPlaylist);
+            intent.putExtra("track_playlist", trackPlaylist);
             intent.putExtra("media_id", mediaId);
 
             context.sendBroadcast(intent);
@@ -354,7 +354,6 @@ public class AnglerClient{
         if (bundle != null) {
             playlistQueue = bundle.getString("playlist_queue");
             queueFilter = bundle.getString("queue_filter");
-            currentTrackPlaylist = bundle.getString("current_track_playlist");
             queuePosition = bundle.getInt("queue_position");
             serviceBundle = bundle.getBundle("service_bundle");
         }
@@ -365,7 +364,6 @@ public class AnglerClient{
         Bundle bundle = new Bundle();
         bundle.putString("playlist_queue", playlistQueue);
         bundle.putString("queue_filter", queueFilter);
-        bundle.putString("current_track_playlist", currentTrackPlaylist);
         bundle.putInt("queue_position", queuePosition);
         bundle.putBundle("service_bundle", serviceBundle);
 

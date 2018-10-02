@@ -70,7 +70,6 @@ public class MainPlaylistFragment extends Fragment implements MainPlaylistView{
         linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
 
-
         return recyclerView;
     }
 
@@ -153,11 +152,13 @@ public class MainPlaylistFragment extends Fragment implements MainPlaylistView{
     @Override
     public void setTracks(List<Track> playlistTracks) {
 
-        adapter = new TrackAdapter(getContext(), ((MainActivity)getActivity()).getMainPlaylistName(), playlistTracks);
+        adapter = new TrackAdapter(getContext(), ((MainActivity)getActivity()).getMainPlaylistName(), playlistTracks, false);
         recyclerView.setAdapter(adapter);
 
-        adapter.setTrack(((MainActivity)getActivity()).getCurrentMediaId());
-        adapter.setPlaybackState(((MainActivity)getActivity()).getPlaybackState());
+        if (((MainActivity)getActivity()).getCurrentPlaylistName().equals(((MainActivity)getActivity()).getMainPlaylistName())) {
+            adapter.setTrack(((MainActivity) getActivity()).getCurrentMediaId());
+            adapter.setPlaybackState(((MainActivity) getActivity()).getPlaybackState());
+        }
     }
 
     @Override

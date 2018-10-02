@@ -187,8 +187,8 @@ public class BandsFragment extends Fragment {
 
 
         // Setup spinner with array adapter
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), R.layout.playlist_spinner_item, R.id.playlist_spinner_item_title, equalizerPresets);
-        adapter.setDropDownViewResource(R.layout.playlist_spinner_dropdown_item);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), R.layout.mp_playlist_spinner_item, R.id.playlist_spinner_item_title, equalizerPresets);
+        adapter.setDropDownViewResource(R.layout.mp_playlist_spinner_dropdown_item);
         presetsSpinner.setAdapter(adapter);
         presetsSpinner.setSelection(sharedPreferences.getInt("active_preset", 0));
         presetsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {

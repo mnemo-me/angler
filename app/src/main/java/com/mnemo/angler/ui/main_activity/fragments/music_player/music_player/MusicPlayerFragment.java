@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -114,13 +113,13 @@ public class MusicPlayerFragment extends Fragment implements MusicPlayerView {
 
 
         // configure playlist spinner with adapter
-        adapter = new ArrayAdapter(getContext(), R.layout.playlist_spinner_item, R.id.playlist_spinner_item_title);
+        adapter = new ArrayAdapter(getContext(), R.layout.mp_playlist_spinner_item, R.id.playlist_spinner_item_title);
         spinner.setAdapter(adapter);
-        adapter.setDropDownViewResource(R.layout.playlist_spinner_dropdown_item);
+        adapter.setDropDownViewResource(R.layout.mp_playlist_spinner_dropdown_item);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-/*
+
                 String mainPlaylist = (String)adapterView.getItemAtPosition(i);
 
                 ((MainActivity)getActivity()).setMainPlaylistName(mainPlaylist);
@@ -129,7 +128,7 @@ public class MusicPlayerFragment extends Fragment implements MusicPlayerView {
                 playlist.setAlpha(1f);
                 artists.setAlpha(0.5f);
 
-                showLibrary();*/
+                showLibrary();
             }
 
             @Override
@@ -177,16 +176,10 @@ public class MusicPlayerFragment extends Fragment implements MusicPlayerView {
 
     // MVP View methods
     @Override
-    public void updateSpinner(List<Playlist> playlists) {
-
-        ArrayList<String> playlistTitles = new ArrayList<>();
-
-        for (Playlist playlist : playlists){
-            playlistTitles.add(playlist.getTitle());
-        }
+    public void updateSpinner(List<String> playlists) {
 
         adapter.clear();
-        adapter.addAll(playlistTitles);
+        adapter.addAll(playlists);
         adapter.notifyDataSetChanged();
 
         if (fragmentOnTop.equals("playlist")) {

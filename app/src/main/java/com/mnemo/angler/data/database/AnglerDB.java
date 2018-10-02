@@ -13,6 +13,7 @@ import com.mnemo.angler.data.database.Entities.Playlist;
 import com.mnemo.angler.data.database.Entities.Track;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -20,6 +21,7 @@ import javax.inject.Inject;
 import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
 public class AnglerDB{
@@ -29,6 +31,10 @@ public class AnglerDB{
     private AnglerRoomDatabase db;
 
     public interface PlaylistsUpdateListener{
+        void playlistsUpdated(List<String> playlistTitles);
+    }
+
+    public interface UserPlaylistsUpdateListener{
         void playlistsUpdated(List<Playlist> playlists);
     }
 
@@ -42,6 +48,10 @@ public class AnglerDB{
 
     public interface ArtistTracksLoadListener{
         void artistTracksLoaded(List<Track> tracks);
+    }
+
+    public interface PlaylistCheckedTracksLoadListener{
+        void checkedTracksLoaded(HashMap<Track, Boolean> tracks);
     }
 
     @Inject
@@ -114,7 +124,7 @@ public class AnglerDB{
                     return !track.getUri().equals(dbTrack.getUri());
                 })
                 .toList()
-                .subscribe(tracksToUpdate -> db.trackDAO().insert(tracksToUpdate.toArray(new Track[tracksToUpdate.size()])));
+                .subscribe(tracksToUpdate -> db.trackDAO().update(tracksToUpdate.toArray(new Track[tracksToUpdate.size()])));
     }
 
     private void deleteTracks(List<Track> tracks, List<Track> dbTracks) {
@@ -122,14 +132,23 @@ public class AnglerDB{
         Observable.fromIterable(dbTracks)
                 .filter(dbTrack -> !tracks.contains(dbTrack))
                 .toList()
-                .subscribe(tracksToDelete -> db.trackDAO().insert(tracksToDelete.toArray(new Track[tracksToDelete.size()])));
+                .subscribe(tracksToDelete -> db.trackDAO().delete(tracksToDelete.toArray(new Track[tracksToDelete.size()])));
     }
 
 
 
-    public void loadPlaylists(PlaylistsUpdateListener listener){
+    public void loadPlaylistTitles(PlaylistsUpdateListener listener){
 
-        db.playlistDAO().getPlaylists()
+        db.playlistDAO().getPlaylistTitles()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(listener::playlistsUpdated);
+    }
+
+
+    public void loadPlaylistsCreatedByUser(UserPlaylistsUpdateListener listener){
+
+        db.playlistDAO().getUserPlaylists()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(listener::playlistsUpdated);
@@ -149,24 +168,38 @@ public class AnglerDB{
 
             db.linkDAO().getLinks(playlist)
                     .subscribeOn(Schedulers.io())
-                    .observeOn(Schedulers.io())
                     .subscribe(links -> {
-/*
-                        List<Track> tracks = db.trackDAO().getTracks(getTrackIds(links));
-                        HashMap<Integer, Track> playlistTracks = new HashMap<>();
 
-                        for (Track track : tracks) {
+                        Observable.fromIterable(db.trackDAO().getTracks(getTrackIds(links)))
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .toSortedList((track1, track2) -> {
 
-                            for (Link link : links) {
+                                    String trackId1 = track1.get_id();
+                                    String trackId2 = track2.get_id();
 
-                                if (track.get_id().equals(link.getTrackId())) {
-                                    playlistTracks.put(link.getPosition(), track);
-                                    break;
-                                }
-                            }
-                        }
+                                    int trackPosition1 = -1;
+                                    int trackPosition2 = -1;
 
-                        listener.playlistLoaded(playlistTracks);*/
+                                    for (Link link : links){
+                                        if (link.getTrackId().equals(trackId1)){
+                                            trackPosition1 = link.getPosition();
+                                        }
+
+                                        if (link.getTrackId().equals(trackId2)){
+                                            trackPosition2 = link.getPosition();
+                                        }
+
+                                        if (trackPosition1 != -1 && trackPosition2 != -1){
+                                            break;
+                                        }
+                                    }
+
+                                    return trackPosition1 - trackPosition2;
+
+                                })
+                                .subscribe(listener::playlistLoaded);
+
+
 
                     });
         }
@@ -194,6 +227,11 @@ public class AnglerDB{
                     .subscribe(listener::artistsLoaded);
         }else{
 
+            db.linkDAO().getTracksId(playlist)
+                    .subscribeOn(Schedulers.io())
+                    .subscribe(tracksId -> db.trackDAO().getArtists(tracksId)
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(listener::artistsLoaded));
         }
     }
 
@@ -208,7 +246,94 @@ public class AnglerDB{
                     .subscribe(listener::artistTracksLoaded);
         }else{
 
+            db.linkDAO().getTracksId(playlist)
+                    .subscribeOn(Schedulers.io())
+                    .subscribe(tracksId -> {
+                        db.trackDAO().getTracksByArtist(tracksId, artist)
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(listener::artistTracksLoaded);
+                    });
+
         }
     }
 
+    public void insertPlaylist(String title, String cover){
+
+        Completable.fromAction(() -> {
+            Playlist playlist = new Playlist(title, cover);
+            db.playlistDAO().insert(playlist);
+        })
+                .subscribeOn(Schedulers.io())
+                .subscribe();
+
+
+    }
+
+    public void updatePlaylist(String oldTitle, String newTitle, String cover){
+
+        Completable.fromAction(() -> {
+            db.playlistDAO().update(oldTitle, newTitle, cover);
+        })
+                .subscribeOn(Schedulers.io())
+                .subscribe();
+
+    }
+
+    public void deletePlaylist(String playlist){
+
+        Completable.fromAction(() -> {
+            db.playlistDAO().delete(playlist);
+        })
+                .subscribeOn(Schedulers.io())
+                .subscribe();
+    }
+
+    public void loadCheckedPlaylistTracks(String playist, PlaylistCheckedTracksLoadListener listener){
+
+        db.trackDAO().getTracks()
+                .map((Function<List<Track>, HashMap<Track, Boolean>>) tracks -> {
+
+                    HashMap checkedTracks = new HashMap();
+
+                    for (Track track : tracks){
+                        checkedTracks.put(track, false);
+                    }
+
+                    return checkedTracks;
+                })
+                .subscribeOn(Schedulers.io())
+                .subscribe(checkedTracks -> {
+
+                    db.linkDAO().getLinks(playist)
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .map(this::getTrackIds)
+                            .subscribe(tracksId -> {
+
+                               for (Track track : checkedTracks.keySet()){
+                                   if (tracksId.contains(track.get_id())){
+                                       checkedTracks.put(track, true);
+                                   }
+                               }
+
+                               listener.checkedTracksLoaded(checkedTracks);
+                            });
+                });
+    }
+
+    public void addTracksToPlaylist(String playlist, HashMap<Track, Integer> tracksWithPosition){
+
+        Observable.fromIterable(tracksWithPosition.keySet())
+                .subscribeOn(Schedulers.io())
+                .map(track -> new Link(track.get_id(), playlist, tracksWithPosition.get(track)))
+                .toList()
+                .subscribe(links -> db.linkDAO().insert(links.toArray(new Link[links.size()])));
+
+    }
+
+    public void updatePlaylistLink(String oldTitle, String newTitle){
+
+        Completable.fromAction(() -> db.linkDAO().updatePlaylistLink(oldTitle, newTitle))
+                .subscribeOn(Schedulers.io())
+                .subscribe();
+    }
 }

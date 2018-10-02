@@ -25,6 +25,12 @@ public class Link {
     @ColumnInfo(name = "position")
     private int position;
 
+    public Link(String trackId, String playlist, int position) {
+        this.trackId = trackId;
+        this.playlist = playlist;
+        this.position = position;
+    }
+
     public int get_id() {
         return _id;
     }

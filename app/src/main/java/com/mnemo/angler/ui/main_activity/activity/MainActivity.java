@@ -41,8 +41,8 @@ import com.mnemo.angler.utils.MediaAssistant;
 import com.mnemo.angler.ui.main_activity.fragments.equalizer.EqualizerFragment;
 
 import com.mnemo.angler.ui.main_activity.fragments.music_player.artist_tracks.ArtistTracksFragment;
-import com.mnemo.angler.ui.main_activity.fragments.playlists.AddTrackToPlaylistDialogFragment;
-import com.mnemo.angler.ui.main_activity.fragments.playlists.PlaylistManagerFragment;
+import com.mnemo.angler.ui.main_activity.misc.AddTrackToPlaylistDialogFragment;
+import com.mnemo.angler.ui.main_activity.fragments.playlists.playlists.PlaylistsFragment;
 
 import java.util.List;
 
@@ -99,6 +99,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
     IntentFilter intentFilter;
 
     private String mainPlaylistName = "library";
+    private String currentPlaylistName = "";
     private String filter = "";
 
 
@@ -131,6 +132,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
         if (savedInstanceState != null){
 
             mainPlaylistName = savedInstanceState.getString("main_playlist_name");
+            currentPlaylistName = savedInstanceState.getString("current_playlist_name");
             filter = savedInstanceState.getString("filter");
 
             args = new Bundle();
@@ -213,6 +215,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
         super.onSaveInstanceState(outState);
 
         outState.putString("main_playlist_name", mainPlaylistName);
+        outState.putString("current_playlist_name", currentPlaylistName);
         outState.putString("filter", filter);
 
         outState.putInt("main_frame_visibility", findViewById(R.id.main_frame).getVisibility());
@@ -446,7 +449,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
 
     @OnClick(R.id.playlists_drawer_item)
     void playlistsSeleсt(View v) {
-        createDrawerItemFragment(v, new PlaylistManagerFragment(), "Playlist fragment");
+        createDrawerItemFragment(v, new PlaylistsFragment(), "Playlist fragment");
 
     }
 
@@ -497,6 +500,14 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
 
     public void setMainPlaylistName(String mainPlaylistName) {
         this.mainPlaylistName = mainPlaylistName;
+    }
+
+    public String getCurrentPlaylistName() {
+        return currentPlaylistName;
+    }
+
+    public void setCurrentPlaylistName(String currentPlaylistName) {
+        this.currentPlaylistName = currentPlaylistName;
     }
 
     public String getCurrentMediaId() {

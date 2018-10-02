@@ -6,6 +6,7 @@ import com.mnemo.angler.data.AnglerRepository;
 import com.mnemo.angler.ui.base.BasePresenter;
 
 
+
 import javax.inject.Inject;
 
 public class MusicPlayerPresenter extends BasePresenter {
@@ -21,11 +22,11 @@ public class MusicPlayerPresenter extends BasePresenter {
 
     // load playlists from database
     void loadPlaylists(){
-        repository.loadPlaylists(playlists -> {
+        repository.loadPlaylistTitles(playlistTitles -> {
 
             if (getView() != null) {
 
-                ((MusicPlayerView) getView()).updateSpinner(playlists);
+                ((MusicPlayerView) getView()).updateSpinner(playlistTitles);
             }
         });
     }

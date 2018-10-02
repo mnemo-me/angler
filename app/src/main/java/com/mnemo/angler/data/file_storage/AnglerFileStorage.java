@@ -1,6 +1,9 @@
 package com.mnemo.angler.data.file_storage;
 
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Environment;
@@ -9,6 +12,8 @@ import android.webkit.MimeTypeMap;
 import com.mnemo.angler.data.database.Entities.Track;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,9 +23,14 @@ import javax.inject.Inject;
 public class AnglerFileStorage {
 
     public static final String PHONE_STORAGE = Environment.getExternalStorageDirectory().getPath();
+    public static final String TEMP_IMAGE_NAME = AnglerFolder.PATH_PLAYLIST_COVER + File.separator + "temp.jpg";
+
+    Context context;
 
     @Inject
-    public AnglerFileStorage() {
+    public AnglerFileStorage(Context context) {
+
+        this.context = context;
     }
 
 
@@ -97,4 +107,80 @@ public class AnglerFileStorage {
 
         return tracks;
     }
+
+    // get temp image name
+    public static String getTempImageName() {
+        return TEMP_IMAGE_NAME;
+    }
+
+
+    // create temp image
+    public void createTempImage(){
+
+        File outputFile = new File(TEMP_IMAGE_NAME);
+        Bitmap bm = BitmapFactory.decodeResource(context.getResources(), context.getResources().getIdentifier("back3", "drawable", context.getPackageName()));
+
+        try {
+
+            FileOutputStream outputStream = new FileOutputStream(outputFile);
+            bm.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+            outputStream.flush();
+            outputStream.close();
+
+        } catch (IOException e) {
+
+            e.printStackTrace();
+        }
+
+    }
+
+
+
+    // copy images
+    public void copyImage(String inputFileName, String outputFileName){
+
+        File inputFile = new File(inputFileName);
+        try {
+            FileInputStream inputStream = new FileInputStream(inputFile);
+            FileOutputStream outputStream = new FileOutputStream(outputFileName);
+
+            byte[] buff = new byte[1024];
+            int length;
+
+            while ((length = inputStream.read(buff)) > 0){
+                outputStream.write(buff,0, length);
+            }
+            inputStream.close();
+            outputStream.flush();
+            outputStream.close();
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    // Delete cover image
+    public void deleteCoverImage(String playlist){
+
+        String coverImage = generatePlaylistCoverImageName(playlist);
+
+        new File(coverImage).delete();
+    }
+
+    // Generate cover name
+    public String generatePlaylistCoverImageName(String title){
+
+        return AnglerFolder.PATH_PLAYLIST_COVER + File.separator + title.replace(" ", "_") + ".jpeg";
+    }
+
+    // Rename cover image
+    public void renameCover(String oldImageName, String newImageName){
+
+        File oldImage = new File(oldImageName);
+        File newImage = new File(newImageName);
+
+        if (oldImage.exists()){
+            oldImage.renameTo(newImage);
+        }
+    }
+
 }

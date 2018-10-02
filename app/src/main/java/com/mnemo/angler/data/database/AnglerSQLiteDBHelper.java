@@ -7,7 +7,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import com.mnemo.angler.data.file_storage.AnglerFolder;
 import com.mnemo.angler.data.networking.AnglerMediaScrobbler;
-import com.mnemo.angler.ui.main_activity.fragments.playlists.Track;
 
 import java.io.File;
 
@@ -90,18 +89,6 @@ public class AnglerSQLiteDBHelper extends SQLiteOpenHelper{
 
 
 
-    private ContentValues putTrackInContentValues(Track track){
-
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("_id",track.getId());
-        contentValues.put(AnglerContract.TrackEntry.COLUMN_TITLE, track.getTitle());
-        contentValues.put(AnglerContract.TrackEntry.COLUMN_ARTIST, track.getArtist());
-        contentValues.put(AnglerContract.TrackEntry.COLUMN_ALBUM, track.getAlbum());
-        contentValues.put(AnglerContract.TrackEntry.COLUMN_DURATION, track.getDuration());
-        contentValues.put(AnglerContract.TrackEntry.COLUMN_URI, track.getUri());
-
-        return contentValues;
-    }
 
 
     // recursively retrieve metadata from phone storage and add to local track table
