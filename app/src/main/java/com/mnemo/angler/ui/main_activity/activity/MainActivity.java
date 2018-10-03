@@ -289,9 +289,9 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
     public void setPlayPause(String playPauseState){
 
         if (playPauseState.equals("play")){
-            mPlayPauseButton.setImageResource(R.drawable.ic_pause_black_48dp);
+            mPlayPauseButton.setImageResource(R.drawable.baseline_pause_white_48dp);
         }else{
-            mPlayPauseButton.setImageResource(R.drawable.ic_play_arrow_black_48dp);
+            mPlayPauseButton.setImageResource(R.drawable.baseline_play_arrow_white_48dp);
         }
     }
 

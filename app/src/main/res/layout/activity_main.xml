@@ -62,6 +62,12 @@
 
         <!-- media panel -->
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="124dp"
+            android:background="@color/mainGrey"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
         <android.support.constraint.Group
             android:id="@+id/media_panel_group"
             android:layout_width="match_parent"
@@ -73,18 +79,25 @@
             media_panel_previous_track, media_panel_play_pause, media_panel_next_track,
             media_panel_repeat, media_panel_shuffle"/>
 
+        <ImageButton
+            android:id="@+id/media_panel_add_to_playlist"
+            style="@style/playlist_media_button"
+            android:src="@drawable/baseline_add_white_24dp"
+            app:layout_constraintStart_toStartOf="@+id/media_panel_repeat"
+            app:layout_constraintBottom_toTopOf="@id/media_panel_seek_bar"/>
+
         <TextView
             android:id="@+id/media_panel_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:maxWidth="356dp"
+            android:maxWidth="326dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="8dp"
             android:paddingStart="28dp"
             android:paddingEnd="28dp"
             android:ellipsize="end"
             android:maxLines="1"
-            android:textColor="#000000"
+            android:textColor="#FFFFFF"
             android:textSize="14sp"
             app:layout_constraintBottom_toTopOf="@+id/media_panel_seek_bar"
             app:layout_constraintEnd_toEndOf="parent"
@@ -96,7 +109,7 @@
             style="@style/playlist_media_button"
             app:layout_constraintStart_toStartOf="@id/media_panel_shuffle"
             app:layout_constraintBottom_toTopOf="@id/media_panel_seek_bar"
-            android:src="@drawable/baseline_queue_music_black_24dp"/>
+            android:src="@drawable/baseline_queue_music_white_24dp"/>
 
 
         <!-- SeekBar and time views -->
@@ -143,40 +156,31 @@
         <!-- media buttons -->
 
         <ImageButton
-            android:id="@+id/media_panel_lyrics"
+            android:id="@+id/media_panel_repeat"
             style="@style/playlist_media_button"
             android:layout_marginBottom="12dp"
-            android:src="@drawable/ic_receipt_black_24dp"
+            android:alpha="0.2"
+            android:src="@drawable/baseline_repeat_white_24dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/media_panel_add_to_playlist"
+            app:layout_constraintEnd_toStartOf="@id/media_panel_previous_track"
             app:layout_constraintStart_toStartOf="parent" />
-
-
-        <ImageButton
-            android:id="@+id/media_panel_add_to_playlist"
-            style="@style/playlist_media_button"
-            android:layout_marginBottom="12dp"
-            android:src="@drawable/ic_add_black_24dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/media_panel_previous_track"
-            app:layout_constraintStart_toEndOf="@+id/media_panel_lyrics" />
 
 
         <ImageButton
             android:id="@+id/media_panel_previous_track"
             style="@style/playlist_media_button"
             android:layout_marginBottom="12dp"
-            android:src="@drawable/ic_skip_previous_black_24dp"
+            android:src="@drawable/baseline_skip_previous_white_24dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/media_panel_play_pause"
-            app:layout_constraintStart_toEndOf="@+id/media_panel_add_to_playlist" />
+            app:layout_constraintStart_toEndOf="@+id/media_panel_repeat" />
 
 
         <ImageButton
             android:id="@+id/media_panel_play_pause"
             style="@style/playlist_media_button"
             android:layout_marginBottom="12dp"
-            android:src="@drawable/ic_play_arrow_black_48dp"
+            android:src="@drawable/baseline_play_arrow_white_48dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/media_panel_next_track"
             app:layout_constraintHorizontal_chainStyle="spread"
@@ -187,21 +191,10 @@
             android:id="@+id/media_panel_next_track"
             style="@style/playlist_media_button"
             android:layout_marginBottom="12dp"
-            android:src="@drawable/ic_skip_next_black_24dp"
+            android:src="@drawable/baseline_skip_next_white_24dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/media_panel_repeat"
+            app:layout_constraintEnd_toStartOf="@+id/media_panel_shuffle"
             app:layout_constraintStart_toEndOf="@id/media_panel_play_pause" />
-
-
-        <ImageButton
-            android:id="@+id/media_panel_repeat"
-            style="@style/playlist_media_button"
-            android:layout_marginBottom="12dp"
-            android:alpha="0.2"
-            android:src="@drawable/ic_repeat_black_24dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/media_panel_shuffle"
-            app:layout_constraintStart_toEndOf="@+id/media_panel_next_track" />
 
 
         <ImageButton
@@ -209,10 +202,10 @@
             style="@style/playlist_media_button"
             android:layout_marginBottom="12dp"
             android:alpha="0.2"
-            android:src="@drawable/ic_shuffle_black_24dp"
+            android:src="@drawable/baseline_shuffle_white_24dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/media_panel_repeat" />
+            app:layout_constraintStart_toEndOf="@+id/media_panel_next_track" />
 
 
     </android.support.constraint.ConstraintLayout>

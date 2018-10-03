@@ -10,4 +10,7 @@
     <color name="justGrey">#1F000000</color>
     <color name="awesomeGrey">#606060</color>
     <color name="gGrey">#aba9a9</color>
+    <color name="mainGrey">#252525</color>
+    <color name="softMainGrey">#DD252525</color>
+
 </resources>

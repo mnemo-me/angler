@@ -9,7 +9,7 @@
         android:id="@+id/artist_conf_white_skrim"
         android:layout_width="match_parent"
         android:layout_height="160dp"
-        android:background="#22FFFFFF"/>
+        android:background="@color/softMainGrey"/>
 
     <ImageButton
         android:id="@+id/artist_conf_back"

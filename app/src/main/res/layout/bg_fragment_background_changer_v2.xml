@@ -27,7 +27,7 @@
         android:layout_height="48dp"
         android:elevation="4dp"
         app:contentInsetStart="0dp"
-        android:background="#22FFFFFF">
+        android:background="@color/softMainGrey">
 
         <ImageView
             android:id="@+id/background_changer_drawer_back"
