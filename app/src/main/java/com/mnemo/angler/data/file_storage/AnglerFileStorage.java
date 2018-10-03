@@ -17,6 +17,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -166,6 +168,16 @@ public class AnglerFileStorage {
         new File(coverImage).delete();
     }
 
+    // Delete background image
+    public void deleteBackgroundImage(String image){
+
+        File fileToDeletePort = new File(image);
+        fileToDeletePort.delete();
+
+        File fileToDeleteLand = new File(image.replace("port", "land"));
+        fileToDeleteLand.delete();
+    }
+
     // Generate cover name
     public String generatePlaylistCoverImageName(String title){
 
@@ -180,6 +192,77 @@ public class AnglerFileStorage {
 
         if (oldImage.exists()){
             oldImage.renameTo(newImage);
+        }
+    }
+
+    // Gather background images
+    public List<String> gatherBackgroundImages(){
+
+        cleanImages();
+
+        String imageFolderPath = AnglerFolder.PATH_BACKGROUND_PORTRAIT;
+
+        ArrayList<String> images = new ArrayList<>();
+
+        File directory = new File(imageFolderPath);
+        String[] files = directory.list();
+
+        for (String file : files) {
+
+            File temp = new File(imageFolderPath + File.separator + file);
+            String extension = MimeTypeMap.getFileExtensionFromUrl(Uri.fromFile(temp).toString());
+            String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
+
+            if (mimeType != null) {
+                if (mimeType.contains("image/")) {
+                    images.add(imageFolderPath + File.separator + file);
+                }
+            }
+        }
+
+        return sortBackgroundImages(images);
+    }
+
+    private List<String> sortBackgroundImages(List<String> images){
+
+        images.sort((image1, image2) -> {
+
+            File one = new File(image1);
+            File two = new File(image2);
+
+            return (int)(two.lastModified() - one.lastModified());
+        });
+
+        return images;
+    }
+
+    // Clean single orientation background images
+    private void cleanImages(){
+
+        File portDirectory = new File(AnglerFolder.PATH_BACKGROUND_PORTRAIT);
+        String[] portFiles = portDirectory.list();
+
+        for (String portFile : portFiles){
+
+            File port = new File(portFile);
+            File land = new File(portFile.replace("port","land"));
+
+            if (!land.exists()){
+                port.delete();
+            }
+        }
+
+        File landDirectory = new File(AnglerFolder.PATH_BACKGROUND_LANDSCAPE);
+        String[] landFiles = landDirectory.list();
+
+        for (String landFile : landFiles){
+
+            File land = new File(landFile);
+            File port = new File(landFile.replace("land","port"));
+
+            if (!port.exists()){
+                land.delete();
+            }
         }
     }
 

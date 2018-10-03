@@ -31,39 +31,6 @@
             android:layout_margin="1dp"
             android:background="@drawable/background_selector"/>
 
-        <android.support.constraint.Group
-            android:id="@+id/background_add_image"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone"
-            app:constraint_referenced_ids="background_add_image_photo, background_add_image_text"/>
-
-        <ImageView
-            android:id="@+id/background_add_image_photo"
-            android:layout_width="72dp"
-            android:layout_height="72dp"
-            android:layout_marginStart="4dp"
-            android:src="@drawable/baseline_add_photo_alternate_white_2_48dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/background_add_image_text"
-            app:layout_constraintVertical_chainStyle="packed"/>
-
-        <TextView
-            android:id="@+id/background_add_image_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:text="@string/load_image"
-            android:textColor="#FFFFFF"
-            android:textSize="12sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/background_add_image_photo"/>
-
-
         <ImageView
             android:layout_width="48dp"
             android:layout_height="48dp"

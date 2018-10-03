@@ -30,6 +30,10 @@ public class AnglerPreferences {
         return appPreferences.getString("background", "R.drawable.back");
     }
 
+    public void setBackgroundOpacity(int opacity){
+        appPreferences.edit().putInt("overlay", opacity).apply();
+    }
+
     public int getBackgroundOpacity(){
         return appPreferences.getInt("overlay", 203);
     }

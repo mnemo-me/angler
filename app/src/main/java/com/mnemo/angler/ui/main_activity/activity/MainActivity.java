@@ -30,11 +30,11 @@ import android.widget.Toast;
 
 import com.mnemo.angler.ui.main_activity.fragments.albums.albums.AlbumsFragment;
 import com.mnemo.angler.ui.main_activity.fragments.artists.artists.ArtistsFragment;
+import com.mnemo.angler.ui.main_activity.fragments.background_changer.background_changer.BackgroundChangerFragment;
 import com.mnemo.angler.ui.main_activity.fragments.music_player.music_player.MusicPlayerFragment;
 import com.mnemo.angler.player.AnglerClient;
 import com.mnemo.angler.ui.main_activity.classes.DrawerItem;
 import com.mnemo.angler.R;
-import com.mnemo.angler.ui.main_activity.fragments.background_changer.BackgroundChangerFragmentv2;
 import com.mnemo.angler.queue.QueueDialogFragment;
 import com.mnemo.angler.util.ImageAssistant;
 import com.mnemo.angler.util.MediaAssistant;
@@ -124,7 +124,6 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
         // bind Presenter to View
         presenter = new MainActivityPresenter();
         presenter.attachView(this);
-        presenter.init();
 
         // get client/service bundles
         Bundle args = null;
@@ -158,7 +157,6 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
 
             mainFrame.setVisibility(savedInstanceState.getInt("main_frame_visibility"));
         }
-
     }
 
 
@@ -169,6 +167,9 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
         anglerClient.connect();
 
         presenter.attachView(this);
+
+        // Set background
+        presenter.setupBackground();
 
         receiver = new BroadcastReceiver() {
             @Override
@@ -473,7 +474,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
 
     @OnClick(R.id.background_drawer_item)
     void backgroundSelect(View v) {
-        createDrawerItemFragment(v, new BackgroundChangerFragmentv2(), "Background fragment");
+        createDrawerItemFragment(v, new BackgroundChangerFragment(), "Background fragment");
 
     }
 

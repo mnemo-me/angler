@@ -19,6 +19,10 @@ import io.reactivex.schedulers.Schedulers;
 
 public class AnglerRepository {
 
+    public interface OnGatherBackgroundImagesListener{
+        void backgroundImagesGathered(List<String> images);
+    }
+
     @Inject
     AnglerDB anglerDB;
 
@@ -72,6 +76,11 @@ public class AnglerRepository {
         return anglerPreferences.getBackgroundOpacity();
     }
 
+    public void saveBackground(String backgroundImage, int opacity){
+        anglerPreferences.setBackgroundImage(backgroundImage);
+        anglerPreferences.setBackgroundOpacity(opacity);
+    }
+
 
     public void setMainPlaylist(String playlist){
         anglerPreferences.setMainPlaylist(playlist);
@@ -82,6 +91,27 @@ public class AnglerRepository {
     // File storage methods
     public void createTempImage(){
         anglerFileStorage.createTempImage();
+    }
+
+    public void gatherBackgroundImages(OnGatherBackgroundImagesListener listener){
+
+        // Create list of images
+        List<String> images = new ArrayList<>();
+
+        // Add background images from file storage
+        images.addAll(anglerFileStorage.gatherBackgroundImages());
+
+        // Add default images to list
+        images.add("R.drawable.back");
+        images.add("R.drawable.back2");
+        images.add("R.drawable.back3");
+        images.add("R.drawable.back4");
+
+        listener.backgroundImagesGathered(images);
+    }
+
+    public void deleteBackgroundImage(String image){
+        anglerFileStorage.deleteBackgroundImage(image);
     }
 
 

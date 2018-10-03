@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.main_activity.fragments.background_changer.BackgroundChangerFragmentv2">
+    tools:context=".ui.main_activity.fragments.background_changer.background_changer.BackgroundChangerFragment">
 
     <ImageView
         android:id="@+id/overlay_background"
@@ -50,7 +50,7 @@
         <ImageView
             android:id="@+id/background_changer_select_background"
             style="@style/bottom_bar_image"
-            android:alpha="0.5"
+            android:alpha="0.1"
             android:layout_gravity="end"
             android:padding="8dp"
             android:layout_marginEnd="8dp"

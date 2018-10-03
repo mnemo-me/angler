@@ -9,6 +9,7 @@ import com.mnemo.angler.ui.main_activity.fragments.artists.artist_bio.ArtistBioP
 import com.mnemo.angler.ui.main_activity.fragments.artists.artist_tracks.ArtistTracksPresenter;
 import com.mnemo.angler.ui.main_activity.fragments.artists.artists.ArtistsPresenter;
 import com.mnemo.angler.ui.main_activity.fragments.artists.artist_configuration.ArtistConfigurationPresenter;
+import com.mnemo.angler.ui.main_activity.fragments.background_changer.background_changer.BackgroundChangerPresenter;
 import com.mnemo.angler.ui.main_activity.fragments.music_player.artist_tracks.PlaylistArtistTracksPresenter;
 import com.mnemo.angler.ui.main_activity.fragments.music_player.artists.PlaylistArtistsPresenter;
 import com.mnemo.angler.ui.main_activity.fragments.music_player.main_playlist.MainPlaylistPresenter;
@@ -29,6 +30,7 @@ import dagger.Component;
 public interface AnglerComponent {
 
     void injectAnglerRepository(AnglerRepository anglerRepository);
+
     void injectMainActivityPresenter(MainActivityPresenter mainActivityPresenter);
 
     void injectMusicPlayerPresenter(MusicPlayerPresenter musicPlayerPresenter);
@@ -50,5 +52,9 @@ public interface AnglerComponent {
     void injectArtistTracksPresenter(ArtistTracksPresenter artistTracksPresenter);
     void injectArtistAlbumsPresenter(ArtistAlbumsPresenter artistAlbumsPresenter);
     void injectArtistBioPresenter(ArtistBioPresenter artistBioPresenter);
+
+
+
+    void injectBackgroundChangerPresenter(BackgroundChangerPresenter backgroundChangerPresenter);
 
 }
