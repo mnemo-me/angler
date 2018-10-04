@@ -1,7 +1,6 @@
 package com.mnemo.angler.util;
 
 
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.media.MediaDescriptionCompat;
@@ -13,33 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MediaAssistant {
-
-    public static ArrayList<MediaDescriptionCompat> mergeMediaDescriptionArray(String playlist, Cursor cursor){
-
-        ArrayList<MediaDescriptionCompat> descriptions = new ArrayList<>();
-
-        if (cursor.getCount() > 0 ) {
-
-            cursor.moveToFirst();
-
-            do {
-
-                String mediaId = cursor.getString(0);
-                String title = cursor.getString(1);
-                String artist = cursor.getString(2);
-                String album = cursor.getString(3);
-                long duration = cursor.getLong(4);
-                String uri = cursor.getString(5);
-
-
-                descriptions.add(mergeMediaDescription(mediaId, title, artist, album, duration, uri, playlist));
-
-            } while (cursor.moveToNext());
-
-        }
-
-        return descriptions;
-    }
 
 
     public static ArrayList<MediaDescriptionCompat> mergeMediaDescriptionArray(String playlist, List<Track> tracks){
@@ -61,7 +33,7 @@ public class MediaAssistant {
         return descriptions;
     }
 
-    public static MediaDescriptionCompat mergeMediaDescription(String mediaId, String title, String artist, String album, long duration, String uri, String playlist){
+    private static MediaDescriptionCompat mergeMediaDescription(String mediaId, String title, String artist, String album, long duration, String uri, String playlist){
 
         MediaDescriptionCompat.Builder builder = new MediaDescriptionCompat.Builder();
         builder.setMediaId(mediaId);
@@ -75,6 +47,25 @@ public class MediaAssistant {
         builder.setExtras(bundle);
 
         builder.setMediaUri(Uri.parse(uri));
+
+        return builder.build();
+    }
+
+
+    public static MediaDescriptionCompat mergeMediaDescription(Track track, String playlist){
+
+        MediaDescriptionCompat.Builder builder = new MediaDescriptionCompat.Builder();
+        builder.setMediaId(track.get_id());
+        builder.setTitle(track.getTitle());
+        builder.setSubtitle(track.getArtist());
+
+        Bundle bundle = new Bundle();
+        bundle.putString("track_playlist", playlist);
+        bundle.putString("album", track.getAlbum());
+        bundle.putLong("duration", track.getDuration());
+        builder.setExtras(bundle);
+
+        builder.setMediaUri(Uri.parse(track.getUri()));
 
         return builder.build();
     }
@@ -104,9 +95,7 @@ public class MediaAssistant {
         return metadataBuilder.build();
     }
 
-    public static Bundle putMetadataInBundle(MediaMetadataCompat metadata){
-
-        Bundle bundle = new Bundle();
+    public static Track combineMetadataInTrack(MediaMetadataCompat metadata){
 
         String mediaId = metadata.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID);
         String title = metadata.getString(MediaMetadataCompat.METADATA_KEY_TITLE);
@@ -115,29 +104,7 @@ public class MediaAssistant {
         long duration = metadata.getLong(MediaMetadataCompat.METADATA_KEY_DURATION);
         String uri = metadata.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI);
 
-
-        bundle.putString("media_id", mediaId);
-        bundle.putString("title", title);
-        bundle.putString("artist", artist);
-        bundle.putString("album", album);
-        bundle.putLong("duration", duration);
-        bundle.putString("uri", uri);
-
-        return bundle;
-    }
-
-    public static Bundle putMetadataInBundle(String mediaId, String title, String artist, String album, long duration, String uri){
-
-        Bundle bundle = new Bundle();
-
-        bundle.putString("media_id", mediaId);
-        bundle.putString("title", title);
-        bundle.putString("artist", artist);
-        bundle.putString("album", album);
-        bundle.putLong("duration", duration);
-        bundle.putString("uri", uri);
-
-        return bundle;
+        return new Track(mediaId, title, artist, album, duration, uri);
 
     }
 

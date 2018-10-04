@@ -9,6 +9,7 @@ import com.mnemo.angler.data.database.Entities.Link;
 import java.util.List;
 
 import io.reactivex.Flowable;
+import io.reactivex.Single;
 
 
 @Dao
@@ -20,9 +21,27 @@ public interface LinkDAO {
     @Query("SELECT track_id FROM links WHERE playlist=:playlist")
     Flowable<List<String>> getTracksId(String playlist);
 
+    @Query("SELECT playlist FROM links WHERE track_id=:trackId")
+    Flowable<List<String>> getPlaylistsWithTrack(String trackId);
+
+    @Query("SELECT count(track_id) FROM links WHERE playlist=:playlist")
+    Single<Integer> getTracksCount(String playlist);
+
     @Insert
     void insert(Link... links);
 
     @Query("UPDATE links SET playlist=:newTitle WHERE playlist=:oldTitle")
     void updatePlaylistLink(String oldTitle, String newTitle);
+
+    @Query("SELECT position FROM links WHERE playlist=:playlist AND track_id=:trackId")
+    Single<Integer> getPositionOfTrack(String playlist, String trackId);
+
+    @Query("DELETE FROM links WHERE playlist=:playlist AND track_id=:trackId")
+    void deleteTrackFromPlaylist(String playlist, String trackId);
+
+    @Query("UPDATE links SET position = position - 1 WHERE playlist=:playlist AND position > :position")
+    void decreasePositionsHigherThan(String playlist, int position);
+
+    @Query("UPDATE links SET position = position + 1 WHERE playlist=:playlist AND position >= :position")
+    void increasePositionsHigherOrEqual(String playlist, int position);
 }

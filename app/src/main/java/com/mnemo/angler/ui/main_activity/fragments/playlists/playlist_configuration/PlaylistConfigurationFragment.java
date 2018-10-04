@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -19,7 +20,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.mnemo.angler.data.database.Entities.Track;
@@ -27,10 +27,12 @@ import com.mnemo.angler.R;
 import com.mnemo.angler.ui.main_activity.activity.MainActivity;
 import com.mnemo.angler.ui.main_activity.adapters.TrackAdapter;
 import com.mnemo.angler.ui.main_activity.fragments.playlists.playlist_create.PlaylistCreationDialogFragment;
+import com.mnemo.angler.ui.main_activity.misc.play_all.PlayAllDialogFragment;
 import com.mnemo.angler.util.ImageAssistant;
 import com.mnemo.angler.data.file_storage.AnglerFolder;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -64,9 +66,6 @@ public class PlaylistConfigurationFragment extends Fragment implements PlaylistC
 
     @BindView(R.id.playlist_conf_back)
     ImageButton back;
-
-    @BindView(R.id.playlist_conf_play_all)
-    LinearLayout playAllButton;
 
     TrackAdapter adapter;
 
@@ -210,7 +209,7 @@ public class PlaylistConfigurationFragment extends Fragment implements PlaylistC
     // MVP View methods
     public void setPlaylistTracks(List<Track> tracks){
 
-        adapter = new TrackAdapter(getContext(), title, tracks, true);
+        adapter = new TrackAdapter(getContext(), "playlist", title, tracks);
         recyclerView.setAdapter(adapter);
 
         checkTracksCount();
@@ -235,6 +234,19 @@ public class PlaylistConfigurationFragment extends Fragment implements PlaylistC
         playlistCreationDialogFragment.setArguments(args);
 
         playlistCreationDialogFragment.show(getActivity().getSupportFragmentManager(), "playlist_creation_dialog_fragment");
+    }
+
+    @OnClick(R.id.playlist_conf_play_all)
+    void playAll(){
+
+        PlayAllDialogFragment playAllDialogFragment = new PlayAllDialogFragment();
+
+        Bundle args = new Bundle();
+        args.putString("playlist", title);
+        args.putParcelableArrayList("tracks", (ArrayList<? extends Parcelable>) presenter.getTracks());
+        playAllDialogFragment.setArguments(args);
+
+        playAllDialogFragment.show(getActivity().getSupportFragmentManager(), "play_all_dialog_fragment");
     }
 
     @OnClick(R.id.playlist_conf_back)

@@ -170,7 +170,7 @@ public class PlaylistPlaylistArtistTracksFragment extends Fragment implements Pl
     @Override
     public void setTracks(List<Track> artistTracks) {
 
-        adapter = new TrackAdapter(getContext(), localPlaylistName, artistTracks, false);
+        adapter = new TrackAdapter(getContext(), "music_player", localPlaylistName, artistTracks);
         recyclerView.setAdapter(adapter);
 
         if (((MainActivity)getActivity()).getCurrentPlaylistName().equals(((MainActivity)getActivity()).getMainPlaylistName())) {

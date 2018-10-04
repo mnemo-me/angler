@@ -35,11 +35,6 @@
             </intent-filter>
         </service>
 
-        <provider
-            android:name=".data.database.AnglerProvider"
-            android:authorities="com.mnemo.angler.provider"
-            android:exported="false"/>
-
         <activity android:name=".ui.local_load_activity.activity.LocalLoadActivity"></activity>
     </application>
 

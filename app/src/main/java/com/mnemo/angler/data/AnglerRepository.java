@@ -93,6 +93,10 @@ public class AnglerRepository {
         anglerFileStorage.createTempImage();
     }
 
+    public String getTempImageName(){
+        return  AnglerFileStorage.getTempImageName();
+    }
+
     public void gatherBackgroundImages(OnGatherBackgroundImagesListener listener){
 
         // Create list of images
@@ -114,9 +118,20 @@ public class AnglerRepository {
         anglerFileStorage.deleteBackgroundImage(image);
     }
 
+    public String getArtistImagePath(String artist){
+        return anglerFileStorage.getArtistImagePath(artist);
+    }
+
+    public String getAlbumImagePath(String artist, String album){
+        return anglerFileStorage.getAlbumImagePath(artist, album);
+    }
+
+
 
 
     // Database methods
+    // Playlists methods
+    // Load playlists or/and titles
     public void loadPlaylistTitles(AnglerDB.PlaylistsUpdateListener listener){
         anglerDB.loadPlaylistTitles(listener);
     }
@@ -125,26 +140,22 @@ public class AnglerRepository {
         anglerDB.loadPlaylistsCreatedByUser(listener);
     }
 
-    public void loadPlaylist(String playlist, AnglerDB.PlaylistLoadListener listener){
-        anglerDB.loadPlaylist(playlist, listener);
+    public void loadPlaylistsAndTitlesWithTrack(String trackId, AnglerDB.PlaylistsAndTitlesWithTrackLoadListener listener){
+        anglerDB.loadPlaylistsAndTitlesWithTrack(trackId, listener);
     }
 
-    public void loadAlbumTracks(String artist, String album, AnglerDB.AlbumTracksLoadListener listener){
-        anglerDB.loadAlbumTracks(artist, album, listener);
-    }
 
-    public void loadArtists(String playlist, AnglerDB.ArtistsLoadListener listener){
-        anglerDB.loadArtists(playlist, listener);
-    }
-
-    public void loadArtistTracksFromPlaylist(String playlist, String artist, AnglerDB.ArtistTracksLoadListener listener){
-        anglerDB.loadArtistTracksFromPlaylist(playlist, artist, listener);
+    // Load playlist tracks methods
+    public void loadPlaylistTrack(String playlist, AnglerDB.PlaylistLoadListener listener){
+        anglerDB.loadPlaylistTracks(playlist, listener);
     }
 
     public void loadCheckedPlaylistTracks(String playlist, AnglerDB.PlaylistCheckedTracksLoadListener listener){
         anglerDB.loadCheckedPlaylistTracks(playlist, listener);
     }
 
+
+    // Create, Delete playlist methods
     public void createPlaylist(String playlist){
 
         String coverImageName = anglerFileStorage.generatePlaylistCoverImageName(playlist);
@@ -159,10 +170,8 @@ public class AnglerRepository {
         anglerFileStorage.deleteCoverImage(playlist);
     }
 
-    public String getTempImageName(){
-        return  AnglerFileStorage.getTempImageName();
-    }
 
+    // Update playlist methods
     public void renamePlaylist(String oldTitle, String newTitle){
 
         String oldImageName = anglerFileStorage.generatePlaylistCoverImageName(oldTitle);
@@ -179,8 +188,40 @@ public class AnglerRepository {
         anglerFileStorage.copyImage(AnglerFileStorage.getTempImageName(), image);
     }
 
+
+    // Add tracks to playlist methods
     public void addTracksToPlaylist(String playlist, HashMap<Track, Integer> tracks){
         anglerDB.addTracksToPlaylist(playlist, tracks);
+    }
+
+    public void addTrackToPlaylist(String playlist, Track track){
+        anglerDB.addTrackToPlaylist(playlist, track);
+    }
+
+
+    // Delete/Restore track in playlist methods
+    public void deleteTrack(String playlist, String trackId, AnglerDB.TrackDeleteListener listener){
+        anglerDB.deleteTrackFromPlaylist(playlist, trackId, listener);
+    }
+
+    public void restoreTrack(String playlist, String trackId, int position){
+        anglerDB.restoreTrackInPlaylist(playlist, trackId, position);
+    }
+
+
+    // Artist methods
+    public void loadArtists(String playlist, AnglerDB.ArtistsLoadListener listener){
+        anglerDB.loadArtists(playlist, listener);
+    }
+
+    public void loadArtistTracksFromPlaylist(String playlist, String artist, AnglerDB.ArtistTracksLoadListener listener){
+        anglerDB.loadArtistTracksFromPlaylist(playlist, artist, listener);
+    }
+
+
+    // Albums methods
+    public void loadAlbumTracks(String artist, String album, AnglerDB.AlbumTracksLoadListener listener){
+        anglerDB.loadAlbumTracks(artist, album, listener);
     }
 
 }

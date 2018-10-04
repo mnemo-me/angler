@@ -4,6 +4,7 @@ package com.mnemo.angler.ui.main_activity.fragments.artists.artist_configuration
 import android.content.res.Configuration;
 import android.os.Bundle;
 
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
@@ -17,9 +18,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.mnemo.angler.R;
-import com.mnemo.angler.ui.main_activity.misc.ArtistCoverDialogFragment;
+import com.mnemo.angler.ui.main_activity.misc.cover.CoverDialogFragment;
 import com.mnemo.angler.ui.main_activity.adapters.ArtistTabsAdapter;
+import com.mnemo.angler.ui.main_activity.misc.play_all.PlayAllDialogFragment;
 import com.mnemo.angler.util.ImageAssistant;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -51,6 +55,7 @@ public class ArtistConfigurationFragment extends Fragment implements ArtistConfi
     // Artist variables
     String image;
     String artist;
+    String localPlaylistName;
 
     // Other variables;
     int orientation;
@@ -75,6 +80,8 @@ public class ArtistConfigurationFragment extends Fragment implements ArtistConfi
         // Initialize artist variables
         artist = getArguments().getString("artist");
         image = getArguments().getString("image");
+
+        localPlaylistName = "artist/" + artist;
 
         // Assign artist text
         artistText.setText(artist);
@@ -124,21 +131,32 @@ public class ArtistConfigurationFragment extends Fragment implements ArtistConfi
 
 
     // Setup listeners
-    // Setup open cover
     @OnClick(R.id.artist_conf_cardview)
     void openCover() {
 
-     ArtistCoverDialogFragment artistCoverDialogFragment = new ArtistCoverDialogFragment();
+     CoverDialogFragment coverDialogFragment = new CoverDialogFragment();
 
      Bundle args = new Bundle();
      args.putString("artist", artist);
      args.putString("image", image);
-     artistCoverDialogFragment.setArguments(args);
+     coverDialogFragment.setArguments(args);
 
-     artistCoverDialogFragment.show(getActivity().getSupportFragmentManager(), "cover_dialog_fragment");
+     coverDialogFragment.show(getActivity().getSupportFragmentManager(), "cover_dialog_fragment");
     }
 
-    // Setup back button
+    @OnClick(R.id.artist_conf_play_all)
+    void playAll(){
+
+        PlayAllDialogFragment playAllDialogFragment = new PlayAllDialogFragment();
+
+        Bundle args = new Bundle();
+        args.putString("playlist", localPlaylistName);
+        args.putParcelableArrayList("tracks", (ArrayList<? extends Parcelable>) presenter.getTracks());
+        playAllDialogFragment.setArguments(args);
+
+        playAllDialogFragment.show(getActivity().getSupportFragmentManager(), "play_all_dialog_fragment");
+    }
+
     @OnClick(R.id.artist_conf_back)
     void back(){
         getActivity().onBackPressed();

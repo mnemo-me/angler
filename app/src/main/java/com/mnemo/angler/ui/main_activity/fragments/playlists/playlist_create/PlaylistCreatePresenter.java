@@ -2,6 +2,7 @@ package com.mnemo.angler.ui.main_activity.fragments.playlists.playlist_create;
 
 import com.mnemo.angler.AnglerApp;
 import com.mnemo.angler.data.AnglerRepository;
+import com.mnemo.angler.data.database.Entities.Track;
 import com.mnemo.angler.ui.base.BasePresenter;
 
 import java.util.List;
@@ -56,5 +57,10 @@ public class PlaylistCreatePresenter extends BasePresenter {
     // Check is playlist name already used
     boolean checkPlaylistNameIsAlreadyUsed(String playlist){
         return playlistTitles.contains(playlist);
+    }
+
+    // Add track to new playlist
+    void addTrackToPlaylist(String playlist, Track track){
+        repository.addTrackToPlaylist(playlist, track);
     }
 }

@@ -152,7 +152,7 @@ public class MainPlaylistFragment extends Fragment implements MainPlaylistView{
     @Override
     public void setTracks(List<Track> playlistTracks) {
 
-        adapter = new TrackAdapter(getContext(), ((MainActivity)getActivity()).getMainPlaylistName(), playlistTracks, false);
+        adapter = new TrackAdapter(getContext(), "music_player", ((MainActivity)getActivity()).getMainPlaylistName(), playlistTracks);
         recyclerView.setAdapter(adapter);
 
         if (((MainActivity)getActivity()).getCurrentPlaylistName().equals(((MainActivity)getActivity()).getMainPlaylistName())) {

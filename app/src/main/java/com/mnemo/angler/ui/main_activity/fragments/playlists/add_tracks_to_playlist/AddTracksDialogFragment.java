@@ -44,7 +44,7 @@ public class AddTracksDialogFragment extends DialogFragment implements AddTracks
         String title = getArguments().getString("title");
 
         // Setup header
-        LinearLayout titleLayout = (LinearLayout) LayoutInflater.from(getContext()).inflate(R.layout.pm_dialog_title, null, false);
+        LinearLayout titleLayout = (LinearLayout) LayoutInflater.from(getContext()).inflate(R.layout.misc_dialog_title, null, false);
         TextView titleView = titleLayout.findViewById(R.id.dialog_title);
         titleView.setText(R.string.add_tracks_to_playlist);
         builder.setCustomTitle(titleLayout);

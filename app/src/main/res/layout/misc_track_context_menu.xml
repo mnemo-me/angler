@@ -22,15 +22,9 @@
         android:text="@string/add_to_queue"/>
 
     <TextView
-        android:id="@+id/context_menu_lyrics"
+        android:id="@+id/context_menu_add"
         style="@style/contextual_menu_item"
-        android:text="@string/context_menu_lyrics"/>
-
-    <TextView
-        android:id="@+id/context_menu_go_to_album"
-        style="@style/contextual_menu_item"
-        android:visibility="gone"
-        android:text="@string/context_menu_go_to_album"/>
+        android:text="@string/context_menu_add_to_playlist"/>
 
     <TextView
         android:id="@+id/context_menu_go_to_artist"
@@ -39,10 +33,10 @@
         android:text="@string/context_menu_go_to_artist"/>
 
     <TextView
-        android:id="@+id/context_menu_add"
+        android:id="@+id/context_menu_go_to_album"
         style="@style/contextual_menu_item"
-        android:text="@string/context_menu_add_to_playlist"/>
-
+        android:visibility="gone"
+        android:text="@string/context_menu_go_to_album"/>
 
     <TextView
         android:id="@+id/context_menu_remove_from_playlist"

@@ -20,6 +20,8 @@ import com.mnemo.angler.ui.main_activity.fragments.playlists.playlist_configurat
 import com.mnemo.angler.ui.main_activity.fragments.playlists.playlist_create.PlaylistCreatePresenter;
 import com.mnemo.angler.ui.main_activity.fragments.playlists.playlist_delete.PlaylistDeletePresenter;
 import com.mnemo.angler.ui.main_activity.fragments.playlists.playlists.PlaylistsPresenter;
+import com.mnemo.angler.ui.main_activity.misc.add_track_to_playlist.AddTrackToPlaylistPresenter;
+import com.mnemo.angler.ui.main_activity.misc.contextual_menu.ContextualMenuPresenter;
 
 import javax.inject.Singleton;
 
@@ -53,7 +55,8 @@ public interface AnglerComponent {
     void injectArtistAlbumsPresenter(ArtistAlbumsPresenter artistAlbumsPresenter);
     void injectArtistBioPresenter(ArtistBioPresenter artistBioPresenter);
 
-
+    void injectAddTrackToPlaylistPresenter(AddTrackToPlaylistPresenter addTrackToPlaylistPresenter);
+    void injectContextualMenuPresenter(ContextualMenuPresenter contextualMenuPresenter);
 
     void injectBackgroundChangerPresenter(BackgroundChangerPresenter backgroundChangerPresenter);
 

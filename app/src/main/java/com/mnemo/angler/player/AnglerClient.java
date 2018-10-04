@@ -6,7 +6,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.support.annotation.NonNull;
@@ -122,28 +121,6 @@ public class AnglerClient{
         mController.getTransportControls().skipToPrevious();
     }
 
-    public void playNow(String playlistName, int position, Cursor cursor){
-
-        if (!playlistName.equals(playlistQueue) || !((MainActivity)context).getFilter().equals(queueFilter)) {
-
-
-            mController.getTransportControls().sendCustomAction("clear_queue", null);
-
-            for (MediaDescriptionCompat description : MediaAssistant.mergeMediaDescriptionArray(playlistName, cursor)) {
-
-                mController.addQueueItem(description);
-
-            }
-
-            playlistQueue = playlistName;
-            mController.getTransportControls().sendCustomAction("update_queue", null);
-
-        }
-
-        mController.getTransportControls().skipToQueueItem(position);
-
-    }
-
     public void playNow(String playlistName, int position, List<Track> tracks){
 
         if (!playlistName.equals(playlistQueue) || !((MainActivity)context).getFilter().equals(queueFilter)) {
@@ -166,11 +143,11 @@ public class AnglerClient{
 
     }
 
-    public void addToQueue(String playlistName, Cursor cursor, boolean isPlayNext){
+    public void addToQueue(String playlistName, List<Track> tracks, boolean isPlayNext){
 
         int index = 0;
 
-        for (MediaDescriptionCompat description : MediaAssistant.mergeMediaDescriptionArray(playlistName, cursor)) {
+        for (MediaDescriptionCompat description : MediaAssistant.mergeMediaDescriptionArray(playlistName, tracks)) {
 
             if (isPlayNext){
                 mController.addQueueItem(description, ++index);
@@ -184,7 +161,9 @@ public class AnglerClient{
         mController.getTransportControls().sendCustomAction("update_queue", null);
     }
 
-    public void addToQueue(MediaDescriptionCompat description, boolean isPlayNext){
+    public void addToQueue(Track track, String playlist, boolean isPlayNext){
+
+        MediaDescriptionCompat description = MediaAssistant.mergeMediaDescription(track, playlist);
 
         if (isPlayNext){
             mController.addQueueItem(description, 1);

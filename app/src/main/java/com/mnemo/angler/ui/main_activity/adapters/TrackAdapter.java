@@ -16,8 +16,10 @@ import com.mnemo.angler.R;
 import com.mnemo.angler.data.database.Entities.Track;
 import com.mnemo.angler.ui.main_activity.activity.MainActivity;
 import com.mnemo.angler.ui.main_activity.fragments.playlists.add_tracks_to_playlist.AddTracksDialogFragment;
+import com.mnemo.angler.ui.main_activity.misc.contextual_menu.ContextualMenuDialogFragment;
 import com.mnemo.angler.util.MediaAssistant;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -27,12 +29,13 @@ import es.claucookie.miniequalizerlibrary.EqualizerView;
 public class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.ViewHolder>{
 
     private Context context;
+    private String type;
     private String playlist;
     private List<Track> tracks;
     private String selectedTrackId = null;
     private int playbackState = PlaybackStateCompat.STATE_PAUSED;
 
-    private boolean isHeaderAttach;
+    private boolean isHeaderAttach = false;
     private int HEADER_VIEW_TYPE = 0;
     private int TRACK_VIEW_TYPE = 1;
 
@@ -74,11 +77,15 @@ public class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.ViewHolder>{
         }
     }
 
-    public TrackAdapter(Context context, String playlist, List<Track> tracks, boolean isHeaderAttach) {
+    public TrackAdapter(Context context, String type, String playlist, List<Track> tracks) {
         this.context = context;
+        this.type = type;
         this.playlist = playlist;
         this.tracks = tracks;
-        this.isHeaderAttach = isHeaderAttach;
+
+        if (type.equals("playlist")){
+            this.isHeaderAttach = true;
+        }
     }
 
     @NonNull
@@ -125,30 +132,19 @@ public class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.ViewHolder>{
 
             Track track = tracks.get(trackPosition);
 
+            // Get track variables
             String id = track.get_id();
 
             String title = track.getTitle();
             String artist = track.getArtist();
             long duration = track.getDuration();
 
+            // Fill views
             ((TrackViewHolder)holder).titleView.setText(title);
             ((TrackViewHolder)holder).artistView.setText(artist);
             ((TrackViewHolder)holder).durationView.setText(MediaAssistant.convertToTime(duration));
 
-            ((TrackViewHolder)holder).itemView.setOnClickListener(view -> {
-
-                if (id.equals(selectedTrackId)) {
-
-                    ((MainActivity) context).getAnglerClient().playPause();
-
-                } else {
-
-                    ((MainActivity) context).getAnglerClient().playNow(playlist, trackPosition, tracks);
-                    setTrack(id);
-
-                }
-            });
-
+            // Set selection items visibility
             if (id.equals(selectedTrackId)) {
                 holder.itemView.setSelected(true);
                 ((TrackViewHolder)holder).equalizerView.setVisibility(View.VISIBLE);
@@ -166,6 +162,36 @@ public class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.ViewHolder>{
                     ((TrackViewHolder)holder).durationView.setVisibility(View.VISIBLE);
                 }
             }
+
+            // Set listeners
+            ((TrackViewHolder)holder).itemView.setOnClickListener(view -> {
+
+                if (id.equals(selectedTrackId)) {
+
+                    ((MainActivity) context).getAnglerClient().playPause();
+
+                } else {
+
+                    ((MainActivity) context).getAnglerClient().playNow(playlist, trackPosition, tracks);
+                    setTrack(id);
+                }
+            });
+
+            ((TrackViewHolder)holder).itemView.setOnLongClickListener(view -> {
+
+                ContextualMenuDialogFragment contextualMenuDialogFragment = new ContextualMenuDialogFragment();
+
+                Bundle args = new Bundle();
+                args.putString("type", type);
+                args.putString("playlist", playlist);
+                args.putParcelable("track", track);
+                args.putParcelableArrayList("tracks", (ArrayList) tracks);
+                contextualMenuDialogFragment.setArguments(args);
+
+                contextualMenuDialogFragment.show(((MainActivity)context).getSupportFragmentManager(), "contextual_menu_dialog_fragment");
+
+                return true;
+            });
         }
 
     }

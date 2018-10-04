@@ -146,7 +146,7 @@ public class ArtistTracksFragment extends Fragment implements ArtistTracksView{
     @Override
     public void setArtistTracks(List<Track> tracks) {
 
-        adapter = new TrackAdapter(getContext(), localPlaylistName, tracks, false);
+        adapter = new TrackAdapter(getContext(), "artist", localPlaylistName, tracks);
         recyclerView.setAdapter(adapter);
 
         if ((((MainActivity)getActivity()).getCurrentPlaylistName()).equals(localPlaylistName)) {

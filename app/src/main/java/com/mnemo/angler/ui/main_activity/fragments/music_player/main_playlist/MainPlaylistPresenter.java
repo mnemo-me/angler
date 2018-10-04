@@ -30,7 +30,7 @@ public class MainPlaylistPresenter extends BasePresenter {
     // load playlist from database
     void loadPlaylist(String playlist){
 
-        repository.loadPlaylist(playlist, playlistTracks -> {
+        repository.loadPlaylistTrack(playlist, playlistTracks -> {
 
             tracks = playlistTracks;
 

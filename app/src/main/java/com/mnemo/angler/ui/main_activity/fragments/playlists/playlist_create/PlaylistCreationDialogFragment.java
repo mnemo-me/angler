@@ -70,7 +70,7 @@ public class PlaylistCreationDialogFragment extends DialogFragment implements Pl
 
 
         // Setup header
-        LinearLayout actionTitleLayout = (LinearLayout)LayoutInflater.from(getContext()).inflate(R.layout.pm_dialog_title, null, false);
+        LinearLayout actionTitleLayout = (LinearLayout)LayoutInflater.from(getContext()).inflate(R.layout.misc_dialog_title, null, false);
         TextView actionView = actionTitleLayout.findViewById(R.id.dialog_title);
 
 
@@ -221,21 +221,11 @@ public class PlaylistCreationDialogFragment extends DialogFragment implements Pl
                     presenter.createPlaylist(title);
 
 
-
-/*
                     // Insert track in new playlist table (if exist)
                     Bundle bundle = getArguments();
                     if (bundle != null){
-
-                        // Assign track variables
-                        String title = getArguments().getString("title");
-                        String artist = getArguments().getString("artist");
-                        String album = getArguments().getString("album");
-                        long duration = getArguments().getLong("duration");
-                        String uri = getArguments().getString("uri");
-
-
-                    }*/
+                        presenter.addTrackToPlaylist(title, bundle.getParcelable("track"));
+                    }
 
                     // Toast!
                     Toast.makeText(getContext(), getString(R.string.playlist) + " '" + title + "' " + getString(R.string.created), Toast.LENGTH_SHORT).show();

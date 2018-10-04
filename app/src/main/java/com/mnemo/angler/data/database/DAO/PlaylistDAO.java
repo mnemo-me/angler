@@ -22,9 +22,6 @@ public interface PlaylistDAO {
     @Query("SELECT title FROM playlists")
     Flowable<List<String>> getPlaylistTitles();
 
-    @Query("SELECT title FROM playlists")
-    List<String> getPlaylistTitlesOnce();
-
     @Insert
     void insert(Playlist playlist);
 

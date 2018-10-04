@@ -19,7 +19,7 @@ public class ArtistConfigurationPresenter extends BasePresenter {
     @Inject
     AnglerRepository repository;
 
-    private List<Track> artistTracks;
+    private List<Track> tracks;
 
     ArtistConfigurationPresenter() {
         AnglerApp.getAnglerComponent().injectArtistConfigurationPresenter(this);
@@ -32,7 +32,7 @@ public class ArtistConfigurationPresenter extends BasePresenter {
 
             if (getView() != null){
 
-                artistTracks = tracks;
+                this.tracks = tracks;
 
                 ((ArtistConfigurationView)getView()).initializeTabs(tracks.size(), getAlbums(tracks).size());
             }
@@ -55,5 +55,10 @@ public class ArtistConfigurationPresenter extends BasePresenter {
         }
 
         return albums;
+    }
+
+    // Get tracks
+    public List<Track> getTracks() {
+        return tracks;
     }
 }

@@ -266,4 +266,14 @@ public class AnglerFileStorage {
         }
     }
 
+    // Get artist image path
+    public String getArtistImagePath(String artist){
+        return AnglerFolder.PATH_ARTIST_IMAGE + File.separator + artist + ".jpg";
+    }
+
+    // Get album image path
+    public String getAlbumImagePath(String artist, String album){
+        return AnglerFolder.PATH_ALBUM_COVER + File.separator + artist + File.separator + album + ".jpg";
+    }
+
 }

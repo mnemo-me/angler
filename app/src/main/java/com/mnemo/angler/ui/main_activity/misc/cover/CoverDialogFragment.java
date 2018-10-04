@@ -1,4 +1,4 @@
-package com.mnemo.angler.ui.main_activity.misc;
+package com.mnemo.angler.ui.main_activity.misc.cover;
 
 
 import android.app.Dialog;
@@ -18,7 +18,7 @@ import com.mnemo.angler.util.ImageAssistant;
 
 
 
-public class ArtistCoverDialogFragment extends DialogFragment {
+public class CoverDialogFragment extends DialogFragment {
 
 
     @NonNull
@@ -27,7 +27,7 @@ public class ArtistCoverDialogFragment extends DialogFragment {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-        CardView cardView = (CardView) LayoutInflater.from(getContext()).inflate(R.layout.art_fragment_artist_cover, null, false);
+        CardView cardView = (CardView) LayoutInflater.from(getContext()).inflate(R.layout.misc_cover, null, false);
 
         // Get artist and image (album optional)
         String image = getArguments().getString("image");
@@ -46,9 +46,6 @@ public class ArtistCoverDialogFragment extends DialogFragment {
         if (album != null){
             TextView albumView = cardView.findViewById(R.id.artist_cover_album);
             albumView.setText(album);
-
-            artistView.setTextSize(12);
-            artistView.setTextColor(getResources().getColor(R.color.gGrey));
         }
 
         builder.setView(cardView);

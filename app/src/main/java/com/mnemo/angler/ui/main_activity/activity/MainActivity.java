@@ -28,6 +28,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.mnemo.angler.data.database.Entities.Track;
 import com.mnemo.angler.ui.main_activity.fragments.albums.albums.AlbumsFragment;
 import com.mnemo.angler.ui.main_activity.fragments.artists.artists.ArtistsFragment;
 import com.mnemo.angler.ui.main_activity.fragments.background_changer.background_changer.BackgroundChangerFragment;
@@ -41,7 +42,7 @@ import com.mnemo.angler.util.MediaAssistant;
 import com.mnemo.angler.ui.main_activity.fragments.equalizer.EqualizerFragment;
 
 import com.mnemo.angler.ui.main_activity.fragments.music_player.artist_tracks.PlaylistPlaylistArtistTracksFragment;
-import com.mnemo.angler.ui.main_activity.misc.AddTrackToPlaylistDialogFragment;
+import com.mnemo.angler.ui.main_activity.misc.add_track_to_playlist.AddTrackToPlaylistDialogFragment;
 import com.mnemo.angler.ui.main_activity.fragments.playlists.playlists.PlaylistsFragment;
 
 import java.util.List;
@@ -346,7 +347,10 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
     @OnClick(R.id.media_panel_add_to_playlist)
     void addToPlaylist(){
 
-        Bundle args = MediaAssistant.putMetadataInBundle(anglerClient.getCurrentMetadata());
+        Track track = MediaAssistant.combineMetadataInTrack(anglerClient.getCurrentMetadata());
+
+        Bundle args = new Bundle();
+        args.putParcelable("track", track);
 
         AddTrackToPlaylistDialogFragment addTrackToPlaylistDialogFragment = new AddTrackToPlaylistDialogFragment();
         addTrackToPlaylistDialogFragment.setArguments(args);

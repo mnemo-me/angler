@@ -3,14 +3,29 @@ package com.mnemo.angler.data.database.Entities;
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
+
 @Entity(tableName = "tracks")
-public class Track {
+public class Track implements Parcelable {
+
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+
+        @Override
+        public Track createFromParcel(Parcel parcel) {
+            return new Track(parcel);
+        }
+
+        @Override
+        public Track[] newArray(int i) {
+            return new Track[i];
+        }
+    };
 
     @NonNull
     @PrimaryKey
-    @ColumnInfo(name = "_id")
     private String _id;
 
     @ColumnInfo(name = "title")
@@ -28,7 +43,7 @@ public class Track {
     @ColumnInfo(name = "uri")
     private String uri;
 
-    public Track(String _id, String title, String artist, String album, long duration, String uri) {
+    public Track(@NonNull String _id, String title, String artist, String album, long duration, String uri) {
         this._id = _id;
         this.title = title;
         this.artist = artist;
@@ -37,11 +52,12 @@ public class Track {
         this.uri = uri;
     }
 
+    @NonNull
     public String get_id() {
         return _id;
     }
 
-    public void set_id(String _id) {
+    public void set_id(@NonNull String _id) {
         this._id = _id;
     }
 
@@ -98,5 +114,32 @@ public class Track {
     @Override
     public int hashCode() {
         return _id.hashCode();
+    }
+
+
+    // Parcelable
+    public Track(Parcel parcel) {
+        this._id = parcel.readString();
+        this.title = parcel.readString();
+        this.artist = parcel.readString();
+        this.album = parcel.readString();
+        this.duration = parcel.readLong();
+        this.uri = parcel.readString();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+
+        parcel.writeString(this._id);
+        parcel.writeString(this.title);
+        parcel.writeString(this.artist);
+        parcel.writeString(this.album);
+        parcel.writeLong(this.duration);
+        parcel.writeString(this.uri);
     }
 }

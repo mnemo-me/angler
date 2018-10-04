@@ -16,7 +16,7 @@ import com.mnemo.angler.data.file_storage.AnglerFolder;
 import com.mnemo.angler.ui.main_activity.activity.MainActivity;
 import com.mnemo.angler.ui.main_activity.classes.Album;
 import com.mnemo.angler.ui.main_activity.fragments.albums.album_configuration.AlbumConfigurationFragment;
-import com.mnemo.angler.ui.main_activity.misc.ArtistCoverDialogFragment;
+import com.mnemo.angler.ui.main_activity.misc.cover.CoverDialogFragment;
 import com.mnemo.angler.util.ImageAssistant;
 
 import java.io.File;
@@ -98,15 +98,15 @@ public class ArtistAlbumAdapter extends RecyclerView.Adapter<ArtistAlbumAdapter.
         // Open cover fragment
         holder.itemView.setOnLongClickListener(view -> {
 
-            ArtistCoverDialogFragment artistCoverDialogFragment = new ArtistCoverDialogFragment();
+            CoverDialogFragment coverDialogFragment = new CoverDialogFragment();
 
             Bundle args = new Bundle();
             args.putString("artist", artist);
             args.putString("album", album);
             args.putString("image", albumImagePath);
-            artistCoverDialogFragment.setArguments(args);
+            coverDialogFragment.setArguments(args);
 
-            artistCoverDialogFragment.show(((MainActivity) context).getSupportFragmentManager(), "album_cover_fragment");
+            coverDialogFragment.show(((MainActivity) context).getSupportFragmentManager(), "album_cover_fragment");
 
             return true;
         });

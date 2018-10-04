@@ -8,6 +8,7 @@ import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.os.Bundle;
 
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -25,9 +26,11 @@ import com.mnemo.angler.data.database.Entities.Track;
 import com.mnemo.angler.ui.main_activity.activity.MainActivity;
 import com.mnemo.angler.R;
 import com.mnemo.angler.ui.main_activity.adapters.TrackAdapter;
-import com.mnemo.angler.ui.main_activity.misc.ArtistCoverDialogFragment;
+import com.mnemo.angler.ui.main_activity.misc.cover.CoverDialogFragment;
+import com.mnemo.angler.ui.main_activity.misc.play_all.PlayAllDialogFragment;
 import com.mnemo.angler.util.ImageAssistant;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -58,9 +61,6 @@ public class AlbumConfigurationFragment extends Fragment implements AlbumConfigu
 
     @BindView(R.id.album_conf_list)
     RecyclerView recyclerView;
-
-    @BindView(R.id.album_conf_play_all)
-    LinearLayout playAllButton;
 
     TrackAdapter adapter;
 
@@ -196,22 +196,34 @@ public class AlbumConfigurationFragment extends Fragment implements AlbumConfigu
 
 
     // Setup listeners
-    // Setup open cover
     @OnClick(R.id.album_conf_cardview)
     void openCover() {
 
-     ArtistCoverDialogFragment artistCoverDialogFragment = new ArtistCoverDialogFragment();
+     CoverDialogFragment coverDialogFragment = new CoverDialogFragment();
 
      Bundle args = new Bundle();
      args.putString("artist", artist);
      args.putString("album", title);
      args.putString("image", image);
-     artistCoverDialogFragment.setArguments(args);
+     coverDialogFragment.setArguments(args);
 
-     artistCoverDialogFragment.show(getActivity().getSupportFragmentManager(), "Album cover fragment");
+     coverDialogFragment.show(getActivity().getSupportFragmentManager(), "Album cover fragment");
     }
 
-    // Setup back button
+    @OnClick(R.id.album_conf_play_all)
+    void playAll(){
+
+        PlayAllDialogFragment playAllDialogFragment = new PlayAllDialogFragment();
+
+        Bundle args = new Bundle();
+        args.putString("playlist", localPlaylistName);
+        args.putParcelableArrayList("tracks", (ArrayList<? extends Parcelable>) presenter.getTracks());
+        playAllDialogFragment.setArguments(args);
+
+        playAllDialogFragment.show(getActivity().getSupportFragmentManager(), "play_all_dialog_fragment");
+    }
+
+
     @OnClick(R.id.album_conf_back)
     void back(){
         getActivity().onBackPressed();
@@ -222,7 +234,7 @@ public class AlbumConfigurationFragment extends Fragment implements AlbumConfigu
     @Override
     public void setAlbumTracks(List<Track> tracks) {
 
-        adapter = new TrackAdapter(getContext(), localPlaylistName, tracks, false);
+        adapter = new TrackAdapter(getContext(), "album", localPlaylistName, tracks);
         recyclerView.setAdapter(adapter);
 
         checkTracksCount();

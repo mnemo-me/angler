@@ -26,7 +26,7 @@ public class AlbumsPresenter extends BasePresenter{
     // Load albums from database
     void loadAlbums(){
 
-        repository.loadPlaylist("library", tracks -> {
+        repository.loadPlaylistTrack("library", tracks -> {
 
             if (getView() != null){
 
