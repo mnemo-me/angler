@@ -14,6 +14,6 @@ public class AnglerFolder {
     public static final String PATH_PLAYLIST_COVER = PATH_MAIN + File.separator + "playlist cover";
     public static final String PATH_ALBUM_COVER = PATH_MAIN + File.separator + "album cover";
     public static final String PATH_ARTIST_IMAGE = PATH_MAIN + File.separator + "artist image";
-
+    public static final String PATH_ARTIST_BIO = PATH_MAIN + File.separator + "artist bio";
 
 }

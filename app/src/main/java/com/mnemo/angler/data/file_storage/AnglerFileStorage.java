@@ -11,10 +11,16 @@ import android.webkit.MimeTypeMap;
 
 import com.mnemo.angler.data.database.Entities.Track;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -45,6 +51,7 @@ public class AnglerFileStorage {
         new File(AnglerFolder.PATH_PLAYLIST_COVER).mkdir();
         new File(AnglerFolder.PATH_ALBUM_COVER).mkdir();
         new File(AnglerFolder.PATH_ARTIST_IMAGE).mkdir();
+        new File(AnglerFolder.PATH_ARTIST_BIO).mkdir();
 
         try {
             new File(AnglerFolder.PATH_MAIN, ".nomedia").createNewFile();
@@ -271,9 +278,182 @@ public class AnglerFileStorage {
         return AnglerFolder.PATH_ARTIST_IMAGE + File.separator + artist + ".jpg";
     }
 
+    // Get artist bio path
+    public String getArtistBioPath(String artist){
+        return AnglerFolder.PATH_ARTIST_BIO + File.separator + artist + ".txt";
+    }
+
     // Get album image path
     public String getAlbumImagePath(String artist, String album){
         return AnglerFolder.PATH_ALBUM_COVER + File.separator + artist + File.separator + album + ".jpg";
     }
 
+
+
+
+    // Save album cover
+    public void saveAlbumCover(String artist, String album, InputStream inputStream){
+
+        String path = AnglerFolder.PATH_ALBUM_COVER + File.separator + artist;
+
+        new File(path).mkdir();
+        File file = new File(path, album + ".jpg");
+
+        FileOutputStream outputStream = null;
+
+        try {
+            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+
+            outputStream = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+
+        } catch (IOException e) {
+
+            e.printStackTrace();
+
+        } finally {
+
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (outputStream != null) {
+                try {
+                    outputStream.flush();
+                    outputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    // Save artist image
+    public void saveArtistImage(String artist, InputStream inputStream){
+
+
+        File file = new File(getArtistImagePath(artist));
+
+        FileOutputStream outputStream = null;
+
+        try {
+            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+
+            outputStream = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+
+        } catch (IOException e) {
+
+            e.printStackTrace();
+
+        } finally {
+
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (outputStream != null) {
+                try {
+                    outputStream.flush();
+                    outputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    // Save artist bio
+    public void saveArtistBio(String artist, String bio){
+
+        File file = new File(getArtistBioPath(artist));
+
+        try {
+
+            BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file));
+            bufferedWriter.write(bio);
+            bufferedWriter.close();
+
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    // Check is files exist methods
+    public boolean isAlbumCoverExist(String artist, String album){
+        return new File(getAlbumImagePath(artist, album)).exists();
+    }
+
+    public boolean isArtistImageExist(String artist){
+        return new File(getArtistImagePath(artist)).exists();
+    }
+
+    public boolean isArtistBioExist(String artist){
+        return new File(getArtistBioPath(artist)).exists();
+    }
+
+
+
+    public static void extractAlbumImage(String uri, File file) {
+
+        if (!file.exists()) {
+
+            MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+            retriever.setDataSource(uri);
+
+            byte[] data = retriever.getEmbeddedPicture();
+
+            if (data != null) {
+
+                Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+                FileOutputStream outputStream = null;
+
+                try {
+                    outputStream = new FileOutputStream(file);
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }finally {
+
+                    if (outputStream != null) {
+                        try {
+                            outputStream.flush();
+                            outputStream.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                }
+            }
+        }
+    }
+
+    public String loadArtistBio(String artist){
+
+        StringBuilder builder = new StringBuilder();
+
+        File file = new File(AnglerFolder.PATH_ARTIST_BIO, artist + ".txt");
+
+        try {
+            BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
+
+            while (bufferedReader.ready()){
+                builder.append("\n" + bufferedReader.readLine());
+            }
+            bufferedReader.close();
+
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+
+        return builder.toString();
+    }
 }

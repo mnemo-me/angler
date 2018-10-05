@@ -42,7 +42,7 @@ public class RepositoryModule {
     @Provides
     @Singleton
     AnglerNetworking provideNetworking(){
-        return new AnglerNetworking();
+        return new AnglerNetworking(provideContext());
     }
 
     @Provides

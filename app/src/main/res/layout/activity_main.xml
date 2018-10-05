@@ -21,14 +21,14 @@
             android:id="@+id/background_group"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="120dp"
+            android:layout_marginBottom="144dp"
             app:constraint_referenced_ids="main_fragment_background, overlay"/>
 
         <ImageView
             android:id="@+id/main_fragment_background"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="120dp"
+            android:layout_marginBottom="144dp"
             android:contentDescription="@string/background_image"
             android:scaleType="centerCrop"
             tools:src="@drawable/back"/>
@@ -37,7 +37,7 @@
             android:id="@+id/overlay"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="120dp"
+            android:layout_marginBottom="144dp"
             tools:background="#CC000000" />
 
         <!-- frames for fragments -->
@@ -46,13 +46,13 @@
             android:id="@+id/main_frame"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="120dp"/>
+            android:layout_marginBottom="144dp"/>
 
         <FrameLayout
             android:id="@+id/frame"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="120dp"/>
+            android:layout_marginBottom="144dp"/>
 
         <FrameLayout
             android:id="@+id/full_frame"
@@ -63,15 +63,16 @@
         <!-- media panel -->
 
         <View
+            android:id="@+id/media_panel"
             android:layout_width="match_parent"
-            android:layout_height="124dp"
+            android:layout_height="144dp"
             android:background="@color/mainGrey"
             app:layout_constraintBottom_toBottomOf="parent"/>
 
         <android.support.constraint.Group
             android:id="@+id/media_panel_group"
             android:layout_width="match_parent"
-            android:layout_height="124dp"
+            android:layout_height="144dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:constraint_referenced_ids="media_panel_title,
             media_panel_seek_bar, media_panel_progress_time, media_panel_duration_time,
@@ -84,6 +85,7 @@
             style="@style/playlist_media_button"
             android:src="@drawable/baseline_add_white_24dp"
             app:layout_constraintStart_toStartOf="@+id/media_panel_repeat"
+            app:layout_constraintTop_toTopOf="@id/media_panel"
             app:layout_constraintBottom_toTopOf="@id/media_panel_seek_bar"/>
 
         <TextView
@@ -92,13 +94,13 @@
             android:layout_height="wrap_content"
             android:maxWidth="326dp"
             android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="8dp"
             android:paddingStart="28dp"
             android:paddingEnd="28dp"
             android:ellipsize="end"
             android:maxLines="1"
             android:textColor="#FFFFFF"
             android:textSize="14sp"
+            app:layout_constraintTop_toTopOf="@id/media_panel"
             app:layout_constraintBottom_toTopOf="@+id/media_panel_seek_bar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -108,6 +110,7 @@
             android:id="@+id/media_panel_queue"
             style="@style/playlist_media_button"
             app:layout_constraintStart_toStartOf="@id/media_panel_shuffle"
+            app:layout_constraintTop_toTopOf="@id/media_panel"
             app:layout_constraintBottom_toTopOf="@id/media_panel_seek_bar"
             android:src="@drawable/baseline_queue_music_white_24dp"/>
 

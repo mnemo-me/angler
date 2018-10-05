@@ -7,6 +7,8 @@ import com.mnemo.angler.data.database.Entities.Track;
 import com.mnemo.angler.data.file_storage.AnglerFileStorage;
 import com.mnemo.angler.data.networking.AnglerNetworking;
 import com.mnemo.angler.data.preferences.AnglerPreferences;
+import com.mnemo.angler.ui.main_activity.classes.Album;
+import com.mnemo.angler.util.MediaAssistant;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -47,13 +49,49 @@ public class AnglerRepository {
             ArrayList<Track> tracks = anglerFileStorage.scanTracks(AnglerFileStorage.PHONE_STORAGE);
             anglerDB.updateDatabase(tracks);
 
-            anglerNetworking.loadAlbums();
-            anglerNetworking.loadArtistsImages();
-            anglerNetworking.loadArtistsBio();
-        }).subscribeOn(Schedulers.io()).subscribe();
+        }).subscribeOn(Schedulers.io()).subscribe(() -> {
+
+            loadAlbumCovers();
+            loadArtistImagesAndBios();
+        });
 
 
     }
+
+    // Networking methods
+    // Load album covers and save them to file storage
+    private void loadAlbumCovers(){
+
+        anglerDB.loadPlaylistTracks("library", tracks -> {
+            List<Album> albums = MediaAssistant.getAlbums(tracks);
+
+            for (Album album : albums){
+                if (!anglerFileStorage.isAlbumCoverExist(album.getArtist(), album.getAlbum())) {
+                    anglerNetworking.loadAlbum(album.getArtist(), album.getAlbum(),
+                            inputStream -> anglerFileStorage.saveAlbumCover(album.getArtist(), album.getAlbum(), inputStream));
+                }
+            }
+        });
+    }
+
+    // Load artist images and bios and save them to file storage
+    private void loadArtistImagesAndBios(){
+
+        anglerDB.loadArtists("library", artists -> {
+
+            for (String artist : artists){
+
+                if (!anglerFileStorage.isArtistImageExist(artist)) {
+                    anglerNetworking.loadArtistImage(artist, inputStream -> anglerFileStorage.saveArtistImage(artist, inputStream));
+                }
+
+                if (!anglerFileStorage.isArtistBioExist(artist)) {
+                    anglerNetworking.loadArtistBio(artist, bio -> anglerFileStorage.saveArtistBio(artist, bio));
+                }
+            }
+        });
+    }
+
 
 
     // Shared preferences methods
@@ -124,6 +162,10 @@ public class AnglerRepository {
 
     public String getAlbumImagePath(String artist, String album){
         return anglerFileStorage.getAlbumImagePath(artist, album);
+    }
+
+    public String loadArtistBio(String artist){
+        return anglerFileStorage.loadArtistBio(artist);
     }
 
 

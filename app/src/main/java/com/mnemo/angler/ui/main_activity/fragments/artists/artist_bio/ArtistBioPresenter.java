@@ -12,7 +12,16 @@ public class ArtistBioPresenter extends BasePresenter {
     @Inject
     AnglerRepository repository;
 
-    public ArtistBioPresenter() {
+    ArtistBioPresenter() {
         AnglerApp.getAnglerComponent().injectArtistBioPresenter(this);
+    }
+
+    // Load artist bio
+    void loadBio(String artist){
+        String bio = repository.loadArtistBio(artist);
+
+        if (getView() != null){
+            ((ArtistBioView)getView()).setBio(bio);
+        }
     }
 }

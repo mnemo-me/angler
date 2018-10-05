@@ -7,9 +7,12 @@ import android.support.v4.media.MediaDescriptionCompat;
 import android.support.v4.media.MediaMetadataCompat;
 
 import com.mnemo.angler.data.database.Entities.Track;
+import com.mnemo.angler.ui.main_activity.classes.Album;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class MediaAssistant {
 
@@ -123,5 +126,25 @@ public class MediaAssistant {
         } else {
             return String.format("%d:%02d:%02d", hours, minutes, seconds);
         }
+    }
+
+
+    // Extract albums from tracks
+    public static List<Album> getAlbums(List<Track> tracks){
+
+        List<Album> albums = new ArrayList<>();
+        Set<String> albumTitles = new HashSet<>();
+
+
+        for (Track track : tracks){
+
+            if (!albumTitles.contains(track.getAlbum())){
+
+                albumTitles.add(track.getAlbum());
+                albums.add(new Album(track.getAlbum(), track.getArtist()));
+            }
+        }
+
+        return albums;
     }
 }

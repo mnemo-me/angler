@@ -4,4 +4,6 @@ import com.mnemo.angler.ui.base.BaseView;
 
 
 public interface ArtistBioView extends BaseView {
+
+    void setBio(String bio);
 }

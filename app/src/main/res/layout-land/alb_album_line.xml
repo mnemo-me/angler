@@ -58,8 +58,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
-            android:layout_marginEnd="4dp"
-            android:layout_marginStart="4dp"
             android:layout_marginTop="4dp"
             android:ellipsize="end"
             android:lines="2"
@@ -118,8 +116,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
-            android:layout_marginEnd="4dp"
-            android:layout_marginStart="4dp"
             android:layout_marginTop="4dp"
             android:ellipsize="end"
             android:lines="2"
@@ -178,8 +174,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
-            android:layout_marginEnd="4dp"
-            android:layout_marginStart="4dp"
             android:layout_marginTop="4dp"
             android:ellipsize="end"
             android:lines="2"
@@ -240,8 +234,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
-            android:layout_marginEnd="4dp"
-            android:layout_marginStart="4dp"
             android:layout_marginTop="4dp"
             android:ellipsize="end"
             android:lines="2"
@@ -300,8 +292,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
-            android:layout_marginEnd="4dp"
-            android:layout_marginStart="4dp"
             android:layout_marginTop="4dp"
             android:ellipsize="end"
             android:lines="2"
@@ -311,7 +301,6 @@
             tools:text="Library" />
 
     </LinearLayout>
-
 
 
 </android.support.constraint.ConstraintLayout>

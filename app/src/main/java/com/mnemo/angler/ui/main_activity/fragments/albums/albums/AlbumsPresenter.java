@@ -6,6 +6,7 @@ import com.mnemo.angler.data.AnglerRepository;
 import com.mnemo.angler.data.database.Entities.Track;
 import com.mnemo.angler.ui.base.BasePresenter;
 import com.mnemo.angler.ui.main_activity.classes.Album;
+import com.mnemo.angler.util.MediaAssistant;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -30,28 +31,10 @@ public class AlbumsPresenter extends BasePresenter{
 
             if (getView() != null){
 
-                ((AlbumsView)getView()).setAlbums(getAlbums(tracks));
+                ((AlbumsView)getView()).setAlbums(MediaAssistant.getAlbums(tracks));
             }
         });
     }
 
-    // Extract albums from tracks
-    private List<Album> getAlbums(List<Track> tracks){
 
-        List<Album> albums = new ArrayList<>();
-        Set<String> albumTitles = new HashSet<>();
-
-
-        for (Track track : tracks){
-
-            if (!albumTitles.contains(track.getAlbum())){
-
-                albumTitles.add(track.getAlbum());
-                albums.add(new Album(track.getAlbum(), track.getArtist()));
-            }
-        }
-
-        return albums;
-
-    }
 }

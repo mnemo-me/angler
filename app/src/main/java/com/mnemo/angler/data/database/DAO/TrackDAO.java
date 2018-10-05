@@ -11,12 +11,16 @@ import com.mnemo.angler.data.database.Entities.Track;
 import java.util.List;
 
 import io.reactivex.Flowable;
+import io.reactivex.Single;
 
 @Dao
 public interface TrackDAO {
 
     @Query("SELECT * FROM tracks ORDER BY title ASC")
     Flowable<List<Track>> getTracks();
+
+    @Query("SELECT * FROM tracks ORDER BY title ASC")
+    Single<List<Track>> getTracksOnce();
 
     @Query("SELECT * FROM tracks WHERE _id IN (:tracksId)")
     List<Track> getTracks(List<String> tracksId);

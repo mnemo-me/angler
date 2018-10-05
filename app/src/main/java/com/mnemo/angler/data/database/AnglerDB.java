@@ -84,7 +84,7 @@ public class AnglerDB{
     // Update database
     public void updateDatabase(List<Track> tracks){
 
-        db.trackDAO().getTracks()
+        db.trackDAO().getTracksOnce()
                 .subscribeOn(Schedulers.io())
                 .subscribe(dbTracks -> {
 

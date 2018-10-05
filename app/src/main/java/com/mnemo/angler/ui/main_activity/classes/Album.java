@@ -30,7 +30,7 @@ public class Album implements Comparable{
     public int compareTo(@NonNull Object o) {
         Album two = (Album)o;
 
-        if (artist.equals(two.getAlbum())) {
+        if (artist.equals(two.getArtist())) {
             return album.compareTo(two.getAlbum());
         }else{
             return artist.compareTo(two.getArtist());
