@@ -21,14 +21,16 @@
             android:id="@+id/background_group"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="144dp"
+            android:layout_marginTop="48dp"
+            android:layout_marginBottom="140dp"
             app:constraint_referenced_ids="main_fragment_background, overlay"/>
 
         <ImageView
             android:id="@+id/main_fragment_background"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="144dp"
+            android:layout_marginTop="48dp"
+            android:layout_marginBottom="140dp"
             android:contentDescription="@string/background_image"
             android:scaleType="centerCrop"
             tools:src="@drawable/back"/>
@@ -37,7 +39,8 @@
             android:id="@+id/overlay"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="144dp"
+            android:layout_marginTop="48dp"
+            android:layout_marginBottom="140dp"
             tools:background="#CC000000" />
 
         <!-- frames for fragments -->
@@ -46,13 +49,13 @@
             android:id="@+id/main_frame"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="144dp"/>
+            android:layout_marginBottom="140dp"/>
 
         <FrameLayout
             android:id="@+id/frame"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="144dp"/>
+            android:layout_marginBottom="140dp"/>
 
         <FrameLayout
             android:id="@+id/full_frame"
@@ -65,14 +68,14 @@
         <View
             android:id="@+id/media_panel"
             android:layout_width="match_parent"
-            android:layout_height="144dp"
+            android:layout_height="140dp"
             android:background="@color/mainGrey"
             app:layout_constraintBottom_toBottomOf="parent"/>
 
         <android.support.constraint.Group
             android:id="@+id/media_panel_group"
             android:layout_width="match_parent"
-            android:layout_height="144dp"
+            android:layout_height="140dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:constraint_referenced_ids="media_panel_title,
             media_panel_seek_bar, media_panel_progress_time, media_panel_duration_time,

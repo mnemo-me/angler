@@ -212,7 +212,7 @@ public class AnglerService extends MediaBrowserServiceCompat {
                     });
                     mMediaPlayer.setOnPreparedListener(mediaPlayer -> {
                         mMediaPlayer.start();
-                        //mAnglerNotificationManager.createNotification();
+                        mAnglerNotificationManager.createNotification();
 
                         Intent intent = new Intent();
 

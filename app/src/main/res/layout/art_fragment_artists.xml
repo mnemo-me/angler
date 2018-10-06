@@ -34,6 +34,17 @@
             android:textSize="16sp"
             android:text="@string/artists" />
 
+        <ImageButton
+            android:id="@+id/artists_refresh_images"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:src="@drawable/refresh_artist_image_selector"
+            android:background="?android:selectableItemBackgroundBorderless"
+            android:padding="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_gravity="end"
+            android:tooltipText="@string/refresh_artists_images"/>
+
     </android.support.v7.widget.Toolbar>
 
     <android.support.v7.widget.RecyclerView

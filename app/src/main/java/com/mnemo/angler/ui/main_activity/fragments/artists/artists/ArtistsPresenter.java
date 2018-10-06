@@ -16,6 +16,7 @@ public class ArtistsPresenter extends BasePresenter {
         AnglerApp.getAnglerComponent().injectArtistsPresenter(this);
     }
 
+    // Load artists
     void loadArtists(){
         repository.loadArtists("library", artists -> {
 
@@ -23,5 +24,10 @@ public class ArtistsPresenter extends BasePresenter {
                 ((ArtistsView)getView()).setArtists(artists);
             }
         });
+    }
+
+    // Refresh artists images
+    void refreshArtistsImages(){
+        repository.refreshArtistImages();
     }
 }

@@ -10,6 +10,8 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.CardView;
@@ -20,6 +22,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.mnemo.angler.data.database.Entities.Track;
@@ -38,6 +41,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.Optional;
 import butterknife.Unbinder;
 
 
@@ -55,17 +59,33 @@ public class PlaylistConfigurationFragment extends Fragment implements PlaylistC
     @BindView(R.id.playlist_conf_image)
     ImageView imageView;
 
+    @Nullable
     @BindView(R.id.playlist_conf_title)
     TextView titleText;
 
     @BindView(R.id.playlist_conf_tracks_count)
     TextView tracksCountView;
 
+    @BindView(R.id.playlist_conf_play_all)
+    LinearLayout playAllLayout;
+
+    @Nullable
+    @BindView(R.id.playlist_conf_play_all_button)
+    ImageButton playAllButton;
+
     @BindView(R.id.playlist_conf_list)
     RecyclerView recyclerView;
 
     @BindView(R.id.playlist_conf_back)
     ImageButton back;
+
+    @Nullable
+    @BindView(R.id.playlist_conf_app_bar)
+    AppBarLayout appBarLayout;
+
+    @Nullable
+    @BindView(R.id.playlist_conf_collapsing_toolbar)
+    CollapsingToolbarLayout collapsingToolbarLayout;
 
     TrackAdapter adapter;
 
@@ -106,10 +126,46 @@ public class PlaylistConfigurationFragment extends Fragment implements PlaylistC
         localPlaylistName = title;
 
         // Assign title
-        titleText.setText(title);
+        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            collapsingToolbarLayout.setTitle(title);
+        } else {
+            titleText.setText(title);
+        }
 
         // Load cover image
         updateCover();
+
+        // Setup appbar behavior
+        if (orientation == Configuration.ORIENTATION_PORTRAIT){
+            appBarLayout.addOnOffsetChangedListener((appBarLayout, verticalOffset) -> {
+
+                if (Math.abs(verticalOffset) == appBarLayout.getTotalScrollRange()) {
+
+                    // If collapsed show play all toolbar button
+                    playAllButton.setVisibility(View.VISIBLE);
+
+                    float alpha = 0;
+
+                    tracksCountView.setAlpha(alpha);
+                    playAllLayout.setAlpha(alpha);
+                    cardView.setAlpha(alpha);
+
+                } else {
+
+                    // Hide play all toolbar button, set alpha on othre items
+                    if (playAllButton.getVisibility() != View.GONE) {
+                        playAllButton.setVisibility(View.GONE);
+                    }
+
+                    float alpha = 1f - (float) Math.abs(verticalOffset) / (float) (appBarLayout.getTotalScrollRange() / 2);
+
+                    tracksCountView.setAlpha(alpha);
+                    playAllLayout.setAlpha(alpha);
+                    cardView.setAlpha(alpha);
+                }
+            });
+    }
+
 
         // Setup recycler view
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
@@ -247,6 +303,12 @@ public class PlaylistConfigurationFragment extends Fragment implements PlaylistC
         playAllDialogFragment.setArguments(args);
 
         playAllDialogFragment.show(getActivity().getSupportFragmentManager(), "play_all_dialog_fragment");
+    }
+
+    @Optional
+    @OnClick(R.id.playlist_conf_play_all_button)
+    void playAllButton(){
+        playAll();
     }
 
     @OnClick(R.id.playlist_conf_back)

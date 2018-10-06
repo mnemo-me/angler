@@ -73,25 +73,19 @@ public class ArtistTabsAdapter extends FragmentStatePagerAdapter {
     @Override
     public CharSequence getPageTitle(int position) {
 
-        String lineShift = "";
-
-        if (orientation == Configuration.ORIENTATION_PORTRAIT){
-            lineShift = "\n";
-        }
-
         switch (tabs[position]){
 
             case "tracks":
 
-                return context.getString(R.string.tracks) + " " + lineShift + tracksCount;
+                return context.getString(R.string.tracks) + " " + tracksCount;
 
             case "albums":
 
-                return context.getString(R.string.albums) + ": " + lineShift + albumsCount;
+                return context.getString(R.string.albums) + ": " + albumsCount;
 
             case "bio":
 
-                return context.getString(R.string.bio) + lineShift;
+                return context.getString(R.string.bio);
 
             default:
 

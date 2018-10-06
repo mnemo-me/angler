@@ -106,6 +106,12 @@ public class ArtistsFragment extends Fragment implements DrawerItem, ArtistsView
         unbinder.unbind();
     }
 
+    // Refresh artists images
+    @OnClick(R.id.artists_refresh_images)
+    void refreshArtistImages(){
+        presenter.refreshArtistsImages();
+    }
+
     // Setup drawer menu button
     @OnClick(R.id.artists_drawer_back)
     void drawerBack(){

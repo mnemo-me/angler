@@ -102,5 +102,6 @@
     <string name="amplifier">Amplifier</string>
     <string name="created">created</string>
     <string name="bio">bio</string>
+    <string name="refresh_artists_images">Refresh artists images</string>
 
 </resources>

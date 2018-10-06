@@ -7,17 +7,24 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TableLayout;
 import android.widget.TextView;
 
 import com.mnemo.angler.R;
+import com.mnemo.angler.ui.main_activity.activity.MainActivity;
 import com.mnemo.angler.ui.main_activity.misc.cover.CoverDialogFragment;
 import com.mnemo.angler.ui.main_activity.adapters.ArtistTabsAdapter;
 import com.mnemo.angler.ui.main_activity.misc.play_all.PlayAllDialogFragment;
@@ -28,6 +35,7 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.Optional;
 import butterknife.Unbinder;
 
 
@@ -40,11 +48,21 @@ public class ArtistConfigurationFragment extends Fragment implements ArtistConfi
     // Bind views via ButterKnife
     Unbinder unbinder;
 
+    @BindView(R.id.artist_conf_cardview)
+    CardView cardView;
+
     @BindView(R.id.artist_conf_image)
     ImageView imageView;
 
     @BindView(R.id.artist_conf_artist)
     TextView artistText;
+
+    @BindView(R.id.artist_conf_play_all)
+    LinearLayout playAllLayout;
+
+    @Nullable
+    @BindView(R.id.artist_conf_play_all_button)
+    ImageButton playAllButton;
 
     @BindView(R.id.artist_conf_tab_layout)
     TabLayout tabLayout;
@@ -59,6 +77,15 @@ public class ArtistConfigurationFragment extends Fragment implements ArtistConfi
 
     // Other variables;
     int orientation;
+
+    @Nullable
+    @BindView(R.id.artist_conf_app_bar)
+    AppBarLayout appBarLayout;
+
+    @Nullable
+    @BindView(R.id.artist_conf_collapsing_toolbar)
+    CollapsingToolbarLayout collapsingToolbarLayout;
+
 
 
     public ArtistConfigurationFragment() {
@@ -88,6 +115,39 @@ public class ArtistConfigurationFragment extends Fragment implements ArtistConfi
 
         // Load artist image
         loadArtistImage();
+
+        // Setup appbar behavior
+        if (orientation == Configuration.ORIENTATION_PORTRAIT){
+            appBarLayout.addOnOffsetChangedListener((appBarLayout, verticalOffset) -> {
+
+                if (Math.abs(verticalOffset) == appBarLayout.getTotalScrollRange()) {
+
+                    // If collapsed show play all toolbar button
+                    playAllButton.setVisibility(View.VISIBLE);
+
+                    float alpha = 0;
+
+                    artistText.setAlpha(alpha);
+                    playAllLayout.setAlpha(alpha);
+                    cardView.setAlpha(alpha);
+
+                } else {
+
+                    // Hide play all toolbar button, set alpha on othre items
+                    if (playAllButton.getVisibility() != View.GONE) {
+                        playAllButton.setVisibility(View.GONE);
+                    }
+
+                    float alpha = 1f - (float) Math.abs(verticalOffset) / (float) (appBarLayout.getTotalScrollRange() / 2);
+
+                    tabLayout.setPadding((int)(12 * MainActivity.density + (1 - alpha) * 50), 0,0,0);
+
+                    artistText.setAlpha(alpha);
+                    playAllLayout.setAlpha(alpha);
+                    cardView.setAlpha(alpha);
+                }
+            });
+        }
 
         return view;
     }
@@ -155,6 +215,13 @@ public class ArtistConfigurationFragment extends Fragment implements ArtistConfi
         playAllDialogFragment.setArguments(args);
 
         playAllDialogFragment.show(getActivity().getSupportFragmentManager(), "play_all_dialog_fragment");
+    }
+
+
+    @Optional
+    @OnClick(R.id.artist_conf_play_all_button)
+    void playAllButton(){
+        playAll();
     }
 
     @OnClick(R.id.artist_conf_back)

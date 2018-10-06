@@ -11,13 +11,17 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -36,6 +40,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.Optional;
 import butterknife.Unbinder;
 
 
@@ -46,10 +51,13 @@ public class AlbumConfigurationFragment extends Fragment implements AlbumConfigu
     // Bind views via ButterKnife
     Unbinder unbinder;
 
+    @BindView(R.id.album_conf_cardview)
+    CardView cardView;
 
     @BindView(R.id.album_conf_image)
     ImageView imageView;
 
+    @Nullable
     @BindView(R.id.album_conf_title)
     TextView titleText;
 
@@ -59,8 +67,24 @@ public class AlbumConfigurationFragment extends Fragment implements AlbumConfigu
     @BindView(R.id.album_conf_tracks_count)
     TextView tracksCountView;
 
+    @Nullable
+    @BindView(R.id.album_conf_play_all)
+    LinearLayout playAllLayout;
+
+    @Nullable
+    @BindView(R.id.album_conf_play_all_button)
+    ImageButton playAllButton;
+
     @BindView(R.id.album_conf_list)
     RecyclerView recyclerView;
+
+    @Nullable
+    @BindView(R.id.album_conf_app_bar)
+    AppBarLayout appBarLayout;
+
+    @Nullable
+    @BindView(R.id.album_conf_collapsing_toolbar)
+    CollapsingToolbarLayout collapsingToolbarLayout;
 
     TrackAdapter adapter;
 
@@ -107,8 +131,44 @@ public class AlbumConfigurationFragment extends Fragment implements AlbumConfigu
         loadCover();
 
         // Assign title & artist
-        titleText.setText(title);
+        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            collapsingToolbarLayout.setTitle(title);
+        } else {
+            titleText.setText(title);
+        }
         artistView.setText(artist);
+
+        // Setup appbar behavior
+        if (orientation == Configuration.ORIENTATION_PORTRAIT){
+            appBarLayout.addOnOffsetChangedListener((appBarLayout, verticalOffset) -> {
+
+                if (Math.abs(verticalOffset) == appBarLayout.getTotalScrollRange()) {
+
+                    // If collapsed show play all toolbar button
+                    playAllButton.setVisibility(View.VISIBLE);
+
+                    float alpha = 0;
+
+                    artistView.setAlpha(alpha);
+                    tracksCountView.setAlpha(alpha);
+                    playAllLayout.setAlpha(alpha);
+                    cardView.setAlpha(alpha);
+
+                } else {
+
+                    // Hide play all toolbar button, set alpha on othre items
+                    if (playAllButton.getVisibility() != View.GONE) {
+                        playAllButton.setVisibility(View.GONE);
+                    }
+
+                    float alpha = 1f - (float) Math.abs(verticalOffset) / (float) (appBarLayout.getTotalScrollRange() / 2);
+                    artistView.setAlpha(alpha);
+                    tracksCountView.setAlpha(alpha);
+                    playAllLayout.setAlpha(alpha);
+                    cardView.setAlpha(alpha);
+                }
+            });
+        }
 
         // Setup recycler view
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
@@ -221,6 +281,12 @@ public class AlbumConfigurationFragment extends Fragment implements AlbumConfigu
         playAllDialogFragment.setArguments(args);
 
         playAllDialogFragment.show(getActivity().getSupportFragmentManager(), "play_all_dialog_fragment");
+    }
+
+    @Optional
+    @OnClick(R.id.album_conf_play_all_button)
+    void playAllButton(){
+        playAll();
     }
 
 

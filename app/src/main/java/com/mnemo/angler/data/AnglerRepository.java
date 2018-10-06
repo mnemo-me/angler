@@ -92,6 +92,18 @@ public class AnglerRepository {
         });
     }
 
+    // Refresh artists images
+    public void refreshArtistImages(){
+
+        anglerDB.loadArtists("library", artists -> {
+
+            for (String artist : artists){
+
+                anglerNetworking.loadArtistImage(artist, inputStream -> anglerFileStorage.saveArtistImage(artist, inputStream));
+            }
+        });
+    }
+
 
 
     // Shared preferences methods

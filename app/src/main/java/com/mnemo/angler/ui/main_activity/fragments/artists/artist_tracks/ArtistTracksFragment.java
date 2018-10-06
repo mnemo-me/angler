@@ -58,7 +58,7 @@ public class ArtistTracksFragment extends Fragment implements ArtistTracksView{
         recyclerView = new RecyclerView(getContext());
 
         if (orientation == Configuration.ORIENTATION_PORTRAIT){
-            recyclerView.setPadding(0, (int)(46 * MainActivity.density), 0, 0);
+            recyclerView.setPadding(0, (int)(16 * MainActivity.density), 0, (int)(8 * MainActivity.density));
         }else{
             recyclerView.setPadding(0, (int)(12 * MainActivity.density), 0, (int)(8 * MainActivity.density));
         }
