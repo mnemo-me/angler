@@ -36,7 +36,7 @@ import com.mnemo.angler.ui.main_activity.fragments.music_player.music_player.Mus
 import com.mnemo.angler.player.AnglerClient;
 import com.mnemo.angler.ui.main_activity.classes.DrawerItem;
 import com.mnemo.angler.R;
-import com.mnemo.angler.queue.QueueDialogFragment;
+import com.mnemo.angler.player.queue.QueueDialogFragment;
 import com.mnemo.angler.util.ImageAssistant;
 import com.mnemo.angler.util.MediaAssistant;
 import com.mnemo.angler.ui.main_activity.fragments.equalizer.EqualizerFragment;

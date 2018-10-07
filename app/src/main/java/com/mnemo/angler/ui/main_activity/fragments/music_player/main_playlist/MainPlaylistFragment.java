@@ -159,6 +159,10 @@ public class MainPlaylistFragment extends Fragment implements MainPlaylistView{
             adapter.setTrack(((MainActivity) getActivity()).getCurrentMediaId());
             adapter.setPlaybackState(((MainActivity) getActivity()).getPlaybackState());
         }
+
+        if (!AnglerService.isQueueInitialized) {
+            initializeQueue();
+        }
     }
 
     @Override
@@ -168,12 +172,9 @@ public class MainPlaylistFragment extends Fragment implements MainPlaylistView{
 
     public void initializeQueue(){
 
-        if (!AnglerService.isQueueInitialized){
-            //((MainActivity)getActivity()).getAnglerClient().addToQueue(((MainActivity)getActivity()).getAnglerClient().getMainPlaylistName(), data, false);
-            MediaControllerCompat.getMediaController(getActivity()).getTransportControls().prepare();
-            AnglerService.isQueueInitialized = true;
-        }
+        /*
+        ((MainActivity)getActivity()).getAnglerClient().addToQueue(((MainActivity)getActivity()).getMainPlaylistName(), presenter.getTracks(), false);
+        AnglerService.isQueueInitialized = true;*/
     }
-
 
 }

@@ -27,7 +27,7 @@ public class MainPlaylistPresenter extends BasePresenter {
         AnglerApp.getAnglerComponent().injectMainPlaylistPresenter(this);
     }
 
-    // load playlist from database
+    // Load playlist from database
     void loadPlaylist(String playlist){
 
         repository.loadPlaylistTrack(playlist, playlistTracks -> {
@@ -40,7 +40,7 @@ public class MainPlaylistPresenter extends BasePresenter {
         });
     }
 
-    // apply filter to tracks
+    // Apply filter to tracks
     void applyFilter(String filter) {
 
         if (filter.equals("")){
@@ -59,4 +59,8 @@ public class MainPlaylistPresenter extends BasePresenter {
         }
     }
 
+    // Get tracks
+    public List<Track> getTracks() {
+        return tracks;
+    }
 }

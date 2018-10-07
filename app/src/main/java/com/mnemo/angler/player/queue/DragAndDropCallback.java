@@ -1,4 +1,4 @@
-package com.mnemo.angler.queue;
+package com.mnemo.angler.player.queue;
 
 
 import android.support.v7.widget.RecyclerView;

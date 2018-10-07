@@ -222,9 +222,8 @@ public class PlaylistCreationDialogFragment extends DialogFragment implements Pl
 
 
                     // Insert track in new playlist table (if exist)
-                    Bundle bundle = getArguments();
-                    if (bundle != null){
-                        presenter.addTrackToPlaylist(title, bundle.getParcelable("track"));
+                    if (getArguments().getParcelable("track") != null){
+                        presenter.addTrackToPlaylist(title, getArguments().getParcelable("track"));
                     }
 
                     // Toast!

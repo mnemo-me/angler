@@ -5,16 +5,16 @@
     xmlns:custom="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#FFFFFF"
-    android:paddingTop="5dp"
-    android:paddingBottom="5dp">
+    android:background="@color/softMainGrey"
+    android:paddingTop="6dp"
+    android:paddingBottom="6dp">
 
     <ImageView
         android:id="@+id/queue_track_play_selector"
         android:layout_width="16dp"
         android:layout_height="16dp"
         android:layout_marginStart="8dp"
-        android:src="@drawable/ic_play_arrow_black_24dp"
+        android:src="@drawable/ic_play_arrow_white_24dp"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -35,7 +35,7 @@
         android:maxWidth="240dp"
         android:ellipsize="end"
         android:lines="1"
-        android:textColor="#000000"
+        android:textColor="#FFFFFF"
         android:textSize="16sp"
         app:layout_constraintBottom_toTopOf="@+id/queue_guideline"
         app:layout_constraintStart_toStartOf="parent"
@@ -64,7 +64,7 @@
         android:layout_marginTop="8dp"
         android:gravity="end"
         android:lines="1"
-        android:textColor="#000000"
+        android:textColor="#FFFFFF"
         android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/queue_track_delete"
@@ -82,7 +82,7 @@
         app:layout_constraintEnd_toStartOf="@id/queue_track_delete"
         app:layout_constraintTop_toTopOf="parent"
         custom:animDuration="3500"
-        custom:foregroundColor="@color/colorPrimary" />
+        custom:foregroundColor="@color/white" />
 
     <FrameLayout
         android:id="@+id/queue_track_delete"
@@ -96,13 +96,10 @@
         <ImageView
             android:layout_width="16dp"
             android:layout_height="16dp"
-            android:src="@drawable/ic_clear_black_24dp"
+            android:src="@drawable/baseline_clear_white_24dp"
             android:layout_gravity="center"
             android:alpha="0.2"/>
 
     </FrameLayout>
-
-
-
 
 </android.support.constraint.ConstraintLayout>

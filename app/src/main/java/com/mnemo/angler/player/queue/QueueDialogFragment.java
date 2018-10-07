@@ -1,7 +1,6 @@
-package com.mnemo.angler.queue;
+package com.mnemo.angler.player.queue;
 
 
-import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -9,55 +8,73 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.constraint.ConstraintLayout;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.media.session.MediaControllerCompat;
+import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.v4.media.session.MediaSessionCompat;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
-import android.widget.LinearLayout;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mnemo.angler.ui.main_activity.activity.MainActivity;
 import com.mnemo.angler.R;
 
-import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 
-public class QueueDialogFragment extends DialogFragment {
+public class QueueDialogFragment extends BottomSheetDialogFragment {
 
+
+    Unbinder unbinder;
+
+    @BindView(R.id.qu_count)
     TextView countView;
 
+    @BindView(R.id.qu_recycler_view)
     RecyclerView recyclerView;
+
+
     QueueAdapter adapter;
 
     BroadcastReceiver receiver;
     IntentFilter intentFilter;
 
-    @NonNull
+    @Nullable
     @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        View view = inflater.inflate(R.layout.qu_queue, container, false);
 
-        // Fill queue
-        final ArrayList<MediaSessionCompat.QueueItem> queue = new ArrayList<>();
-        queue.addAll(MediaControllerCompat.getMediaController(getActivity()).getQueue());
+        // Inject views
+        unbinder = ButterKnife.bind(this, view);
 
+        // Setup recycler view
+        // Set layout manager
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        recyclerView.setLayoutManager(linearLayoutManager);
+
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        // Get queue
+        List<MediaSessionCompat.QueueItem> queue = ((MainActivity)getActivity()).getAnglerClient().getQueue();
 
         // Set title
-        ConstraintLayout titleLayout = (ConstraintLayout) LayoutInflater.from(getContext()).inflate(R.layout.qu_dialog_title,null, false);
-        countView = titleLayout.findViewById(R.id.qu_dialog_count);
         countView.setText(String.valueOf(queue.size()));
-        builder.setCustomTitle(titleLayout);
 
-        // Set body
-        LinearLayout linearLayout = (LinearLayout) LayoutInflater.from(getContext()).inflate(R.layout.qu_queue, null, false);
-        recyclerView = linearLayout.findViewById(R.id.queue_recycler_view);
+
+        // Setup adapter
         adapter = new QueueAdapter(getContext(), queue);
         adapter.setOnQueueRemovedListener(() -> {
 
@@ -68,6 +85,7 @@ public class QueueDialogFragment extends DialogFragment {
                 Toast.makeText(getContext(), R.string.empty_queue, Toast.LENGTH_SHORT).show();
             }
         });
+        adapter.setPlaybackState(((MainActivity)getContext()).getPlaybackState());
 
         // Set drag'n'drop callback
         DragAndDropCallback dragAndDropCallback = new DragAndDropCallback();
@@ -75,28 +93,14 @@ public class QueueDialogFragment extends DialogFragment {
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(dragAndDropCallback);
         itemTouchHelper.attachToRecyclerView(recyclerView);
 
-
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-        recyclerView.setLayoutManager(linearLayoutManager);
-
         recyclerView.setAdapter(adapter);
 
-        builder.setView(linearLayout);
-
-
-        // Set Negative button
-        builder.setNegativeButton(getString(R.string.close), (dialogInterface, i) -> {
-
-        });
-
         recyclerView.scrollToPosition(((MainActivity)getActivity()).getAnglerClient().getQueuePosition());
-
-        return builder.create();
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void onStart() {
+        super.onStart();
 
         // Initialize broadcast receiver
         receiver = new BroadcastReceiver() {
@@ -104,10 +108,17 @@ public class QueueDialogFragment extends DialogFragment {
             public void onReceive(Context context, Intent intent) {
 
                 switch (intent.getAction()){
+
                     case "queue_position_changed":
 
                         adapter.setQueuePosition(intent.getIntExtra("queue_position", 0));
                         adapter.notifyDataSetChanged();
+
+                        break;
+
+                    case "playback_state_changed":
+
+                        adapter.setPlaybackState(intent.getExtras().getInt("playback_state"));
 
                         break;
                 }
@@ -117,14 +128,22 @@ public class QueueDialogFragment extends DialogFragment {
 
         intentFilter = new IntentFilter();
         intentFilter.addAction("queue_position_changed");
+        intentFilter.addAction("playback_state_changed");
 
         getContext().registerReceiver(receiver, intentFilter);
-
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
+    public void onStop() {
+        super.onStop();
+
         getContext().unregisterReceiver(receiver);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+
+        unbinder.unbind();
     }
 }

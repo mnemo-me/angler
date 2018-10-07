@@ -12,5 +12,6 @@
     <color name="gGrey">#aba9a9</color>
     <color name="mainGrey">#252525</color>
     <color name="softMainGrey">#252525</color>
+    <color name="white">#FFFFFF</color>
 
 </resources>

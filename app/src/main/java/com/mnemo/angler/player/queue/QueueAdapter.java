@@ -1,12 +1,12 @@
-package com.mnemo.angler.queue;
+package com.mnemo.angler.player.queue;
 
 
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.media.MediaDescriptionCompat;
-import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.MediaSessionCompat;
+import android.support.v4.media.session.PlaybackStateCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,7 +19,7 @@ import com.mnemo.angler.ui.main_activity.activity.MainActivity;
 import com.mnemo.angler.R;
 import com.mnemo.angler.util.MediaAssistant;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -28,9 +28,10 @@ import es.claucookie.miniequalizerlibrary.EqualizerView;
 public class QueueAdapter extends RecyclerView.Adapter<QueueAdapter.ViewHolder> implements DragAndDropCallback.OnDragAndDropListener{
 
     private Context context;
-    private ArrayList<MediaSessionCompat.QueueItem> queue;
+    private List<MediaSessionCompat.QueueItem> queue;
     private OnQueueRemovedListener onQueueRemovedListener;
     private int queuePosition;
+    private int playbackState = PlaybackStateCompat.STATE_PAUSED;
 
     static class ViewHolder extends RecyclerView.ViewHolder{
 
@@ -59,7 +60,7 @@ public class QueueAdapter extends RecyclerView.Adapter<QueueAdapter.ViewHolder> 
     }
 
 
-    QueueAdapter(Context context, ArrayList<MediaSessionCompat.QueueItem> queue) {
+    QueueAdapter(Context context, List<MediaSessionCompat.QueueItem> queue) {
         this.context = context;
         this.queue = queue;
         this.queuePosition = ((MainActivity)context).getAnglerClient().getQueuePosition();
@@ -80,12 +81,12 @@ public class QueueAdapter extends RecyclerView.Adapter<QueueAdapter.ViewHolder> 
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
         MediaSessionCompat.QueueItem queueItem = queue.get(holder.getAdapterPosition());
         MediaDescriptionCompat description = queueItem.getDescription();
 
-        // extract metadata
+        // Extract metadata
         String title = description.getTitle().toString();
         String artist = description.getSubtitle().toString();
 
@@ -103,7 +104,11 @@ public class QueueAdapter extends RecyclerView.Adapter<QueueAdapter.ViewHolder> 
             holder.equalizerView.setVisibility(View.VISIBLE);
             holder.durationView.setVisibility(View.GONE);
 
-            holder.equalizerView.animateBars();
+            if (playbackState == PlaybackStateCompat.STATE_PLAYING) {
+                holder.equalizerView.animateBars();
+            }else{
+                holder.equalizerView.stopBars();
+            }
 
         }else{
 
@@ -116,12 +121,19 @@ public class QueueAdapter extends RecyclerView.Adapter<QueueAdapter.ViewHolder> 
 
 
 
-        holder.itemView.setOnClickListener(view -> MediaControllerCompat.getMediaController((MainActivity)context).getTransportControls().skipToQueueItem(holder.getAdapterPosition()));
+        holder.itemView.setOnClickListener(view -> {
+
+            if (holder.getAdapterPosition() == queuePosition){
+                ((MainActivity)context).getAnglerClient().playPause();
+            }else {
+                ((MainActivity)context).getAnglerClient().skipToQueuePosition(holder.getAdapterPosition());
+            }
+        });
 
         // Delete track button
         holder.deleteTrack.setOnClickListener(view -> {
 
-            MediaControllerCompat.getMediaController((MainActivity)context).removeQueueItemAt(holder.getAdapterPosition());
+            ((MainActivity)context).getAnglerClient().removeQueueItemAt(holder.getAdapterPosition());
             queue.remove(holder.getAdapterPosition());
             notifyItemRemoved(holder.getAdapterPosition());
             onQueueRemovedListener.onQueueRemove();
@@ -145,15 +157,17 @@ public class QueueAdapter extends RecyclerView.Adapter<QueueAdapter.ViewHolder> 
     @Override
     public void onDragAndDrop(int oldPosition, int newPosition) {
 
-        Bundle bundle = new Bundle();
-        bundle.putInt("old_position", oldPosition);
-        bundle.putInt("new_position", newPosition);
-
         MediaSessionCompat.QueueItem queueItem = queue.get(oldPosition);
         queue.remove(oldPosition);
         queue.add(newPosition, queueItem);
 
-        MediaControllerCompat.getMediaController((MainActivity)context).getTransportControls().sendCustomAction("replace_queue_items", bundle);
+        ((MainActivity)context).getAnglerClient().replaceQueueItems(oldPosition, newPosition);
         notifyItemMoved(oldPosition, newPosition);
     }
+
+    void setPlaybackState(int playbackState) {
+        this.playbackState = playbackState;
+        notifyItemChanged(queuePosition);
+    }
+
 }

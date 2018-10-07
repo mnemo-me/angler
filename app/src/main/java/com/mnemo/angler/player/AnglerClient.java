@@ -143,6 +143,10 @@ public class AnglerClient{
 
     }
 
+    public List<MediaSessionCompat.QueueItem> getQueue(){
+        return mController.getQueue();
+    }
+
     public void addToQueue(String playlistName, List<Track> tracks, boolean isPlayNext){
 
         int index = 0;
@@ -175,6 +179,25 @@ public class AnglerClient{
         mController.getTransportControls().sendCustomAction("update_queue", null);
     }
 
+    public void skipToQueuePosition(long position){
+        mController.getTransportControls().skipToQueueItem(position);
+    }
+
+    public void removeQueueItemAt(int position){
+        mController.removeQueueItemAt(position);
+        playlistQueue = "";
+    }
+
+    public void replaceQueueItems(int oldPosition, int newPosition){
+
+        Bundle bundle = new Bundle();
+        bundle.putInt("old_position", oldPosition);
+        bundle.putInt("new_position", newPosition);
+
+
+        mController.getTransportControls().sendCustomAction("replace_queue_items", bundle);
+    }
+
     public void seekTo(int progress){
         mController.getTransportControls().seekTo(progress);
     }
@@ -196,9 +219,6 @@ public class AnglerClient{
 
         return mController.getMetadata();
     }
-
-
-
 
 
 

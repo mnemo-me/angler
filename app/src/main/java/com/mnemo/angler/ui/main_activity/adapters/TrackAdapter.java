@@ -14,11 +14,13 @@ import android.widget.TextView;
 
 import com.mnemo.angler.R;
 import com.mnemo.angler.data.database.Entities.Track;
+import com.mnemo.angler.data.file_storage.AnglerFolder;
 import com.mnemo.angler.ui.main_activity.activity.MainActivity;
 import com.mnemo.angler.ui.main_activity.fragments.playlists.add_tracks_to_playlist.AddTracksDialogFragment;
 import com.mnemo.angler.ui.main_activity.misc.contextual_menu.ContextualMenuDialogFragment;
 import com.mnemo.angler.util.MediaAssistant;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -137,7 +139,10 @@ public class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.ViewHolder>{
 
             String title = track.getTitle();
             String artist = track.getArtist();
+            String album = track.getAlbum();
             long duration = track.getDuration();
+
+            String albumCover = AnglerFolder.PATH_ALBUM_COVER + File.separator + artist + File.separator + album + ".jpg";
 
             // Fill views
             ((TrackViewHolder)holder).titleView.setText(title);
@@ -184,6 +189,7 @@ public class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.ViewHolder>{
                 Bundle args = new Bundle();
                 args.putString("type", type);
                 args.putString("playlist", playlist);
+                args.putString("album_cover", albumCover);
                 args.putParcelable("track", track);
                 args.putParcelableArrayList("tracks", (ArrayList) tracks);
                 contextualMenuDialogFragment.setArguments(args);

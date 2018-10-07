@@ -47,7 +47,7 @@ public class AnglerService extends MediaBrowserServiceCompat {
 
     private AnglerNotificationManager mAnglerNotificationManager;
 
-    private ArrayList<MediaSessionCompat.QueueItem> queue;
+    private ArrayList<MediaSessionCompat.QueueItem> queue = new ArrayList<>();
     private int queueIndex = 0;
 
     public static boolean isQueueInitialized = false;
@@ -105,6 +105,9 @@ public class AnglerService extends MediaBrowserServiceCompat {
         // Setup equalizer and audio effects
         setupEqualizer();
         setupAudioEffects();
+
+        // Initialize notification manager
+        mAnglerNotificationManager = new AnglerNotificationManager(this);
     }
 
 
@@ -212,7 +215,7 @@ public class AnglerService extends MediaBrowserServiceCompat {
                     });
                     mMediaPlayer.setOnPreparedListener(mediaPlayer -> {
                         mMediaPlayer.start();
-                        mAnglerNotificationManager.createNotification();
+                        //mAnglerNotificationManager.createNotification();
 
                         Intent intent = new Intent();
 
@@ -258,7 +261,6 @@ public class AnglerService extends MediaBrowserServiceCompat {
             mMediaSession.release();
             mMediaPlayer.stop();
             stopSelf();
-
         }
 
 
@@ -363,6 +365,8 @@ public class AnglerService extends MediaBrowserServiceCompat {
                         queueIndex = oldPosition;
                     }
 
+                    mMediaSession.setQueue(queue);
+
                     break;
 
                 case "equalizer_on_off":
@@ -463,20 +467,8 @@ public class AnglerService extends MediaBrowserServiceCompat {
 
     @Override
     public void onLoadChildren(@NonNull String parentId, @NonNull Result<List<MediaBrowserCompat.MediaItem>> result) {
-        result.sendResult(new ArrayList<MediaBrowserCompat.MediaItem>());
+        result.sendResult(new ArrayList<>());
     }
-
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-
-
-        // Initialize queue and notification manager
-        queue = new ArrayList<>();
-        mAnglerNotificationManager = new AnglerNotificationManager(this);
-
-        return super.onStartCommand(intent, flags, startId);
-    }
-
 
 
     private MediaMetadataCompat getCurrentMetadata(){
