@@ -57,10 +57,10 @@ public class ArtistConfigurationFragment extends Fragment implements ArtistConfi
     @BindView(R.id.artist_conf_artist)
     TextView artistText;
 
+    @Nullable
     @BindView(R.id.artist_conf_play_all)
     LinearLayout playAllLayout;
 
-    @Nullable
     @BindView(R.id.artist_conf_play_all_button)
     ImageButton playAllButton;
 
@@ -204,6 +204,7 @@ public class ArtistConfigurationFragment extends Fragment implements ArtistConfi
      coverDialogFragment.show(getActivity().getSupportFragmentManager(), "cover_dialog_fragment");
     }
 
+    @Optional
     @OnClick(R.id.artist_conf_play_all)
     void playAll(){
 
@@ -218,7 +219,6 @@ public class ArtistConfigurationFragment extends Fragment implements ArtistConfi
     }
 
 
-    @Optional
     @OnClick(R.id.artist_conf_play_all_button)
     void playAllButton(){
         playAll();

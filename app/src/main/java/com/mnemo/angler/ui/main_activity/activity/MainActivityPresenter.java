@@ -27,4 +27,14 @@ public class MainActivityPresenter extends BasePresenter {
         ((MainActivityView) getView()).setBackground(backgroundImage, opacity);
 
     }
+
+    // Initialize queue
+    void initializeQueue(){
+        repository.loadPlaylistTrack("library", tracks -> {
+
+            if (getView() != null){
+                ((MainActivityView)getView()).setQueue(tracks);
+            }
+        });
+    }
 }

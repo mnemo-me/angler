@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.mnemo.angler.ui.main_activity.activity.MainActivity;
 import com.mnemo.angler.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -40,8 +41,9 @@ public class QueueDialogFragment extends BottomSheetDialogFragment {
     @BindView(R.id.qu_recycler_view)
     RecyclerView recyclerView;
 
-
     QueueAdapter adapter;
+
+    ArrayList<MediaSessionCompat.QueueItem> queue;
 
     BroadcastReceiver receiver;
     IntentFilter intentFilter;
@@ -68,9 +70,13 @@ public class QueueDialogFragment extends BottomSheetDialogFragment {
         super.onViewCreated(view, savedInstanceState);
 
         // Get queue
-        List<MediaSessionCompat.QueueItem> queue = ((MainActivity)getActivity()).getAnglerClient().getQueue();
+        if (savedInstanceState != null){
+            queue = savedInstanceState.getParcelableArrayList("queue");
+        }else {
+            queue = ((MainActivity) getActivity()).getAnglerClient().getQueue();
+        }
 
-        // Set title
+        // Set count view
         countView.setText(String.valueOf(queue.size()));
 
 
@@ -85,7 +91,6 @@ public class QueueDialogFragment extends BottomSheetDialogFragment {
                 Toast.makeText(getContext(), R.string.empty_queue, Toast.LENGTH_SHORT).show();
             }
         });
-        adapter.setPlaybackState(((MainActivity)getContext()).getPlaybackState());
 
         // Set drag'n'drop callback
         DragAndDropCallback dragAndDropCallback = new DragAndDropCallback();
@@ -95,12 +100,24 @@ public class QueueDialogFragment extends BottomSheetDialogFragment {
 
         recyclerView.setAdapter(adapter);
 
-        recyclerView.scrollToPosition(((MainActivity)getActivity()).getAnglerClient().getQueuePosition());
+        try {
+            recyclerView.scrollToPosition(((MainActivity) getActivity()).getAnglerClient().getQueuePosition());
+        }catch (NullPointerException e){
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void onStart() {
         super.onStart();
+
+        // Set queue position and playback state
+        try {
+            adapter.setQueuePosition(((MainActivity) getActivity()).getAnglerClient().getQueuePosition());
+            adapter.setPlaybackState(((MainActivity) getContext()).getPlaybackState());
+        }catch (NullPointerException e){
+            e.printStackTrace();
+        }
 
         // Initialize broadcast receiver
         receiver = new BroadcastReceiver() {
@@ -112,7 +129,6 @@ public class QueueDialogFragment extends BottomSheetDialogFragment {
                     case "queue_position_changed":
 
                         adapter.setQueuePosition(intent.getIntExtra("queue_position", 0));
-                        adapter.notifyDataSetChanged();
 
                         break;
 
@@ -138,6 +154,13 @@ public class QueueDialogFragment extends BottomSheetDialogFragment {
         super.onStop();
 
         getContext().unregisterReceiver(receiver);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putParcelableArrayList("queue", queue);
     }
 
     @Override

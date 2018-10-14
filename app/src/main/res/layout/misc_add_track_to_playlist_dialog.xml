@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/softMainGrey"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:background="@color/softMainGrey">
 
     <TextView
         android:layout_width="wrap_content"
@@ -15,26 +16,13 @@
         android:textColor="#FFFFFF"
         android:textSize="16sp"
         android:textStyle="bold"
-        android:text="@string/add_tracks_to_playlist"
+        android:text="@string/add_track_to_playlist"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/add_tracks_upper_separator"/>
-
-    <TextView
-        android:id="@+id/add_tracks_count"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="46dp"
-        android:textColor="#FFFFFF"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        tools:text="32"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/add_tracks_upper_separator"/>
+        app:layout_constraintBottom_toTopOf="@id/add_track_to_playlist_separator"/>
 
     <View
-        android:id="@+id/add_tracks_upper_separator"
+        android:id="@+id/add_track_to_playlist_separator"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginStart="@dimen/default_margin"
@@ -42,5 +30,17 @@
         android:background="@color/gGrey"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="60dp"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/add_track_to_playlist_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:paddingTop="12dp"
+        android:paddingStart="12dp"
+        android:paddingEnd="4dp"
+        android:paddingBottom="8dp"
+        android:clipToPadding="false"
+        app:layout_constraintTop_toBottomOf="@id/add_track_to_playlist_separator"/>
+
 
 </android.support.constraint.ConstraintLayout>

@@ -20,7 +20,7 @@ public class MusicPlayerPresenter extends BasePresenter {
         AnglerApp.getAnglerComponent().injectMusicPlayerPresenter(this);
     }
 
-    // load playlists from database
+    // Load playlists from database
     void loadPlaylists(){
         repository.loadPlaylistTitles(playlistTitles -> {
 
@@ -31,7 +31,7 @@ public class MusicPlayerPresenter extends BasePresenter {
         });
     }
 
-    // update playlist
+    // Update playlist
     void updateMainPlaylist(String playlist){
         repository.setMainPlaylist(playlist);
     }

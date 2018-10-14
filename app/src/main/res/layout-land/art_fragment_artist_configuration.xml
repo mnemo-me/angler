@@ -5,64 +5,66 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.main_activity.fragments.artists.artist_configuration.ArtistConfigurationFragment">
 
-    <View
+    <android.support.v7.widget.Toolbar
         android:id="@+id/artist_conf_toolbar"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:background="@color/softMainGrey"/>
+        app:contentInsetStart="0dp"
+        android:background="@color/softMainGrey">
 
-    <ImageButton
-        android:id="@+id/artist_conf_back"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:padding="8dp"
-        android:layout_marginStart="8dp"
-        android:src="@drawable/back_selector"
-        android:transitionName="back"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="@id/artist_conf_toolbar"/>
+        <ImageButton
+            android:id="@+id/artist_conf_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="8dp"
+            android:layout_marginStart="8dp"
+            android:src="@drawable/back_selector"
+            android:transitionName="back"/>
 
-    <TextView
-        android:id="@+id/artist_conf_artist"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:maxWidth="210dp"
-        android:ellipsize="end"
-        android:maxLines="1"
-        android:textColor="#FFFFFF"
-        android:textSize="16sp"
-        android:transitionName="title"
-        tools:text="Marilyn Manson"
-        app:layout_constraintStart_toEndOf="@id/artist_conf_back"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="@id/artist_conf_toolbar"/>
+        <TextView
+            android:id="@+id/artist_conf_artist"
+            android:layout_width="210dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="@dimen/default_margin"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:transitionName="title"
+            tools:text="Marilyn Manson"/>
 
-    <android.support.design.widget.TabLayout
-        android:id="@+id/artist_conf_tab_layout"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_marginStart="260dp"
-        app:tabMode="fixed"
-        app:tabGravity="fill"
-        app:tabSelectedTextColor="#FFFFFF"
-        app:tabTextColor="@color/gGrey"
-        app:tabIndicatorHeight="0dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="@id/artist_conf_toolbar"/>
+        <ImageButton
+            android:id="@+id/artist_conf_play_all_button"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:src="@drawable/selected_play_all_button"
+            android:background="?android:selectableItemBackgroundBorderless"
+            android:padding="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_gravity="end"/>
 
+        <android.support.design.widget.TabLayout
+            android:id="@+id/artist_conf_tab_layout"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            app:tabMode="fixed"
+            app:tabGravity="fill"
+            app:tabSelectedTextColor="#FFFFFF"
+            app:tabTextColor="@color/gGrey"
+            app:tabIndicatorHeight="0dp"/>
+
+    </android.support.v7.widget.Toolbar>
 
     <android.support.v7.widget.CardView
         android:id="@+id/artist_conf_cardview"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
+        android:layout_width="240dp"
+        android:layout_height="240dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/artist_conf_toolbar"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/artist_conf_view_pager"
-        android:layout_marginTop="16dp"
         android:transitionName="card"
         app:cardCornerRadius="2dp"
         android:elevation="0dp">
@@ -90,40 +92,12 @@
 
     </android.support.v7.widget.CardView>
 
-    <LinearLayout
-        android:id="@+id/artist_conf_play_all"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:background="?android:selectableItemBackgroundBorderless"
-        app:layout_constraintStart_toStartOf="@id/artist_conf_cardview"
-        app:layout_constraintEnd_toEndOf="@id/artist_conf_cardview"
-        app:layout_constraintTop_toBottomOf="@id/artist_conf_cardview"
-        app:layout_constraintBottom_toBottomOf="parent">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_play_arrow_white_24dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="24dp"
-            android:text="@string/play_all"
-            android:textColor="#FFFFFF"
-            android:textAllCaps="true"/>
-
-    </LinearLayout>
 
     <android.support.v4.view.ViewPager
         android:id="@+id/artist_conf_view_pager"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="280dp"
+        android:layout_marginStart="284dp"
         android:paddingBottom="48dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/artist_conf_toolbar"/>

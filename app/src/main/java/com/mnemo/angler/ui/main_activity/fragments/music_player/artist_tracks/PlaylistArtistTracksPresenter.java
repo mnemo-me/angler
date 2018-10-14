@@ -26,7 +26,7 @@ public class PlaylistArtistTracksPresenter extends BasePresenter{
         AnglerApp.getAnglerComponent().injectPlaylistArtistTracksPresenter(this);
     }
 
-    // load artist tracks from database
+    // Load artist tracks from database
     void loadArtistTracksFromPlaylist(String playlist, String artist){
 
         repository.loadArtistTracksFromPlaylist(playlist, artist, artistTracks -> {
@@ -34,12 +34,12 @@ public class PlaylistArtistTracksPresenter extends BasePresenter{
             tracks = artistTracks;
 
             if (getView() != null) {
-                applyFilter(((PlaylistPlaylistArtistTracksFragment)getView()).getFilter());
+                applyFilter(((PlaylistArtistTracksFragment)getView()).getFilter());
             }
         });
     }
 
-    // apply filter to tracks
+    // Apply filter to tracks
     void applyFilter(String filter) {
 
         if (filter.equals("")){

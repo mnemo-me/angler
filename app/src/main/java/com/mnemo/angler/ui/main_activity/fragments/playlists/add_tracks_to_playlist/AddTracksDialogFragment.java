@@ -2,11 +2,12 @@ package com.mnemo.angler.ui.main_activity.fragments.playlists.add_tracks_to_play
 
 
 import android.app.Dialog;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.widget.ExpandableListView;
 import android.widget.LinearLayout;
@@ -16,6 +17,7 @@ import com.mnemo.angler.R;
 import com.mnemo.angler.data.database.Entities.Track;
 import com.mnemo.angler.ui.main_activity.adapters.AddTracksExpandableListAdapter;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 
@@ -23,60 +25,76 @@ public class AddTracksDialogFragment extends DialogFragment implements AddTracks
 
     AddTracksPresenter presenter;
 
+    TextView tracksCountView;
+
     ExpandableListView expandableListView;
     AddTracksExpandableListAdapter adapter;
 
+    ArrayList<Track> newTracks;
+    boolean[] expandedGroups;
+    int firstVisiblePosition = 0;
+
+    TextView addButton;
 
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 
         // Bind Presenter to View
         presenter = new AddTracksPresenter();
         presenter.attachView(this);
 
-        // Get orientation
-        int orientation = getResources().getConfiguration().orientation;
 
         // Get playlist title
         String title = getArguments().getString("title");
 
+        // Get saved new tracks
+        if (savedInstanceState != null){
+            newTracks = savedInstanceState.getParcelableArrayList("new_tracks");
+            expandedGroups = savedInstanceState.getBooleanArray("expanded_groups");
+            firstVisiblePosition = savedInstanceState.getInt("first_visible_position");
+        }
+
         // Setup header
-        LinearLayout titleLayout = (LinearLayout) LayoutInflater.from(getContext()).inflate(R.layout.misc_dialog_title, null, false);
-        TextView titleView = titleLayout.findViewById(R.id.dialog_title);
-        titleView.setText(R.string.add_tracks_to_playlist);
+        ConstraintLayout titleLayout = (ConstraintLayout) LayoutInflater.from(getContext()).inflate(R.layout.pm_add_tracks_header, null, false);
+        tracksCountView = titleLayout.findViewById(R.id.add_tracks_count);
         builder.setCustomTitle(titleLayout);
 
 
         // Setup body
-        expandableListView = new ExpandableListView(getContext());
+        LinearLayout bodyLayout = (LinearLayout) LayoutInflater.from(getContext()).inflate(R.layout.pm_add_tracks, null, false);
+        expandableListView = bodyLayout.findViewById(R.id.add_tracks_expandable_list);
         expandableListView.setDividerHeight(0);
         expandableListView.setSelector(android.R.color.transparent);
 
-        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-            expandableListView.addHeaderView(LayoutInflater.from(getContext()).inflate(R.layout.pm_add_tracks_header, null, false));
-            expandableListView.addFooterView(LayoutInflater.from(getContext()).inflate(R.layout.pm_add_tracks_header, null, false));
-        }
+        // Setup buttons
+        TextView closeButton = bodyLayout.findViewById(R.id.add_tracks_close);
+        closeButton.setOnClickListener(view -> dismiss());
 
-        builder.setView(expandableListView);
+        addButton = bodyLayout.findViewById(R.id.add_tracks_add);
+        addButton.setOnClickListener(view -> {
+            presenter.addTracksToPlaylist(title, adapter.getNewTracks());
+            dismiss();
+        });
+
+        builder.setView(bodyLayout);
 
         // Load tracks
         presenter.loadTracks(title);
 
-
-        // Setup buttons
-        builder.setPositiveButton(R.string.add, (dialogInterface, i) -> presenter.addTracksToPlaylist(title, adapter.getNewTracks()));
-
-        builder.setNegativeButton(R.string.cancel, (dialogInterface, i) -> {
-
-        });
-
-
         return builder.create();
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putParcelableArrayList("new_tracks", adapter.getNewTracks());
+        outState.putBooleanArray("expanded_groups", adapter.getExpandedGroups());
+        outState.putInt("first_visible_position", expandableListView.getFirstVisiblePosition());
+    }
 
     @Override
     public void onDestroyView() {
@@ -93,6 +111,32 @@ public class AddTracksDialogFragment extends DialogFragment implements AddTracks
 
         // Setup adapter and bind with ExpandableListView
         adapter = new AddTracksExpandableListAdapter(getContext(), checkedTracks);
+
+        // Add saved new tracks
+        if (newTracks != null){
+            adapter.setNewTracks(newTracks);
+
+            if (newTracks.size() > 0){
+
+                tracksCountView.setText(String.valueOf(newTracks.size()));
+
+                addButton.setEnabled(true);
+                addButton.setAlpha(1f);
+            }
+        }
+
+        // Initialize expanded groups
+        if (expandedGroups == null) {
+
+            expandedGroups = new boolean[adapter.getGroupCount()];
+
+            for (int i = 0; i < expandedGroups.length; i ++){
+                expandedGroups[i] = true;
+            }
+        }
+
+        adapter.setExpandedGroups(expandedGroups);
+
         expandableListView.setAdapter(adapter);
 
         // Set on track count change listener
@@ -100,31 +144,40 @@ public class AddTracksDialogFragment extends DialogFragment implements AddTracks
 
             if (adapter.getNewTracks().size() == 0){
 
-                ((AlertDialog)getDialog()).getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+                tracksCountView.setText("");
+
+                addButton.setEnabled(false);
+                addButton.setAlpha(0.3f);
 
             }else{
 
-                if (!((AlertDialog)getDialog()).getButton(AlertDialog.BUTTON_POSITIVE).isEnabled()) {
-                    ((AlertDialog) getDialog()).getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
+
+                tracksCountView.setText(String.valueOf(adapter.getNewTracks().size()));
+
+                if (!addButton.isEnabled()) {
+
+                    addButton.setEnabled(true);
+                    addButton.setAlpha(1f);
                 }
             }
         });
 
         // Setup expand behavior
-        for (int i = 0; i < adapter.getGroupCount(); i++){
-            expandableListView.expandGroup(i);
-        }
-
-        expandableListView.setOnGroupClickListener((expandableListView, view, i, l) -> {
-
-            if (expandableListView.isGroupExpanded(i)){
-                expandableListView.collapseGroup(i);
-            }else{
+        for (int i = 0; i < expandedGroups.length; i++){
+            if (expandedGroups[i]) {
                 expandableListView.expandGroup(i);
             }
+        }
+        adapter.setOnGroupExpandListener((position, isExpand) -> {
 
-            return true;
+            if (isExpand){
+                expandableListView.expandGroup(position);
+            }else{
+                expandableListView.collapseGroup(position);
+            }
         });
+
+        //expandableListView.smoothScrollToPositionFromTop(firstVisiblePosition, 0, 0);
     }
 
 }

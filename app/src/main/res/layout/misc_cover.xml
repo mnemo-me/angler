@@ -36,7 +36,7 @@
             android:maxLines="1"
             android:ellipsize="end"
             app:layout_constraintBottom_toTopOf="@id/artist_cover_artist"
-            app:layout_constraintEnd_toEndOf="@id/artist_cover_image"/>
+            app:layout_constraintStart_toStartOf="@id/artist_cover_image"/>
 
         <TextView
             android:id="@+id/artist_cover_artist"
@@ -50,7 +50,7 @@
             android:maxLines="1"
             android:ellipsize="end"
             app:layout_constraintBottom_toBottomOf="@id/artist_cover_image"
-            app:layout_constraintEnd_toEndOf="@id/artist_cover_image"
+            app:layout_constraintStart_toStartOf="@id/artist_cover_image"
             tools:text="Marilyn Manson"/>
 
 

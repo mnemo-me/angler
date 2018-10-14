@@ -20,7 +20,7 @@ import android.view.ViewGroup;
 import com.mnemo.angler.R;
 import com.mnemo.angler.ui.main_activity.activity.MainActivity;
 import com.mnemo.angler.ui.main_activity.adapters.PlaylistArtistsAdapter;
-import com.mnemo.angler.ui.main_activity.fragments.music_player.artist_tracks.PlaylistPlaylistArtistTracksFragment;
+import com.mnemo.angler.ui.main_activity.fragments.music_player.artist_tracks.PlaylistArtistTracksFragment;
 import com.mnemo.angler.ui.main_activity.fragments.music_player.music_player.MusicPlayerFragment;
 
 import java.util.List;
@@ -49,20 +49,20 @@ public class PlaylistArtistsFragment extends Fragment implements PlaylistArtists
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        // get orientation
+        // Get orientation
         orientation = getResources().getConfiguration().orientation;
 
-        // get filter
+        // Get filter
         filter = ((MainActivity)getActivity()).getFilter();
 
-        // get selected artist (for landscape layout)
+        // Get selected artist (for landscape layout)
         if (savedInstanceState != null){
             selectedArtist = savedInstanceState.getString("selected_artist");
         }else{
             selectedArtist = ((MusicPlayerFragment)getActivity().getSupportFragmentManager().findFragmentByTag("music_player_fragment")).getArtistSelected();
         }
 
-        // configure recycler view
+        // Configure recycler view
         recyclerView = new RecyclerView(getContext());
 
         if (orientation == Configuration.ORIENTATION_PORTRAIT) {
@@ -83,19 +83,18 @@ public class PlaylistArtistsFragment extends Fragment implements PlaylistArtists
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // bind Presenter to View
+        // Bind Presenter to View
         presenter = new PlaylistArtistsPresenter();
         presenter.attachView(this);
 
-        // load artists
+        // Load artists
         presenter.loadArtists(((MainActivity)getActivity()).getMainPlaylistName());
 
     }
 
-
     @Override
-    public void onResume() {
-        super.onResume();
+    public void onStart() {
+        super.onStart();
 
         presenter.attachView(this);
 
@@ -124,25 +123,11 @@ public class PlaylistArtistsFragment extends Fragment implements PlaylistArtists
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
+    public void onStop() {
+        super.onStop();
 
         presenter.deattachView();
         getContext().unregisterReceiver(receiver);
-    }
-
-    // saving state of scroll
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-
-        outState.putString("selected_artist", selectedArtist);
-        /*try {
-            Parcelable state = getListView().onSaveInstanceState();
-            outState.putParcelable("state", state);
-        }catch(IllegalStateException e){
-            e.printStackTrace();
-        }*/
     }
 
 
@@ -163,7 +148,7 @@ public class PlaylistArtistsFragment extends Fragment implements PlaylistArtists
 
 
 
-    // open track list based on artist
+    // Open track list based on artist
     public void openArtistTracks(String artist) {
 
         selectedArtist = artist;
@@ -171,7 +156,7 @@ public class PlaylistArtistsFragment extends Fragment implements PlaylistArtists
             ((SearchView)getActivity().findViewById(R.id.search_toolbar)).setQuery("", false);
         }
 
-        PlaylistPlaylistArtistTracksFragment playlistArtistTracksFragment = new PlaylistPlaylistArtistTracksFragment();
+        PlaylistArtistTracksFragment playlistArtistTracksFragment = new PlaylistArtistTracksFragment();
 
         Bundle args = new Bundle();
         args.putString("artist", artist);

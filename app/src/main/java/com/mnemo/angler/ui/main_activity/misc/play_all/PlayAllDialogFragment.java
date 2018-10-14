@@ -1,14 +1,14 @@
 package com.mnemo.angler.ui.main_activity.misc.play_all;
 
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.BottomSheetDialogFragment;
+import android.support.v4.app.DialogFragment;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import com.mnemo.angler.R;
 import com.mnemo.angler.data.database.Entities.Track;
@@ -21,28 +21,34 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 
 
-public class PlayAllDialogFragment extends BottomSheetDialogFragment {
+public class PlayAllDialogFragment extends DialogFragment {
 
     Unbinder unbinder;
 
     String playlist;
     List<Track> tracks;
 
-    @Nullable
+    @NonNull
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.misc_play_all_context_menu, container, false);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 
         // Get tracks variables
         playlist = getArguments().getString("playlist");
         tracks = getArguments().getParcelableArrayList("tracks");
 
-        // Inject views
-        unbinder = ButterKnife.bind(this, view);
+        // Setup body
+        LinearLayout bodyLayout = (LinearLayout) LayoutInflater.from(getContext()).inflate(R.layout.misc_play_all_context_menu, null, false);
 
-        return view;
+        // Inject views
+        unbinder = ButterKnife.bind(this, bodyLayout);
+
+        builder.setView(bodyLayout);
+
+        return builder.create();
     }
+
 
     // Setup context menu item listeners
     @OnClick(R.id.play_all_play_now)

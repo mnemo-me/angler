@@ -23,11 +23,7 @@ import com.mnemo.angler.ui.main_activity.adapters.TrackAdapter;
 import java.util.List;
 
 
-public class PlaylistPlaylistArtistTracksFragment extends Fragment implements PlaylistArtistTracksView {
-
-    public PlaylistPlaylistArtistTracksFragment() {
-        // Required empty public constructor
-    }
+public class PlaylistArtistTracksFragment extends Fragment implements PlaylistArtistTracksView {
 
     PlaylistArtistTracksPresenter presenter;
 
@@ -45,16 +41,32 @@ public class PlaylistPlaylistArtistTracksFragment extends Fragment implements Pl
 
     private String filter;
 
+    public PlaylistArtistTracksFragment() {
+        // Required empty public constructor
+    }
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        // get orientation
+        // Get orientation
         orientation = getResources().getConfiguration().orientation;
 
-        // get filter
+        // Get filter
         filter = ((MainActivity)getActivity()).getFilter();
 
-        // configure recycler view
+        // Get artist
+        if (savedInstanceState == null) {
+            Bundle arguments = getArguments();
+            artist = arguments.getString("artist");
+        }else{
+            artist = savedInstanceState.getString("artist");
+        }
+
+        // Create local playlist name
+        localPlaylistName = "playlist_artist/" + ((MainActivity)getActivity()).getMainPlaylistName()
+                .replace("/", "\\") + "/" + artist.replace("/", "\\");
+
+        // Configure recycler view
         recyclerView = new RecyclerView(getContext());
 
         if (orientation == Configuration.ORIENTATION_PORTRAIT) {
@@ -75,32 +87,30 @@ public class PlaylistPlaylistArtistTracksFragment extends Fragment implements Pl
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // get artist
-        if (savedInstanceState == null) {
-            Bundle arguments = getArguments();
-            artist = arguments.getString("artist");
-        }else{
-            artist = savedInstanceState.getString("artist");
-        }
-
-        // create local playlist name
-        localPlaylistName = "playlist_artist/" + ((MainActivity)getActivity()).getMainPlaylistName()
-                .replace("/", "\\") + "/" + artist.replace("/", "\\");
-
+        // Bind presenter ro View
         presenter = new PlaylistArtistTracksPresenter();
         presenter.attachView(this);
 
-        // load artist tracks
+        // Load artist tracks
         presenter.loadArtistTracksFromPlaylist(((MainActivity)getActivity()).getMainPlaylistName(), artist);
-
     }
 
 
     @Override
-    public void onResume() {
-        super.onResume();
+    public void onStart() {
+        super.onStart();
 
         presenter.attachView(this);
+
+        // Set current track
+        if (((MainActivity)getActivity()).getCurrentPlaylistName().equals(localPlaylistName)) {
+
+            if (adapter != null) {
+                adapter.setTrack(((MainActivity) getActivity()).getCurrentMediaId());
+                adapter.setPlaybackState(((MainActivity)getActivity()).getPlaybackState());
+            }
+        }
+
 
         // Initialize broadcast receiver
         receiver = new BroadcastReceiver() {
@@ -113,11 +123,15 @@ public class PlaylistPlaylistArtistTracksFragment extends Fragment implements Pl
                         String trackPlaylist = intent.getStringExtra("track_playlist");
                         String mediaId = intent.getStringExtra("media_id");
 
-                        if (trackPlaylist.equals(((MainActivity)getActivity()).getMainPlaylistName())) {
-                            try {
+                        if (trackPlaylist.equals(localPlaylistName)) {
+
+                            if (adapter != null) {
                                 adapter.setTrack(mediaId);
-                            } catch (NullPointerException e) {
-                                e.printStackTrace();
+                            }
+                        }else{
+
+                            if (adapter != null){
+                                adapter.setTrack("");
                             }
                         }
 
@@ -146,18 +160,17 @@ public class PlaylistPlaylistArtistTracksFragment extends Fragment implements Pl
         intentFilter.addAction("filter_applied");
 
         getContext().registerReceiver(receiver, intentFilter);
-
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
+    public void onStop() {
+        super.onStop();
 
         presenter.deattachView();
         getContext().unregisterReceiver(receiver);
     }
 
-    // saving state of scroll and artist
+
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);

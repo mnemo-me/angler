@@ -19,7 +19,6 @@ import android.support.v4.media.MediaDescriptionCompat;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
-import android.util.Log;
 
 
 import com.mnemo.angler.util.MediaAssistant;
@@ -135,29 +134,6 @@ public class AnglerService extends MediaBrowserServiceCompat {
         }
 
         @Override
-        public void onRemoveQueueItem(MediaDescriptionCompat description) {
-
-            String mediaId = description.getMediaId();
-
-            for (MediaSessionCompat.QueueItem queueItem : queue){
-
-                if (queueItem.getDescription().getMediaId().equals(mediaId)){
-
-                    int index = queue.indexOf(queueItem);
-
-                    if (index <= queueIndex){
-                        queueIndex--;
-                    }
-
-                    queue.remove(queueItem);
-                    break;
-                }
-            }
-
-            mMediaSession.setQueue(queue);
-        }
-
-        @Override
         public void onRemoveQueueItemAt(int index) {
 
             if (index <= queueIndex){
@@ -192,11 +168,14 @@ public class AnglerService extends MediaBrowserServiceCompat {
         public void onPlay() {
 
             mMediaSession.setPlaybackState(new PlaybackStateCompat.Builder()
-                    .setState(PlaybackStateCompat.STATE_PLAYING, PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN, 0).build());
+                    .setState(PlaybackStateCompat.STATE_PLAYING, PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN, 0)
+                    .setActiveQueueItemId((long)queueIndex)
+                    .build());
 
             if (isPaused){
 
                 isPaused = false;
+                mAnglerNotificationManager.createNotification();
                 mMediaPlayer.start();
 
             }else {
@@ -214,8 +193,12 @@ public class AnglerService extends MediaBrowserServiceCompat {
                         }
                     });
                     mMediaPlayer.setOnPreparedListener(mediaPlayer -> {
+                        mAnglerNotificationManager.createNotification();
                         mMediaPlayer.start();
-                        //mAnglerNotificationManager.createNotification();
+                        mEqualizer = new Equalizer(0, mMediaPlayer.getAudioSessionId());
+                        mVirtualizer = new Virtualizer(0, mMediaPlayer.getAudioSessionId());
+                        mBassBoost = new BassBoost(0, mMediaPlayer.getAudioSessionId());
+                        mAmplifier = new LoudnessEnhancer(mMediaPlayer.getAudioSessionId());
 
                         Intent intent = new Intent();
 
@@ -246,9 +229,11 @@ public class AnglerService extends MediaBrowserServiceCompat {
             isPaused = true;
 
             mMediaSession.setPlaybackState(new PlaybackStateCompat.Builder()
-                .setState(PlaybackStateCompat.STATE_PAUSED,PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN,0).build());
+                .setState(PlaybackStateCompat.STATE_PAUSED,PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN,0)
+                    .setActiveQueueItemId((long)queueIndex)
+                    .build());
 
-            mAnglerNotificationManager.unregisterCallback();
+            mAnglerNotificationManager.createNotification();
             stopForeground(false);
         }
 
@@ -256,7 +241,10 @@ public class AnglerService extends MediaBrowserServiceCompat {
         public void onStop() {
             super.onStop();
 
-            mAnglerNotificationManager.unregisterCallback();
+            mMediaSession.setPlaybackState(new PlaybackStateCompat.Builder()
+                .setState(PlaybackStateCompat.STATE_STOPPED, PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN, 0)
+                .build());
+
             mMediaSession.setActive(false);
             mMediaSession.release();
             mMediaPlayer.stop();
@@ -348,6 +336,10 @@ public class AnglerService extends MediaBrowserServiceCompat {
 
                     mMediaSession.setQueue(queue);
 
+                    if (mMediaSession.getController().getMetadata() == null){
+                        onPrepare();
+                    }
+
                     break;
 
                 case "replace_queue_items":
@@ -383,9 +375,15 @@ public class AnglerService extends MediaBrowserServiceCompat {
                     mEqualizer.usePreset(presetNumber);
 
                     Intent intent = new Intent();
+
+                    ArrayList<Integer> bandsLevel = new ArrayList<>();
+
                     for (short i = 0; i < bandsFrequencies.size(); i++){
-                        intent.putExtra("band_" + i + "_level", mEqualizer.getBandLevel(i));
+                        bandsLevel.add((int)mEqualizer.getBandLevel((i)));
                     }
+
+                    intent.putIntegerArrayListExtra("bands_level", bandsLevel);
+
                     intent.setAction("equalizer_preset_changed");
                     sendBroadcast(intent);
 
@@ -413,8 +411,6 @@ public class AnglerService extends MediaBrowserServiceCompat {
                     short virtualizerLevel = extras.getShort("virtualizer_band_level");
                     mVirtualizer.setStrength(virtualizerLevel);
 
-                    Log.e("43434", String.valueOf(mVirtualizer.getRoundedStrength()));
-
                     break;
 
                 case "bass_boost_on_off":
@@ -429,14 +425,12 @@ public class AnglerService extends MediaBrowserServiceCompat {
                     short bassBoostLevel = extras.getShort("bass_boost_band_level");
                     mBassBoost.setStrength(bassBoostLevel);
 
-                    Log.e("43434", String.valueOf(mBassBoost.getRoundedStrength()));
-
                     break;
 
                 case "amplifier_on_off":
 
                     boolean amplifierOnOffState = extras.getBoolean("on_off_state");
-                    mVirtualizer.setEnabled(amplifierOnOffState);
+                    mAmplifier.setEnabled(amplifierOnOffState);
 
                     break;
 
@@ -445,13 +439,10 @@ public class AnglerService extends MediaBrowserServiceCompat {
                     short amplifierLevel = extras.getShort("amplifier_band_level");
                     mAmplifier.setTargetGain(amplifierLevel);
 
-                    Log.e("43434", String.valueOf(mAmplifier.getTargetGain()));
-
                     break;
 
             }
         }
-
     };
 
 

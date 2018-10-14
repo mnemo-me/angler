@@ -66,10 +66,10 @@ public class PlaylistConfigurationFragment extends Fragment implements PlaylistC
     @BindView(R.id.playlist_conf_tracks_count)
     TextView tracksCountView;
 
+    @Nullable
     @BindView(R.id.playlist_conf_play_all)
     LinearLayout playAllLayout;
 
-    @Nullable
     @BindView(R.id.playlist_conf_play_all_button)
     ImageButton playAllButton;
 
@@ -190,10 +190,20 @@ public class PlaylistConfigurationFragment extends Fragment implements PlaylistC
     @Override
     public void onStart() {
         super.onStart();
+
         DrawerLayout drawerLayout = getActivity().findViewById(R.id.drawer_layout);
         drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 
         presenter.attachView(this);
+
+        // Set current track
+        if (((MainActivity)getActivity()).getCurrentPlaylistName().equals(localPlaylistName)){
+
+            if (adapter != null){
+                adapter.setTrack(((MainActivity)getActivity()).getCurrentMediaId());
+                adapter.setPlaybackState(((MainActivity)getActivity()).getPlaybackState());
+            }
+        }
 
         // Initialize broadcast receiver
         receiver = new BroadcastReceiver() {
@@ -207,10 +217,9 @@ public class PlaylistConfigurationFragment extends Fragment implements PlaylistC
                         String mediaId = intent.getStringExtra("media_id");
 
                         if (trackPlaylist.equals(localPlaylistName)) {
-                            try {
+
+                            if (adapter != null){
                                 adapter.setTrack(mediaId);
-                            }catch (NullPointerException e){
-                                e.printStackTrace();
                             }
                         }
 
@@ -238,6 +247,7 @@ public class PlaylistConfigurationFragment extends Fragment implements PlaylistC
     @Override
     public void onStop() {
         super.onStop();
+
         DrawerLayout drawerLayout = getActivity().findViewById(R.id.drawer_layout);
         drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
 
@@ -270,7 +280,8 @@ public class PlaylistConfigurationFragment extends Fragment implements PlaylistC
 
         checkTracksCount();
 
-        if ((((MainActivity)getActivity()).getCurrentPlaylistName()).equals(localPlaylistName)) {
+        if (((((MainActivity)getActivity()).getCurrentPlaylistName())).equals(localPlaylistName)) {
+
             adapter.setTrack(((MainActivity) getActivity()).getCurrentMediaId());
             adapter.setPlaybackState(((MainActivity) getActivity()).getPlaybackState());
         }
@@ -292,6 +303,7 @@ public class PlaylistConfigurationFragment extends Fragment implements PlaylistC
         playlistCreationDialogFragment.show(getActivity().getSupportFragmentManager(), "playlist_creation_dialog_fragment");
     }
 
+    @Optional
     @OnClick(R.id.playlist_conf_play_all)
     void playAll(){
 
@@ -305,7 +317,6 @@ public class PlaylistConfigurationFragment extends Fragment implements PlaylistC
         playAllDialogFragment.show(getActivity().getSupportFragmentManager(), "play_all_dialog_fragment");
     }
 
-    @Optional
     @OnClick(R.id.playlist_conf_play_all_button)
     void playAllButton(){
         playAll();
@@ -333,7 +344,7 @@ public class PlaylistConfigurationFragment extends Fragment implements PlaylistC
         if (orientation == Configuration.ORIENTATION_PORTRAIT){
             imageHeight = 125;
         }else{
-            imageHeight = 200;
+            imageHeight = 240;
         }
 
         ImageAssistant.loadImage(getContext(), cover, imageView, imageHeight);

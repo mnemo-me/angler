@@ -1,11 +1,10 @@
-package com.mnemo.angler.ui.main_activity.fragments.equalizer;
+package com.mnemo.angler.ui.main_activity.fragments.equalizer.audio_effects;
 
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import android.support.annotation.NonNull;
@@ -25,7 +24,11 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 
-public class AudioEffectsFragment extends Fragment {
+public class AudioEffectsFragment extends Fragment implements AudioEffectsView{
+
+    AudioEffectsPresenter presenter;
+
+    Unbinder unbinder;
 
     @BindView(R.id.ae_virtualizer_switch)
     Switch virtualizerSwitch;
@@ -54,11 +57,8 @@ public class AudioEffectsFragment extends Fragment {
     @BindView(R.id.ae_amplifier_level)
     TextView amplifierLevel;
 
-    Unbinder unbinder;
 
     private BroadcastReceiver receiver;
-
-    SharedPreferences sharedPreferences;
 
 
     public AudioEffectsFragment() {
@@ -72,41 +72,25 @@ public class AudioEffectsFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.eq_fragment_audio_effects, container, false);
 
+        // Inject views
         unbinder = ButterKnife.bind(this, view);
 
-        // configure audio effects views from shared preferences
-        sharedPreferences =  getActivity().getSharedPreferences("equalizer_pref", Context.MODE_PRIVATE);
-
-        // Virtualizer
-        boolean virtualizerOnOffState = sharedPreferences.getBoolean("virtualizer_on_off_state", false);
-        short virtualizerStrength = (short)sharedPreferences.getInt("virtualizer_strength", 0);
-
-        // Bass boost
-        boolean bassBoostOnOffState = sharedPreferences.getBoolean("bass_boost_on_off_state", false);
-        short bassBoostStrength = (short)sharedPreferences.getInt("bass_boost_strength", 0);
-
-
-        // Amplifier
-        boolean amplifierOnOffState = sharedPreferences.getBoolean("amplifier_on_off_state", false);
-        short amplifierGain = (short)sharedPreferences.getInt("amplifier_gain", 0);
-
-
+        // Bind Presenter to View
+        presenter = new AudioEffectsPresenter();
+        presenter.attachView(this);
 
         // Virtualizer
         virtualizerSwitch.setOnCheckedChangeListener((compoundButton, b) -> {
 
-            virtualizerSeekBar.setEnabled(b);
+            if (compoundButton.isPressed()) {
+                virtualizerSeekBar.setEnabled(b);
 
-            if (compoundButton.didTouchFocusSelect()) {
                 Bundle extras = new Bundle();
                 extras.putBoolean("on_off_state", b);
 
                 MediaControllerCompat.getMediaController(getActivity()).getTransportControls().sendCustomAction("virtualizer_on_off", extras);
             }
-
         });
-
-        virtualizerSwitch.setChecked(virtualizerOnOffState);
 
         virtualizerSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -133,6 +117,12 @@ public class AudioEffectsFragment extends Fragment {
             }
         });
 
+        // Get virtualizer state and strength
+        boolean virtualizerOnOffState = presenter.getVirtualizerState();
+        int virtualizerStrength = presenter.getVirtualizerStrength();
+
+        virtualizerSwitch.setChecked(virtualizerOnOffState);
+
         virtualizerSeekBar.setProgress(virtualizerStrength);
         virtualizerLevel.setText(virtualizerStrength / 10 + " %");
         virtualizerSeekBar.setEnabled(virtualizerOnOffState);
@@ -141,18 +131,15 @@ public class AudioEffectsFragment extends Fragment {
         // Bass Boost
         bassBoostSwitch.setOnCheckedChangeListener((compoundButton, b) -> {
 
-            bassBoostSeekBar.setEnabled(b);
+            if (compoundButton.isPressed()){
+                bassBoostSeekBar.setEnabled(b);
 
-            if (compoundButton.didTouchFocusSelect()) {
                 Bundle extras = new Bundle();
                 extras.putBoolean("on_off_state", b);
 
                 MediaControllerCompat.getMediaController(getActivity()).getTransportControls().sendCustomAction("bass_boost_on_off", extras);
             }
         });
-
-        bassBoostSwitch.setChecked(bassBoostOnOffState);
-
 
         bassBoostSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -180,6 +167,12 @@ public class AudioEffectsFragment extends Fragment {
             }
         });
 
+        // Get bass boost state and strength
+        boolean bassBoostOnOffState = presenter.getBassBoostState();
+        int bassBoostStrength = presenter.getBassBoostStrength();
+
+        bassBoostSwitch.setChecked(bassBoostOnOffState);
+
         bassBoostSeekBar.setProgress(bassBoostStrength);
         bassBoostLevel.setText(bassBoostStrength / 10 + " %");
         bassBoostSeekBar.setEnabled(bassBoostOnOffState);
@@ -188,19 +181,15 @@ public class AudioEffectsFragment extends Fragment {
         // Amplifier
         amplifierSwitch.setOnCheckedChangeListener((compoundButton, b) -> {
 
-            amplifierSeekBar.setEnabled(b);
+            if (compoundButton.isPressed()){
+                amplifierSeekBar.setEnabled(b);
 
-            if (compoundButton.didTouchFocusSelect()) {
                 Bundle extras = new Bundle();
                 extras.putBoolean("on_off_state", b);
 
                 MediaControllerCompat.getMediaController(getActivity()).getTransportControls().sendCustomAction("amplifier_on_off", extras);
             }
-
         });
-
-        amplifierSwitch.setChecked(amplifierOnOffState);
-
 
         amplifierSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -228,13 +217,21 @@ public class AudioEffectsFragment extends Fragment {
             }
         });
 
+        // Get amplifier state and gain
+        boolean amplifierOnOffState = presenter.getAmplifierState();
+        int amplifierGain = presenter.getAmplifierGain();
+
+        amplifierSwitch.setChecked(amplifierOnOffState);
+
         amplifierSeekBar.setProgress(amplifierGain);
         amplifierLevel.setText(amplifierGain + " mDB");
         amplifierSeekBar.setEnabled(amplifierOnOffState);
 
 
-        // disable views if equalizer off
-        if (!((Switch)getActivity().findViewById(R.id.equalizer_on_off)).isChecked()){
+        // Disable views if equalizer off
+        boolean equalizerOnOffState = getArguments().getBoolean("equalizer_on_off_state");
+
+        if (!equalizerOnOffState){
 
             virtualizerSwitch.setEnabled(false);
             virtualizerSeekBar.setEnabled(false);
@@ -244,6 +241,16 @@ public class AudioEffectsFragment extends Fragment {
             amplifierSeekBar.setEnabled(false);
         }
 
+
+        return view;
+    }
+
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        presenter.attachView(this);
 
         // Initialize broadcast receiver
         receiver = new BroadcastReceiver() {
@@ -291,25 +298,30 @@ public class AudioEffectsFragment extends Fragment {
         intentFilter.addAction("equalizer_on_off_state_changed");
 
         getContext().registerReceiver(receiver, intentFilter);
+    }
 
+    @Override
+    public void onStop() {
+        super.onStop();
 
-        return view;
+        getContext().unregisterReceiver(receiver);
+
+        presenter.deattachView();
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
 
-        sharedPreferences.edit()
-                .putBoolean("virtualizer_on_off_state", virtualizerSwitch.isChecked())
-                .putInt("virtualizer_strength", virtualizerSeekBar.getProgress())
-                .putBoolean("bass_boost_on_off_state", bassBoostSwitch.isChecked())
-                .putInt("bass_boost_strength", bassBoostSeekBar.getProgress())
-                .putBoolean("amplifier_on_off_state", amplifierSwitch.isChecked())
-                .putInt("amplifier_gain", amplifierSeekBar.getProgress())
-                .apply();
+        presenter.saveVirtualizerState(virtualizerSwitch.isChecked());
+        presenter.saveVirtualizerStrength(virtualizerSeekBar.getProgress());
 
-        getContext().unregisterReceiver(receiver);
+        presenter.saveBassBoostState(bassBoostSwitch.isChecked());
+        presenter.saveBassBoostStrength(bassBoostSeekBar.getProgress());
+
+        presenter.saveAmplifierState(amplifierSwitch.isChecked());
+        presenter.saveAmplifierGain(amplifierSeekBar.getProgress());
+
         unbinder.unbind();
     }
 }

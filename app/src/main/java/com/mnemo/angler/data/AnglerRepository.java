@@ -136,6 +136,82 @@ public class AnglerRepository {
         anglerPreferences.setMainPlaylist(playlist);
     }
 
+    // Equalizer methods
+    public boolean getEqualizerState(){
+        return anglerPreferences.getEqualizerState();
+    }
+
+    public void saveEqualizerState(boolean equalizerState){
+        anglerPreferences.setEqualizerState(equalizerState);
+    }
+
+    public int getEqualizerPreset(){
+        return anglerPreferences.getEqualizerPreset();
+    }
+
+    public void setEqualizerPreset(int preset){
+        anglerPreferences.setEqualizerPreset(preset);
+    }
+
+    public List<Short> getBandsLevel(int bandsCount){
+        return anglerPreferences.getBandsLevel(bandsCount);
+    }
+
+    public void setBandsLevel(List<Short> bandsLevel){
+        anglerPreferences.setBandsLevel(bandsLevel);
+    }
+
+    // Virtualizer
+    public boolean getVirtualizerState(){
+        return anglerPreferences.getVirtualizerState();
+    }
+
+    public void setVirtualizerState(boolean virtualizerState){
+        anglerPreferences.setVirtualizerState(virtualizerState);
+    }
+
+    public int getVirtualizerStrength(){
+        return anglerPreferences.getVirtualizerStrength();
+    }
+
+    public void setVirtualizerStrength(int virtualizerStrength){
+        anglerPreferences.setVirtualizerStrength(virtualizerStrength);
+    }
+
+    // Bass boost
+    public boolean getBassBoostState(){
+        return anglerPreferences.getBassBoostState();
+    }
+
+    public void setBassBoostState(boolean bassBoostState){
+        anglerPreferences.setBassBoostState(bassBoostState);
+    }
+
+    public int getBassBoostStrength(){
+        return anglerPreferences.getBassBoostStrength();
+    }
+
+    public void setBassBoostStrength(int bassBoostStrength){
+        anglerPreferences.setBassBoostStrength(bassBoostStrength);
+    }
+
+    // Amplifier
+    public boolean getAmplifierState(){
+        return anglerPreferences.getAmplifierState();
+    }
+
+    public void setAmplifierState(boolean amplifierState){
+        anglerPreferences.setAmplifierState(amplifierState);
+    }
+
+    public int getAmplifierGain(){
+        return anglerPreferences.getAmplifierGain();
+    }
+
+    public void setAmplifierGain(int amplifierGain){
+        anglerPreferences.setAmplifierGain(amplifierGain);
+    }
+
 
 
     // File storage methods

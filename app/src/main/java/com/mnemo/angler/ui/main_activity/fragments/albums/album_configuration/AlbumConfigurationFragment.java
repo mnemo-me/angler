@@ -71,7 +71,6 @@ public class AlbumConfigurationFragment extends Fragment implements AlbumConfigu
     @BindView(R.id.album_conf_play_all)
     LinearLayout playAllLayout;
 
-    @Nullable
     @BindView(R.id.album_conf_play_all_button)
     ImageButton playAllButton;
 
@@ -192,10 +191,20 @@ public class AlbumConfigurationFragment extends Fragment implements AlbumConfigu
     @Override
     public void onStart() {
         super.onStart();
+
         DrawerLayout drawerLayout = getActivity().findViewById(R.id.drawer_layout);
         drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 
         presenter.attachView(this);
+
+        // Set current track
+        if (((MainActivity)getActivity()).getCurrentPlaylistName().equals(localPlaylistName)){
+
+            if (adapter != null){
+                adapter.setTrack(((MainActivity)getActivity()).getCurrentMediaId());
+                adapter.setPlaybackState(((MainActivity)getActivity()).getPlaybackState());
+            }
+        }
 
         // Initialize broadcast receiver
         receiver = new BroadcastReceiver() {
@@ -209,10 +218,9 @@ public class AlbumConfigurationFragment extends Fragment implements AlbumConfigu
                         String mediaId = intent.getStringExtra("media_id");
 
                         if (trackPlaylist.equals(localPlaylistName)) {
-                            try {
+
+                            if (adapter != null){
                                 adapter.setTrack(mediaId);
-                            }catch (NullPointerException e){
-                                e.printStackTrace();
                             }
                         }
 
@@ -270,6 +278,7 @@ public class AlbumConfigurationFragment extends Fragment implements AlbumConfigu
      coverDialogFragment.show(getActivity().getSupportFragmentManager(), "Album cover fragment");
     }
 
+    @Optional
     @OnClick(R.id.album_conf_play_all)
     void playAll(){
 
@@ -283,7 +292,6 @@ public class AlbumConfigurationFragment extends Fragment implements AlbumConfigu
         playAllDialogFragment.show(getActivity().getSupportFragmentManager(), "play_all_dialog_fragment");
     }
 
-    @Optional
     @OnClick(R.id.album_conf_play_all_button)
     void playAllButton(){
         playAll();

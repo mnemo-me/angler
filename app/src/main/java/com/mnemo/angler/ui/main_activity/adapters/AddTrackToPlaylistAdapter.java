@@ -55,7 +55,7 @@ public class AddTrackToPlaylistAdapter extends RecyclerView.Adapter<AddTrackToPl
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-        View view = LayoutInflater.from(context).inflate(R.layout.pm_playlist_v2_mod, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.pm_playlist_v2, parent, false);
 
         return new ViewHolder(view);
     }
@@ -64,8 +64,16 @@ public class AddTrackToPlaylistAdapter extends RecyclerView.Adapter<AddTrackToPl
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
         // Get playlist variables
-        String title = playlists.get(position).getTitle();
-        String cover = playlists.get(position).getCover();
+        String title;
+        String cover;
+
+        if (position == 0) {
+            title = context.getResources().getString(R.string.create_new_playlist);
+            cover = "R.drawable.back3";
+        }else{
+            title = playlists.get(position - 1).getTitle();
+            cover = playlists.get(position - 1).getCover();
+        }
 
         // Fill views
         holder.titleView.setText(title);
@@ -89,7 +97,7 @@ public class AddTrackToPlaylistAdapter extends RecyclerView.Adapter<AddTrackToPl
 
     @Override
     public int getItemCount() {
-        return playlists.size();
+        return playlists.size() + 1;
     }
 
     public void setOnAddTrackToPlaylistListener(OnAddTrackToPlaylistListener onAddTrackToPlaylistListener) {

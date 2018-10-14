@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -19,7 +18,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.mnemo.angler.data.database.Entities.Track;
-import com.mnemo.angler.player.AnglerService;
 import com.mnemo.angler.ui.main_activity.activity.MainActivity;
 import com.mnemo.angler.ui.main_activity.adapters.TrackAdapter;
 
@@ -28,10 +26,6 @@ import java.util.List;
 
 public class MainPlaylistFragment extends Fragment implements MainPlaylistView{
 
-
-    public MainPlaylistFragment() {
-        // Required empty public constructor
-    }
 
     MainPlaylistPresenter presenter;
 
@@ -46,17 +40,21 @@ public class MainPlaylistFragment extends Fragment implements MainPlaylistView{
 
     String filter = "";
 
+    public MainPlaylistFragment() {
+        // Required empty public constructor
+    }
+
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        // get orientation
+        // Get orientation
         orientation = getResources().getConfiguration().orientation;
 
-        // get filter
+        // Get filter
         filter = ((MainActivity)getActivity()).getFilter();
 
-        // configure recycler view
+        // Configure recycler view
         recyclerView = new RecyclerView(getContext());
 
         if (orientation == Configuration.ORIENTATION_PORTRAIT) {
@@ -77,20 +75,28 @@ public class MainPlaylistFragment extends Fragment implements MainPlaylistView{
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // bind Presenter to View
+        // Bind Presenter to View
         presenter = new MainPlaylistPresenter();
         presenter.attachView(this);
 
-        // load tracks
+        // Load tracks
         presenter.loadPlaylist(((MainActivity) getActivity()).getMainPlaylistName());
     }
 
-
     @Override
-    public void onResume() {
-        super.onResume();
+    public void onStart() {
+        super.onStart();
 
         presenter.attachView(this);
+
+        // Set current track
+        if (((MainActivity)getActivity()).getCurrentPlaylistName().equals(((MainActivity)getActivity()).getMainPlaylistName())) {
+
+            if (adapter != null) {
+                adapter.setTrack(((MainActivity) getActivity()).getCurrentMediaId());
+                adapter.setPlaybackState(((MainActivity)getActivity()).getPlaybackState());
+            }
+        }
 
         // Initialize broadcast receiver
         receiver = new BroadcastReceiver() {
@@ -104,10 +110,15 @@ public class MainPlaylistFragment extends Fragment implements MainPlaylistView{
                         String mediaId = intent.getStringExtra("media_id");
 
                         if (trackPlaylist.equals(((MainActivity)getActivity()).getMainPlaylistName())) {
-                            try {
+
+                            if (adapter != null) {
                                 adapter.setTrack(mediaId);
-                            }catch (NullPointerException e){
-                                e.printStackTrace();
+                            }
+
+                        }else{
+
+                            if (adapter != null){
+                                adapter.setTrack("");
                             }
                         }
 
@@ -140,12 +151,14 @@ public class MainPlaylistFragment extends Fragment implements MainPlaylistView{
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
+    public void onStop() {
+        super.onStop();
 
         presenter.deattachView();
         getContext().unregisterReceiver(receiver);
     }
+
+
 
 
     // MVP View methods
@@ -159,22 +172,11 @@ public class MainPlaylistFragment extends Fragment implements MainPlaylistView{
             adapter.setTrack(((MainActivity) getActivity()).getCurrentMediaId());
             adapter.setPlaybackState(((MainActivity) getActivity()).getPlaybackState());
         }
-
-        if (!AnglerService.isQueueInitialized) {
-            initializeQueue();
-        }
     }
 
     @Override
     public String getFilter() {
         return filter;
-    }
-
-    public void initializeQueue(){
-
-        /*
-        ((MainActivity)getActivity()).getAnglerClient().addToQueue(((MainActivity)getActivity()).getMainPlaylistName(), presenter.getTracks(), false);
-        AnglerService.isQueueInitialized = true;*/
     }
 
 }

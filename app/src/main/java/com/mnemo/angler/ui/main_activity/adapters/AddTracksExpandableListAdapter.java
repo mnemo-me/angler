@@ -7,10 +7,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.mnemo.angler.data.database.Entities.Track;
-import com.mnemo.angler.ui.main_activity.activity.MainActivity;
 import com.mnemo.angler.R;
 
 import java.util.ArrayList;
@@ -26,13 +26,20 @@ public class AddTracksExpandableListAdapter extends BaseExpandableListAdapter{
     private ArrayList<String> artistChecked;
     private ArrayList<String> mutedArtists;
     private ArrayList<Track> newTracks;
+    private boolean[] expandedGroups;
 
 
     private OnTrackCountChangeListener onTrackCountChangeListener;
+    private OnGroupExpandListener onGroupExpandListener;
 
     public interface OnTrackCountChangeListener{
 
         void onTrackCountChange();
+    }
+
+    public interface OnGroupExpandListener{
+
+        void onGroupExpand(int position, boolean isExpand);
     }
 
     public AddTracksExpandableListAdapter(Context context, HashMap<Track, Boolean> checkedTracks) {
@@ -115,10 +122,31 @@ public class AddTracksExpandableListAdapter extends BaseExpandableListAdapter{
     public View getGroupView(int i, boolean b, View view, ViewGroup viewGroup) {
 
         // Inflate artist view
-        LinearLayout linearLayout = (LinearLayout) LayoutInflater.from(context).inflate(R.layout.pm_add_track_d, viewGroup, false);
+        LinearLayout linearLayout = (LinearLayout) LayoutInflater.from(context).inflate(R.layout.pm_add_track_artist, viewGroup, false);
 
         // Get artist variable
         String artist = artists.get(i);
+
+        // Setup expand button
+        ImageView expandButton = linearLayout.findViewById(R.id.add_track_expand_button);
+
+        if (expandedGroups[i]){
+            expandButton.setImageResource(R.drawable.baseline_keyboard_arrow_down_white_18dp);
+        }else {
+            expandButton.setImageResource(R.drawable.baseline_keyboard_arrow_right_white_18dp);
+        }
+
+        expandButton.setOnClickListener(expView -> {
+
+            expandedGroups[i] = !expandedGroups[i];
+            onGroupExpandListener.onGroupExpand(i, expandedGroups[i]);
+
+            if (expandedGroups[i]){
+                expandButton.setImageResource(R.drawable.baseline_keyboard_arrow_down_white_18dp);
+            }else {
+                expandButton.setImageResource(R.drawable.baseline_keyboard_arrow_right_white_18dp);
+            }
+        });
 
         // Setup checkbox
         CheckBox checkBox = linearLayout.findViewById(R.id.add_track_artist);
@@ -144,7 +172,7 @@ public class AddTracksExpandableListAdapter extends BaseExpandableListAdapter{
 
                     for (Track track : checkedTracks.keySet()){
                         if (track.getArtist().equals(artist)){
-                            if (!newTracks.contains(track)){
+                            if (!newTracks.contains(track) && !checkedTracks.get(track)){
                                 newTracks.add(track);
                             }
                         }
@@ -175,15 +203,14 @@ public class AddTracksExpandableListAdapter extends BaseExpandableListAdapter{
     public View getChildView(int i, int i1, boolean b, View view, ViewGroup viewGroup) {
 
         // Inflate track view
-        LinearLayout linearLayout = (LinearLayout) LayoutInflater.from(context).inflate(R.layout.pm_add_track_d, viewGroup, false);
-        linearLayout.setPadding((int)(62 * MainActivity.density), 0, 0, 0);
+        LinearLayout linearLayout = (LinearLayout) LayoutInflater.from(context).inflate(R.layout.pm_add_track_title, viewGroup, false);
 
         // Get artist and track variables
         String artist = artists.get(i);
         Track track = (Track)getChild(i, i1);
 
         // Setup track checkbox
-        CheckBox checkBox = linearLayout.findViewById(R.id.add_track_artist);
+        CheckBox checkBox = linearLayout.findViewById(R.id.add_track_title);
         checkBox.setText(track.getTitle());
 
         // Set checked and muted for already added tracks
@@ -207,9 +234,11 @@ public class AddTracksExpandableListAdapter extends BaseExpandableListAdapter{
 
                     for (Track trackForCheck : checkedTracks.keySet()){
                         if (trackForCheck.getArtist().equals(artist)){
-                            if (!newTracks.contains(trackForCheck)){
-                                isArtistNeedToAddInList = false;
-                                break;
+
+                            if (!newTracks.contains(trackForCheck) && !checkedTracks.get(trackForCheck)) {
+
+                                    isArtistNeedToAddInList = false;
+                                    break;
                             }
                         }
                     }
@@ -264,14 +293,29 @@ public class AddTracksExpandableListAdapter extends BaseExpandableListAdapter{
 
     }
 
-    // Get tracks to add
+    // Getter and setter
     public ArrayList<Track> getNewTracks() {
         return newTracks;
     }
 
+    public void setNewTracks(ArrayList<Track> newTracks) {
+        this.newTracks = newTracks;
+    }
 
-    // Set track count changed listener
+    public boolean[] getExpandedGroups() {
+        return expandedGroups;
+    }
+
+    public void setExpandedGroups(boolean[] expandedGroups) {
+        this.expandedGroups = expandedGroups;
+    }
+
+    // Set listeners
     public void setOnTrackCountChangeListener(OnTrackCountChangeListener trackCountChangeListener) {
         this.onTrackCountChangeListener = trackCountChangeListener;
+    }
+
+    public void setOnGroupExpandListener(OnGroupExpandListener onGroupExpandListener) {
+        this.onGroupExpandListener = onGroupExpandListener;
     }
 }

@@ -30,7 +30,7 @@ public class QueueAdapter extends RecyclerView.Adapter<QueueAdapter.ViewHolder> 
     private Context context;
     private List<MediaSessionCompat.QueueItem> queue;
     private OnQueueRemovedListener onQueueRemovedListener;
-    private int queuePosition;
+    private int queuePosition = -1;
     private int playbackState = PlaybackStateCompat.STATE_PAUSED;
 
     static class ViewHolder extends RecyclerView.ViewHolder{
@@ -63,7 +63,6 @@ public class QueueAdapter extends RecyclerView.Adapter<QueueAdapter.ViewHolder> 
     QueueAdapter(Context context, List<MediaSessionCompat.QueueItem> queue) {
         this.context = context;
         this.queue = queue;
-        this.queuePosition = ((MainActivity)context).getAnglerClient().getQueuePosition();
     }
 
     public interface OnQueueRemovedListener{
@@ -151,7 +150,11 @@ public class QueueAdapter extends RecyclerView.Adapter<QueueAdapter.ViewHolder> 
     }
 
     void setQueuePosition(int queuePosition) {
-        this.queuePosition = queuePosition;
+
+        if (this.queuePosition != queuePosition) {
+            this.queuePosition = queuePosition;
+            notifyDataSetChanged();
+        }
     }
 
     @Override

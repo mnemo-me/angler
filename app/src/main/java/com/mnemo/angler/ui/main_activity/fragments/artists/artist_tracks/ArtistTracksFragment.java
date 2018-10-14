@@ -60,7 +60,7 @@ public class ArtistTracksFragment extends Fragment implements ArtistTracksView{
         if (orientation == Configuration.ORIENTATION_PORTRAIT){
             recyclerView.setPadding(0, (int)(16 * MainActivity.density), 0, (int)(8 * MainActivity.density));
         }else{
-            recyclerView.setPadding(0, (int)(12 * MainActivity.density), 0, (int)(8 * MainActivity.density));
+            recyclerView.setPadding(0, (int)(2 * MainActivity.density), 0, 0);
         }
         recyclerView.setClipToPadding(false);
 
@@ -94,6 +94,15 @@ public class ArtistTracksFragment extends Fragment implements ArtistTracksView{
 
         presenter.attachView(this);
 
+        // Set current track
+        if (((MainActivity)getActivity()).getCurrentPlaylistName().equals(localPlaylistName)){
+
+            if (adapter != null){
+                adapter.setTrack(((MainActivity)getActivity()).getCurrentMediaId());
+                adapter.setPlaybackState(((MainActivity)getActivity()).getPlaybackState());
+            }
+        }
+
         // Initialize broadcast receiver
         receiver = new BroadcastReceiver() {
             @Override
@@ -106,10 +115,9 @@ public class ArtistTracksFragment extends Fragment implements ArtistTracksView{
                         String mediaId = intent.getStringExtra("media_id");
 
                         if (trackPlaylist.equals(localPlaylistName)) {
-                            try {
+
+                            if (adapter != null){
                                 adapter.setTrack(mediaId);
-                            }catch (NullPointerException e){
-                                e.printStackTrace();
                             }
                         }
 

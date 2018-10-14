@@ -1,11 +1,10 @@
 package com.mnemo.angler.player;
 
 
-import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
+
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.support.annotation.NonNull;
@@ -17,11 +16,13 @@ import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
+import android.util.Log;
 
 import com.mnemo.angler.data.database.Entities.Track;
 import com.mnemo.angler.ui.main_activity.activity.MainActivity;
 import com.mnemo.angler.util.MediaAssistant;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class AnglerClient{
@@ -31,17 +32,12 @@ public class AnglerClient{
     private MediaControllerCompat mController;
 
     private String playlistQueue = "";
-    private int queuePosition = 0;
     private String queueFilter = "";
 
     private long durationMS;
 
     private Bundle serviceBundle;
 
-
-    // receiver
-    private BroadcastReceiver receiver;
-    private IntentFilter intentFilter;
 
     public AnglerClient(Context context, Bundle args) {
         this.context = context;
@@ -71,34 +67,14 @@ public class AnglerClient{
     public void connect(){
 
         mMediaBrowser.connect();
-
-        // Initialize broadcast receiver
-        receiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-
-                switch (intent.getAction()){
-                    case "queue_position_changed":
-
-                        queuePosition = intent.getIntExtra("queue_position", 0);
-
-                        break;
-                }
-
-            }
-        };
-
-        intentFilter = new IntentFilter();
-        intentFilter.addAction("queue_position_changed");
-
-        context.registerReceiver(receiver, intentFilter);
     }
 
     public void disconnect(){
 
-        mController.unregisterCallback(controllerCallback);
+        if (mController != null) {
+            mController.unregisterCallback(controllerCallback);
+        }
         mMediaBrowser.disconnect();
-        context.unregisterReceiver(receiver);
     }
 
     public void playPause(){
@@ -143,8 +119,8 @@ public class AnglerClient{
 
     }
 
-    public List<MediaSessionCompat.QueueItem> getQueue(){
-        return mController.getQueue();
+    public ArrayList<MediaSessionCompat.QueueItem> getQueue(){
+        return (ArrayList<MediaSessionCompat.QueueItem>)mController.getQueue();
     }
 
     public void addToQueue(String playlistName, List<Track> tracks, boolean isPlayNext){
@@ -198,6 +174,12 @@ public class AnglerClient{
         mController.getTransportControls().sendCustomAction("replace_queue_items", bundle);
     }
 
+    public int getQueuePosition() {
+
+        return (int) mController.getPlaybackState().getActiveQueueItemId();
+    }
+
+
     public void seekTo(int progress){
         mController.getTransportControls().seekTo(progress);
     }
@@ -221,7 +203,31 @@ public class AnglerClient{
     }
 
 
+    public void setEqualizer(boolean equalizerState){
 
+        Bundle extras = new Bundle();
+        extras.putBoolean("on_off_state", equalizerState);
+
+        mController.getTransportControls().sendCustomAction("equalizer_on_off", extras);
+    }
+
+    public void setEqualizerBandLevel(short band, short bandLevel){
+
+        Bundle extras = new Bundle();
+        extras.putShort("band_number", band);
+        extras.putShort("band_level", bandLevel);
+        Log.e("fdfdfdf", band + " " + bandLevel);
+
+        mController.getTransportControls().sendCustomAction("equalizer_change_band_level", extras);
+    }
+
+    public void setEqualizerPreset(short preset){
+
+        Bundle extras = new Bundle();
+        extras.putShort("preset_number", preset);
+
+        mController.getTransportControls().sendCustomAction("equalizer_change_preset", extras);
+    }
 
 
     // Media Browser client callbacks
@@ -248,23 +254,35 @@ public class AnglerClient{
                     showMetadata(metadata);
 
                     String mediaId = metadata.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID);
-/*
+
                     Intent idIntent = new Intent();
                     idIntent.setAction("track_changed");
-                    idIntent.putExtra("track_playlist", currentTrackPlaylist);
+                    idIntent.putExtra("track_playlist", ((MainActivity)context).getCurrentPlaylistName());
                     idIntent.putExtra("media_id", mediaId);
 
-                    context.sendBroadcast(idIntent);*/
+                    context.sendBroadcast(idIntent);
+
+                    Intent quIntent = new Intent();
+
+                    quIntent.setAction("queue_position_changed");
+                    quIntent.putExtra("queue_position", getQueuePosition());
+
+                    context.sendBroadcast(quIntent);
 
 
                     int playbackState = mController.getPlaybackState().getState();
-/*
+
                     Intent pbIntent = new Intent();
                     pbIntent.setAction("playback_state_changed");
                     pbIntent.putExtra("playback_state", playbackState);
 
-                    context.sendBroadcast(pbIntent);*/
+                    context.sendBroadcast(pbIntent);
+                }
 
+                // Initialize queue
+                if (!AnglerService.isQueueInitialized){
+                    ((MainActivity)context).initializeQueue();
+                    AnglerService.isQueueInitialized = true;
                 }
 
             }catch (RemoteException e){
@@ -307,16 +325,8 @@ public class AnglerClient{
             context.sendBroadcast(intent);
 
             showMetadata(metadata);
-            //configureTrackButtons(metadata);
-
-
         }
 
-        @Override
-        public void onQueueChanged(List<MediaSessionCompat.QueueItem> queue) {
-            super.onQueueChanged(queue);
-
-        }
     };
 
 
@@ -338,11 +348,6 @@ public class AnglerClient{
 
 
     // getters/setters
-    public int getQueuePosition() {
-        return queuePosition;
-    }
-
-
     public long getDurationMS() {
         return durationMS;
     }
@@ -353,7 +358,6 @@ public class AnglerClient{
         if (bundle != null) {
             playlistQueue = bundle.getString("playlist_queue");
             queueFilter = bundle.getString("queue_filter");
-            queuePosition = bundle.getInt("queue_position");
             serviceBundle = bundle.getBundle("service_bundle");
         }
     }
@@ -363,7 +367,6 @@ public class AnglerClient{
         Bundle bundle = new Bundle();
         bundle.putString("playlist_queue", playlistQueue);
         bundle.putString("queue_filter", queueFilter);
-        bundle.putInt("queue_position", queuePosition);
         bundle.putBundle("service_bundle", serviceBundle);
 
         return bundle;

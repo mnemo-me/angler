@@ -10,6 +10,9 @@ import com.mnemo.angler.ui.main_activity.fragments.artists.artist_tracks.ArtistT
 import com.mnemo.angler.ui.main_activity.fragments.artists.artists.ArtistsPresenter;
 import com.mnemo.angler.ui.main_activity.fragments.artists.artist_configuration.ArtistConfigurationPresenter;
 import com.mnemo.angler.ui.main_activity.fragments.background_changer.background_changer.BackgroundChangerPresenter;
+import com.mnemo.angler.ui.main_activity.fragments.equalizer.audio_effects.AudioEffectsPresenter;
+import com.mnemo.angler.ui.main_activity.fragments.equalizer.bands.BandsPresenter;
+import com.mnemo.angler.ui.main_activity.fragments.equalizer.equalizer.EqualizerPresenter;
 import com.mnemo.angler.ui.main_activity.fragments.music_player.artist_tracks.PlaylistArtistTracksPresenter;
 import com.mnemo.angler.ui.main_activity.fragments.music_player.artists.PlaylistArtistsPresenter;
 import com.mnemo.angler.ui.main_activity.fragments.music_player.main_playlist.MainPlaylistPresenter;
@@ -55,9 +58,13 @@ public interface AnglerComponent {
     void injectArtistAlbumsPresenter(ArtistAlbumsPresenter artistAlbumsPresenter);
     void injectArtistBioPresenter(ArtistBioPresenter artistBioPresenter);
 
-    void injectAddTrackToPlaylistPresenter(AddTrackToPlaylistPresenter addTrackToPlaylistPresenter);
-    void injectContextualMenuPresenter(ContextualMenuPresenter contextualMenuPresenter);
+    void injectEqualizerPresenter(EqualizerPresenter equalizerPresenter);
+    void injectBandsPresenter(BandsPresenter bandsPresenter);
+    void injectAudioEffectsPresenter(AudioEffectsPresenter audioEffectsPresenter);
 
     void injectBackgroundChangerPresenter(BackgroundChangerPresenter backgroundChangerPresenter);
+
+    void injectAddTrackToPlaylistPresenter(AddTrackToPlaylistPresenter addTrackToPlaylistPresenter);
+    void injectContextualMenuPresenter(ContextualMenuPresenter contextualMenuPresenter);
 
 }

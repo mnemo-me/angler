@@ -12,7 +12,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.RemoteException;
-import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaControllerCompat;
@@ -80,6 +79,7 @@ class AnglerNotificationManager {
                         transportControls.pause();
                         break;
                     case ACTION_STOP:
+                        context.unregisterReceiver(noiseReceiver);
                         transportControls.stop();
                         break;
                     case ACTION_NEXT:
@@ -104,6 +104,12 @@ class AnglerNotificationManager {
         intentFilter.addAction(ACTION_PREV);
 
         /*
+        Registering Broadcast Receiver with Intent Filter
+         */
+        anglerService.registerReceiver(noiseReceiver, intentFilter);
+
+
+        /*
         Creating new Notification Channel
          */
         createNotificationChannel();
@@ -120,11 +126,6 @@ class AnglerNotificationManager {
     Creating new Notification
      */
     void createNotification(){
-
-        /*
-        Registering Broadcast Receiver with Intent Filter
-         */
-        anglerService.registerReceiver(noiseReceiver, intentFilter);
 
         /*
         Get metadata via Media Controller
@@ -181,21 +182,8 @@ class AnglerNotificationManager {
 
         // Bind Notification with Angler Service
         anglerService.startForeground(191, mBuilder.build());
-
-
-        // register Notification Callback
-        mediaController.registerCallback(notificationCallback);
     }
 
-
-    // Unregister receiver and callback
-    void unregisterCallback(){
-        mediaController.unregisterCallback(notificationCallback);
-    }
-
-    void unregisterReceiver(){
-        anglerService.unregisterReceiver(noiseReceiver);
-    }
 
     /*
     Creating Notification Channel
@@ -212,20 +200,5 @@ class AnglerNotificationManager {
         mNotificationManager.createNotificationChannel(mNotificationChannel);
     }
 
-    /*
-    Notification callbacks recreating Notification on playback state change
-     */
-    private MediaControllerCompat.Callback notificationCallback = new MediaControllerCompat.Callback() {
-        @Override
-        public void onPlaybackStateChanged(PlaybackStateCompat state) {
-            super.onPlaybackStateChanged(state);
-            createNotification();
-        }
-
-        @Override
-        public void onMetadataChanged(@Nullable MediaMetadataCompat metadata) {
-            super.onMetadataChanged(metadata);
-        }
-    };
 
 }

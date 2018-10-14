@@ -1,16 +1,14 @@
-package com.mnemo.angler.ui.main_activity.fragments.equalizer;
+package com.mnemo.angler.ui.main_activity.fragments.equalizer.bands;
 
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v4.media.session.MediaControllerCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,21 +17,24 @@ import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.Spinner;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import com.mnemo.angler.ui.main_activity.activity.MainActivity;
 import com.mnemo.angler.R;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 
-public class BandsFragment extends Fragment {
+public class BandsFragment extends Fragment implements BandsView {
 
+    BandsPresenter presenter;
+
+    Unbinder unbinder;
 
     @BindView(R.id.bands_layout)
     LinearLayout bandsLayout;
@@ -41,17 +42,15 @@ public class BandsFragment extends Fragment {
     @BindView(R.id.bands_spinner)
     Spinner presetsSpinner;
 
-    Unbinder unbinder;
-
+    // Equalizer bands variables;
     private short lowerEqualizerBandLevel;
     private short upperEqualizerBandLevel;
 
     private ArrayList<Integer> bandsFrequencies;
     private ArrayList<String> equalizerPresets;
 
-    private BroadcastReceiver receiver;
 
-    SharedPreferences sharedPreferences;
+    private BroadcastReceiver receiver;
 
     public BandsFragment() {
         // Required empty public constructor
@@ -64,9 +63,15 @@ public class BandsFragment extends Fragment {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.eq_fragment_bands, container, false);
 
+        // Get equalizerOnOffState
+        boolean equalizerOnOffState = getArguments().getBoolean("equalizer_on_off_state");
+
+        // Inject views
         unbinder = ButterKnife.bind(this, view);
 
-        sharedPreferences =  getActivity().getSharedPreferences("equalizer_pref", Context.MODE_PRIVATE);
+        // Bind Presenter to View
+        presenter = new BandsPresenter();
+        presenter.attachView(this);
 
         // Get equalizer parameters from service
         Bundle bundle = ((MainActivity)getActivity()).getAnglerClient().getServiceBundle();
@@ -79,46 +84,40 @@ public class BandsFragment extends Fragment {
             equalizerPresets.add(0, getResources().getString(R.string.custom));
         }
 
-        boolean equalizerOnOffState = ((Switch)getActivity().findViewById(R.id.equalizer_on_off)).isChecked();
 
-        // create bands
+        // Get bands level
+        List<Short> bandsLevel = presenter.getBandsLevel(bandsFrequencies.size());
+
+        // Create bands
         for (int i = 0; i < bandsFrequencies.size(); i++){
 
-            final short bandNumber = (short)i;
-            int bandLevel = sharedPreferences.getInt("band_" + i + "_level", 0);
+            short band = (short) i;
 
             LinearLayout bandLayout = (LinearLayout) LayoutInflater.from(getContext()).inflate(R.layout.eq_band, bandsLayout, false);
 
-            final TextView bandLevelView = bandLayout.findViewById(R.id.band_level);
+            // Initialize band level view
+            TextView bandLevelView = bandLayout.findViewById(R.id.band_level);
 
-            if (bandLevel / 100 > 0) {
-                bandLevelView.setText("+" + bandLevel / 100 + " db");
-            }else {
-                bandLevelView.setText(bandLevel / 100 + " db");
-            }
-
+            // Setup band SeekBar
             SeekBar seekBar = bandLayout.findViewById(R.id.band_band);
             seekBar.setId(i);
             seekBar.setMax(upperEqualizerBandLevel - lowerEqualizerBandLevel);
-            seekBar.setProgress(bandLevel - lowerEqualizerBandLevel);
+            seekBar.setProgress(bandsLevel.get(i) - lowerEqualizerBandLevel);
             seekBar.setEnabled(equalizerOnOffState);
 
             seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                 @Override
                 public void onProgressChanged(SeekBar seekBar, int progress, boolean b) {
 
-                    if ((progress + lowerEqualizerBandLevel)/100 > 0) {
+                    if ((progress + lowerEqualizerBandLevel) / 100 > 0) {
                         bandLevelView.setText("+" + (progress + lowerEqualizerBandLevel) / 100 + " db");
                     }else{
                         bandLevelView.setText((progress + lowerEqualizerBandLevel) / 100 + " db");
                     }
 
                     if (b) {
-                        Bundle extras = new Bundle();
-                        extras.putShort("band_number", bandNumber);
-                        extras.putShort("band_level", (short)(progress + lowerEqualizerBandLevel));
 
-                        MediaControllerCompat.getMediaController(getActivity()).getTransportControls().sendCustomAction("equalizer_change_band_level", extras);
+                        ((MainActivity)getActivity()).getAnglerClient().setEqualizerBandLevel(band, (short)(progress + lowerEqualizerBandLevel));
                     }
 
                     if (b) {
@@ -138,13 +137,52 @@ public class BandsFragment extends Fragment {
                 }
             });
 
+            // Setup frequency view
             TextView frequencyView = bandLayout.findViewById(R.id.band_frequency);
             frequencyView.setText(bandsFrequencies.get(i) / 1000 + " Hz");
 
-
+            // Add band to bands layout
             bandsLayout.addView(bandLayout);
         }
 
+
+        // Setup spinner with array adapter
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), R.layout.mp_playlist_spinner_item, R.id.playlist_spinner_item_title, equalizerPresets);
+        adapter.setDropDownViewResource(R.layout.mp_playlist_spinner_dropdown_item);
+        presetsSpinner.setAdapter(adapter);
+        presetsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+                if (i != 0) {
+
+                    try {
+                        ((MainActivity)getActivity()).getAnglerClient().setEqualizerPreset((short) (i - 1));
+                    }catch (NullPointerException e){
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        // Get preset
+        int preset = presenter.getEqualizerPreset();
+        presetsSpinner.setSelection(preset);
+
+        return view;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        presenter.attachView(this);
 
         // Initialize broadcast receiver
         receiver = new BroadcastReceiver() {
@@ -167,10 +205,11 @@ public class BandsFragment extends Fragment {
 
                     case "equalizer_preset_changed":
 
-                        for (short i = 0; i < bandsFrequencies.size(); i++){
+                        List<Integer> bandsLevel = intent.getIntegerArrayListExtra("bands_level");
 
-                            short bandLevel = intent.getExtras().getShort("band_" + i + "_level");
-                            ((SeekBar)getView().findViewById(i)).setProgress(bandLevel - lowerEqualizerBandLevel, true);
+                        for (short i = 0; i < bandsLevel.size(); i++){
+
+                            ((SeekBar)getView().findViewById(i)).setProgress(bandsLevel.get(i) - lowerEqualizerBandLevel, true);
                         }
 
                         break;
@@ -183,54 +222,33 @@ public class BandsFragment extends Fragment {
         intentFilter.addAction("equalizer_preset_changed");
 
         getContext().registerReceiver(receiver, intentFilter);
-
-
-
-        // Setup spinner with array adapter
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), R.layout.mp_playlist_spinner_item, R.id.playlist_spinner_item_title, equalizerPresets);
-        adapter.setDropDownViewResource(R.layout.mp_playlist_spinner_dropdown_item);
-        presetsSpinner.setAdapter(adapter);
-        presetsSpinner.setSelection(sharedPreferences.getInt("active_preset", 0));
-        presetsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-
-                if (i != 0) {
-                    Bundle extras = new Bundle();
-                    extras.putShort("preset_number", (short) (i - 1));
-
-                    try {
-                        MediaControllerCompat.getMediaController(getActivity()).getTransportControls().sendCustomAction("equalizer_change_preset", extras);
-                    }catch (NullPointerException e){
-                        e.printStackTrace();
-                    }
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-
-        return view;
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        getContext().unregisterReceiver(receiver);
+        presenter.deattachView();
+    }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
 
-        sharedPreferences.edit()
-                .putInt("active_preset", presetsSpinner.getSelectedItemPosition())
-                .apply();
+        // Save preset
+        presenter.saveEqualizerPreset(presetsSpinner.getSelectedItemPosition());
 
-        for (short i = 0; i < bandsFrequencies.size(); i++){
-            sharedPreferences.edit().putInt("band_" + i + "_level", ((SeekBar)getView().findViewById(i)).getProgress() + lowerEqualizerBandLevel).apply();
+        // Save bands
+        List<Short> bandsLevel = new ArrayList<>();
+
+        for (int i = 0; i < bandsFrequencies.size(); i++){
+            short level = (short)(((SeekBar)getView().findViewById(i)).getProgress() + lowerEqualizerBandLevel);
+            bandsLevel.add(level);
         }
 
-        getContext().unregisterReceiver(receiver);
+        presenter.saveBandsLevel(bandsLevel);
+
         unbinder.unbind();
     }
 

@@ -34,8 +34,8 @@ public class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.ViewHolder>{
     private String type;
     private String playlist;
     private List<Track> tracks;
-    private String selectedTrackId = null;
-    private int playbackState = PlaybackStateCompat.STATE_PAUSED;
+    private String selectedTrackId = "";
+    private int playbackState = PlaybackStateCompat.STATE_STOPPED;
 
     private boolean isHeaderAttach = false;
     private int HEADER_VIEW_TYPE = 0;
@@ -150,7 +150,7 @@ public class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.ViewHolder>{
             ((TrackViewHolder)holder).durationView.setText(MediaAssistant.convertToTime(duration));
 
             // Set selection items visibility
-            if (id.equals(selectedTrackId)) {
+            if (id.equals(selectedTrackId) && playbackState != PlaybackStateCompat.STATE_STOPPED) {
                 holder.itemView.setSelected(true);
                 ((TrackViewHolder)holder).equalizerView.setVisibility(View.VISIBLE);
                 ((TrackViewHolder)holder).durationView.setVisibility(View.GONE);
@@ -191,7 +191,7 @@ public class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.ViewHolder>{
                 args.putString("playlist", playlist);
                 args.putString("album_cover", albumCover);
                 args.putParcelable("track", track);
-                args.putParcelableArrayList("tracks", (ArrayList) tracks);
+                args.putParcelableArrayList("tracks", (ArrayList<Track>) tracks);
                 contextualMenuDialogFragment.setArguments(args);
 
                 contextualMenuDialogFragment.show(((MainActivity)context).getSupportFragmentManager(), "contextual_menu_dialog_fragment");
@@ -213,10 +213,10 @@ public class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.ViewHolder>{
     }
 
     public void setTrack(String trackId) {
-        this.selectedTrackId = trackId;
-        notifyDataSetChanged();
-
-
+        if (!selectedTrackId.equals(trackId)) {
+            this.selectedTrackId = trackId;
+            notifyDataSetChanged();
+        }
     }
 
     @Override

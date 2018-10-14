@@ -39,9 +39,9 @@ import com.mnemo.angler.R;
 import com.mnemo.angler.player.queue.QueueDialogFragment;
 import com.mnemo.angler.util.ImageAssistant;
 import com.mnemo.angler.util.MediaAssistant;
-import com.mnemo.angler.ui.main_activity.fragments.equalizer.EqualizerFragment;
+import com.mnemo.angler.ui.main_activity.fragments.equalizer.equalizer.EqualizerFragment;
 
-import com.mnemo.angler.ui.main_activity.fragments.music_player.artist_tracks.PlaylistPlaylistArtistTracksFragment;
+import com.mnemo.angler.ui.main_activity.fragments.music_player.artist_tracks.PlaylistArtistTracksFragment;
 import com.mnemo.angler.ui.main_activity.misc.add_track_to_playlist.AddTrackToPlaylistDialogFragment;
 import com.mnemo.angler.ui.main_activity.fragments.playlists.playlists.PlaylistsFragment;
 
@@ -232,7 +232,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
 
         if (drawer.isDrawerOpen(Gravity.START)) {
             drawer.closeDrawer(Gravity.START);
-        } else if (backStackCount == 1 || (backStackCount == 2 && getSupportFragmentManager().findFragmentById(R.id.song_list) instanceof PlaylistPlaylistArtistTracksFragment)) {
+        } else if (backStackCount == 1 || (backStackCount == 2 && getSupportFragmentManager().findFragmentById(R.id.song_list) instanceof PlaylistArtistTracksFragment)) {
             findViewById(R.id.main_frame).setVisibility(View.VISIBLE);
 
             super.onBackPressed();
@@ -297,6 +297,17 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
         }
     }
 
+    // Set queue on app start
+    @Override
+    public void setQueue(List<Track> tracks) {
+        getAnglerClient().addToQueue("library", tracks, false);
+    }
+
+
+    // Initialize queue
+    public void initializeQueue(){
+        presenter.initializeQueue();
+    }
 
 
 

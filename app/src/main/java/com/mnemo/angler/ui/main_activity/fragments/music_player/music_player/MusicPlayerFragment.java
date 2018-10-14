@@ -25,7 +25,7 @@ import android.widget.Spinner;
 
 import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.jakewharton.rxbinding2.widget.TextViewAfterTextChangeEvent;
-import com.mnemo.angler.ui.main_activity.fragments.music_player.artist_tracks.PlaylistPlaylistArtistTracksFragment;
+import com.mnemo.angler.ui.main_activity.fragments.music_player.artist_tracks.PlaylistArtistTracksFragment;
 import com.mnemo.angler.ui.main_activity.fragments.music_player.artists.PlaylistArtistsFragment;
 import com.mnemo.angler.ui.main_activity.fragments.music_player.main_playlist.MainPlaylistFragment;
 import com.mnemo.angler.ui.main_activity.activity.MainActivity;
@@ -87,30 +87,19 @@ public class MusicPlayerFragment extends Fragment implements MusicPlayerView {
 
         View view = inflater.inflate(R.layout.mp_fragment_music_player, container, false);
 
+        // Get orientation
         orientation = getResources().getConfiguration().orientation;
 
-        // inject views
+        // Inject views
         unbinder = ButterKnife.bind(this, view);
 
-        return view;
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        // restore visibility of fragments
+        // Restore visibility of fragments
         if (savedInstanceState != null) {
             fragmentOnTop = savedInstanceState.getString("fragment_on_top");
             artistSelected = savedInstanceState.getString("artist_selected");
         }
 
-        // bind Presenter to View
-        presenter = new MusicPlayerPresenter();
-        presenter.attachView(this);
-
-
-        // configure playlist spinner with adapter
+        // Configure playlist spinner with adapter
         adapter = new ArrayAdapter(getContext(), R.layout.mp_playlist_spinner_item, R.id.playlist_spinner_item_title);
         spinner.setAdapter(adapter);
         adapter.setDropDownViewResource(R.layout.mp_playlist_spinner_dropdown_item);
@@ -136,12 +125,24 @@ public class MusicPlayerFragment extends Fragment implements MusicPlayerView {
         });
 
 
-        presenter.loadPlaylists();
-
-        // configure search toolbar
+        // Configure search toolbar
         configureSearchToolbar();
         restoreSearchBarVisibility(savedInstanceState);
 
+
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        // Bind Presenter to View
+        presenter = new MusicPlayerPresenter();
+        presenter.attachView(this);
+
+        // Load playlists
+        presenter.loadPlaylists();
     }
 
     @Override
@@ -189,7 +190,7 @@ public class MusicPlayerFragment extends Fragment implements MusicPlayerView {
 
 
 
-    // show playlist
+    // Show playlist
     public void showLibrary(){
 
         playlist.setAlpha(1f);
@@ -237,10 +238,10 @@ public class MusicPlayerFragment extends Fragment implements MusicPlayerView {
 
         if (orientation == Configuration.ORIENTATION_PORTRAIT) {
 
-            // open artists or artist tracks fragment
+            // Open artists or artist tracks fragment
             if (artistSelected != null) {
 
-                PlaylistPlaylistArtistTracksFragment playlistArtistTracksFragment = new PlaylistPlaylistArtistTracksFragment();
+                PlaylistArtistTracksFragment playlistArtistTracksFragment = new PlaylistArtistTracksFragment();
 
                 Bundle args = new Bundle();
                 args.putString("artist", artistSelected);
@@ -258,7 +259,7 @@ public class MusicPlayerFragment extends Fragment implements MusicPlayerView {
             }
         }else{
 
-            // remove playlist fragment
+            // Remove playlist fragment
             Fragment playlistFragment = getChildFragmentManager().findFragmentById(R.id.song_list);
 
             FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
@@ -267,24 +268,24 @@ public class MusicPlayerFragment extends Fragment implements MusicPlayerView {
                 transaction.remove(playlistFragment);
             }
 
-            // remove artist track fragment
+            // Remove artist track fragment
             Fragment artistTrackFragment = getChildFragmentManager().findFragmentById(R.id.artist_song_list);
 
             if (artistTrackFragment != null){
                 transaction.remove(artistTrackFragment);
             }
 
-            // open artists fragment
+            // Open artists fragment
             transaction.replace(R.id.artist_list, new PlaylistArtistsFragment(), "artists_fragment");
             transaction.commit();
 
-            // show separator
+            // Show separator
             separator.setVisibility(View.VISIBLE);
 
-            // open artist track fragment
+            // Open artist track fragment
             if (artistSelected != null){
 
-                PlaylistPlaylistArtistTracksFragment playlistArtistTracksFragment = new PlaylistPlaylistArtistTracksFragment();
+                PlaylistArtistTracksFragment playlistArtistTracksFragment = new PlaylistArtistTracksFragment();
 
                 Bundle args = new Bundle();
                 args.putString("artist", artistSelected);
@@ -301,7 +302,7 @@ public class MusicPlayerFragment extends Fragment implements MusicPlayerView {
     }
 
 
-    // set listeners
+    // Set listeners
     @OnClick(R.id.playlist)
     void showPlaylist(){
 
@@ -324,10 +325,10 @@ public class MusicPlayerFragment extends Fragment implements MusicPlayerView {
     }
 
 
-    // configure search toolbar
+    // Configure search toolbar
     private void configureSearchToolbar(){
 
-        // set listener
+        // Set listener
         search.setOnClickListener(view -> {
 
             if (searchView.getVisibility() == View.GONE) {
@@ -344,10 +345,10 @@ public class MusicPlayerFragment extends Fragment implements MusicPlayerView {
 
         });
 
-        // customize search toolbar
+        // Customize search toolbar
         EditText editText = (searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text));
 
-        // change text color in EditText programmatically
+        // Change text color in EditText programmatically
         editText.setHintTextColor(getResources().getColor(R.color.gGrey));
         editText.setTextColor(getResources().getColor(android.R.color.white));
 
@@ -362,7 +363,7 @@ public class MusicPlayerFragment extends Fragment implements MusicPlayerView {
         });
 
 
-        // create observer on after text changes events
+        // Create observer on after text changes events
         Observer<TextViewAfterTextChangeEvent> observer = new Observer<TextViewAfterTextChangeEvent>() {
 
             @Override
@@ -396,7 +397,7 @@ public class MusicPlayerFragment extends Fragment implements MusicPlayerView {
         };
 
 
-        // create observable with text changes events
+        // Create observable with text changes events
         RxTextView.afterTextChangeEvents(editText)
                 .skipInitialValue()
                 .debounce(300, TimeUnit.MILLISECONDS)
@@ -405,7 +406,7 @@ public class MusicPlayerFragment extends Fragment implements MusicPlayerView {
                 .subscribe(observer);
     }
 
-    // restore visibility of search toolbar
+    // Restore visibility of search toolbar
     private void restoreSearchBarVisibility(Bundle savedInstanceState){
 
         if (savedInstanceState != null){
