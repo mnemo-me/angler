@@ -2,6 +2,11 @@ package com.mnemo.angler;
 
 import com.mnemo.angler.data.AnglerRepository;
 import com.mnemo.angler.data.RepositoryModule;
+import com.mnemo.angler.ui.local_load_activity.activity.LocalLoadPresenter;
+import com.mnemo.angler.ui.local_load_activity.fragments.cover_crop.CoverCropPresenter;
+import com.mnemo.angler.ui.local_load_activity.fragments.image_folder.ImageFolderPresenter;
+import com.mnemo.angler.ui.local_load_activity.fragments.landscape_crop.LandscapeCropPresenter;
+import com.mnemo.angler.ui.local_load_activity.fragments.portrait_crop.PortraitCropPresenter;
 import com.mnemo.angler.ui.main_activity.fragments.albums.album_configuration.AlbumConfigurationPresenter;
 import com.mnemo.angler.ui.main_activity.fragments.albums.albums.AlbumsPresenter;
 import com.mnemo.angler.ui.main_activity.fragments.artists.artist_albums.ArtistAlbumsPresenter;
@@ -34,37 +39,52 @@ import dagger.Component;
 @Component(modules = {RepositoryModule.class})
 public interface AnglerComponent {
 
+    // Repository
     void injectAnglerRepository(AnglerRepository anglerRepository);
 
+    // Main activity
     void injectMainActivityPresenter(MainActivityPresenter mainActivityPresenter);
 
+    // Music player
     void injectMusicPlayerPresenter(MusicPlayerPresenter musicPlayerPresenter);
     void injectMainPlaylistPresenter(MainPlaylistPresenter mainPlaylistPresenter);
     void injectPlaylistArtistsPresenter(PlaylistArtistsPresenter playlistArtistsPresenter);
     void injectPlaylistArtistTracksPresenter(PlaylistArtistTracksPresenter playlistArtistTracksPresenter);
 
+    // Playlists
     void injectPlaylistsPresenter(PlaylistsPresenter playlistsPresenter);
     void injectPlaylistCreatePresenter(PlaylistCreatePresenter playlistCreatePresenter);
     void injectPlaylistConfigurationPresenter(PlaylistConfigurationPresenter playlistConfigurationPresenter);
     void injectAddTracksPresenter(AddTracksPresenter addTracksPresenter);
     void injectPlaylistDeletePresenter(PlaylistDeletePresenter playlistDeletePresenter);
 
+    // Albums
     void injectAlbumsPresenter(AlbumsPresenter albumsPresenter);
     void injectAlbumConfigurationPresenter(AlbumConfigurationPresenter albumConfigurationPresenter);
 
+    // Artists
     void injectArtistsPresenter(ArtistsPresenter artistsPresenter);
     void injectArtistConfigurationPresenter(ArtistConfigurationPresenter artistConfigurationPresenter);
     void injectArtistTracksPresenter(ArtistTracksPresenter artistTracksPresenter);
     void injectArtistAlbumsPresenter(ArtistAlbumsPresenter artistAlbumsPresenter);
     void injectArtistBioPresenter(ArtistBioPresenter artistBioPresenter);
 
+    // Equalizer
     void injectEqualizerPresenter(EqualizerPresenter equalizerPresenter);
     void injectBandsPresenter(BandsPresenter bandsPresenter);
     void injectAudioEffectsPresenter(AudioEffectsPresenter audioEffectsPresenter);
 
+    // Background
     void injectBackgroundChangerPresenter(BackgroundChangerPresenter backgroundChangerPresenter);
 
+    // Miscellaneous
     void injectAddTrackToPlaylistPresenter(AddTrackToPlaylistPresenter addTrackToPlaylistPresenter);
     void injectContextualMenuPresenter(ContextualMenuPresenter contextualMenuPresenter);
 
+    // Local load activity
+    void injectLocalLoadPresenter(LocalLoadPresenter localLoadPresenter);
+    void injectImageFolderPresenter(ImageFolderPresenter imageFolderPresenter);
+    void injectPortraitCropPresenter(PortraitCropPresenter portraitCropPresenter);
+    void injectLandscapeCropPresenter(LandscapeCropPresenter landscapeCropPresenter);
+    void injectCoverCropPresenter(CoverCropPresenter coverCropPresenter);
 }

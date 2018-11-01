@@ -1,4 +1,4 @@
-package com.mnemo.angler.ui.local_load_activity.fragments;
+package com.mnemo.angler.ui.local_load_activity.fragments.image_carousel;
 
 
 import android.os.Bundle;
@@ -13,17 +13,22 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.mnemo.angler.R;
+import com.mnemo.angler.ui.local_load_activity.activity.LocalLoadActivity;
 import com.mnemo.angler.ui.local_load_activity.adapters.ImageCarouselAdapter;
+import com.mnemo.angler.ui.local_load_activity.fragments.cover_crop.CoverCropFragment;
+import com.mnemo.angler.ui.local_load_activity.fragments.portrait_crop.PortraitCropFragment;
 
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 
 
 public class ImageCarouselFragment extends Fragment {
 
+    Unbinder unbinder;
 
     @BindView(R.id.image_carousel_tab)
     TabLayout tabLayout;
@@ -31,7 +36,8 @@ public class ImageCarouselFragment extends Fragment {
     @BindView(R.id.image_carousel_view_pager)
     ViewPager viewPager;
 
-    Unbinder unbinder;
+    ArrayList<String> images;
+    String image;
 
     public ImageCarouselFragment() {
         // Required empty public constructor
@@ -44,6 +50,7 @@ public class ImageCarouselFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.ll_fragment_image_carousel, container, false);
 
+        // Inject views
         unbinder = ButterKnife.bind(this, view);
 
         /*
@@ -53,9 +60,8 @@ public class ImageCarouselFragment extends Fragment {
         imageType - tag to recognize starter fragment
         */
         Bundle args = getArguments();
-        ArrayList<String> images = args.getStringArrayList("images");
-        String image = args.getString("image");
-
+        images = args.getStringArrayList("images");
+        image = args.getString("image");
 
 
         // Bind TabLayout with ViewPager
@@ -63,16 +69,6 @@ public class ImageCarouselFragment extends Fragment {
         tabLayout.setupWithViewPager(viewPager);
 
         tabLayout.getTabAt(images.indexOf(image)).select();
-
-        // Image appear animation
-        viewPager.setScaleX(0f);
-        viewPager.setScaleY(0f);
-        viewPager.setAlpha(0f);
-
-        viewPager.animate()
-                .scaleX(1f)
-                .scaleY(1f)
-                .alpha(1f);
 
 
         // Show toast with navigation advice
@@ -84,6 +80,48 @@ public class ImageCarouselFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+
         unbinder.unbind();
+    }
+
+    // Setup select button
+    @OnClick(R.id.image_carousel_select)
+    void imageSelect(){
+
+        Bundle args = new Bundle();
+        args.putString("image", images.get(tabLayout.getSelectedTabPosition()));
+
+        String imageType = ((LocalLoadActivity)getActivity()).getImageType();
+
+        switch (imageType){
+
+            case "background":
+
+                PortraitCropFragment portraitCropFragment = new PortraitCropFragment();
+                portraitCropFragment.setArguments(args);
+
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .add(R.id.full_frame, portraitCropFragment)
+                        .addToBackStack(null)
+                        .commit();
+                break;
+
+            case "cover":
+
+                CoverCropFragment coverCropFragment = new CoverCropFragment();
+                coverCropFragment.setArguments(args);
+
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .add(R.id.full_frame, coverCropFragment)
+                        .addToBackStack(null)
+                        .commit();
+                break;
+        }
+    }
+
+    // Setup hide button
+    @OnClick(R.id.image_carousel_close)
+    void imageHide(){
+        getActivity().onBackPressed();
     }
 }

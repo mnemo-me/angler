@@ -17,7 +17,7 @@
 
     <CheckBox
         android:id="@+id/add_track_artist"
-        android:theme="@style/checkBoxStyle"
+        android:theme="@style/check_box_style"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingStart="8dp"

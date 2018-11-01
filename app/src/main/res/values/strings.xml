@@ -103,5 +103,8 @@
     <string name="created">created</string>
     <string name="bio">bio</string>
     <string name="refresh_artists_images">Refresh artists images</string>
+    <string name="portrait_crop">Portrait crop</string>
+    <string name="landscape_crop">Landscape crop</string>
+    <string name="image_crop">Image crop</string>
 
 </resources>

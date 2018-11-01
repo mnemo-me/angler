@@ -11,8 +11,8 @@
     app:cardBackgroundColor="@android:color/transparent">
 
     <android.support.constraint.ConstraintLayout
-        android:layout_width="100dp"
-        android:layout_height="120dp"
+        android:layout_width="120dp"
+        android:layout_height="138dp"
         android:background="@drawable/white_frame">
 
         <ImageView

@@ -10,7 +10,7 @@
 
     <CheckBox
         android:id="@+id/add_track_title"
-        android:theme="@style/checkBoxStyle"
+        android:theme="@style/check_box_style"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="48dp"

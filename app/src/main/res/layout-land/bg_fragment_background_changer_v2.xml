@@ -10,6 +10,7 @@
         android:id="@+id/overlay_background"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="48dp"
         android:contentDescription="@string/background_image"
         android:scaleType="centerCrop"
         tools:src="@drawable/back4" />
@@ -18,6 +19,7 @@
         android:id="@+id/overlay_overlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="48dp"
         android:background="#CC000000"
         tools:background="#CC000000" />
 

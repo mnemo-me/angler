@@ -1,22 +1,23 @@
-package com.mnemo.angler.ui.local_load_activity.fragments;
+package com.mnemo.angler.ui.local_load_activity.fragments.portrait_crop;
 
 
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.mnemo.angler.R;
-import com.mnemo.angler.data.file_storage.AnglerFolder;
+import com.mnemo.angler.ui.local_load_activity.fragments.landscape_crop.LandscapeCropFragment;
 import com.steelkiwi.cropiwa.CropIwaView;
 import com.steelkiwi.cropiwa.config.CropIwaSaveConfig;
 
 import java.io.File;
-import java.io.IOException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -24,15 +25,16 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 
 
-public class PortraitCropFragment extends Fragment {
+public class PortraitCropFragment extends Fragment implements PortraitCropView{
+
+    PortraitCropPresenter presenter;
+
+    Unbinder unbinder;
 
     @BindView(R.id.fragment_portrait_crop_iwa)
     CropIwaView cropIwaView;
 
-
     String image;
-
-    Unbinder unbinder;
 
 
     public PortraitCropFragment() {
@@ -46,6 +48,7 @@ public class PortraitCropFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.ll_fragment_portrait_crop, container, false);
 
+        // Inject views
         unbinder = ButterKnife.bind(this, view);
 
         // Get image from arguments
@@ -57,62 +60,58 @@ public class PortraitCropFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
-    // Generate new name for image file
-    private String getNewImageName(String image){
-
-        String newImageName = new File(image).getName();
-        newImageName = newImageName.replace("R.drawable.","d");
-        newImageName = newImageName.substring(0, newImageName.lastIndexOf("."));
-
-        if (new File(AnglerFolder.PATH_BACKGROUND_PORTRAIT,newImageName + ".jpeg").exists()){
-
-            int count = 2;
-            while (new File(AnglerFolder.PATH_BACKGROUND_PORTRAIT, newImageName + "(" + count + ").jpeg").exists()){
-                 count++;
-            }
-            newImageName = newImageName + "(" + count + ")";
-        }
-
-        newImageName = newImageName + ".jpeg";
-
-        return newImageName;
+        presenter = new PortraitCropPresenter();
+        presenter.attachView(this);
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        presenter.attachView(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        presenter.deattachView();
+    }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+
         unbinder.unbind();
     }
 
 
     /*
-        Setup crop button
-        Cropping image in CropIwa borders
-          */
+    Setup crop button
+    Cropping image in CropIwa borders
+    */
     @OnClick(R.id.fragment_portrait_crop)
     void crop(){
 
-        String newImageName = getNewImageName(image);
+        // Generate new background image file name
+        String backgroundImageFileName = presenter.generateBackgroundImageFileName(image);
 
-        File destinationFile = new File(AnglerFolder.PATH_BACKGROUND_PORTRAIT,
-                newImageName);
-
-        try {
-            destinationFile.createNewFile();
-        }catch (IOException e){
-            e.printStackTrace();
-        }
-
-        cropIwaView.crop(new CropIwaSaveConfig.Builder(Uri.fromFile(destinationFile))
+        // Crop image and save it to file storage
+        cropIwaView.crop(new CropIwaSaveConfig.Builder(presenter.createNewBackgroundImageFile(backgroundImageFileName, Configuration.ORIENTATION_PORTRAIT))
                 .setCompressFormat(Bitmap.CompressFormat.JPEG)
                 .build());
 
+
+        // Open landscape crop fragment
         LandscapeCropFragment landscapeCropFragment = new LandscapeCropFragment();
+
         Bundle args = new Bundle();
         args.putString("image", image);
-        args.putString("new_image_name", newImageName);
+        args.putString("background_image_file_name", backgroundImageFileName);
         landscapeCropFragment.setArguments(args);
 
         getActivity().getSupportFragmentManager().beginTransaction()

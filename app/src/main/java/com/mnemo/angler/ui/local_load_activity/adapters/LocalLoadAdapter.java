@@ -5,16 +5,16 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-import com.mnemo.angler.ui.local_load_activity.fragments.ImageFolderFragment;
+import com.mnemo.angler.ui.local_load_activity.fragments.image_folder.ImageFolderFragment;
 
 import java.io.File;
-import java.util.ArrayList;
+import java.util.List;
 
 public class LocalLoadAdapter extends FragmentStatePagerAdapter {
 
-    private ArrayList<String> imageFolders;
+    private List<String> imageFolders;
 
-    public LocalLoadAdapter(FragmentManager fm, ArrayList<String> imageFolders) {
+    public LocalLoadAdapter(FragmentManager fm, List<String> imageFolders) {
         super(fm);
         this.imageFolders = imageFolders;
     }

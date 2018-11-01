@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.mnemo.angler.R;
-import com.mnemo.angler.ui.local_load_activity.fragments.ImageCarouselFragment;
+import com.mnemo.angler.ui.local_load_activity.fragments.image_carousel.ImageCarouselFragment;
 import com.mnemo.angler.util.ImageAssistant;
 
 import java.util.ArrayList;
@@ -53,6 +53,7 @@ public class ImageFolderAdapter extends RecyclerView.Adapter<ImageFolderAdapter.
         holder.itemView.setOnClickListener(v -> {
 
             ImageCarouselFragment imageCarouselFragment = new ImageCarouselFragment();
+
             Bundle args = new Bundle();
             args.putStringArrayList("images",images);
             args.putString("image",images.get(holder.getAdapterPosition()));

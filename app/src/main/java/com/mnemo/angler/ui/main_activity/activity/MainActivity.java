@@ -287,7 +287,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
 
     }
 
-    // set play/pause image based on state
+    // Set play/pause image based on state
     public void setPlayPause(String playPauseState){
 
         if (playPauseState.equals("play")){

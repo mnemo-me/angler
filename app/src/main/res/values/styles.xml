@@ -168,9 +168,24 @@
         <item name="android:alpha">0.6</item>
     </style>
 
-    <style name="checkBoxStyle" parent="Base.Theme.AppCompat">
+    <style name="check_box_style" parent="Base.Theme.AppCompat">
         <item name="colorAccent">@color/colorAccentLight</item>
         <item name="android:textColorSecondary">@color/gGrey</item>
+    </style>
+    
+    <style name="tab_text_appearance" parent="TextAppearance.Design.Tab">
+        <item name="textAllCaps">false</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+
+    <style name="grey_bottom_button">
+        <item name="android:layout_height">48dp</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/selected_grey_white</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:layout_marginBottom">8dp</item>
     </style>
 
 </resources>

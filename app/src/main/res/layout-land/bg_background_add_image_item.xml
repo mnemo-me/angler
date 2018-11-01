@@ -10,7 +10,7 @@
     app:cardBackgroundColor="@android:color/transparent">
 
     <android.support.constraint.ConstraintLayout
-        android:layout_width="146dp"
+        android:layout_width="300dp"
         android:layout_height="120dp"
         android:background="@drawable/white_frame">
 

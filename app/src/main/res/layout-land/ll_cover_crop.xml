@@ -5,6 +5,34 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
+    <android.support.v7.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:elevation="4dp"
+        app:contentInsetStart="0dp"
+        android:background="@color/softMainGrey">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/baseline_crop_white_24dp"
+            android:padding="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_gravity="center_vertical"
+            android:contentDescription="@string/settings"
+            android:alpha="0.5"/>
+
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_marginStart="8dp"
+            android:textColor="@color/gGrey"
+            android:textSize="16sp"
+            android:text="@string/image_crop"/>
+
+    </android.support.v7.widget.Toolbar>
+
     <com.steelkiwi.cropiwa.CropIwaView
         android:id="@+id/fragment_playlist_image_crop_crop_iwa"
         android:layout_width="match_parent"
@@ -21,18 +49,8 @@
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="120dp"
-        android:orientation="vertical"
-        android:background="#FFFFFF">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/album_cover_crop_advice"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/fragment_playlist_image_crop_crop"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+        android:layout_height="65dp"
+        android:background="@color/softMainGrey">
 
         <TextView
             android:id="@+id/fragment_playlist_image_crop_back"

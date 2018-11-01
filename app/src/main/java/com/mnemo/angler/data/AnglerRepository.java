@@ -1,6 +1,8 @@
 package com.mnemo.angler.data;
 
 
+import android.net.Uri;
+
 import com.mnemo.angler.AnglerApp;
 import com.mnemo.angler.data.database.AnglerDB;
 import com.mnemo.angler.data.database.Entities.Track;
@@ -220,7 +222,7 @@ public class AnglerRepository {
     }
 
     public String getTempImageName(){
-        return  AnglerFileStorage.getTempImageName();
+        return  anglerFileStorage.getTempImageName();
     }
 
     public void gatherBackgroundImages(OnGatherBackgroundImagesListener listener){
@@ -256,6 +258,25 @@ public class AnglerRepository {
         return anglerFileStorage.loadArtistBio(artist);
     }
 
+    public List<String> gatherImageFolders(){
+        return anglerFileStorage.gatherImageFolders(AnglerFileStorage.PHONE_STORAGE);
+    }
+
+    public ArrayList<String> getImages(String imageFolder){
+        return anglerFileStorage.getImages(imageFolder);
+    }
+
+    public String generateNewBackgroundImageName(String image){
+        return anglerFileStorage.generateNewImageName(image);
+    }
+
+    public Uri getImageUri(String imageFileName, int orientation){
+        return anglerFileStorage.getImageUri(imageFileName, orientation);
+    }
+
+    public Uri getTempCoverUri(){
+        return anglerFileStorage.getTempCoverUri();
+    }
 
 
 
@@ -291,7 +312,7 @@ public class AnglerRepository {
         String coverImageName = anglerFileStorage.generatePlaylistCoverImageName(playlist);
 
         anglerDB.insertPlaylist(playlist, coverImageName);
-        anglerFileStorage.copyImage(AnglerFileStorage.getTempImageName(), coverImageName);
+        anglerFileStorage.copyImage(anglerFileStorage.getTempImageName(), coverImageName);
     }
 
     public void deletePlaylist(String playlist){
@@ -315,7 +336,7 @@ public class AnglerRepository {
 
     public void updateCover(String image){
 
-        anglerFileStorage.copyImage(AnglerFileStorage.getTempImageName(), image);
+        anglerFileStorage.copyImage(anglerFileStorage.getTempImageName(), image);
     }
 
 

@@ -4,7 +4,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-import com.mnemo.angler.ui.local_load_activity.fragments.ImageFragment;
+import com.mnemo.angler.ui.local_load_activity.fragments.image.ImageFragment;
 
 import java.util.ArrayList;
 

@@ -2,6 +2,7 @@ package com.mnemo.angler.data.file_storage;
 
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaMetadataRetriever;
@@ -25,8 +26,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.TreeSet;
+import java.util.function.Function;
 
 import javax.inject.Inject;
+
+import retrofit2.http.Url;
 
 public class AnglerFileStorage {
 
@@ -118,8 +123,22 @@ public class AnglerFileStorage {
     }
 
     // get temp image name
-    public static String getTempImageName() {
+    public String getTempImageName() {
         return TEMP_IMAGE_NAME;
+    }
+
+    // Get temp cover uri
+    public Uri getTempCoverUri(){
+
+        File destinationFile = new File(TEMP_IMAGE_NAME);
+
+        try {
+            destinationFile.createNewFile();
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+
+        return Uri.fromFile(destinationFile);
     }
 
 
@@ -227,21 +246,12 @@ public class AnglerFileStorage {
             }
         }
 
-        return sortBackgroundImages(images);
-    }
-
-    private List<String> sortBackgroundImages(List<String> images){
-
-        images.sort((image1, image2) -> {
-
-            File one = new File(image1);
-            File two = new File(image2);
-
-            return (int)(two.lastModified() - one.lastModified());
-        });
+        images.sort(Comparator.comparing(s -> - (new File(s).lastModified())));
 
         return images;
     }
+
+
 
     // Clean single orientation background images
     private void cleanImages(){
@@ -456,4 +466,119 @@ public class AnglerFileStorage {
 
         return builder.toString();
     }
+
+    /*
+    Recursively collect all folders with images on device
+    ignoring folders, contains .nomedia file and hidden folders
+     */
+    public List<String> gatherImageFolders(String path){
+
+        List<String> imageFolders = new ArrayList<>();
+
+        File directory = new File(path);
+        ArrayList<String> files = new ArrayList<>(Arrays.asList(directory.list()));
+
+
+        if (directory.getName().startsWith(".") || files.contains(".nomedia")){
+            return imageFolders;
+        }
+
+        for (String file : files) {
+
+            File temp = new File(path + File.separator + file);
+
+            if (temp.isDirectory()) {
+
+                imageFolders.addAll(gatherImageFolders(path + File.separator + file));
+
+            }else if (!imageFolders.contains(path)){
+
+                String extension = MimeTypeMap.getFileExtensionFromUrl(Uri.fromFile(temp).toString());
+                String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
+
+                if (mimeType != null) {
+                    if (mimeType.contains("image/")) {
+
+                        imageFolders.add(path);
+                    }
+                }
+            }
+        }
+
+        imageFolders.sort(Comparator.comparing(s -> new File(s).getName()));
+
+        return imageFolders;
+    }
+
+    // Get list of images in selected folder
+    public ArrayList<String> getImages(String imageFolder) {
+
+        ArrayList<String> images = new ArrayList<>();
+
+        File directory = new File(imageFolder);
+        String[] files = directory.list();
+
+        for (String file : files) {
+
+            File temp = new File(imageFolder + File.separator + file);
+            String extension = MimeTypeMap.getFileExtensionFromUrl(Uri.fromFile(temp).toString());
+            String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
+
+            if (mimeType != null) {
+                if (mimeType.contains("image/")) {
+                    images.add(imageFolder + File.separator + file);
+                }
+            }
+        }
+
+        images.sort(Comparator.comparing(s -> - (new File(s).lastModified())));
+
+        return images;
+    }
+
+
+    // Generate new name for image file
+    public String generateNewImageName(String image){
+
+        String newImageName = new File(image).getName();
+        newImageName = newImageName.replace("R.drawable.","d");
+        newImageName = newImageName.substring(0, newImageName.lastIndexOf("."));
+
+        if (new File(AnglerFolder.PATH_BACKGROUND_PORTRAIT,newImageName + ".jpeg").exists()){
+
+            int count = 2;
+            while (new File(AnglerFolder.PATH_BACKGROUND_PORTRAIT, newImageName + "(" + count + ").jpeg").exists()){
+                count++;
+            }
+            newImageName = newImageName + "(" + count + ")";
+        }
+
+        newImageName = newImageName + ".jpeg";
+
+        return newImageName;
+    }
+
+    // Create new background image file
+    public Uri getImageUri(String imageFileName, int orientation){
+
+        String imageFolderPath;
+
+        if (orientation == Configuration.ORIENTATION_PORTRAIT){
+            imageFolderPath = AnglerFolder.PATH_BACKGROUND_PORTRAIT;
+        }else{
+            imageFolderPath = AnglerFolder.PATH_BACKGROUND_LANDSCAPE;
+        }
+
+        File destinationFile = new File(imageFolderPath, imageFileName);
+
+        try {
+            destinationFile.createNewFile();
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+
+        return Uri.fromFile(destinationFile);
+    }
+
+
 }

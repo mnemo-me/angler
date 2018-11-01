@@ -21,13 +21,15 @@
             android:id="@+id/background_group"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginStart="240dp"
+            android:layout_marginTop="48dp"
+            android:layout_marginBottom="65dp"
             app:constraint_referenced_ids="main_fragment_background, overlay"/>
 
         <ImageView
             android:id="@+id/main_fragment_background"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginTop="48dp"
             android:layout_marginBottom="65dp"
             android:contentDescription="@string/background_image"
             android:scaleType="centerCrop"
@@ -37,6 +39,7 @@
             android:id="@+id/overlay"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginTop="48dp"
             android:layout_marginBottom="65dp"
             tools:background="#CC000000" />
 
@@ -253,7 +256,7 @@
         android:layout_width="240dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:background="#FFFFFF"
+        android:background="@color/softMainGrey"
         android:orientation="vertical"
         android:clickable="true">
 
@@ -277,7 +280,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/app_name"
-                        android:textColor="#000000"
+                        android:textColor="#FFFFFF"
                         android:textSize="44sp"
                         android:textAllCaps="true"
                         android:fontFamily="serif"
@@ -289,7 +292,7 @@
                         android:layout_height="wrap_content"
                         android:gravity="top"
                         android:text="@string/trial_version"
-                        android:textColor="#000000"
+                        android:textColor="#FFFFFF"
                         android:textAllCaps="true"
                         android:textSize="12sp"
                         android:fontFamily="serif"
@@ -303,7 +306,7 @@
                     android:id="@+id/top_line"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="#44000000"
+                    android:background="@color/gGrey"
                     android:layout_marginStart="@dimen/default_margin"
                     android:layout_marginEnd="@dimen/default_margin"/>
 
@@ -316,7 +319,7 @@
                     android:id="@+id/top_line2"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="#44000000"
+                    android:background="@color/gGrey"
                     android:layout_marginStart="@dimen/default_margin"
                     android:layout_marginEnd="@dimen/default_margin"/>
 
@@ -350,7 +353,7 @@
                     android:id="@+id/bottom_line"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="#44000000"
+                    android:background="@color/gGrey"
                     android:layout_marginStart="@dimen/default_margin"
                     android:layout_marginEnd="@dimen/default_margin"/>
 
