@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="com.mnemo.angler.music_player.MusicPlayerFragment">
+    tools:context=".ui.main_activity.fragments.music_player.music_player.MusicPlayerFragment">
 
     <LinearLayout
         android:id="@+id/main_fragment_spinner_layout"
@@ -13,7 +13,7 @@
         android:gravity="center_vertical"
         android:layout_alignParentTop="true"
         android:elevation="4dp"
-        android:background="#22FFFFFF">
+        android:background="@color/softMainGrey">
 
         <ImageView
             android:id="@+id/settings"
@@ -87,7 +87,6 @@
         android:id="@+id/song_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_centerInParent="true"
         android:layout_below="@id/search_toolbar"/>
 
 

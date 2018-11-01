@@ -3,14 +3,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.mnemo.angler.playlists.PlaylistConfigurationFragment">
+    tools:context=".ui.main_activity.fragments.playlists.playlist_configuration.PlaylistConfigurationFragment">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/playlist_conf_toolbar"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         app:contentInsetStart="0dp"
-        android:background="#22FFFFFF">
+        android:background="@color/softMainGrey">
 
 
         <ImageButton
@@ -36,6 +36,16 @@
             android:transitionName="title"
             tools:text="Marilyn Manson" />
 
+        <ImageButton
+            android:id="@+id/playlist_conf_play_all_button"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:src="@drawable/selected_play_all_button"
+            android:background="?android:selectableItemBackgroundBorderless"
+            android:padding="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_gravity="end"/>
+
         <TextView
             android:id="@+id/playlist_conf_tracks_count"
             android:layout_width="wrap_content"
@@ -55,12 +65,12 @@
 
     <android.support.v7.widget.CardView
         android:id="@+id/playlist_conf_cardview"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
+        android:layout_width="240dp"
+        android:layout_height="240dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/playlist_conf_toolbar"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/playlist_conf_list"
-        android:layout_marginTop="16dp"
         android:transitionName="card"
         app:cardCornerRadius="2dp"
         android:elevation="0dp">
@@ -88,47 +98,15 @@
 
     </android.support.v7.widget.CardView>
 
-    <LinearLayout
-        android:id="@+id/playlist_conf_play_all"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:background="?android:selectableItemBackgroundBorderless"
-        app:layout_constraintStart_toStartOf="@id/playlist_conf_cardview"
-        app:layout_constraintEnd_toEndOf="@id/playlist_conf_cardview"
-        app:layout_constraintTop_toBottomOf="@id/playlist_conf_cardview"
-        app:layout_constraintBottom_toBottomOf="parent">
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_play_arrow_white_24dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="24dp"
-            android:text="@string/play_all"
-            android:textColor="#FFFFFF"
-            android:textAllCaps="true"/>
-
-    </LinearLayout>
-
-
-    <ListView
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/playlist_conf_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingBottom="4dp"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginStart="280dp"
+        android:layout_marginStart="284dp"
         android:layout_marginTop="48dp"
-        android:clipToPadding="false"
-        android:choiceMode="singleChoice"/>
-
+        android:clipToPadding="false" />
 
 </android.support.constraint.ConstraintLayout>
 

@@ -1,10 +1,11 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="#EF000000"
     android:clickable="true"
-    tools:context="com.mnemo.angler.local_load.ImageCarouselFragment">
+    tools:context=".ui.local_load_activity.fragments.image_carousel.ImageCarouselFragment">
 
     <android.support.design.widget.TabLayout
         android:id="@+id/image_carousel_tab"
@@ -18,5 +19,24 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+    <TextView
+        android:id="@+id/image_carousel_close"
+        style="@style/grey_bottom_button"
+        android:text="@string/hide"
+        android:layout_marginEnd="1dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/image_carousel_select"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"/>
 
-</RelativeLayout>
+    <TextView
+        android:id="@+id/image_carousel_select"
+        style="@style/grey_bottom_button"
+        android:text="@string/select"
+        android:layout_marginStart="1dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/image_carousel_close"/>
+
+
+</android.support.constraint.ConstraintLayout>

@@ -4,7 +4,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="com.mnemo.angler.equalizer.BandsFragment">
+    tools:context=".ui.main_activity.fragments.equalizer.bands.BandsFragment">
+
+    <Spinner
+        android:id="@+id/bands_spinner"
+        android:layout_width="280dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="@dimen/default_margin"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <Spinner
         android:id="@+id/bands_spinner"
@@ -22,7 +31,7 @@
         android:paddingStart="8dp"
         android:paddingEnd="8dp"
         android:layout_marginTop="@dimen/default_margin"
-        android:layout_marginBottom="@dimen/default_margin"
+        android:layout_marginBottom="24dp"
         android:orientation="horizontal"
         app:layout_constraintTop_toBottomOf="@id/bands_spinner"
         app:layout_constraintBottom_toBottomOf="parent"/>

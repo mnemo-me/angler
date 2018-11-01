@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/add_track_expand_button"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:paddingStart="24dp"
+        android:paddingEnd="8dp"
+        android:layout_gravity="center_vertical"
+        tools:src="@drawable/baseline_keyboard_arrow_right_white_18dp"
+        android:alpha="0.5"/>
+
+    <CheckBox
+        android:id="@+id/add_track_artist"
+        android:theme="@style/check_box_style"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:focusable="false"/>
+
+</LinearLayout>

@@ -1,4 +1,4 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
@@ -7,53 +7,30 @@
     <android.support.v7.widget.CardView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
         android:layout_marginEnd="40dp"
         android:layout_marginStart="40dp"
+        android:layout_marginBottom="48dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:cardCornerRadius="2dp"
         app:cardElevation="4dp">
 
-        <android.support.constraint.ConstraintLayout
+        <ImageView
+            android:id="@+id/image_fragment_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="1dp">
-
-            <ImageView
-                android:id="@+id/image_fragment_image"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:adjustViewBounds="true"
-                android:contentDescription="@string/background_image"
-                android:maxWidth="500dp"
-                android:maxHeight="290dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:src="@drawable/back3"/>
-
-            <TextView
-                android:id="@+id/image_hide"
-                style="@style/bottom_bar_button_v2"
-                android:layout_marginTop="1dp"
-                android:text="@string/hide"
-                app:layout_constraintHorizontal_chainStyle="spread_inside"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/image_load"
-                app:layout_constraintTop_toBottomOf="@id/image_fragment_image"/>
-
-            <TextView
-                android:id="@+id/image_load"
-                style="@style/bottom_bar_button_v2"
-                android:layout_marginTop="1dp"
-                android:text="@string/load_image"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/image_hide"
-                app:layout_constraintTop_toBottomOf="@id/image_fragment_image"/>
-
-
-        </android.support.constraint.ConstraintLayout>
-
+            android:layout_margin="1dp"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/background_image"
+            android:maxWidth="500dp"
+            android:maxHeight="290dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@drawable/back3"/>
 
     </android.support.v7.widget.CardView>
 
-</RelativeLayout>
+</android.support.constraint.ConstraintLayout>

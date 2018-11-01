@@ -5,13 +5,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.mnemo.angler.music_player.MusicPlayerFragment">
+    tools:context=".ui.main_activity.fragments.music_player.music_player.MusicPlayerFragment">
 
     <View
         android:id="@+id/main_fragment_spinner_layout"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:background="#22FFFFFF"/>
+        android:background="@color/softMainGrey"/>
 
     <ImageView
         android:id="@+id/settings"
@@ -95,8 +95,38 @@
         android:id="@+id/song_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_centerInParent="true"
         app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="48dp"/>
+
+    <FrameLayout
+        android:id="@+id/artist_list"
+        android:layout_width="284dp"
+        android:layout_height="match_parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/artist_track_separator"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="48dp"/>
+
+    <View
+        android:id="@+id/artist_track_separator"
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:background="@color/gGrey"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/artist_list"
+        app:layout_constraintEnd_toStartOf="@id/artist_song_list"
+        android:layout_marginTop="64dp"
+        android:layout_marginBottom="@dimen/default_margin"
+        android:visibility="invisible"/>
+
+    <FrameLayout
+        android:id="@+id/artist_song_list"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@id/artist_track_separator"
+        app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="48dp"/>
 
 </android.support.constraint.ConstraintLayout>

@@ -5,7 +5,35 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    tools:context="com.mnemo.angler.local_load.PortraitCropFragment">
+    tools:context=".ui.local_load_activity.fragments.portrait_crop.PortraitCropFragment">
+
+    <android.support.v7.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:elevation="4dp"
+        app:contentInsetStart="0dp"
+        android:background="@color/softMainGrey">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/baseline_crop_white_24dp"
+            android:padding="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_gravity="center_vertical"
+            android:contentDescription="@string/settings"
+            android:alpha="0.5"/>
+
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_marginStart="8dp"
+            android:textColor="@color/gGrey"
+            android:textSize="16sp"
+            android:text="@string/landscape_crop"/>
+
+    </android.support.v7.widget.Toolbar>
 
     <com.steelkiwi.cropiwa.CropIwaView
         android:id="@+id/fragment_landscape_crop_iwa"
@@ -13,8 +41,8 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         app:ci_dynamic_aspect_ratio="false"
-        app:ci_aspect_ratio_w="520"
-        app:ci_aspect_ratio_h="410"
+        app:ci_aspect_ratio_w="682"
+        app:ci_aspect_ratio_h="273"
         app:ci_border_width="0dp"
         app:ci_corner_width="0dp"
         app:ci_grid_width="1dp"
@@ -23,13 +51,14 @@
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="120dp"
-        android:background="#FFFFFF">
+        android:layout_height="140dp"
+        android:background="@color/softMainGrey">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/landscape_crop_advice"
+            android:textColor="@color/gGrey"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"

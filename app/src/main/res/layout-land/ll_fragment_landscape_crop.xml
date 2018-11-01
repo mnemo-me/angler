@@ -4,53 +4,75 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="horizontal"
-    tools:context="com.mnemo.angler.local_load.PortraitCropFragment">
+    android:orientation="vertical"
+    tools:context=".ui.local_load_activity.fragments.portrait_crop.PortraitCropFragment">
 
-    <android.support.constraint.ConstraintLayout
-        android:layout_width="240dp"
-        android:layout_height="match_parent"
-        android:background="#FFFFFF">
+    <android.support.v7.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:elevation="4dp"
+        app:contentInsetStart="0dp"
+        android:background="@color/softMainGrey">
 
-        <TextView
-            android:layout_width="match_parent"
+        <ImageView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/default_margin"
-            android:layout_marginEnd="@dimen/default_margin"
-            android:text="@string/landscape_crop_advice"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/fragment_landscape_crop"/>
+            android:src="@drawable/baseline_crop_white_24dp"
+            android:padding="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_gravity="center_vertical"
+            android:contentDescription="@string/settings"
+            android:alpha="0.5"/>
 
         <TextView
-            android:id="@+id/fragment_landscape_crop"
-            style="@style/landscape_options"
-            android:text="@string/crop"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/fragment_landscape_back"/>
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_marginStart="8dp"
+            android:textColor="@color/gGrey"
+            android:textSize="16sp"
+            android:text="@string/landscape_crop"/>
 
-        <TextView
-            android:id="@+id/fragment_landscape_back"
-            style="@style/landscape_options"
-            android:text="@string/back"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
-
-    </android.support.constraint.ConstraintLayout>
+    </android.support.v7.widget.Toolbar>
 
     <com.steelkiwi.cropiwa.CropIwaView
         android:id="@+id/fragment_landscape_crop_iwa"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
         android:layout_weight="1"
         app:ci_dynamic_aspect_ratio="false"
-        app:ci_aspect_ratio_w="420"
-        app:ci_aspect_ratio_h="410"
+        app:ci_aspect_ratio_w="682"
+        app:ci_aspect_ratio_h="273"
         app:ci_border_width="0dp"
         app:ci_corner_width="0dp"
         app:ci_grid_width="1dp"
         app:ci_grid_color="#66FFFFFF"
         app:ci_crop_scale="1"/>
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        android:background="@color/softMainGrey">
+
+        <TextView
+            android:id="@+id/fragment_landscape_back"
+            style="@style/portrait_options"
+            android:layout_marginEnd="1dp"
+            android:text="@string/back"
+            app:layout_constraintHorizontal_chainStyle="spread_inside"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/fragment_landscape_crop"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <TextView
+            android:id="@+id/fragment_landscape_crop"
+            style="@style/portrait_options"
+            android:layout_marginStart="1dp"
+            android:text="@string/crop"
+            app:layout_constraintStart_toEndOf="@id/fragment_landscape_back"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+    </android.support.constraint.ConstraintLayout>
 
 </LinearLayout>
