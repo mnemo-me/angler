@@ -12,9 +12,11 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import com.mnemo.angler.R;
+import com.mnemo.angler.data.file_storage.AnglerFolder;
 import com.mnemo.angler.util.ImageAssistant;
 import com.mnemo.angler.ui.local_load_activity.activity.LocalLoadActivity;
 
+import java.io.File;
 import java.util.List;
 
 import butterknife.BindView;
@@ -114,6 +116,19 @@ public class BackgroundImageAdapter extends RecyclerView.Adapter<BackgroundImage
 
             String image = images.get(position - 1);
 
+            // Image path variable
+            String imagePath;
+
+            if (image.startsWith("R.drawable.")){
+                imagePath = image;
+            }else {
+                if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+                    imagePath = AnglerFolder.PATH_BACKGROUND_PORTRAIT + File.separator + image;
+                } else {
+                    imagePath = AnglerFolder.PATH_BACKGROUND_LANDSCAPE + File.separator + image;
+                }
+            }
+
             // Activate if current background
             if (image.equals(currentBackground)){
                 holder.itemView.setActivated(true);
@@ -129,11 +144,8 @@ public class BackgroundImageAdapter extends RecyclerView.Adapter<BackgroundImage
             }
 
             // Load background image
-            if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-                ImageAssistant.loadImage(context, image, ((ImageViewHolder)holder).background, 120);
-            } else {
-                ImageAssistant.loadImage(context, image.replace("port", "land"), ((ImageViewHolder)holder).background, 120);
-            }
+            ImageAssistant.loadImage(context, imagePath, ((ImageViewHolder)holder).background, 120);
+
 
             // Set listener (change image)
             holder.itemView.setOnClickListener(v -> {

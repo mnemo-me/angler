@@ -7,11 +7,13 @@ import com.mnemo.angler.AnglerApp;
 import com.mnemo.angler.data.database.AnglerDB;
 import com.mnemo.angler.data.database.Entities.Track;
 import com.mnemo.angler.data.file_storage.AnglerFileStorage;
+import com.mnemo.angler.data.file_storage.AnglerFolder;
 import com.mnemo.angler.data.networking.AnglerNetworking;
 import com.mnemo.angler.data.preferences.AnglerPreferences;
 import com.mnemo.angler.ui.main_activity.classes.Album;
 import com.mnemo.angler.util.MediaAssistant;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -114,7 +116,7 @@ public class AnglerRepository {
        String backgroundImage = anglerPreferences.getBackgroundImage();
 
         if (!backgroundImage.startsWith("R.drawable.")) {
-            if (!anglerFileStorage.isFileExist(backgroundImage)) {
+            if (!anglerFileStorage.isFileExist(AnglerFolder.PATH_BACKGROUND_PORTRAIT + File.separator + backgroundImage)) {
                 backgroundImage = "R.drawable.back";
                 anglerPreferences.setBackgroundImage(backgroundImage);
             }

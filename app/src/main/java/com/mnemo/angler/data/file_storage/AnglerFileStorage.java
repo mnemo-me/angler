@@ -197,10 +197,10 @@ public class AnglerFileStorage {
     // Delete background image
     public void deleteBackgroundImage(String image){
 
-        File fileToDeletePort = new File(image);
+        File fileToDeletePort = new File(AnglerFolder.PATH_BACKGROUND_PORTRAIT, image);
         fileToDeletePort.delete();
 
-        File fileToDeleteLand = new File(image.replace("port", "land"));
+        File fileToDeleteLand = new File(AnglerFolder.PATH_BACKGROUND_LANDSCAPE, image);
         fileToDeleteLand.delete();
     }
 
@@ -241,12 +241,12 @@ public class AnglerFileStorage {
 
             if (mimeType != null) {
                 if (mimeType.contains("image/")) {
-                    images.add(imageFolderPath + File.separator + file);
+                    images.add(file);
                 }
             }
         }
 
-        images.sort(Comparator.comparing(s -> - (new File(s).lastModified())));
+        images.sort(Comparator.comparing(s -> - (new File(imageFolderPath + File.separator + s).lastModified())));
 
         return images;
     }

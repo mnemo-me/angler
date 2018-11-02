@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 
+import com.mnemo.angler.data.file_storage.AnglerFolder;
 import com.mnemo.angler.ui.main_activity.classes.DrawerItem;
 import com.mnemo.angler.ui.main_activity.activity.MainActivity;
 import com.mnemo.angler.R;
@@ -25,6 +26,7 @@ import com.mnemo.angler.ui.main_activity.adapters.BackgroundImageAdapter;
 import com.mnemo.angler.util.ImageAssistant;
 import com.steelkiwi.cropiwa.image.CropIwaResultReceiver;
 
+import java.io.File;
 import java.util.List;
 
 import butterknife.BindView;
@@ -60,6 +62,7 @@ public class BackgroundChangerFragment extends Fragment implements DrawerItem, B
     // Background variables
     String backgroundImage;
     String selectedImage;
+    String imageFolder;
     int imageHeight;
     int opacity;
 
@@ -84,10 +87,12 @@ public class BackgroundChangerFragment extends Fragment implements DrawerItem, B
         // Get orientation
         orientation = getResources().getConfiguration().orientation;
 
-        // Get image height based on orientation
+        // Get image height & folder based on orientation
         if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            imageFolder = AnglerFolder.PATH_BACKGROUND_PORTRAIT;
             imageHeight = 520;
         }else{
+            imageFolder = AnglerFolder.PATH_BACKGROUND_LANDSCAPE;
             imageHeight = 203;
         }
 
@@ -312,10 +317,10 @@ public class BackgroundChangerFragment extends Fragment implements DrawerItem, B
     // Support methods
     void showBackgroundImage(String image){
 
-        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+        if (selectedImage.startsWith("R.drawable.")){
             ImageAssistant.loadImage(getContext(), image, background, imageHeight);
-        }else{
-            ImageAssistant.loadImage(getContext(), image.replace("port", "land"), background, imageHeight);
+        }else {
+            ImageAssistant.loadImage(getContext(), imageFolder + File.separator + image, background, imageHeight);
         }
     }
 

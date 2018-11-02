@@ -29,6 +29,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mnemo.angler.data.database.Entities.Track;
+import com.mnemo.angler.data.file_storage.AnglerFolder;
 import com.mnemo.angler.ui.main_activity.fragments.albums.albums.AlbumsFragment;
 import com.mnemo.angler.ui.main_activity.fragments.artists.artists.ArtistsFragment;
 import com.mnemo.angler.ui.main_activity.fragments.background_changer.background_changer.BackgroundChangerFragment;
@@ -45,6 +46,7 @@ import com.mnemo.angler.ui.main_activity.fragments.music_player.artist_tracks.Pl
 import com.mnemo.angler.ui.main_activity.misc.add_track_to_playlist.AddTrackToPlaylistDialogFragment;
 import com.mnemo.angler.ui.main_activity.fragments.playlists.playlists.PlaylistsFragment;
 
+import java.io.File;
 import java.util.List;
 
 import butterknife.BindView;
@@ -248,17 +250,27 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
     // Set background
     public void setBackground(String backgroundImage, int opacity) {
 
-        // set image height based on orientation
+        // Set image path & height based on orientation
+        String imagePath;
         int imageHeight;
+
+        if (backgroundImage.startsWith("R.drawable.")) {
+            imagePath = backgroundImage;
+        }else {
+            if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+                imagePath = AnglerFolder.PATH_BACKGROUND_PORTRAIT + File.separator + backgroundImage;
+            } else {
+                imagePath = AnglerFolder.PATH_BACKGROUND_LANDSCAPE + File.separator + backgroundImage;
+            }
+        }
 
         if (orientation == Configuration.ORIENTATION_PORTRAIT) {
             imageHeight = 520;
         }else{
-            backgroundImage = backgroundImage.replace("port", "land");
             imageHeight = 203;
         }
 
-        ImageAssistant.loadImage(this, backgroundImage, background, imageHeight);
+        ImageAssistant.loadImage(this, imagePath, background, imageHeight);
         overlay.setBackgroundColor(Color.argb(opacity, 0, 0, 0));
     }
 
