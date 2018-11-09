@@ -89,6 +89,19 @@ public class AnglerClient{
 
     }
 
+    public boolean changeRepeatMode(){
+
+        int repeatMode = mController.getRepeatMode();
+        Log.e("repeat", String.valueOf(PlaybackStateCompat.REPEAT_MODE_ONE == repeatMode));
+        if (repeatMode == PlaybackStateCompat.REPEAT_MODE_ONE){
+            mController.getTransportControls().setRepeatMode(PlaybackStateCompat.REPEAT_MODE_NONE);
+            return false;
+        }else{
+            mController.getTransportControls().setRepeatMode(PlaybackStateCompat.REPEAT_MODE_ONE);
+            return true;
+        }
+    }
+
     public void nextTrack(){
         mController.getTransportControls().skipToNext();
     }
@@ -216,7 +229,6 @@ public class AnglerClient{
         Bundle extras = new Bundle();
         extras.putShort("band_number", band);
         extras.putShort("band_level", bandLevel);
-        Log.e("fdfdfdf", band + " " + bandLevel);
 
         mController.getTransportControls().sendCustomAction("equalizer_change_band_level", extras);
     }
@@ -344,7 +356,6 @@ public class AnglerClient{
 
         ((MainActivity)context).setPlayPause(playPauseState);
     }
-
 
 
     // getters/setters

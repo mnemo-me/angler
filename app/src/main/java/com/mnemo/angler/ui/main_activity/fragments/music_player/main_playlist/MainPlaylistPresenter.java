@@ -1,6 +1,8 @@
 package com.mnemo.angler.ui.main_activity.fragments.music_player.main_playlist;
 
 
+import android.annotation.SuppressLint;
+
 import com.mnemo.angler.AnglerApp;
 import com.mnemo.angler.data.AnglerRepository;
 import com.mnemo.angler.data.database.Entities.Track;
@@ -41,11 +43,12 @@ public class MainPlaylistPresenter extends BasePresenter {
     }
 
     // Apply filter to tracks
+    @SuppressLint("CheckResult")
     void applyFilter(String filter) {
 
         if (filter.equals("")){
 
-            ((MainPlaylistView)getView()).setTracks(tracks);
+            ((MainPlaylistView) getView()).setTracks(tracks);
 
         }else {
 
@@ -54,8 +57,7 @@ public class MainPlaylistPresenter extends BasePresenter {
                     .observeOn(AndroidSchedulers.mainThread())
                     .filter(track -> (track.getTitle().toLowerCase().contains(filter.toLowerCase())))
                     .toList()
-                    .subscribe(tracks -> ((MainPlaylistView)getView()).setTracks(tracks));
-
+                    .subscribe(((MainPlaylistView) getView())::setTracks);
         }
     }
 

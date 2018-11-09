@@ -31,7 +31,24 @@ public class AddTrackToPlaylistAdapter extends RecyclerView.Adapter<AddTrackToPl
 
     private OnAddTrackToPlaylistListener onAddTrackToPlaylistListener;
 
+    private static final int CREATE_NEW_PLAYLIST_VIEW_TYPE = 0;
+    private static final int PLAYLIST_VIEW_TYPE = 1;
+
+
     static class ViewHolder extends RecyclerView.ViewHolder{
+        public ViewHolder(View itemView) {
+            super(itemView);
+        }
+    }
+
+    static class CreateNewPlaylistViewHolder extends ViewHolder{
+
+        CreateNewPlaylistViewHolder(View itemView) {
+            super(itemView);
+        }
+    }
+
+    static class PlaylistViewHolder extends ViewHolder{
 
         @BindView(R.id.playlist_image)
         ImageView coverView;
@@ -39,7 +56,7 @@ public class AddTrackToPlaylistAdapter extends RecyclerView.Adapter<AddTrackToPl
         @BindView(R.id.playlist_title)
         TextView titleView;
 
-        public ViewHolder(View itemView) {
+        PlaylistViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
@@ -55,39 +72,52 @@ public class AddTrackToPlaylistAdapter extends RecyclerView.Adapter<AddTrackToPl
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-        View view = LayoutInflater.from(context).inflate(R.layout.pm_playlist_v2, parent, false);
+        if (viewType == CREATE_NEW_PLAYLIST_VIEW_TYPE){
 
-        return new ViewHolder(view);
+            View view = LayoutInflater.from(context).inflate(R.layout.pm_playlist_create_new, parent, false);
+            return new CreateNewPlaylistViewHolder(view);
+
+        }else{
+
+            View view = LayoutInflater.from(context).inflate(R.layout.pm_playlist_v2, parent, false);
+            return new PlaylistViewHolder(view);
+        }
+
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
-        // Get playlist variables
         String title;
-        String cover;
 
-        if (position == 0) {
+        if (holder.getItemViewType() == CREATE_NEW_PLAYLIST_VIEW_TYPE){
+
             title = context.getResources().getString(R.string.create_new_playlist);
-            cover = "R.drawable.back3";
+
         }else{
+
+            // Get playlist variables
+            String cover;
+
             title = playlists.get(position - 1).getTitle();
             cover = playlists.get(position - 1).getCover();
-        }
 
-        // Fill views
-        holder.titleView.setText(title);
-        ImageAssistant.loadImage(context, cover, holder.coverView, 125);
 
-        // Disable playlists with track
-        if (playlistsWithTrack.contains(title)){
-            holder.itemView.setEnabled(false);
-            holder.itemView.setAlpha(0.5f);
-        }else{
-            if (!holder.itemView.isEnabled()){
-                holder.itemView.setEnabled(true);
-                holder.itemView.setAlpha(1f);
+            // Fill views
+            ((PlaylistViewHolder)holder).titleView.setText(title);
+            ImageAssistant.loadImage(context, cover, ((PlaylistViewHolder)holder).coverView, 125);
+
+            // Disable playlists with track
+            if (playlistsWithTrack.contains(title)){
+                holder.itemView.setEnabled(false);
+                holder.itemView.setAlpha(0.5f);
+            }else{
+                if (!holder.itemView.isEnabled()){
+                    holder.itemView.setEnabled(true);
+                    holder.itemView.setAlpha(1f);
+                }
             }
+
         }
 
         // Listener
@@ -98,6 +128,16 @@ public class AddTrackToPlaylistAdapter extends RecyclerView.Adapter<AddTrackToPl
     @Override
     public int getItemCount() {
         return playlists.size() + 1;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+
+        if (position == 0){
+            return CREATE_NEW_PLAYLIST_VIEW_TYPE;
+        }else{
+            return PLAYLIST_VIEW_TYPE;
+        }
     }
 
     public void setOnAddTrackToPlaylistListener(OnAddTrackToPlaylistListener onAddTrackToPlaylistListener) {

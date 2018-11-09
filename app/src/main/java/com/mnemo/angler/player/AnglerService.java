@@ -19,6 +19,7 @@ import android.support.v4.media.MediaDescriptionCompat;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
+import android.util.Log;
 
 
 import com.mnemo.angler.util.MediaAssistant;
@@ -142,6 +143,8 @@ public class AnglerService extends MediaBrowserServiceCompat {
             queue.remove(index);
             mMediaSession.setQueue(queue);
         }
+
+
 
 
 
@@ -293,10 +296,17 @@ public class AnglerService extends MediaBrowserServiceCompat {
 
 
 
-        // repeat / shuffle
+        // Repeat / Shuffle
         @Override
         public void onSetRepeatMode(int repeatMode) {
-            super.onSetRepeatMode(repeatMode);
+
+            if (repeatMode == PlaybackStateCompat.REPEAT_MODE_ONE) {
+                mMediaSession.setRepeatMode(PlaybackStateCompat.REPEAT_MODE_NONE);
+                mMediaPlayer.setLooping(true);
+            }else{
+                mMediaSession.setRepeatMode(PlaybackStateCompat.REPEAT_MODE_ONE);
+                mMediaPlayer.setLooping(false);
+            }
         }
 
         @Override

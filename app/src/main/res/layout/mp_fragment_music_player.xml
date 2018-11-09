@@ -80,8 +80,9 @@
         app:closeIcon="@drawable/search_clear_selector"
         android:paddingStart="10dp"
         android:visibility="gone"
+        android:elevation="4dp"
         android:layout_below="@id/main_fragment_spinner_layout"
-        android:background="#22FFFFFF"/>
+        android:background="@color/softMainGrey"/>
 
     <FrameLayout
         android:id="@+id/song_list"

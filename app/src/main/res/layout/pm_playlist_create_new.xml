@@ -3,31 +3,29 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="125dp"
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
     <android.support.v7.widget.CardView
-        android:id="@+id/playlist_cardview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardCornerRadius="2dp"
         app:cardElevation="2dp"
-        android:transitionName="card">
+        android:transitionName="card"
+        app:cardBackgroundColor="@android:color/transparent">
 
 
         <RelativeLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:background="@drawable/white_frame">
 
             <ImageView
-                android:id="@+id/playlist_image"
-                android:layout_width="match_parent"
-                android:layout_height="125dp"
-                android:layout_margin="1dp"
-                android:scaleType="centerCrop"
-                tools:src="@drawable/back3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:src="@drawable/baseline_add_white_48dp"
                 android:transitionName="cover"/>
 
             <View
@@ -37,7 +35,6 @@
                 android:background="@drawable/background_selector"/>
 
         </RelativeLayout>
-
 
     </android.support.v7.widget.CardView>
 
@@ -52,7 +49,7 @@
         android:lines="2"
         android:ellipsize="end"
         android:textSize="14sp"
-        tools:text="Library"
+        android:text="@string/create_new_playlist"
         android:transitionName="title"/>
 
 </LinearLayout>

@@ -343,14 +343,14 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
 
     @OnClick(R.id.media_panel_repeat)
     void repeat(View v) {
-/*
-        if (MediaControllerCompat.getMediaController(this).getRepeatMode() == 1) {
+
+        boolean isRepeat = anglerClient.changeRepeatMode();
+
+        if (isRepeat){
             v.setAlpha(0.4f);
-            MediaControllerCompat.getMediaController(this).getTransportControls().setRepeatMode(0);
-        } else {
+        }else{
             v.setAlpha(0.8f);
-            MediaControllerCompat.getMediaController(this).getTransportControls().setRepeatMode(1);
-        }*/
+        }
     }
 
     @OnClick(R.id.media_panel_shuffle)

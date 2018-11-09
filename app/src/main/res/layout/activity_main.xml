@@ -79,7 +79,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:constraint_referenced_ids="media_panel_title,
             media_panel_seek_bar, media_panel_progress_time, media_panel_duration_time,
-            media_panel_lyrics, media_panel_add_to_playlist,
+            media_panel_add_to_playlist,
             media_panel_previous_track, media_panel_play_pause, media_panel_next_track,
             media_panel_repeat, media_panel_shuffle"/>
 

@@ -48,6 +48,8 @@ public class MusicPlayerFragment extends Fragment implements MusicPlayerView {
 
     MusicPlayerPresenter presenter;
 
+    Unbinder unbinder;
+
     @BindView(R.id.main_fragment_playlist_spinner)
     Spinner spinner;
 
@@ -70,10 +72,10 @@ public class MusicPlayerFragment extends Fragment implements MusicPlayerView {
     ArrayAdapter adapter;
 
     Disposable disposable;
-    Unbinder unbinder;
 
     int orientation;
-    private String fragmentOnTop = "playlist";
+    private boolean isSpinnerInitialized = false;
+    private String fragmentOnTop = "";
     private String artistSelected;
 
 
@@ -107,15 +109,22 @@ public class MusicPlayerFragment extends Fragment implements MusicPlayerView {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
-                String mainPlaylist = (String)adapterView.getItemAtPosition(i);
+                if (isSpinnerInitialized) {
 
-                ((MainActivity)getActivity()).setMainPlaylistName(mainPlaylist);
-                presenter.updateMainPlaylist(mainPlaylist);
+                    String mainPlaylist = (String) adapterView.getItemAtPosition(i);
 
-                playlist.setAlpha(1f);
-                artists.setAlpha(0.5f);
+                    ((MainActivity) getActivity()).setMainPlaylistName(mainPlaylist);
+                    presenter.updateMainPlaylist(mainPlaylist);
 
-                showLibrary();
+                    playlist.setAlpha(1f);
+                    artists.setAlpha(0.5f);
+
+                    showLibrary();
+
+                }else{
+
+                    isSpinnerInitialized = true;
+                }
             }
 
             @Override
@@ -128,7 +137,6 @@ public class MusicPlayerFragment extends Fragment implements MusicPlayerView {
         // Configure search toolbar
         configureSearchToolbar();
         restoreSearchBarVisibility(savedInstanceState);
-
 
         return view;
     }
@@ -179,12 +187,13 @@ public class MusicPlayerFragment extends Fragment implements MusicPlayerView {
 
         adapter.clear();
         adapter.addAll(playlists);
+        spinner.setSelection(playlists.indexOf(((MainActivity) getActivity()).getMainPlaylistName()));
         adapter.notifyDataSetChanged();
 
-        if (fragmentOnTop.equals("playlist")) {
-            showLibrary();
-        }else{
+        if (fragmentOnTop.equals("artists")) {
             showArtistList();
+        }else{
+            showLibrary();
         }
     }
 
@@ -332,21 +341,24 @@ public class MusicPlayerFragment extends Fragment implements MusicPlayerView {
         search.setOnClickListener(view -> {
 
             if (searchView.getVisibility() == View.GONE) {
+
                 search.setAlpha(1f);
                 searchView.setVisibility(View.VISIBLE);
+
             }else{
-                if (searchView.getQuery() != "") {
+                if (searchView.getQuery().length() > 0) {
                     searchView.setQuery("", false);
                 }
 
                 search.setAlpha(0.5f);
                 searchView.setVisibility(View.GONE);
+                searchView.findViewById(android.support.v7.appcompat.R.id.search_close_btn).setVisibility(View.GONE);
             }
 
         });
 
         // Customize search toolbar
-        EditText editText = (searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text));
+        EditText editText = searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
 
         // Change text color in EditText programmatically
         editText.setHintTextColor(getResources().getColor(R.color.gGrey));
@@ -354,11 +366,13 @@ public class MusicPlayerFragment extends Fragment implements MusicPlayerView {
 
         searchView.setIconified(false);
         searchView.clearFocus();
+        searchView.findViewById(android.support.v7.appcompat.R.id.search_close_btn).setVisibility(View.GONE);
 
         searchView.setOnCloseListener(() -> {
 
             searchView.setIconified(false);
             searchView.clearFocus();
+
             return false;
         });
 
@@ -375,6 +389,10 @@ public class MusicPlayerFragment extends Fragment implements MusicPlayerView {
             public void onNext(TextViewAfterTextChangeEvent textViewAfterTextChangeEvent) {
 
                 String filter = textViewAfterTextChangeEvent.editable().toString();
+
+                if (filter.equals("")) {
+                    searchView.findViewById(android.support.v7.appcompat.R.id.search_close_btn).setVisibility(View.GONE);
+                }
 
                 ((MainActivity)getActivity()).setFilter(filter);
 

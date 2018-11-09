@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mnemo.angler.R;
+import com.mnemo.angler.ui.main_activity.activity.MainActivity;
 import com.mnemo.angler.ui.main_activity.fragments.playlists.playlist_configuration.PlaylistConfigurationFragment;
 import com.mnemo.angler.ui.main_activity.fragments.playlists.playlist_delete.PlaylistDeleteDialogFragment;
 import com.mnemo.angler.ui.main_activity.fragments.playlists.playlists.PlaylistsFragment;
@@ -286,6 +287,12 @@ public class PlaylistCreationDialogFragment extends DialogFragment implements Pl
 
                         // Rename playlist
                         presenter.renamePlaylist(oldTitle, newTitle);
+
+                        // If playlist is main playlist change main playlist name
+                        if (((MainActivity) getActivity()).getMainPlaylistName().equals(oldTitle)){
+                            ((MainActivity) getActivity()).setMainPlaylistName(newTitle);
+                        }
+
 
                         // Change title in playlist configuration fragment
                         PlaylistConfigurationFragment playlistConfigurationFragment = (PlaylistConfigurationFragment) getActivity().getSupportFragmentManager()
