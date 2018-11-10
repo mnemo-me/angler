@@ -85,9 +85,7 @@
     <style name="ExpandedText">
         <item name="android:textSize">18sp</item>
         <item name="android:textColor">#FFFFFF</item>
-        <item name="android:maxWidth">230dp</item>
         <item name="android:maxLines">1</item>
-        <item name="android:ellipsize">end</item>
     </style>
 
     <style name="CollapsedText">

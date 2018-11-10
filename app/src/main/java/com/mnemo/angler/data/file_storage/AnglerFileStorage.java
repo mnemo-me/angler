@@ -26,12 +26,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
-import java.util.TreeSet;
-import java.util.function.Function;
 
 import javax.inject.Inject;
 
-import retrofit2.http.Url;
 
 public class AnglerFileStorage {
 
@@ -94,6 +91,11 @@ public class AnglerFileStorage {
             } else {
 
                 String extension = MimeTypeMap.getFileExtensionFromUrl(Uri.fromFile(temp).toString());
+
+                if (extension.equals("")){
+                    extension = file.substring(file.lastIndexOf(".") + 1);
+                }
+
                 String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
 
                 if (mimeType != null) {

@@ -17,6 +17,7 @@ import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -59,24 +60,17 @@ public class ArtistConfigurationFragment extends Fragment implements ArtistConfi
 
     @Nullable
     @BindView(R.id.artist_conf_play_all)
-    LinearLayout playAllLayout;
+    Button playAllLayout;
 
-    @BindView(R.id.artist_conf_play_all_button)
-    ImageButton playAllButton;
+    @Nullable
+    @BindView(R.id.artist_conf_separator)
+    View separator;
 
     @BindView(R.id.artist_conf_tab_layout)
     TabLayout tabLayout;
 
     @BindView(R.id.artist_conf_view_pager)
     ViewPager viewPager;
-
-    // Artist variables
-    String image;
-    String artist;
-    String localPlaylistName;
-
-    // Other variables;
-    int orientation;
 
     @Nullable
     @BindView(R.id.artist_conf_app_bar)
@@ -86,6 +80,16 @@ public class ArtistConfigurationFragment extends Fragment implements ArtistConfi
     @BindView(R.id.artist_conf_collapsing_toolbar)
     CollapsingToolbarLayout collapsingToolbarLayout;
 
+    @BindView(R.id.artist_conf_back)
+    ImageButton back;
+
+    // Artist variables
+    String image;
+    String artist;
+    String localPlaylistName;
+
+    // Other variables;
+    int orientation;
 
 
     public ArtistConfigurationFragment() {
@@ -122,29 +126,23 @@ public class ArtistConfigurationFragment extends Fragment implements ArtistConfi
 
                 if (Math.abs(verticalOffset) == appBarLayout.getTotalScrollRange()) {
 
-                    // If collapsed show play all toolbar button
-                    playAllButton.setVisibility(View.VISIBLE);
-
                     float alpha = 0;
 
                     artistText.setAlpha(alpha);
                     playAllLayout.setAlpha(alpha);
                     cardView.setAlpha(alpha);
+                    separator.setAlpha(alpha);
+                    back.setAlpha(alpha);
 
                 } else {
 
-                    // Hide play all toolbar button, set alpha on othre items
-                    if (playAllButton.getVisibility() != View.GONE) {
-                        playAllButton.setVisibility(View.GONE);
-                    }
-
                     float alpha = 1f - (float) Math.abs(verticalOffset) / (float) (appBarLayout.getTotalScrollRange() / 2);
-
-                    tabLayout.setPadding((int)(12 * MainActivity.density + (1 - alpha) * 50), 0,0,0);
 
                     artistText.setAlpha(alpha);
                     playAllLayout.setAlpha(alpha);
                     cardView.setAlpha(alpha);
+                    separator.setAlpha(alpha);
+                    back.setAlpha(alpha);
                 }
             });
         }
@@ -219,6 +217,7 @@ public class ArtistConfigurationFragment extends Fragment implements ArtistConfi
     }
 
 
+    @Optional
     @OnClick(R.id.artist_conf_play_all_button)
     void playAllButton(){
         playAll();
@@ -247,7 +246,7 @@ public class ArtistConfigurationFragment extends Fragment implements ArtistConfi
         int imageHeight;
 
         if (orientation == Configuration.ORIENTATION_PORTRAIT){
-            imageHeight = 125;
+            imageHeight = 148;
         }else{
             imageHeight = 240;
         }

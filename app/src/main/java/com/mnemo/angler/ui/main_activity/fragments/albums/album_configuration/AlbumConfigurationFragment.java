@@ -21,6 +21,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -69,7 +70,7 @@ public class AlbumConfigurationFragment extends Fragment implements AlbumConfigu
 
     @Nullable
     @BindView(R.id.album_conf_play_all)
-    LinearLayout playAllLayout;
+    Button playAllLayout;
 
     @BindView(R.id.album_conf_play_all_button)
     ImageButton playAllButton;
@@ -131,7 +132,14 @@ public class AlbumConfigurationFragment extends Fragment implements AlbumConfigu
 
         // Assign title & artist
         if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-            collapsingToolbarLayout.setTitle(title);
+
+            String titleCollapse = title;
+
+            if (title.length() > 20){
+                titleCollapse = title.substring(0, 19) + "...";
+            }
+
+            collapsingToolbarLayout.setTitle(titleCollapse);
         } else {
             titleText.setText(title);
         }
@@ -330,7 +338,7 @@ public class AlbumConfigurationFragment extends Fragment implements AlbumConfigu
         int imageHeight;
 
         if (orientation == Configuration.ORIENTATION_PORTRAIT){
-            imageHeight = 125;
+            imageHeight = 198;
         }else{
             imageHeight = 240;
         }
