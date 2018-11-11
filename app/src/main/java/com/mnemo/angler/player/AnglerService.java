@@ -48,18 +48,19 @@ public class AnglerService extends MediaBrowserServiceCompat {
     private AnglerNotificationManager mAnglerNotificationManager;
 
     private ArrayList<MediaSessionCompat.QueueItem> queue = new ArrayList<>();
-    private int queueIndex = 0;
+    private int queueIndex = -1;
 
     public static boolean isQueueInitialized = false;
+
+    int seekbarPosition = -1;
 
 
     public void onCreate() {
 
         super.onCreate();
 
-        /*
-        Setup media session on service, set playback state and callbacks
-         */
+
+        // Setup media session on service, set playback state and callbacks
         mMediaSession = new MediaSessionCompat(this, "Angler Service");
         mMediaSession.setPlaybackState(new PlaybackStateCompat.Builder()
                 .setActions(
@@ -73,27 +74,30 @@ public class AnglerService extends MediaBrowserServiceCompat {
                 MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS);
         mMediaSession.setCallback(anglerServiceCallback);
 
-        /*
-        set session token to connect to service from clients
-         */
+
+        // Set session token to connect to service from clients
         setSessionToken(mMediaSession.getSessionToken());
 
 
-        /*
-        Run another thread, that watch on seek bar position from service
-         */
 
-        final Handler seekHandler = new Handler();
+        // Run another thread, that watch on seek bar position from service
+        Handler seekHandler = new Handler();
         seekHandler.post(new Runnable() {
             @Override
             public void run() {
                 if (mMediaPlayer != null){
 
-                    Intent intent = new Intent();
-                    intent.setAction("seekbar_progress_changed");
-                    intent.putExtra("seekbar_progress", mMediaPlayer.getCurrentPosition());
-                    sendBroadcast(intent);
+                    int newSeekbarPosition = mMediaPlayer.getCurrentPosition();
+                    Log.e("ffffffff", "pos + " + seekbarPosition + "       " + newSeekbarPosition);
+                    if (newSeekbarPosition / 1000 != seekbarPosition / 1000){
 
+                        seekbarPosition = newSeekbarPosition;
+
+                        Intent intent = new Intent();
+                        intent.setAction("seekbar_progress_changed");
+                        intent.putExtra("seekbar_progress", seekbarPosition);
+                        sendBroadcast(intent);
+                    }
                 }
                 seekHandler.postDelayed(this,100);
             }
@@ -133,19 +137,6 @@ public class AnglerService extends MediaBrowserServiceCompat {
             MediaSessionCompat.QueueItem queueItem = new MediaSessionCompat.QueueItem(description, description.hashCode());
             queue.add(queueIndex + index, queueItem);
         }
-
-        @Override
-        public void onRemoveQueueItemAt(int index) {
-
-            if (index <= queueIndex){
-                queueIndex--;
-            }
-            queue.remove(index);
-            mMediaSession.setQueue(queue);
-        }
-
-
-
 
 
 
@@ -321,6 +312,7 @@ public class AnglerService extends MediaBrowserServiceCompat {
         public void onSeekTo(long pos) {
             super.onSeekTo(pos);
             if (mMediaPlayer != null) {
+                Log.e("fffffffffff", "g " + pos);
                 mMediaPlayer.seekTo((int) (pos * mMediaPlayer.getDuration() / 100));
             }
         }
@@ -333,6 +325,14 @@ public class AnglerService extends MediaBrowserServiceCompat {
             super.onCustomAction(action, extras);
 
             switch(action){
+
+                case "set_queue_title":
+
+                    String queueTitle = extras.getString("queue_title");
+
+                    mMediaSession.setQueueTitle(queueTitle);
+
+                    break;
 
                 case "clear_queue":
 
@@ -349,6 +349,19 @@ public class AnglerService extends MediaBrowserServiceCompat {
                     if (mMediaSession.getController().getMetadata() == null){
                         onPrepare();
                     }
+
+                    break;
+
+                case "remove_queue_item":
+
+                    int index = extras.getInt("position");
+
+                    if (index <= queueIndex){
+                        queueIndex--;
+                    }
+
+                    queue.remove(index);
+                    mMediaSession.setQueue(queue);
 
                     break;
 

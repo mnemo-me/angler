@@ -103,6 +103,7 @@
         android:id="@+id/playlist_conf_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:paddingTop="8dp"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginStart="284dp"
         android:layout_marginTop="48dp"

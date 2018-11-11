@@ -105,6 +105,8 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
     private String currentPlaylistName = "";
     private String filter = "";
 
+    private int selectedDrawerItemIndex = 0;
+
 
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -136,6 +138,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
             mainPlaylistName = savedInstanceState.getString("main_playlist_name");
             currentPlaylistName = savedInstanceState.getString("current_playlist_name");
             filter = savedInstanceState.getString("filter");
+            selectedDrawerItemIndex = savedInstanceState.getInt("selected_drawer_item");
 
             args = new Bundle();
             args.putBundle("client_bundle", savedInstanceState.getBundle("client_bundle"));
@@ -160,6 +163,10 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
 
             mainFrame.setVisibility(savedInstanceState.getInt("main_frame_visibility"));
         }
+
+        // Select current drawer item
+        drawerItems.get(selectedDrawerItemIndex).setSelected(true);
+        drawerItems.get(selectedDrawerItemIndex).setTypeface(null, Typeface.BOLD);
     }
 
 
@@ -191,6 +198,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
                         }
 
                         break;
+
                 }
             }
         };
@@ -221,6 +229,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
         outState.putString("main_playlist_name", mainPlaylistName);
         outState.putString("current_playlist_name", currentPlaylistName);
         outState.putString("filter", filter);
+        outState.putInt("selected_drawer_item", selectedDrawerItemIndex);
 
         outState.putInt("main_frame_visibility", findViewById(R.id.main_frame).getVisibility());
         outState.putBundle("client_bundle", anglerClient.getClientBundle());
@@ -419,12 +428,9 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
 
 
     // Creating Drawer Item Fragment
-    private void createDrawerItemFragment(View v, Fragment fragment, String tag) {
-        if (!v.isSelected()) {
-            deselectDrawerItem();
-            v.setSelected(true);
-            ((TextView)v).setTypeface(null, Typeface.BOLD);
-        }
+    private void createDrawerItemFragment(int drawerItemIndex, Fragment fragment, String tag) {
+
+        selectDrawerItem(drawerItemIndex);
 
         checkDrawerItemFragment();
 
@@ -448,26 +454,26 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
 
 
     // Deselecting selected item in drawer panel and make lines visible
-    public void deselectDrawerItem() {
+    public void selectDrawerItem(int drawerItemIndex) {
 
-        for (TextView t : drawerItems){
-            if (t.isSelected()){
-                t.setSelected(false);
-                t.setTypeface(null, Typeface.NORMAL);
-            }
+        if (!drawerItems.get(drawerItemIndex).isSelected()) {
+
+            drawerItems.get(selectedDrawerItemIndex).setSelected(false);
+            drawerItems.get(selectedDrawerItemIndex).setTypeface(null, Typeface.NORMAL);
+
+            selectedDrawerItemIndex = drawerItemIndex;
+
+            drawerItems.get(selectedDrawerItemIndex).setSelected(true);
+            drawerItems.get(selectedDrawerItemIndex).setTypeface(null, Typeface.BOLD);
         }
-
     }
 
 
     //Initializing items in drawer panel and associate them with corresponding Drawer Item Fragment
     @OnClick(R.id.music_player_drawer_item)
-    void musicPlayerSelect(View v) {
-        if (!v.isSelected()) {
-            deselectDrawerItem();
-            v.setSelected(true);
-            ((TextView)v).setTypeface(null, Typeface.BOLD);
-        }
+    void musicPlayerSelect() {
+
+        selectDrawerItem(0);
 
         checkDrawerItemFragment();
         onBackPressed();
@@ -476,33 +482,28 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
 
 
     @OnClick(R.id.playlists_drawer_item)
-    void playlistsSeleсt(View v) {
-        createDrawerItemFragment(v, new PlaylistsFragment(), "Playlist fragment");
-
+    void playlistsSelect() {
+        createDrawerItemFragment(1, new PlaylistsFragment(), "Playlist fragment");
     }
 
     @OnClick(R.id.albums_drawer_item)
-    void albumsSelect(View v) {
-        createDrawerItemFragment(v, new AlbumsFragment(), "Albums fragment");
-
+    void albumsSelect() {
+        createDrawerItemFragment(2, new AlbumsFragment(), "Albums fragment");
     }
 
     @OnClick(R.id.artists_drawer_item)
-    void artistsSelect(View v) {
-        createDrawerItemFragment(v, new ArtistsFragment(), "Artists fragment");
-
+    void artistsSelect() {
+        createDrawerItemFragment(3, new ArtistsFragment(), "Artists fragment");
     }
 
     @OnClick(R.id.equalizer_drawer_item)
-    void equalizerSelect(View v) {
-        createDrawerItemFragment(v, new EqualizerFragment(), "Equalizer fragment");
-
+    void equalizerSelect() {
+        createDrawerItemFragment(4, new EqualizerFragment(), "Equalizer fragment");
     }
 
     @OnClick(R.id.background_drawer_item)
-    void backgroundSelect(View v) {
-        createDrawerItemFragment(v, new BackgroundChangerFragment(), "Background fragment");
-
+    void backgroundSelect() {
+        createDrawerItemFragment(5, new BackgroundChangerFragment(), "Background fragment");
     }
 
 

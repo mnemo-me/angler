@@ -17,7 +17,10 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="8dp"
+            android:paddingTop="8dp"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:paddingBottom="0dp"
             android:src="@drawable/add_selector"
             android:layout_gravity="center_vertical"/>
 
@@ -25,12 +28,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingTop="@dimen/default_margin"
-            android:paddingBottom="@dimen/default_margin"
+            android:paddingBottom="8dp"
             android:textSize="12sp"
             android:textColor="@color/selected_grey_white"
             android:text="@string/add_tracks_to_playlist"/>
 
     </LinearLayout>
-
 
 </LinearLayout>

@@ -31,7 +31,6 @@ public class AnglerClient{
     private MediaBrowserCompat mMediaBrowser;
     private MediaControllerCompat mController;
 
-    private String playlistQueue = "";
     private String queueFilter = "";
 
     private long durationMS;
@@ -112,8 +111,7 @@ public class AnglerClient{
 
     public void playNow(String playlistName, int position, List<Track> tracks){
 
-        if (!playlistName.equals(playlistQueue) || !((MainActivity)context).getFilter().equals(queueFilter)) {
-
+        if (!playlistName.equals(getQueueTitle()) || !((MainActivity)context).getFilter().equals(queueFilter)) {
 
             mController.getTransportControls().sendCustomAction("clear_queue", null);
 
@@ -123,7 +121,10 @@ public class AnglerClient{
 
             }
 
-            playlistQueue = playlistName;
+            Bundle bundle = new Bundle();
+            bundle.putString("queue_title", playlistName);
+
+            mController.getTransportControls().sendCustomAction("set_queue_title", bundle);
             mController.getTransportControls().sendCustomAction("update_queue", null);
 
         }
@@ -134,6 +135,10 @@ public class AnglerClient{
 
     public ArrayList<MediaSessionCompat.QueueItem> getQueue(){
         return (ArrayList<MediaSessionCompat.QueueItem>)mController.getQueue();
+    }
+
+    public String getQueueTitle(){
+        return mController.getQueueTitle().toString();
     }
 
     public void addToQueue(String playlistName, List<Track> tracks, boolean isPlayNext){
@@ -150,7 +155,10 @@ public class AnglerClient{
 
         }
 
-        playlistQueue = "";
+        Bundle bundle = new Bundle();
+        bundle.putString("queue_title", "");
+
+        mController.getTransportControls().sendCustomAction("set_queue_title", bundle);
         mController.getTransportControls().sendCustomAction("update_queue", null);
     }
 
@@ -164,7 +172,27 @@ public class AnglerClient{
             mController.addQueueItem(description);
         }
 
-        playlistQueue = "";
+        Bundle bundle = new Bundle();
+        bundle.putString("queue_title", "");
+
+        mController.getTransportControls().sendCustomAction("set_queue_title", bundle);
+        mController.getTransportControls().sendCustomAction("update_queue", null);
+    }
+
+    public void addToPlaylistQueue(Track track){
+
+        MediaDescriptionCompat description = MediaAssistant.mergeMediaDescription(track, getQueueTitle());
+        mController.addQueueItem(description);
+
+        mController.getTransportControls().sendCustomAction("update_queue", null);
+    }
+
+    public void addToPlaylistQueue(List<Track> tracks){
+
+        for (MediaDescriptionCompat description : MediaAssistant.mergeMediaDescriptionArray(getQueueTitle(), tracks)) {
+            mController.addQueueItem(description);
+        }
+
         mController.getTransportControls().sendCustomAction("update_queue", null);
     }
 
@@ -173,8 +201,16 @@ public class AnglerClient{
     }
 
     public void removeQueueItemAt(int position){
-        mController.removeQueueItemAt(position);
-        playlistQueue = "";
+
+        Bundle bundle = new Bundle();
+        bundle.putInt("position", position);
+
+        mController.getTransportControls().sendCustomAction("remove_queue_item", bundle);
+
+        Bundle bundle2 = new Bundle();
+        bundle2.putString("queue_title", "");
+
+        mController.getTransportControls().sendCustomAction("set_queue_title", bundle2);
     }
 
     public void replaceQueueItems(int oldPosition, int newPosition){
@@ -183,7 +219,6 @@ public class AnglerClient{
         bundle.putInt("old_position", oldPosition);
         bundle.putInt("new_position", newPosition);
 
-
         mController.getTransportControls().sendCustomAction("replace_queue_items", bundle);
     }
 
@@ -191,6 +226,8 @@ public class AnglerClient{
 
         return (int) mController.getPlaybackState().getActiveQueueItemId();
     }
+
+
 
 
     public void seekTo(int progress){
@@ -367,7 +404,6 @@ public class AnglerClient{
     private void openClientServiceBundle(Bundle bundle){
 
         if (bundle != null) {
-            playlistQueue = bundle.getString("playlist_queue");
             queueFilter = bundle.getString("queue_filter");
             serviceBundle = bundle.getBundle("service_bundle");
         }
@@ -376,7 +412,6 @@ public class AnglerClient{
     public Bundle getClientBundle(){
 
         Bundle bundle = new Bundle();
-        bundle.putString("playlist_queue", playlistQueue);
         bundle.putString("queue_filter", queueFilter);
         bundle.putBundle("service_bundle", serviceBundle);
 

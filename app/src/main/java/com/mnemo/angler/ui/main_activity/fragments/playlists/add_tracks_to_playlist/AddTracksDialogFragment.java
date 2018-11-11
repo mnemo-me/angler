@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.mnemo.angler.R;
 import com.mnemo.angler.data.database.Entities.Track;
+import com.mnemo.angler.ui.main_activity.activity.MainActivity;
 import com.mnemo.angler.ui.main_activity.adapters.AddTracksExpandableListAdapter;
 
 import java.util.ArrayList;
@@ -76,6 +77,11 @@ public class AddTracksDialogFragment extends DialogFragment implements AddTracks
         addButton = bodyLayout.findViewById(R.id.add_tracks_add);
         addButton.setOnClickListener(view -> {
             presenter.addTracksToPlaylist(title, adapter.getNewTracks());
+
+            if (title.equals(((MainActivity)getActivity()).getAnglerClient().getQueueTitle())){
+                ((MainActivity)getActivity()).getAnglerClient().addToPlaylistQueue(adapter.getNewTracks());
+            }
+
             dismiss();
         });
 

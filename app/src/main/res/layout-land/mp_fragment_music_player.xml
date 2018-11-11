@@ -91,6 +91,19 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="@id/main_fragment_spinner_layout"/>
 
+    <View
+        android:id="@+id/artist_track_separator"
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:background="@color/gGrey"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="64dp"
+        android:layout_marginStart="284dp"
+        android:layout_marginBottom="@dimen/default_margin"
+        android:visibility="invisible"/>
+
     <FrameLayout
         android:id="@+id/song_list"
         android:layout_width="match_parent"
@@ -103,29 +116,17 @@
         android:layout_width="284dp"
         android:layout_height="match_parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/artist_track_separator"
+        app:layout_constraintEnd_toStartOf="@id/artist_song_list"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginTop="48dp"/>
 
-    <View
-        android:id="@+id/artist_track_separator"
-        android:layout_width="1dp"
-        android:layout_height="match_parent"
-        android:background="@color/gGrey"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@id/artist_list"
-        app:layout_constraintEnd_toStartOf="@id/artist_song_list"
-        android:layout_marginTop="64dp"
-        android:layout_marginBottom="@dimen/default_margin"
-        android:visibility="invisible"/>
 
     <FrameLayout
         android:id="@+id/artist_song_list"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toEndOf="@id/artist_track_separator"
+        app:layout_constraintStart_toEndOf="@id/artist_list"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="48dp"/>
 

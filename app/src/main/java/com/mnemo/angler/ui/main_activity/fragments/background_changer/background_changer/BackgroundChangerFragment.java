@@ -245,6 +245,9 @@ public class BackgroundChangerFragment extends Fragment implements DrawerItem, B
         // Set new backgroundImage and opacity
         ((MainActivity)getActivity()).setBackground(selectedImage, opacity);
 
+        // Select music player drawer item
+        ((MainActivity)getActivity()).selectDrawerItem(0);
+
         getActivity().onBackPressed();
     }
 

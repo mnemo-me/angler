@@ -25,6 +25,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.mnemo.angler.data.database.Entities.Track;
 import com.mnemo.angler.R;
@@ -315,14 +316,21 @@ public class PlaylistConfigurationFragment extends Fragment implements PlaylistC
     @OnClick(R.id.playlist_conf_play_all)
     void playAll(){
 
-        PlayAllDialogFragment playAllDialogFragment = new PlayAllDialogFragment();
+        if (presenter.getTracks().size() != 0) {
 
-        Bundle args = new Bundle();
-        args.putString("playlist", title);
-        args.putParcelableArrayList("tracks", (ArrayList<? extends Parcelable>) presenter.getTracks());
-        playAllDialogFragment.setArguments(args);
+            PlayAllDialogFragment playAllDialogFragment = new PlayAllDialogFragment();
 
-        playAllDialogFragment.show(getActivity().getSupportFragmentManager(), "play_all_dialog_fragment");
+            Bundle args = new Bundle();
+            args.putString("playlist", title);
+            args.putParcelableArrayList("tracks", (ArrayList<? extends Parcelable>) presenter.getTracks());
+            playAllDialogFragment.setArguments(args);
+
+            playAllDialogFragment.show(getActivity().getSupportFragmentManager(), "play_all_dialog_fragment");
+
+        }else{
+
+            Toast.makeText(getContext(), R.string.empty_playlist, Toast.LENGTH_SHORT).show();
+        }
     }
 
     @OnClick(R.id.playlist_conf_play_all_button)

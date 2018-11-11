@@ -1,6 +1,7 @@
 package com.mnemo.angler.ui.main_activity.misc.contextual_menu;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -245,6 +246,10 @@ public class ContextualMenuDialogFragment extends BottomSheetDialogFragment impl
     void deleteTrack(){
 
         presenter.deleteTrack(playlist, track.get_id());
+
+        if (playlist.equals(((MainActivity)getActivity()).getAnglerClient().getQueueTitle())) {
+            ((MainActivity) getActivity()).getAnglerClient().removeQueueItemAt(tracks.indexOf(track));
+        }
     }
 
 
@@ -258,9 +263,12 @@ public class ContextualMenuDialogFragment extends BottomSheetDialogFragment impl
 
             // Undo deleting
             presenter.restoreTrack(playlist, trackId, position);
+
         });
 
         snackbar.show();
         dismiss();
     }
+
+
 }

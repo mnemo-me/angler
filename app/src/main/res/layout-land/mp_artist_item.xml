@@ -12,6 +12,7 @@
     android:paddingStart="24dp"
     android:paddingEnd="@dimen/default_margin"
     android:textColor="@color/white"
+    android:background="@drawable/selected_track_background"
     android:textAllCaps="true"
     tools:text="Sweet dreams" />
 
