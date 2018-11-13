@@ -107,5 +107,6 @@
     <string name="landscape_crop">Landscape crop</string>
     <string name="image_crop">Image crop</string>
     <string name="library_updated">Library updated</string>
+    <string name="artist_images_updated">Artist images updated</string>
 
 </resources>

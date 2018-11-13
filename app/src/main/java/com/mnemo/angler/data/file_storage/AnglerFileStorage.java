@@ -25,12 +25,21 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.inject.Inject;
 
+import io.reactivex.Completable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+
 
 public class AnglerFileStorage {
+
+    // Listener interfaces
+    public interface OnArtistImagesUpdateListener{
+        void onArtistImagesUpdated();
+    }
 
     public static final String PHONE_STORAGE = Environment.getExternalStorageDirectory().getPath();
     public static final String TEMP_IMAGE_NAME = AnglerFolder.PATH_PLAYLIST_COVER + File.separator + "temp.jpg";
@@ -379,6 +388,19 @@ public class AnglerFileStorage {
                 }
             }
         }
+    }
+
+    // Update artist images
+    public void updateArtistImages(HashMap<String, InputStream> artistImages, OnArtistImagesUpdateListener listener){
+
+        Completable.fromAction(() -> {
+            for (String artist : artistImages.keySet()){
+                saveArtistImage(artist, artistImages.get(artist));
+            }
+        })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(() -> listener.onArtistImagesUpdated());
+
     }
 
     // Save artist bio

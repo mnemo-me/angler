@@ -14,6 +14,7 @@ import com.mnemo.angler.ui.main_activity.classes.Album;
 import com.mnemo.angler.util.MediaAssistant;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -97,14 +98,23 @@ public class AnglerRepository {
     }
 
     // Refresh artists images
-    public void refreshArtistImages(){
+    public void refreshArtistImages(AnglerFileStorage.OnArtistImagesUpdateListener listener){
 
         anglerDB.loadArtists("library", artists -> {
 
+            HashMap<String, InputStream> artistImages = new HashMap<>();
+
             for (String artist : artists){
 
-                anglerNetworking.loadArtistImage(artist, inputStream -> anglerFileStorage.saveArtistImage(artist, inputStream));
+                anglerNetworking.loadArtistImage(artist, inputStream -> {
+                    artistImages.put(artist, inputStream);
+
+                    if (artistImages.size() == artists.size()){
+                        anglerFileStorage.updateArtistImages(artistImages, listener);
+                    }
+                });
             }
+
         });
     }
 

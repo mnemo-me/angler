@@ -14,6 +14,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.mnemo.angler.ui.main_activity.adapters.ArtistAdapter;
 import com.mnemo.angler.ui.main_activity.classes.DrawerItem;
@@ -42,6 +43,8 @@ public class ArtistsFragment extends Fragment implements DrawerItem, ArtistsView
 
     int orientation;
 
+    boolean isRefreshing = false;
+
     public ArtistsFragment() {
         // Required empty public constructor
     }
@@ -55,6 +58,11 @@ public class ArtistsFragment extends Fragment implements DrawerItem, ArtistsView
 
         // Get orientation
         orientation = getResources().getConfiguration().orientation;
+
+        // Restore refreshing state
+        if (savedInstanceState != null){
+            isRefreshing = savedInstanceState.getBoolean("is_refreshing");
+        }
 
         // Inject views
         unbinder = ButterKnife.bind(this, view);
@@ -100,6 +108,13 @@ public class ArtistsFragment extends Fragment implements DrawerItem, ArtistsView
     }
 
     @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putBoolean("is_refreshing", isRefreshing);
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
 
@@ -109,7 +124,10 @@ public class ArtistsFragment extends Fragment implements DrawerItem, ArtistsView
     // Refresh artists images
     @OnClick(R.id.artists_refresh_images)
     void refreshArtistImages(){
-        presenter.refreshArtistsImages();
+        if (!isRefreshing) {
+            presenter.refreshArtistsImages();
+            isRefreshing = true;
+        }
     }
 
     // Setup drawer menu button
@@ -125,5 +143,13 @@ public class ArtistsFragment extends Fragment implements DrawerItem, ArtistsView
 
         adapter = new ArtistAdapter(getContext(), artists);
         recyclerView.setAdapter(adapter);
+    }
+
+    @Override
+    public void completeRefreshingImages() {
+
+        Toast.makeText(getContext(), R.string.artist_images_updated, Toast.LENGTH_SHORT).show();
+        isRefreshing = false;
+        adapter.notifyDataSetChanged();
     }
 }

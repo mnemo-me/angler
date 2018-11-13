@@ -30,6 +30,8 @@ public class AnglerNetworking {
         void onArtistBioLoaded(String bio);
     }
 
+
+
     private LastFMApiService lastFMApiService;
 
     @Inject

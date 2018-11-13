@@ -2,6 +2,7 @@ package com.mnemo.angler.ui.main_activity.fragments.artists.artists;
 
 import com.mnemo.angler.AnglerApp;
 import com.mnemo.angler.data.AnglerRepository;
+import com.mnemo.angler.data.networking.AnglerNetworking;
 import com.mnemo.angler.ui.base.BasePresenter;
 
 import javax.inject.Inject;
@@ -28,6 +29,11 @@ public class ArtistsPresenter extends BasePresenter {
 
     // Refresh artists images
     void refreshArtistsImages(){
-        repository.refreshArtistImages();
+        repository.refreshArtistImages(() -> {
+
+            if (getView() != null){
+                ((ArtistsView)getView()).completeRefreshingImages();
+            }
+        });
     }
 }
