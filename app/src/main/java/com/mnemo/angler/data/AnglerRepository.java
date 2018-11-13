@@ -72,8 +72,23 @@ public class AnglerRepository {
 
             for (Album album : albums){
                 if (!anglerFileStorage.isAlbumCoverExist(album.getArtist(), album.getAlbum())) {
-                    anglerNetworking.loadAlbum(album.getArtist(), album.getAlbum(),
-                            inputStream -> anglerFileStorage.saveAlbumCover(album.getArtist(), album.getAlbum(), inputStream));
+
+                    anglerDB.loadAlbumTracks(album.getArtist(), album.getAlbum(), tracks1 -> Completable.fromAction(() -> {
+                        for (Track track : tracks1) {
+                            InputStream inputStream1 = anglerFileStorage.extractAlbumImage(track.getUri());
+
+                            if (inputStream1 != null){
+
+                                anglerFileStorage.saveAlbumCover(track.getArtist(), track.getAlbum(), inputStream1);
+                                return;
+                            }
+                        }
+
+                        if (!anglerFileStorage.isAlbumCoverExist(album.getArtist(), album.getAlbum())) {
+                            anglerNetworking.loadAlbum(album.getArtist(), album.getAlbum(),
+                                    inputStream -> anglerFileStorage.saveAlbumCover(album.getArtist(), album.getAlbum(), inputStream));
+                        }
+                    }).subscribeOn(Schedulers.io()).subscribe());
                 }
             }
         });
