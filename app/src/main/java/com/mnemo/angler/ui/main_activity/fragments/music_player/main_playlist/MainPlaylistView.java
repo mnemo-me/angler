@@ -12,4 +12,6 @@ public interface MainPlaylistView extends BaseView {
     void setTracks(List<Track> playlistTracks);
 
     String getFilter();
+
+    void completeUpdate();
 }

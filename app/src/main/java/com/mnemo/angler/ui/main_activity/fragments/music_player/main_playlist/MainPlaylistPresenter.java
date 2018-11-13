@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 
 import com.mnemo.angler.AnglerApp;
 import com.mnemo.angler.data.AnglerRepository;
+import com.mnemo.angler.data.database.AnglerDB;
 import com.mnemo.angler.data.database.Entities.Track;
 import com.mnemo.angler.ui.base.BasePresenter;
 
@@ -64,5 +65,18 @@ public class MainPlaylistPresenter extends BasePresenter {
     // Get tracks
     public List<Track> getTracks() {
         return tracks;
+    }
+
+    // Update library
+    void updateLibrary(){
+        repository.updateLibrary(new AnglerDB.LibraryUpdateListener() {
+            @Override
+            public void libraryUpdated() {
+
+                if (getView() != null){
+                    ((MainPlaylistView)getView()).completeUpdate();
+                }
+            }
+        });
     }
 }

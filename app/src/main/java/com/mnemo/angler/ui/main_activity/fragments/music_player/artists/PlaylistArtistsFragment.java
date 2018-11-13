@@ -13,6 +13,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,11 +57,8 @@ public class PlaylistArtistsFragment extends Fragment implements PlaylistArtists
         filter = ((MainActivity)getActivity()).getFilter();
 
         // Get selected artist (for landscape layout)
-        if (savedInstanceState != null){
-            selectedArtist = savedInstanceState.getString("selected_artist");
-        }else{
-            selectedArtist = ((MusicPlayerFragment)getActivity().getSupportFragmentManager().findFragmentByTag("music_player_fragment")).getArtistSelected();
-        }
+        selectedArtist = ((MusicPlayerFragment)getActivity().getSupportFragmentManager().findFragmentByTag("music_player_fragment")).getArtistSelected();
+
 
         // Configure recycler view
         recyclerView = new RecyclerView(getContext());
@@ -164,6 +162,7 @@ public class PlaylistArtistsFragment extends Fragment implements PlaylistArtists
         playlistArtistTracksFragment.setArguments(args);
 
         if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+
             getParentFragment().getChildFragmentManager().beginTransaction()
                     .replace(R.id.song_list, playlistArtistTracksFragment, "artist_track_fragment")
                     .addToBackStack(null)

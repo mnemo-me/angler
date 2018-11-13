@@ -28,6 +28,10 @@ public class AnglerDB{
     private AnglerRoomDatabase db;
 
     // Listener interfaces
+    public interface LibraryUpdateListener{
+        void libraryUpdated();
+    }
+
     public interface PlaylistsUpdateListener{
         void playlistsUpdated(List<String> playlistTitles);
     }
@@ -93,6 +97,19 @@ public class AnglerDB{
                     deleteTracks(tracks, dbTracks);
                 });
 
+    }
+
+    public void updateDatabase(List<Track> tracks, LibraryUpdateListener listener){
+
+        db.trackDAO().getTracksOnce()
+                .subscribeOn(Schedulers.io())
+                .subscribe(dbTracks -> Completable.fromAction(() -> {
+                    insertTracks(tracks, dbTracks);
+                    updateTracks(tracks, dbTracks);
+                    deleteTracks(tracks, dbTracks);
+                })
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(() -> listener.libraryUpdated()));
     }
 
     // Insert, Update, Delete track methods

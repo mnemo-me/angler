@@ -283,6 +283,13 @@ public class AnglerRepository {
 
 
     // Database methods
+    public void updateLibrary(AnglerDB.LibraryUpdateListener listener){
+
+        Completable.fromAction(() -> anglerDB.updateDatabase(anglerFileStorage.scanTracks(AnglerFileStorage.PHONE_STORAGE), listener))
+                .subscribeOn(Schedulers.io())
+                .subscribe();
+    }
+
     // Playlists methods
     // Load playlists or/and titles
     public void loadPlaylistTitles(AnglerDB.PlaylistsUpdateListener listener){

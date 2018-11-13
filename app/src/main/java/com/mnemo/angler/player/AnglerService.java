@@ -52,7 +52,7 @@ public class AnglerService extends MediaBrowserServiceCompat {
 
     public static boolean isQueueInitialized = false;
 
-    int seekbarPosition = -1;
+    int seekbarPosition = 0;
 
 
     public void onCreate() {

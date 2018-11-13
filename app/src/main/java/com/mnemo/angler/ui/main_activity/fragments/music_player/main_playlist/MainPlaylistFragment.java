@@ -11,17 +11,24 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.mnemo.angler.R;
 import com.mnemo.angler.data.database.Entities.Track;
 import com.mnemo.angler.ui.main_activity.activity.MainActivity;
 import com.mnemo.angler.ui.main_activity.adapters.TrackAdapter;
 
 import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 
 public class MainPlaylistFragment extends Fragment implements MainPlaylistView{
@@ -29,8 +36,14 @@ public class MainPlaylistFragment extends Fragment implements MainPlaylistView{
 
     MainPlaylistPresenter presenter;
 
+    Unbinder unbinder;
+
+    @BindView(R.id.mp_list_refresh)
+    SwipeRefreshLayout swipeRefreshLayout;
+
+    @BindView(R.id.mp_list_recycler_view)
     RecyclerView recyclerView;
-    LinearLayoutManager linearLayoutManager;
+
     TrackAdapter adapter;
 
     BroadcastReceiver receiver;
@@ -48,27 +61,28 @@ public class MainPlaylistFragment extends Fragment implements MainPlaylistView{
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
+        View view = inflater.inflate(R.layout.mp_list, container, false);
+
         // Get orientation
         orientation = getResources().getConfiguration().orientation;
+
+        // Inject views
+        unbinder = ButterKnife.bind(this, view);
 
         // Get filter
         filter = ((MainActivity)getActivity()).getFilter();
 
         // Configure recycler view
-        recyclerView = new RecyclerView(getContext());
-
         if (orientation == Configuration.ORIENTATION_PORTRAIT) {
             recyclerView.setPadding(0, (int) (12 * MainActivity.density), 0, (int) (8 * MainActivity.density));
         }else{
             recyclerView.setPadding(0, (int) (4 * MainActivity.density), 0, (int) (4 * MainActivity.density));
         }
 
-        recyclerView.setClipToPadding(false);
-
-        linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
 
-        return recyclerView;
+        return view;
     }
 
     @Override
@@ -81,6 +95,9 @@ public class MainPlaylistFragment extends Fragment implements MainPlaylistView{
 
         // Load tracks
         presenter.loadPlaylist(((MainActivity) getActivity()).getMainPlaylistName());
+
+        // Configure swipe behavior
+        swipeRefreshLayout.setOnRefreshListener(() -> presenter.updateLibrary());
     }
 
     @Override
@@ -158,8 +175,12 @@ public class MainPlaylistFragment extends Fragment implements MainPlaylistView{
         getContext().unregisterReceiver(receiver);
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
 
-
+        unbinder.unbind();
+    }
 
     // MVP View methods
     @Override
@@ -179,4 +200,10 @@ public class MainPlaylistFragment extends Fragment implements MainPlaylistView{
         return filter;
     }
 
+    @Override
+    public void completeUpdate() {
+
+        Toast.makeText(getContext(), R.string.library_updated, Toast.LENGTH_SHORT).show();
+        swipeRefreshLayout.setRefreshing(false);
+    }
 }
