@@ -30,8 +30,6 @@ public class AnglerNetworking {
         void onArtistBioLoaded(String bio);
     }
 
-
-
     private LastFMApiService lastFMApiService;
 
     @Inject
@@ -55,6 +53,11 @@ public class AnglerNetworking {
 
                                     if (response2.code() == 200) {
                                         listener.onAlbumLoaded(response2.body().byteStream());
+                                    }else{
+                                        // fix for singles
+                                        if (album.contains("(Single)")) {
+                                            loadAlbum(artist, album.replace(" (Single)", ""), listener);
+                                        }
                                     }
                                 });
                     }
@@ -77,6 +80,8 @@ public class AnglerNetworking {
 
                                     if (response2.code() == 200){
                                         listener.onArtistImageLoaded(response2.body().byteStream());
+                                    }else{
+                                        listener.onArtistImageLoaded(null);
                                     }
                                 });
                     }

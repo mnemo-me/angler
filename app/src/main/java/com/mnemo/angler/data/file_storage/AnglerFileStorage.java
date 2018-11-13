@@ -14,9 +14,9 @@ import com.mnemo.angler.data.database.Entities.Track;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -395,7 +395,10 @@ public class AnglerFileStorage {
 
         Completable.fromAction(() -> {
             for (String artist : artistImages.keySet()){
-                saveArtistImage(artist, artistImages.get(artist));
+
+                if (artistImages.get(artist) != null) {
+                    saveArtistImage(artist, artistImages.get(artist));
+                }
             }
         })
                 .observeOn(AndroidSchedulers.mainThread())
@@ -434,41 +437,20 @@ public class AnglerFileStorage {
 
 
 
-    public static void extractAlbumImage(String uri, File file) {
+    public InputStream extractAlbumImage(String uri) {
 
-        if (!file.exists()) {
+        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+        retriever.setDataSource(uri);
 
-            MediaMetadataRetriever retriever = new MediaMetadataRetriever();
-            retriever.setDataSource(uri);
+        byte[] data = retriever.getEmbeddedPicture();
 
-            byte[] data = retriever.getEmbeddedPicture();
-
-            if (data != null) {
-
-                Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
-                FileOutputStream outputStream = null;
-
-                try {
-                    outputStream = new FileOutputStream(file);
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
-
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                }finally {
-
-                    if (outputStream != null) {
-                        try {
-                            outputStream.flush();
-                            outputStream.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                }
-            }
+        if (data != null) {
+            return new ByteArrayInputStream(data);
+        }else {
+            return null;
         }
     }
+
 
     public String loadArtistBio(String artist){
 
