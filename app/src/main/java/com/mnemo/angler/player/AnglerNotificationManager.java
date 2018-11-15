@@ -20,13 +20,14 @@ import android.support.v4.media.session.PlaybackStateCompat;
 
 import com.mnemo.angler.R;
 import com.mnemo.angler.data.file_storage.AnglerFolder;
+import com.mnemo.angler.player.service.AnglerService;
 import com.mnemo.angler.ui.main_activity.activity.MainActivity;
 
 import java.io.File;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
 
-class AnglerNotificationManager {
+public class AnglerNotificationManager {
 
     private static final String ACTION_PLAY = "action_play";
     private static final String ACTION_PAUSE = "action_pause";
@@ -46,7 +47,7 @@ class AnglerNotificationManager {
 
     //private RemoteViews notificationView;
 
-    AnglerNotificationManager(AnglerService anglerService) {
+    public AnglerNotificationManager(AnglerService anglerService) {
 
         this.anglerService = anglerService;
 
@@ -125,7 +126,7 @@ class AnglerNotificationManager {
     /*
     Creating new Notification
      */
-    void createNotification(){
+    public void createNotification(){
 
         /*
         Get metadata via Media Controller

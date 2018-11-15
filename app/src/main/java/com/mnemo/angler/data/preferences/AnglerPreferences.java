@@ -5,7 +5,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -14,6 +16,7 @@ public class AnglerPreferences {
     Context context;
     private SharedPreferences appPreferences;
     private SharedPreferences equalizerPreferences;
+    private SharedPreferences queuePreferences;
 
     @Inject
     public AnglerPreferences(Context context) {
@@ -23,6 +26,7 @@ public class AnglerPreferences {
     public void initializePreferences(){
         appPreferences = context.getSharedPreferences("app_pref", Context.MODE_PRIVATE);
         equalizerPreferences = context.getSharedPreferences("equalizer_pref", Context.MODE_PRIVATE);
+        queuePreferences = context.getSharedPreferences("queue_pref", Context.MODE_PRIVATE);
     }
 
     public void setBackgroundImage(String backgroundImage){
@@ -132,4 +136,39 @@ public class AnglerPreferences {
         equalizerPreferences.edit().putInt("amplifier_gain", amplifierGain).apply();
     }
 
+
+
+
+    // Queue methods
+    public String getQueueTitle(){
+        return queuePreferences.getString("queue_title", null);
+    }
+
+    public void setQueueTitle(String queueTitle){
+        queuePreferences.edit().putString("queue_title", queueTitle).apply();
+    }
+
+    public Set<String> getQueue(){
+        return queuePreferences.getStringSet("queue", null);
+    }
+
+    public void setQueue(HashSet<String> queue){
+        queuePreferences.edit().putStringSet("queue", queue).apply();
+    }
+
+    public int getQueueIndex(){
+        return queuePreferences.getInt("queue_index", 0);
+    }
+
+    public void setQueueIndex(int queueIndex){
+        queuePreferences.edit().putInt("queue_index", queueIndex).apply();
+    }
+
+    public int getSeekbarPosition(){
+        return queuePreferences.getInt("seekbar_position", 0);
+    }
+
+    public void setSeekbarPosition(int seekbarPosition){
+        queuePreferences.edit().putInt("seekbar_position", seekbarPosition).apply();
+    }
 }

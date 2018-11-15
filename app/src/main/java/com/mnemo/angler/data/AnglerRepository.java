@@ -17,7 +17,9 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -239,6 +241,39 @@ public class AnglerRepository {
 
     public void setAmplifierGain(int amplifierGain){
         anglerPreferences.setAmplifierGain(amplifierGain);
+    }
+
+    // Queue methods
+    public String getQueueTitle(){
+        return anglerPreferences.getQueueTitle();
+    }
+
+    public void setQueuTitle(String queuTitle){
+        anglerPreferences.setQueueTitle(queuTitle);
+    }
+
+    public Set<String> getQueue(){
+        return anglerPreferences.getQueue();
+    }
+
+    public void setQueue(HashSet<String> queue){
+        anglerPreferences.setQueue(queue);
+    }
+
+    public int getQueueIndex(){
+        return anglerPreferences.getQueueIndex();
+    }
+
+    public void setQueueIndex(int queueIndex){
+        anglerPreferences.setQueueIndex(queueIndex);
+    }
+
+    public int getSeekbarPosition(){
+        return anglerPreferences.getSeekbarPosition();
+    }
+
+    public void setSeekbarPosition(int seekbarPosition){
+        anglerPreferences.setSeekbarPosition(seekbarPosition);
     }
 
 

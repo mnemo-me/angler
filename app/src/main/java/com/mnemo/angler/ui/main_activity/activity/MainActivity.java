@@ -318,20 +318,6 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
         }
     }
 
-    // Set queue on app start
-    @Override
-    public void setQueue(List<Track> tracks) {
-        getAnglerClient().addToQueue("library", tracks, false);
-    }
-
-
-    // Initialize queue
-    public void initializeQueue(){
-        presenter.initializeQueue();
-    }
-
-
-
     // Setup media control buttons
 
     @OnClick(R.id.media_panel_play_pause)

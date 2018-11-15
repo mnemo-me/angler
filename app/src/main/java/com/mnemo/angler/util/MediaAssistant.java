@@ -36,7 +36,7 @@ public class MediaAssistant {
         return descriptions;
     }
 
-    private static MediaDescriptionCompat mergeMediaDescription(String mediaId, String title, String artist, String album, long duration, String uri, String playlist){
+    public static MediaDescriptionCompat mergeMediaDescription(String mediaId, String title, String artist, String album, long duration, String uri, String playlist){
 
         MediaDescriptionCompat.Builder builder = new MediaDescriptionCompat.Builder();
         builder.setMediaId(mediaId);

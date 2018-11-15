@@ -19,6 +19,7 @@ import android.support.v4.media.session.PlaybackStateCompat;
 import android.util.Log;
 
 import com.mnemo.angler.data.database.Entities.Track;
+import com.mnemo.angler.player.service.AnglerService;
 import com.mnemo.angler.ui.main_activity.activity.MainActivity;
 import com.mnemo.angler.util.MediaAssistant;
 
@@ -326,12 +327,6 @@ public class AnglerClient{
                     pbIntent.putExtra("playback_state", playbackState);
 
                     context.sendBroadcast(pbIntent);
-                }
-
-                // Initialize queue
-                if (!AnglerService.isQueueInitialized){
-                    ((MainActivity)context).initializeQueue();
-                    AnglerService.isQueueInitialized = true;
                 }
 
             }catch (RemoteException e){

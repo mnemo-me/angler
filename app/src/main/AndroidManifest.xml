@@ -28,7 +28,7 @@
         </activity>
 
         <service
-            android:name=".player.AnglerService"
+            android:name=".player.service.AnglerService"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.media.browse.MediaBrowserService" />

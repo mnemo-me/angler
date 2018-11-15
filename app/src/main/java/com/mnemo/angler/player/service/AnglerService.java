@@ -1,9 +1,8 @@
-package com.mnemo.angler.player;
+package com.mnemo.angler.player.service;
 
 
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.media.audiofx.BassBoost;
 import android.media.audiofx.Equalizer;
@@ -22,14 +21,20 @@ import android.support.v4.media.session.PlaybackStateCompat;
 import android.util.Log;
 
 
+import com.mnemo.angler.data.database.Entities.Track;
+import com.mnemo.angler.player.AnglerNotificationManager;
 import com.mnemo.angler.util.MediaAssistant;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
-public class AnglerService extends MediaBrowserServiceCompat {
+public class AnglerService extends MediaBrowserServiceCompat implements AnglerServiceView{
+
+    AnglerServicePresenter presenter;
 
     private MediaSessionCompat mMediaSession;
     private MediaPlayer mMediaPlayer;
@@ -47,10 +52,9 @@ public class AnglerService extends MediaBrowserServiceCompat {
 
     private AnglerNotificationManager mAnglerNotificationManager;
 
+    private String queueTitle;
     private ArrayList<MediaSessionCompat.QueueItem> queue = new ArrayList<>();
     private int queueIndex = -1;
-
-    public static boolean isQueueInitialized = false;
 
     int seekbarPosition = 0;
 
@@ -59,6 +63,9 @@ public class AnglerService extends MediaBrowserServiceCompat {
 
         super.onCreate();
 
+        // Bind Presenter to View
+        presenter = new AnglerServicePresenter();
+        presenter.attachView(this);
 
         // Setup media session on service, set playback state and callbacks
         mMediaSession = new MediaSessionCompat(this, "Angler Service");
@@ -110,20 +117,47 @@ public class AnglerService extends MediaBrowserServiceCompat {
         setupEqualizer();
         setupAudioEffects();
 
+        // Initialize queue
+        initializeQueue();
+
         // Initialize notification manager
         mAnglerNotificationManager = new AnglerNotificationManager(this);
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        presenter.saveQueueTitle(queueTitle);
+        presenter.saveQueue(simplifyQueue());
+        presenter.saveQueueIndex(queueIndex);
+        presenter.saveSeekbarPosition(seekbarPosition);
+
+        presenter.deattachView();
+    }
 
 
-    /*
-    Initialize media session callbacks (play, pause, stop, etc)
-     */
+    // MVP View methods
+    @Override
+    public void setQueue(List<Track> tracks) {
+
+        for (MediaDescriptionCompat description : MediaAssistant.mergeMediaDescriptionArray("library", tracks)) {
+
+            MediaSessionCompat.QueueItem queueItem = new MediaSessionCompat.QueueItem(description, description.hashCode());
+            queue.add(queueItem);
+        }
+
+        mMediaSession.setQueue(queue);
+    }
+
+
+
+    // Initialize media session callbacks (play, pause, stop, etc)
     MediaSessionCompat.Callback anglerServiceCallback = new MediaSessionCompat.Callback() {
 
         MediaMetadataCompat metadata;
 
-        // queue methods
+        // Queue methods
         @Override
         public void onAddQueueItem(MediaDescriptionCompat description) {
 
@@ -141,7 +175,7 @@ public class AnglerService extends MediaBrowserServiceCompat {
 
 
 
-        // control playback methods
+        // Playback control methods
         @Override
         public void onPrepare() {
 
@@ -248,7 +282,7 @@ public class AnglerService extends MediaBrowserServiceCompat {
 
 
 
-        // skip methods
+        // Skip methods
         @Override
         public void onSkipToPrevious() {
             super.onSkipToPrevious();
@@ -319,7 +353,7 @@ public class AnglerService extends MediaBrowserServiceCompat {
 
 
 
-        // custom actions
+        // Custom actions
         @Override
         public void onCustomAction(@NonNull String action, @Nullable Bundle extras) {
             super.onCustomAction(action, extras);
@@ -328,7 +362,7 @@ public class AnglerService extends MediaBrowserServiceCompat {
 
                 case "set_queue_title":
 
-                    String queueTitle = extras.getString("queue_title");
+                    queueTitle = extras.getString("queue_title");
 
                     mMediaSession.setQueueTitle(queueTitle);
 
@@ -494,11 +528,12 @@ public class AnglerService extends MediaBrowserServiceCompat {
     }
 
 
+    // Equalizer
     private void setupEqualizer(){
 
         mEqualizer = new Equalizer(0, mMediaPlayer.getAudioSessionId());
 
-        // get equalizer variables and attach them to media session
+        // Get equalizer variables and attach them to media session
         short lowerEqualizerBandLevel = mEqualizer.getBandLevelRange()[0];
         short upperEqualizerBandLevel = mEqualizer.getBandLevelRange()[1];
 
@@ -526,15 +561,13 @@ public class AnglerService extends MediaBrowserServiceCompat {
         mMediaSession.setExtras(bundle);
 
 
-        // configure equalizer from shared preferences
-        SharedPreferences sharedPreferences = getSharedPreferences("equalizer_pref", MODE_PRIVATE);
-
-        boolean onOffState = sharedPreferences.getBoolean("on_off_state", false);
+        // Configure equalizer
+        boolean onOffState = presenter.getEqualizerState();
         mEqualizer.setEnabled(onOffState);
 
         if (onOffState){
 
-            short presetNumber = (short) sharedPreferences.getInt("active_preset", 0);
+            short presetNumber = (short)presenter.getEqualizerPreset();
 
             if (presetNumber != 0){
 
@@ -544,12 +577,13 @@ public class AnglerService extends MediaBrowserServiceCompat {
                 mMediaSession.getController().getTransportControls().sendCustomAction("equalizer_change_preset", extras);
             }else{
 
+                // Get bands level
+                List<Short> bandsLevel = presenter.getBandsLevel(bandsFrequencies.size());
+
                 for (short i = 0; i < bandsFrequencies.size(); i++){
 
-                    short bandLevel = (short)sharedPreferences.getInt("band_" + i + "_level", 0);
-
                     Bundle extras = new Bundle();
-                    extras.putShort("band_" + i + "_level", bandLevel);
+                    extras.putShort("band_" + i + "_level", bandsLevel.get(i));
 
                     mMediaSession.getController().getTransportControls().sendCustomAction("equalizer_change_band_level", extras);
                 }
@@ -558,38 +592,126 @@ public class AnglerService extends MediaBrowserServiceCompat {
 
     }
 
-
+    // Audio effects
     private void setupAudioEffects(){
 
         mVirtualizer = new Virtualizer(0, mMediaPlayer.getAudioSessionId());
         mBassBoost = new BassBoost(0, mMediaPlayer.getAudioSessionId());
         mAmplifier = new LoudnessEnhancer(mMediaPlayer.getAudioSessionId());
 
-        // configure audio effects from shared preferences
-        SharedPreferences sharedPreferences = getSharedPreferences("equalizer_pref", MODE_PRIVATE);
-
         // Virtualizer
-        boolean virtualizerOnOffState = sharedPreferences.getBoolean("virtualizer_on_off_state", false);
+        boolean virtualizerOnOffState = presenter.getVirtualizerState();
         mVirtualizer.setEnabled(virtualizerOnOffState);
 
-        short virtualizerStrength = (short)sharedPreferences.getInt("virtualizer_strength", 0);
+        short virtualizerStrength = (short)presenter.getVirtualizerStrength();
         mVirtualizer.setStrength(virtualizerStrength);
 
 
         // Bass boost
-        boolean bassBoostOnOffState = sharedPreferences.getBoolean("bass_boost_on_off_state", false);
+        boolean bassBoostOnOffState = presenter.getBassBoostState();
         mBassBoost.setEnabled(bassBoostOnOffState);
 
-        short bassBoostStrength = (short)sharedPreferences.getInt("bass_boost_strength", 0);
+        short bassBoostStrength = (short)presenter.getBassBoostStrength();
         mBassBoost.setStrength(bassBoostStrength);
 
 
         // Amplifier
-        boolean amplifierOnOffState = sharedPreferences.getBoolean("amplifier_on_off_state", false);
+        boolean amplifierOnOffState = presenter.getAmplifierState();
         mAmplifier.setEnabled(amplifierOnOffState);
 
-        short amplifierGain = (short)sharedPreferences.getInt("amplifier_gain", 0);
+        short amplifierGain = (short)presenter.getAmplifierGain();
         mAmplifier.setTargetGain(amplifierGain);
 
     }
+
+
+
+    // Queue
+    private void initializeQueue(){
+
+        queueTitle = presenter.getQueueTitle();
+
+        if (queueTitle == null){
+
+            // Initialize queue from library
+            queueTitle = "Library";
+            mMediaSession.setQueueTitle(queueTitle);
+
+            presenter.loadLibraryTracks();
+
+            queueIndex = 0;
+
+            if (mMediaPlayer != null){
+                mMediaSession.getController().getTransportControls().prepare();
+            }
+
+        }else{
+
+            mMediaSession.setQueueTitle(queueTitle);
+
+            setQueue(presenter.getQueue());
+
+            queueIndex = presenter.getQueueIndex();
+
+            if (mMediaPlayer != null){
+                mMediaSession.getController().getTransportControls().prepare();
+            }
+
+            seekbarPosition = presenter.getSeekbarPosition();
+
+            if (mMediaPlayer != null) {
+                mMediaPlayer.seekTo(seekbarPosition * mMediaPlayer.getDuration() / 100);
+            }
+        }
+    }
+
+
+    // Queue support methods
+    public void setQueue(Set<String> simplifiedQueue){
+
+        for (int i = 0; i < simplifiedQueue.size(); i++){
+            queue.add(null);
+        }
+
+        for (String s : simplifiedQueue){
+            restoreQueueItem(s);
+        }
+
+        mMediaSession.setQueue(queue);
+    }
+
+
+    private HashSet<String> simplifyQueue(){
+
+        HashSet<String> set = new HashSet<>();
+
+        for (int i = 0; i < queue.size(); i++){
+            set.add(simplifyQueueItem(queue.get(i), i));
+        }
+
+        return set;
+    }
+
+
+    private String simplifyQueueItem(MediaSessionCompat.QueueItem queueItem, int position){
+        return position
+                + ":::" + queueItem.getDescription().getMediaId()
+                + ":::" + queueItem.getDescription().getTitle()
+                + ":::" + queueItem.getDescription().getSubtitle()
+                + ":::" + queueItem.getDescription().getExtras().getString("album")
+                + ":::" + queueItem.getDescription().getExtras().getLong("duration")
+                + ":::" + queueItem.getDescription().getMediaUri().toString()
+                + ":::" + queueItem.getDescription().getExtras().getString("track_playlist");
+    }
+
+    private void restoreQueueItem(String simplifiedQueueItem){
+
+        String[] queueItemArray = simplifiedQueueItem.split(":::");
+
+        MediaDescriptionCompat description = MediaAssistant.mergeMediaDescription(queueItemArray[1], queueItemArray[2],
+                queueItemArray[3], queueItemArray[4], Long.parseLong(queueItemArray[5]), queueItemArray[6], queueItemArray[7]);
+
+        queue.set(Integer.parseInt(queueItemArray[0]), new MediaSessionCompat.QueueItem(description, description.hashCode()));
+    }
+
 }

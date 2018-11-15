@@ -2,6 +2,7 @@ package com.mnemo.angler;
 
 import com.mnemo.angler.data.AnglerRepository;
 import com.mnemo.angler.data.RepositoryModule;
+import com.mnemo.angler.player.service.AnglerServicePresenter;
 import com.mnemo.angler.ui.local_load_activity.activity.LocalLoadPresenter;
 import com.mnemo.angler.ui.local_load_activity.fragments.cover_crop.CoverCropPresenter;
 import com.mnemo.angler.ui.local_load_activity.fragments.image_folder.ImageFolderPresenter;
@@ -39,8 +40,12 @@ import dagger.Component;
 @Component(modules = {RepositoryModule.class})
 public interface AnglerComponent {
 
+
     // Repository
     void injectAnglerRepository(AnglerRepository anglerRepository);
+
+    // Service
+    void injectAnglerServicePresenter(AnglerServicePresenter anglerServicePresenter);
 
     // Main activity
     void injectMainActivityPresenter(MainActivityPresenter mainActivityPresenter);
