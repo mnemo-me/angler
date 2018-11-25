@@ -1,57 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/softMainGrey"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:background="@color/softMainGrey">
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:paddingTop="16dp"
-        android:paddingBottom="16dp"
-        android:textColor="#FFFFFF"
-        android:textSize="16sp"
-        android:textStyle="bold"
+        style="@style/dialog_title"
         android:text="@string/queue"
+        app:layout_constraintBottom_toTopOf="@id/qu_separator"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/qu_separator"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/qu_count"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/dialog_title"
         android:layout_marginEnd="46dp"
-        android:textColor="#FFFFFF"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        tools:text="32"
+        app:layout_constraintBottom_toTopOf="@id/qu_separator"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/qu_separator"/>
+        tools:text="32" />
 
     <View
         android:id="@+id/qu_separator"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginStart="@dimen/default_margin"
-        android:layout_marginEnd="@dimen/default_margin"
-        android:background="@color/gGrey"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="60dp"/>
+        style="@style/line"
+        android:layout_marginTop="60dp"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/qu_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:paddingTop="8dp"
         android:clipToPadding="false"
-        app:layout_constraintTop_toBottomOf="@id/qu_separator"/>
+        android:paddingTop="8dp"
+        app:layout_constraintTop_toBottomOf="@id/qu_separator" />
 
 </android.support.constraint.ConstraintLayout>
 

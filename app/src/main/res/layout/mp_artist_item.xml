@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<TextView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/artist_item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="7dp"
     android:paddingBottom="7dp"
-    android:textSize="16sp"
-    android:paddingStart="24dp"
     android:paddingEnd="@dimen/default_margin"
-    android:textColor="@color/white"
+    android:paddingStart="24dp"
+    android:paddingTop="7dp"
     android:textAllCaps="true"
+    android:textColor="@color/white"
+    android:textSize="16sp"
     tools:text="Sweet dreams" />
 

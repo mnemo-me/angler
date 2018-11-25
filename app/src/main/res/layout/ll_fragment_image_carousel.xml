@@ -1,8 +1,8 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="#EF000000"
     android:clickable="true"
     tools:context=".ui.local_load_activity.fragments.image_carousel.ImageCarouselFragment">
@@ -21,22 +21,22 @@
 
     <TextView
         android:id="@+id/image_carousel_close"
-        style="@style/grey_bottom_button"
-        android:text="@string/hide"
+        style="@style/grey_yes_no_bottom_button"
         android:layout_marginEnd="1dp"
-        app:layout_constraintStart_toStartOf="parent"
+        android:text="@string/hide"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/image_carousel_select"
-        app:layout_constraintHorizontal_chainStyle="spread_inside"/>
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/image_carousel_select"
-        style="@style/grey_bottom_button"
-        android:text="@string/select"
+        style="@style/grey_yes_no_bottom_button"
         android:layout_marginStart="1dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:text="@string/select"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@id/image_carousel_close"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/image_carousel_close" />
 
 
 </android.support.constraint.ConstraintLayout>

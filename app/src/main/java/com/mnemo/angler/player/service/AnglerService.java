@@ -195,6 +195,8 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
         @Override
         public void onPlay() {
 
+            startService(new Intent(getApplicationContext(), AnglerService.class));
+
             mMediaSession.setPlaybackState(new PlaybackStateCompat.Builder()
                     .setState(PlaybackStateCompat.STATE_PLAYING, PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN, 0)
                     .setActiveQueueItemId((long)queueIndex)
@@ -336,7 +338,12 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
 
         @Override
         public void onSetShuffleMode(int shuffleMode) {
-            super.onSetShuffleMode(shuffleMode);
+
+            if (shuffleMode == PlaybackStateCompat.SHUFFLE_MODE_ALL){
+                mMediaSession.setShuffleMode(PlaybackStateCompat.SHUFFLE_MODE_NONE);
+            }else{
+                mMediaSession.setShuffleMode(PlaybackStateCompat.SHUFFLE_MODE_ALL);
+            }
         }
 
 

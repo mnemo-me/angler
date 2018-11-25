@@ -1,24 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:custom="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/softMainGrey"
-    android:paddingTop="6dp"
-    android:paddingBottom="6dp">
+    android:paddingBottom="6dp"
+    android:paddingTop="6dp">
 
     <ImageView
         android:id="@+id/queue_track_play_selector"
         android:layout_width="16dp"
         android:layout_height="16dp"
         android:layout_marginStart="8dp"
-        android:src="@drawable/ic_play_arrow_white_24dp"
+        android:contentDescription="@string/play_now"
+        android:src="@drawable/ic_play_arrow_black_24dp"
         android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <android.support.constraint.Guideline
         android:id="@+id/queue_guideline"
@@ -32,10 +33,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:maxWidth="240dp"
         android:ellipsize="end"
         android:lines="1"
-        android:textColor="#FFFFFF"
+        android:maxWidth="240dp"
+        android:textColor="@color/black"
         android:textSize="16sp"
         app:layout_constraintBottom_toTopOf="@+id/queue_guideline"
         app:layout_constraintStart_toStartOf="parent"
@@ -46,10 +47,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:maxWidth="240dp"
         android:ellipsize="end"
         android:lines="1"
-        android:textColor="@color/selected_subtitle"
+        android:maxWidth="240dp"
+        android:textColor="@color/gGrey"
         android:textSize="12sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/queue_guideline"
@@ -64,7 +65,7 @@
         android:layout_marginTop="8dp"
         android:gravity="end"
         android:lines="1"
-        android:textColor="#FFFFFF"
+        android:textColor="@color/black"
         android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/queue_track_delete"
@@ -76,29 +77,30 @@
         android:id="@+id/queue_track_mini_equalizer"
         android:layout_width="16dp"
         android:layout_height="16dp"
-        android:visibility="gone"
         android:layout_marginEnd="8dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/queue_track_delete"
         app:layout_constraintTop_toTopOf="parent"
         custom:animDuration="3500"
-        custom:foregroundColor="@color/white" />
+        custom:foregroundColor="@color/black" />
 
     <FrameLayout
         android:id="@+id/queue_track_delete"
         android:layout_width="46dp"
         android:layout_height="46dp"
         android:background="?android:selectableItemBackgroundBorderless"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
             android:layout_width="16dp"
             android:layout_height="16dp"
-            android:src="@drawable/baseline_clear_white_24dp"
             android:layout_gravity="center"
-            android:alpha="0.2"/>
+            android:alpha="0.2"
+            android:contentDescription="@string/delete_track_from_queue"
+            android:src="@drawable/ic_clear_black_24dp" />
 
     </FrameLayout>
 

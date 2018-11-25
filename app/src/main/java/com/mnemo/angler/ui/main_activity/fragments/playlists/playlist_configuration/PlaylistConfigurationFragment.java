@@ -23,7 +23,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -72,6 +71,7 @@ public class PlaylistConfigurationFragment extends Fragment implements PlaylistC
     @BindView(R.id.playlist_conf_play_all)
     Button playAllLayout;
 
+    @Nullable
     @BindView(R.id.playlist_conf_play_all_button)
     ImageButton playAllButton;
 
@@ -150,9 +150,6 @@ public class PlaylistConfigurationFragment extends Fragment implements PlaylistC
 
                 if (Math.abs(verticalOffset) == appBarLayout.getTotalScrollRange()) {
 
-                    // If collapsed show play all toolbar button
-                    playAllButton.setVisibility(View.VISIBLE);
-
                     float alpha = 0;
 
                     tracksCountView.setAlpha(alpha);
@@ -160,11 +157,6 @@ public class PlaylistConfigurationFragment extends Fragment implements PlaylistC
                     cardView.setAlpha(alpha);
 
                 } else {
-
-                    // Hide play all toolbar button, set alpha on othre items
-                    if (playAllButton.getVisibility() != View.GONE) {
-                        playAllButton.setVisibility(View.GONE);
-                    }
 
                     float alpha = 1f - (float) Math.abs(verticalOffset) / (float) (appBarLayout.getTotalScrollRange() / 2);
 
@@ -333,6 +325,7 @@ public class PlaylistConfigurationFragment extends Fragment implements PlaylistC
         }
     }
 
+    @Optional
     @OnClick(R.id.playlist_conf_play_all_button)
     void playAllButton(){
         playAll();

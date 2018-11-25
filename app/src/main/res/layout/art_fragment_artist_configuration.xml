@@ -23,35 +23,26 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="60dp"
-                android:maxWidth="230dp"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:textColor="#FFFFFF"
+                android:maxWidth="230dp"
+                android:textColor="@color/black"
                 android:textSize="18sp"
-                android:transitionName="title"
                 tools:text="Marilyn Manson" />
 
             <Button
                 android:id="@+id/artist_conf_play_all"
-                android:layout_width="220dp"
-                android:layout_height="36dp"
-                android:layout_marginStart="24dp"
-                android:layout_marginBottom="56dp"
-                android:paddingStart="@dimen/default_margin"
-                android:gravity="center_vertical"
-                android:layout_gravity="bottom"
-                android:text="@string/play_all"
-                android:textColor="@color/white"
-                android:background="@drawable/white_frame"/>
+                style="@style/play_all_button"
+                android:layout_marginBottom="72dp" />
 
 
             <android.support.v7.widget.CardView
                 android:id="@+id/artist_conf_cardview"
                 android:layout_width="148dp"
                 android:layout_height="148dp"
-                android:layout_marginTop="4dp"
+                android:layout_gravity="end"
                 android:layout_marginEnd="4dp"
-                android:layout_gravity="end">
+                android:layout_marginTop="4dp">
 
                 <android.support.constraint.ConstraintLayout
                     android:layout_width="match_parent"
@@ -61,16 +52,14 @@
                         android:id="@+id/artist_conf_image"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_margin="1dp"
+                        android:contentDescription="@string/cover"
                         android:scaleType="centerCrop"
-                        tools:src="@drawable/back3"
-                        android:transitionName="cover"/>
+                        tools:src="@drawable/back3" />
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_margin="1dp"
-                        android:background="@drawable/background_selector"/>
+                        android:background="@drawable/background_selector" />
 
                 </android.support.constraint.ConstraintLayout>
 
@@ -78,47 +67,35 @@
 
 
             <android.support.v7.widget.Toolbar
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:elevation="4dp"
-                app:layout_collapseMode="pin"
-                app:contentInsetStart="0dp">
+                style="@style/toolbar"
+                app:contentInsetStart="0dp"
+                app:layout_collapseMode="pin">
 
                 <ImageButton
                     android:id="@+id/artist_conf_back"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="4dp"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:padding="8dp"
-                    android:src="@drawable/baseline_arrow_back_white_24dp"
-                    android:transitionName="back"/>
+                    style="@style/button"
+                    android:contentDescription="@string/back"
+                    android:src="@drawable/ic_arrow_back_black_24dp" />
 
             </android.support.v7.widget.Toolbar>
 
             <View
                 android:id="@+id/artist_conf_separator"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                android:background="@color/gGrey"
-                android:layout_marginBottom="48dp"
-                android:layout_gravity="bottom"/>
+                style="@style/line"
+                android:layout_gravity="bottom"
+                android:layout_marginBottom="48dp" />
 
             <android.support.design.widget.TabLayout
                 android:id="@+id/artist_conf_tab_layout"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                app:tabMode="fixed"
-                app:tabGravity="fill"
+                android:layout_gravity="bottom"
                 android:elevation="4dp"
-                app:tabSelectedTextColor="#FFFFFF"
-                app:tabTextColor="@color/gGrey"
+                app:tabGravity="fill"
                 app:tabIndicatorHeight="0dp"
-                android:layout_gravity="bottom"/>
+                app:tabMode="fixed"
+                app:tabSelectedTextColor="@color/black"
+                app:tabTextColor="@android:color/secondary_text_light_nodisable" />
 
         </android.support.design.widget.CollapsingToolbarLayout>
 
@@ -128,6 +105,6 @@
         android:id="@+id/artist_conf_view_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
 </android.support.design.widget.CoordinatorLayout>

@@ -72,6 +72,7 @@ public class AlbumConfigurationFragment extends Fragment implements AlbumConfigu
     @BindView(R.id.album_conf_play_all)
     Button playAllLayout;
 
+    @Nullable
     @BindView(R.id.album_conf_play_all_button)
     ImageButton playAllButton;
 
@@ -151,9 +152,6 @@ public class AlbumConfigurationFragment extends Fragment implements AlbumConfigu
 
                 if (Math.abs(verticalOffset) == appBarLayout.getTotalScrollRange()) {
 
-                    // If collapsed show play all toolbar button
-                    playAllButton.setVisibility(View.VISIBLE);
-
                     float alpha = 0;
 
                     artistView.setAlpha(alpha);
@@ -162,11 +160,6 @@ public class AlbumConfigurationFragment extends Fragment implements AlbumConfigu
                     cardView.setAlpha(alpha);
 
                 } else {
-
-                    // Hide play all toolbar button, set alpha on othre items
-                    if (playAllButton.getVisibility() != View.GONE) {
-                        playAllButton.setVisibility(View.GONE);
-                    }
 
                     float alpha = 1f - (float) Math.abs(verticalOffset) / (float) (appBarLayout.getTotalScrollRange() / 2);
                     artistView.setAlpha(alpha);
@@ -300,6 +293,7 @@ public class AlbumConfigurationFragment extends Fragment implements AlbumConfigu
         playAllDialogFragment.show(getActivity().getSupportFragmentManager(), "play_all_dialog_fragment");
     }
 
+    @Optional
     @OnClick(R.id.album_conf_play_all_button)
     void playAllButton(){
         playAll();

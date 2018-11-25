@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#444444"
     tools:context=".ui.local_load_activity.activity.LocalLoadActivity">
 
     <android.support.design.widget.AppBarLayout
@@ -14,29 +13,19 @@
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/local_load_toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
+            style="@style/toolbar"
             app:contentInsetStart="0dp"
-            android:elevation="4dp"
             app:layout_scrollFlags="scroll|enterAlways|snap">
 
             <ImageButton
                 android:id="@+id/local_load_back_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:layout_marginEnd="8dp"
-                android:layout_marginStart="8dp"
-                android:padding="8dp"
-                android:src="@drawable/back_selector"/>
+                style="@style/button"
+                android:contentDescription="@string/back"
+                android:src="@drawable/ic_arrow_back_black_24dp" />
 
             <TextView
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:layout_marginStart="8dp"
-                android:textColor="@color/gGrey"
-                android:textSize="16sp"
-                android:text="@string/load_image"/>
+                style="@style/title"
+                android:text="@string/load_image" />
 
         </android.support.v7.widget.Toolbar>
 
@@ -45,12 +34,12 @@
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:elevation="4dp"
-            app:tabMode="scrollable"
-            app:tabSelectedTextColor="#FFFFFF"
-            app:tabTextColor="@android:color/secondary_text_light_nodisable"
-            app:tabIndicatorColor="#FFFFFF"
+            app:tabIndicatorColor="@color/black"
             app:tabIndicatorHeight="2dp"
-            app:tabTextAppearance="@style/tab_text_appearance"/>
+            app:tabMode="scrollable"
+            app:tabSelectedTextColor="@color/black"
+            app:tabTextAppearance="@style/tab_text_appearance"
+            app:tabTextColor="@android:color/secondary_text_light_nodisable" />
 
     </android.support.design.widget.AppBarLayout>
 
@@ -58,12 +47,12 @@
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     <FrameLayout
         android:id="@+id/full_frame"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:elevation="8dp"/>
+        android:elevation="8dp" />
 
 </android.support.design.widget.CoordinatorLayout>

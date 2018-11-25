@@ -312,9 +312,9 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
     public void setPlayPause(String playPauseState){
 
         if (playPauseState.equals("play")){
-            mPlayPauseButton.setImageResource(R.drawable.baseline_pause_white_48dp);
+            mPlayPauseButton.setImageResource(R.drawable.ic_pause_black_48dp);
         }else{
-            mPlayPauseButton.setImageResource(R.drawable.baseline_play_arrow_white_48dp);
+            mPlayPauseButton.setImageResource(R.drawable.ic_play_arrow_black_48dp);
         }
     }
 
@@ -342,7 +342,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
         boolean isRepeat = anglerClient.changeRepeatMode();
 
         if (isRepeat){
-            v.setAlpha(0.4f);
+            v.setAlpha(0.2f);
         }else{
             v.setAlpha(0.8f);
         }
@@ -350,13 +350,14 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
 
     @OnClick(R.id.media_panel_shuffle)
     void shuffle(View v) {
-/*
-        getMediaController().getTransportControls().sendCustomAction(PlaybackManager.SHUFFLE, null);
-        if (PlaybackManager.shuffleState) {
-            v.setAlpha(0.4f);
-        } else {
+
+        boolean isShuffle = anglerClient.changeShuffleMode();
+
+        if (isShuffle){
+            v.setAlpha(0.2f);
+        }else{
             v.setAlpha(0.8f);
-        }*/
+        }
     }
 
 

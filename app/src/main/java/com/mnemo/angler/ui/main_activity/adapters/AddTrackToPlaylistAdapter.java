@@ -74,12 +74,12 @@ public class AddTrackToPlaylistAdapter extends RecyclerView.Adapter<AddTrackToPl
 
         if (viewType == CREATE_NEW_PLAYLIST_VIEW_TYPE){
 
-            View view = LayoutInflater.from(context).inflate(R.layout.pm_playlist_create_new, parent, false);
+            View view = LayoutInflater.from(context).inflate(R.layout.misc_playlist_create_new, parent, false);
             return new CreateNewPlaylistViewHolder(view);
 
         }else{
 
-            View view = LayoutInflater.from(context).inflate(R.layout.pm_playlist_v2, parent, false);
+            View view = LayoutInflater.from(context).inflate(R.layout.pm_playlist_v2_white, parent, false);
             return new PlaylistViewHolder(view);
         }
 

@@ -42,7 +42,7 @@ public class ArtistBioFragment extends Fragment implements ArtistBioView {
 
         textView = new TextView(getContext());
         textView.setTextSize(14);
-        textView.setTextColor(getResources().getColor(R.color.gGrey));
+        textView.setTextColor(getResources().getColor(R.color.white));
         textView.setJustificationMode(Layout.JUSTIFICATION_MODE_INTER_WORD);
         textView.setPadding((int)(16 * MainActivity.density), (int)(12 * MainActivity.density),(int)(16 * MainActivity.density),(int)(16 * MainActivity.density));
 

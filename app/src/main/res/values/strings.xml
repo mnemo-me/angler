@@ -6,10 +6,8 @@
     <string name="library">Library</string>
     <string name="playlist_manager">Playlists</string>
     <string name="albums">Albums</string>
-    <string name="local_and_cached_only">local &amp; cached only</string>
     <string name="change_background">Background</string>
     <string name="equalizer">Equalizer</string>
-    <string name="extras">Extras</string>
     <string name="purchase">Purchase Angler</string>
     <string name="settings">settings</string>
     <string name="background_image">background_image</string>
@@ -32,10 +30,6 @@
     <string name="set_default_overlay">set default overlay</string>
     <string name="accept">accept</string>
     <string name="background_added">Background added</string>
-    <string name="abc_scroll">ABC scroll</string>
-    <string name="abc_scroll_decription">Add button on main screen  that allow to sort playlist alphabetically and scroll</string>
-    <string name="lyrics_on_tap">Lyrics on tap</string>
-    <string name="lyrics_on_tap_description">Tap on currently playing track to display lyrics</string>
     <string name="rename">Rename</string>
     <string name="change_cover">Change cover</string>
     <string name="add_tracks_to_playlist">Add tracks to playlist</string>
@@ -48,17 +42,11 @@
     <string name="local_load_image_transition">Local load image transition</string>
     <string name="add">add</string>
     <string name="context_menu_play">Play</string>
-    <string name="context_menu_lyrics">Lyrics</string>
     <string name="context_menu_go_to_album">Go to album</string>
     <string name="context_menu_go_to_artist">Go to artist</string>
     <string name="context_menu_add_to_playlist">Add to playlist</string>
-    <string name="context_menu_move">Move</string>
     <string name="context_menu_remove_from_playlist">Remove from playlist</string>
-    <string name="context_menu_transfer">Transfer to another storage</string>
     <string name="context_menu_delete">Delete</string>
-    <string name="service">Service</string>
-    <string name="storage">Storage</string>
-    <string name="updating_library">Updating library...</string>
     <string name="new_playlist">New playlist</string>
     <string name="playlist_name_is_empty">Playlist name is empty</string>
     <string name="playlist_name_reserved">Playlist name reserved</string>
@@ -94,7 +82,7 @@
     <string name="add_to_queue">Add to queue</string>
     <string name="empty_queue">Queue is empty</string>
     <string name="added_to">added to</string>
-    <string name="opacity">opacity</string>
+    <string name="opacity">Opacity</string>
     <string name="custom">Custom</string>
     <string name="audio_effects">Audio effects</string>
     <string name="virtualizer">Virtualizer</string>
@@ -108,5 +96,16 @@
     <string name="image_crop">Image crop</string>
     <string name="library_updated">Library updated</string>
     <string name="artist_images_updated">Artist images updated</string>
+    <string name="repeat">repeat</string>
+    <string name="shuffle">shuffle</string>
+    <string name="play_pause">play/pause</string>
+    <string name="skip_to_previous">skip to previous</string>
+    <string name="skip_to_next">skip to next</string>
+    <string name="cover">cover</string>
+    <string name="add_image">add image</string>
+    <string name="select_image">select image</string>
+    <string name="delete_image">delete image</string>
+    <string name="expand">expand</string>
+    <string name="delete_track_from_queue">delete track from queue</string>
 
 </resources>

@@ -49,11 +49,6 @@ public class AnglerClient{
         // Connect to Media Browser Service
         mMediaBrowser = new MediaBrowserCompat(context, new ComponentName(context, AnglerService.class), clientCallback, null);
 
-        // Launch service
-        Intent intent = new Intent(context, AnglerService.class);
-        context.startService(intent);
-
-
         mMediaBrowser.subscribe("media_space", new MediaBrowserCompat.SubscriptionCallback() {
             @Override
             public void onChildrenLoaded(@NonNull String parentId, @NonNull List<MediaBrowserCompat.MediaItem> children) {
@@ -98,6 +93,19 @@ public class AnglerClient{
             return false;
         }else{
             mController.getTransportControls().setRepeatMode(PlaybackStateCompat.REPEAT_MODE_ONE);
+            return true;
+        }
+    }
+
+    public boolean changeShuffleMode(){
+
+        int shuffleMode = mController.getShuffleMode();
+
+        if (shuffleMode == PlaybackStateCompat.SHUFFLE_MODE_ALL){
+            mController.getTransportControls().setShuffleMode(PlaybackStateCompat.SHUFFLE_MODE_NONE);
+            return false;
+        }else{
+            mController.getTransportControls().setShuffleMode(PlaybackStateCompat.SHUFFLE_MODE_ALL);
             return true;
         }
     }

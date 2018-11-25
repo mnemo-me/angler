@@ -2,7 +2,11 @@ package com.mnemo.angler.ui.main_activity.fragments.playlists.playlist_create;
 
 
 import android.app.Dialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -12,10 +16,11 @@ import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
-import android.widget.Button;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -48,6 +53,9 @@ public class PlaylistCreationDialogFragment extends DialogFragment implements Pl
     // CropIwa receiver
     CropIwaResultReceiver resultReceiver;
 
+    BroadcastReceiver receiver;
+    IntentFilter intentFilter;
+
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -71,8 +79,8 @@ public class PlaylistCreationDialogFragment extends DialogFragment implements Pl
 
 
         // Setup header
-        LinearLayout actionTitleLayout = (LinearLayout)LayoutInflater.from(getContext()).inflate(R.layout.misc_dialog_title, null, false);
-        TextView actionView = actionTitleLayout.findViewById(R.id.dialog_title);
+        ConstraintLayout actionTitleLayout = (ConstraintLayout) LayoutInflater.from(getContext()).inflate(R.layout.pm_playlist_creation_dialog_title, null, false);
+        TextView actionView = actionTitleLayout.findViewById(R.id.creation_playlist_dialog_title);
 
 
         // Set variables based on action type
@@ -101,6 +109,28 @@ public class PlaylistCreationDialogFragment extends DialogFragment implements Pl
                 break;
         }
 
+
+        // Delete playlist button (change only)
+        if (action.equals("change")) {
+            ImageButton deletePlaylistButton = actionTitleLayout.findViewById(R.id.creation_playlist_dialog_delete_button);
+
+            deletePlaylistButton.setVisibility(View.VISIBLE);
+
+            deletePlaylistButton.setOnClickListener(view -> {
+
+                PlaylistDeleteDialogFragment playlistDeleteDialogFragment = new PlaylistDeleteDialogFragment();
+
+                Bundle argsToDelete = new Bundle();
+                argsToDelete.putString("title", title);
+                argsToDelete.putString("db_name", dbName);
+                playlistDeleteDialogFragment.setArguments(argsToDelete);
+
+                playlistDeleteDialogFragment.show(getActivity().getSupportFragmentManager(), "Delete playlist dialog");
+            });
+
+
+        }
+
         builder.setCustomTitle(actionTitleLayout);
 
 
@@ -119,7 +149,7 @@ public class PlaylistCreationDialogFragment extends DialogFragment implements Pl
         }
 
         // Load new cover
-        ImageView loadImage = constraintLayout.findViewById(R.id.playlist_creation_load_image);
+        ImageButton loadImage = constraintLayout.findViewById(R.id.playlist_creation_load_image);
         loadImage.setOnClickListener(view -> {
 
             Intent intent = new Intent(getActivity(), LocalLoadActivity.class);
@@ -157,60 +187,15 @@ public class PlaylistCreationDialogFragment extends DialogFragment implements Pl
 
 
         // Assign buttons
-        switch (action){
-
-            case "create":
-
-                builder.setPositiveButton(R.string.create, null);
-                break;
-
-            case "change":
-
-                builder.setPositiveButton(R.string.save, null);
-                break;
-        }
-
-
-        // Cancel button
-        builder.setNegativeButton(R.string.cancel, (dialogInterface, i) -> {
-
-        });
-
-
-        // Delete playlist button (change only)
-        if (action.equals("change")) {
-            builder.setNeutralButton(R.string.delete, (dialogInterface, i) -> {
-
-                PlaylistDeleteDialogFragment playlistDeleteDialogFragment = new PlaylistDeleteDialogFragment();
-
-                Bundle argsToDelete = new Bundle();
-                argsToDelete.putString("title", title);
-                argsToDelete.putString("db_name", dbName);
-                playlistDeleteDialogFragment.setArguments(argsToDelete);
-
-                playlistDeleteDialogFragment.show(getActivity().getSupportFragmentManager(), "Delete playlist dialog");
-            });
-        }
-
-        return builder.create();
-    }
-
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        // Get created dialog
-        AlertDialog alertDialog = (AlertDialog)getDialog();
-
-        // Create/Save button (based on action)
-        Button positiveButton = alertDialog.getButton(Dialog.BUTTON_POSITIVE);
+        TextView createChangeButton = constraintLayout.findViewById(R.id.playlist_creation_create_change);
 
         switch (action){
 
             case "create":
 
-                positiveButton.setOnClickListener(view -> {
+                createChangeButton.setText(R.string.create);
+
+                createChangeButton.setOnClickListener(view -> {
 
                     title = editText.getText().toString();
 
@@ -241,7 +226,7 @@ public class PlaylistCreationDialogFragment extends DialogFragment implements Pl
                     playlistConfigurationFragment.setArguments(args);
 
                     getActivity().getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.frame, playlistConfigurationFragment, "playlist_conf_fragment")
+                            .replace(R.id.frame, playlistConfigurationFragment, "playlist_configuration_fragment")
                             .addToBackStack(null)
                             .commit();
 
@@ -249,11 +234,14 @@ public class PlaylistCreationDialogFragment extends DialogFragment implements Pl
 
                 });
 
+
                 break;
 
             case "change":
 
-                positiveButton.setOnClickListener(view -> {
+                createChangeButton.setText(R.string.save);
+
+                createChangeButton.setOnClickListener(view -> {
 
                     // Change cover
                     if (isCoverChanged) {
@@ -312,7 +300,43 @@ public class PlaylistCreationDialogFragment extends DialogFragment implements Pl
                 break;
         }
 
+        TextView closeButton = constraintLayout.findViewById(R.id.playlist_creation_close);
+        closeButton.setOnClickListener(view -> dismiss());
+
+
+        // Initialize broadcast receiver
+        receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+
+                switch (intent.getAction()){
+                    case "playlist_deleted":
+
+                        dismiss();
+
+                        break;
+                }
+
+            }
+        };
+
+        intentFilter = new IntentFilter();
+        intentFilter.addAction("playlist_deleted");
+
+        getContext().registerReceiver(receiver, intentFilter);
+
+        return builder.create();
     }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            getDialog().getWindow().setLayout((int) (600 * MainActivity.density), ViewGroup.LayoutParams.MATCH_PARENT);
+        }
+    }
+
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -326,6 +350,7 @@ public class PlaylistCreationDialogFragment extends DialogFragment implements Pl
         super.onDestroyView();
 
         presenter.deattachView();
+        getContext().unregisterReceiver(receiver);
         resultReceiver.unregister(getContext());
     }
 

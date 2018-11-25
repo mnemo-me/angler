@@ -4,9 +4,13 @@ package com.mnemo.angler.ui.main_activity.fragments.playlists.playlist_delete;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
+import android.view.LayoutInflater;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mnemo.angler.R;
@@ -33,10 +37,11 @@ public class PlaylistDeleteDialogFragment extends DialogFragment implements Play
         String title = getArguments().getString("title");
 
         // Setup body
-        builder.setMessage(R.string.delete_playlist_answer);
+        LinearLayout bodyLayout = (LinearLayout) LayoutInflater.from(getContext()).inflate(R.layout.pm_playlist_delete, null, false);
 
         // Setup buttons
-        builder.setPositiveButton(R.string.delete, (dialogInterface, i) -> {
+        TextView yesButton = bodyLayout.findViewById(R.id.playlist_delete_yes);
+        yesButton.setOnClickListener(view -> {
 
             // Delete playlist
             presenter.deletePlaylist(title);
@@ -45,18 +50,26 @@ public class PlaylistDeleteDialogFragment extends DialogFragment implements Play
             PlaylistConfigurationFragment playlistConfigurationFragment = (PlaylistConfigurationFragment) getActivity()
                     .getSupportFragmentManager().findFragmentByTag("playlist_configuration_fragment");
 
-            if (playlistConfigurationFragment != null){
+            if (playlistConfigurationFragment != null) {
                 getActivity().onBackPressed();
             }
+
+            Intent intent = new Intent();
+            intent.setAction("playlist_deleted");
+            getContext().sendBroadcast(intent);
+
+            dismiss();
 
             // Toast!
             Toast.makeText(getContext(), "Playlist '" + title + "' deleted", Toast.LENGTH_SHORT).show();
         });
 
 
-        builder.setNegativeButton(R.string.cancel, (dialogInterface, i) -> {
+        TextView noButton = bodyLayout.findViewById(R.id.playlist_delete_no);
+        noButton.setOnClickListener(view -> dismiss());
 
-        });
+        builder.setView(bodyLayout);
+
 
         return builder.create();
     }

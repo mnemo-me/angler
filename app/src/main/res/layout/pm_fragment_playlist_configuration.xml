@@ -15,48 +15,31 @@
             android:id="@+id/playlist_conf_collapsing_toolbar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:expandedTitleTextAppearance="@style/ExpandedText"
+            app:collapsedTitleTextAppearance="@style/CollapsedText"
+            app:expandedTitleGravity="top"
             app:expandedTitleMarginStart="24dp"
             app:expandedTitleMarginTop="80dp"
-            app:expandedTitleGravity="top"
-            app:collapsedTitleTextAppearance="@style/CollapsedText"
+            app:expandedTitleTextAppearance="@style/ExpandedText"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <TextView
                 android:id="@+id/playlist_conf_tracks_count"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                android:maxWidth="230dp"
-                android:textColor="@color/gGrey"
-                android:textSize="14sp"
-                tools:text="123 tracks"
-                android:maxLines="1"
-                android:ellipsize="end"
-                android:layout_gravity="center_vertical"
-                android:layout_marginTop="12dp"/>
+                style="@style/expanded_subtitle"
+                android:layout_marginTop="12dp"
+                tools:text="123 tracks" />
 
             <Button
                 android:id="@+id/playlist_conf_play_all"
-                android:layout_width="172dp"
-                android:layout_height="36dp"
-                android:layout_marginStart="24dp"
-                android:layout_marginBottom="8dp"
-                android:paddingStart="@dimen/default_margin"
-                android:gravity="center_vertical"
-                android:layout_gravity="bottom"
-                android:text="@string/play_all"
-                android:textColor="@color/white"
-                android:background="@drawable/white_frame"/>
+                style="@style/play_all_button" />
 
 
             <android.support.v7.widget.CardView
                 android:id="@+id/playlist_conf_cardview"
                 android:layout_width="196dp"
                 android:layout_height="196dp"
-                android:layout_marginTop="4dp"
+                android:layout_gravity="end"
                 android:layout_marginEnd="4dp"
-                android:layout_gravity="end">
+                android:layout_marginTop="4dp">
 
                 <android.support.constraint.ConstraintLayout
                     android:layout_width="match_parent"
@@ -66,16 +49,14 @@
                         android:id="@+id/playlist_conf_image"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_margin="1dp"
+                        android:contentDescription="@string/cover"
                         android:scaleType="centerCrop"
-                        tools:src="@drawable/back3"
-                        android:transitionName="cover"/>
+                        tools:src="@drawable/back3" />
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_margin="1dp"
-                        android:background="@drawable/background_selector"/>
+                        android:background="@drawable/background_selector" />
 
                 </android.support.constraint.ConstraintLayout>
 
@@ -83,33 +64,17 @@
 
 
             <android.support.v7.widget.Toolbar
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:elevation="4dp"
-                app:layout_collapseMode="pin"
-                app:contentInsetStart="0dp">
+                style="@style/toolbar"
+                app:contentInsetStart="0dp"
+                app:layout_collapseMode="pin">
 
                 <ImageButton
                     android:id="@+id/playlist_conf_back"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginStart="8dp"
+                    style="@style/button"
                     android:layout_marginTop="4dp"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:padding="8dp"
-                    android:src="@drawable/baseline_arrow_back_white_24dp"
-                    android:transitionName="back"/>
+                    android:contentDescription="@string/back"
+                    android:src="@drawable/ic_arrow_back_black_24dp" />
 
-                <ImageButton
-                    android:id="@+id/playlist_conf_play_all_button"
-                    android:layout_height="wrap_content"
-                    android:layout_width="wrap_content"
-                    android:src="@drawable/selected_play_all_button"
-                    android:background="?android:selectableItemBackgroundBorderless"
-                    android:padding="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_gravity="end"/>
 
             </android.support.v7.widget.Toolbar>
 
@@ -122,9 +87,9 @@
         android:id="@+id/playlist_conf_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingBottom="8dp"
         android:clipToPadding="false"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+        android:paddingBottom="8dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
 
 </android.support.design.widget.CoordinatorLayout>

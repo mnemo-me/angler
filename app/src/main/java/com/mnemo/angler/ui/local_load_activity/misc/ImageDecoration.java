@@ -21,15 +21,11 @@ public class ImageDecoration extends RecyclerView.ItemDecoration {
         int itemPosition = ((RecyclerView.LayoutParams)view.getLayoutParams()).getViewAdapterPosition();
 
         if (itemPosition >= spanCount) {
-            outRect.top = (int)(2 * MainActivity.density);
+            outRect.top = (int)(3 * MainActivity.density);
         }
 
         if ((itemPosition + 1) % spanCount != 0){
-            outRect.right = (int)(1 * MainActivity.density);
-        }
-
-        if (itemPosition % spanCount != 0){
-            outRect.left = (int)(1 * MainActivity.density);
+            outRect.right = (int)(3 * MainActivity.density);
         }
     }
 }

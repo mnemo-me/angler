@@ -1,7 +1,6 @@
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.main_activity.fragments.background_changer.background_changer.BackgroundChangerFragment">
@@ -20,43 +19,31 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="48dp"
-        android:background="#CC000000"
         tools:background="#CC000000" />
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/background_changer_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        app:contentInsetStart="0dp"
-        android:background="@color/softMainGrey">
+        style="@style/toolbar"
+        android:background="@color/softMainGrey"
+        app:contentInsetStart="0dp">
 
         <ImageView
             android:id="@+id/background_changer_drawer_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/selected_menu"
-            android:padding="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_gravity="center_vertical"
-            android:contentDescription="@string/settings"/>
+            style="@style/button"
+            android:contentDescription="@string/settings"
+            android:src="@drawable/selected_menu" />
 
         <TextView
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:layout_marginStart="8dp"
-            android:textColor="@color/gGrey"
-            android:textSize="16sp"
+            style="@style/title"
             android:text="@string/change_background" />
 
         <ImageView
             android:id="@+id/background_changer_select_background"
-            style="@style/bottom_bar_image"
-            android:alpha="0.1"
+            style="@style/button"
             android:layout_gravity="end"
-            android:padding="8dp"
-            android:layout_marginEnd="8dp"
-            android:src="@drawable/ic_check_white_24dp"/>
+            android:alpha="0.2"
+            android:contentDescription="@string/select"
+            android:src="@drawable/ic_check_black_24dp" />
 
     </android.support.v7.widget.Toolbar>
 
@@ -66,17 +53,18 @@
         android:layout_height="wrap_content"
         android:elevation="4dp"
         android:paddingBottom="48dp"
-        app:layout_constraintTop_toBottomOf="@id/background_changer_toolbar"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/background_changer_toolbar" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
         android:layout_marginStart="@dimen/default_margin"
-        android:textColor="@color/gGrey"
         android:text="@string/opacity"
+        android:textColor="@color/white"
         app:layout_constraintBottom_toTopOf="@id/overlay_seekbar"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent" />
 
     <SeekBar
         android:id="@+id/overlay_seekbar"
@@ -84,12 +72,12 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="12dp"
         android:max="255"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/background_changer_recycler_view"
+        android:progressBackgroundTint="@color/white"
         android:progressTint="@color/colorAccentLight"
         android:thumbTint="@color/colorAccentLight"
-        android:progressBackgroundTint="#FFFFFF"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/background_changer_recycler_view"
+        app:layout_constraintStart_toStartOf="parent" />
 
 
 </android.support.constraint.ConstraintLayout>

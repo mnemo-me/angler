@@ -1,96 +1,79 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
     tools:context=".ui.main_activity.fragments.music_player.music_player.MusicPlayerFragment">
 
-    <LinearLayout
-        android:id="@+id/main_fragment_spinner_layout"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:layout_alignParentTop="true"
-        android:elevation="4dp"
+    <android.support.v7.widget.Toolbar
+        style="@style/toolbar"
         android:background="@color/softMainGrey">
 
         <ImageView
             android:id="@+id/settings"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/selected_menu"
-            android:padding="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_gravity="center_vertical"
-            android:contentDescription="@string/settings"/>
+            style="@style/button"
+            android:contentDescription="@string/settings"
+            android:src="@drawable/selected_menu" />
 
         <Spinner
             android:id="@+id/main_fragment_playlist_spinner"
-            android:layout_width="0dp"
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:backgroundTint="@color/gGrey"
-            android:background="@null"/>
+            android:background="@null"
+            android:backgroundTint="@color/gGrey" />
+
+        <ImageButton
+            android:id="@+id/artists"
+            style="@style/button"
+            android:layout_gravity="end"
+            android:layout_marginStart="4dp"
+            android:alpha="0.5"
+            android:contentDescription="@string/artists"
+            android:src="@drawable/baseline_people_black_24dp" />
+
+        <ImageButton
+            android:id="@+id/playlist"
+            style="@style/button"
+            android:layout_gravity="end"
+            android:layout_marginEnd="4dp"
+            android:layout_marginStart="4dp"
+            android:alpha="1"
+            android:contentDescription="@string/playlist"
+            android:src="@drawable/baseline_toc_black_24dp" />
 
 
         <ImageButton
             android:id="@+id/search"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="8dp"
-            android:layout_marginStart="4dp"
+            style="@style/button"
+            android:layout_gravity="end"
             android:layout_marginEnd="4dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/baseline_search_white_24dp"
-            android:alpha="0.5"/>
-
-        <ImageButton
-            android:id="@+id/playlist"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="8dp"
             android:layout_marginStart="4dp"
-            android:layout_marginEnd="4dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_toc_white_24dp"
-            android:alpha="1"/>
+            android:alpha="0.5"
+            android:contentDescription="@string/search"
+            android:src="@drawable/baseline_search_black_24dp" />
 
-        <ImageButton
-            android:id="@+id/artists"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="8dp"
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="8dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_people_white_24dp"
-            android:alpha="0.5"/>
-
-    </LinearLayout>
+    </android.support.v7.widget.Toolbar>
 
     <android.support.v7.widget.SearchView
         android:id="@+id/search_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:searchIcon="@null"
-        app:searchHintIcon="@null"
-        app:queryHint="@string/search_hint"
-        app:closeIcon="@drawable/search_clear_selector"
-        android:paddingStart="10dp"
+        android:background="@color/softMainGrey"
+        android:paddingEnd="0dp"
+        android:paddingStart="32dp"
         android:visibility="gone"
-        android:elevation="4dp"
-        android:layout_below="@id/main_fragment_spinner_layout"
-        android:background="@color/softMainGrey"/>
+        app:closeIcon="@drawable/ic_clear_black_24dp"
+        app:queryHint="@string/search_hint"
+        app:searchHintIcon="@null"
+        app:searchIcon="@null" />
 
     <FrameLayout
         android:id="@+id/song_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/search_toolbar"/>
+        android:layout_height="match_parent" />
 
 
-</RelativeLayout>
+</LinearLayout>
 
 

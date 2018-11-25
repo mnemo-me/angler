@@ -1,38 +1,24 @@
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:clickable="true"
     tools:context=".ui.main_activity.fragments.albums.albums.AlbumsFragment">
 
     <android.support.v7.widget.Toolbar
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:elevation="4dp"
-        app:contentInsetStart="0dp"
-        android:background="@color/softMainGrey">
+        style="@style/toolbar"
+        android:background="@color/softMainGrey"
+        app:contentInsetStart="0dp">
 
         <ImageView
             android:id="@+id/albums_drawer_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/selected_menu"
-            android:padding="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_gravity="center_vertical"
+            style="@style/button"
             android:contentDescription="@string/settings"
-            android:transitionName="back"/>
+            android:src="@drawable/selected_menu" />
 
         <TextView
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:layout_marginStart="8dp"
-            android:textColor="@color/gGrey"
-            android:textSize="16sp"
+            style="@style/title"
             android:text="@string/albums" />
 
     </android.support.v7.widget.Toolbar>
@@ -40,7 +26,6 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/albums_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-
+        android:layout_height="match_parent" />
 
 </LinearLayout>

@@ -9,7 +9,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.mnemo.angler.R;
@@ -51,7 +50,7 @@ public class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.ViewHolder>{
     static class HeaderViewHolder extends ViewHolder{
 
         @BindView(R.id.add_tracks)
-        LinearLayout addTracks;
+        TextView addTracks;
 
         HeaderViewHolder(View itemView) {
             super(itemView);

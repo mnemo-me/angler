@@ -1,59 +1,46 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.main_activity.fragments.artists.artist_configuration.ArtistConfigurationFragment">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/artist_conf_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        app:contentInsetStart="0dp"
-        android:background="@color/softMainGrey">
+        style="@style/toolbar"
+        android:background="@color/softMainGrey"
+        app:contentInsetStart="0dp">
 
         <ImageButton
             android:id="@+id/artist_conf_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:padding="8dp"
-            android:layout_marginStart="8dp"
-            android:src="@drawable/back_selector"
-            android:transitionName="back"/>
+            style="@style/button"
+            android:contentDescription="@string/back"
+            android:src="@drawable/ic_arrow_back_black_24dp" />
 
         <TextView
             android:id="@+id/artist_conf_artist"
-            android:layout_width="210dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="@dimen/default_margin"
+            style="@style/title"
+            android:width="210dp"
             android:ellipsize="end"
             android:maxLines="1"
-            android:textColor="#FFFFFF"
-            android:textSize="16sp"
-            android:transitionName="title"
-            tools:text="Marilyn Manson"/>
+            tools:text="Marilyn Manson" />
 
         <ImageButton
             android:id="@+id/artist_conf_play_all_button"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:src="@drawable/selected_play_all_button"
-            android:background="?android:selectableItemBackgroundBorderless"
-            android:padding="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_gravity="end"/>
+            style="@style/button"
+            android:layout_gravity="end"
+            android:contentDescription="@string/play_all"
+            android:src="@drawable/ic_playlist_play_black_24dp" />
 
         <android.support.design.widget.TabLayout
             android:id="@+id/artist_conf_tab_layout"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            app:tabMode="fixed"
             app:tabGravity="fill"
-            app:tabSelectedTextColor="#FFFFFF"
-            app:tabTextColor="@color/gGrey"
-            app:tabIndicatorHeight="0dp"/>
+            app:tabIndicatorHeight="0dp"
+            app:tabMode="fixed"
+            app:tabSelectedTextColor="@color/black"
+            app:tabTextColor="@android:color/secondary_text_light_nodisable" />
 
     </android.support.v7.widget.Toolbar>
 
@@ -61,13 +48,12 @@
         android:id="@+id/artist_conf_cardview"
         android:layout_width="240dp"
         android:layout_height="240dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/artist_conf_toolbar"
+        app:cardCornerRadius="2dp"
+        app:cardElevation="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/artist_conf_view_pager"
-        android:transitionName="card"
-        app:cardCornerRadius="2dp"
-        android:elevation="0dp">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/artist_conf_toolbar">
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
@@ -78,15 +64,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="1dp"
+                android:contentDescription="@string/cover"
                 android:scaleType="centerCrop"
-                tools:src="@drawable/back3"
-                android:transitionName="cover"/>
+                tools:src="@drawable/back3" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="1dp"
-                android:background="@drawable/background_selector"/>
+                android:background="@drawable/background_selector" />
 
         </android.support.constraint.ConstraintLayout>
 
@@ -100,6 +86,6 @@
         android:layout_marginStart="284dp"
         android:paddingBottom="48dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/artist_conf_toolbar"/>
+        app:layout_constraintTop_toBottomOf="@id/artist_conf_toolbar" />
 
 </android.support.constraint.ConstraintLayout>

@@ -11,7 +11,7 @@
         android:id="@+id/band_level"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/gGrey"/>
+        android:textColor="@color/white"/>
 
     <com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBarWrapper
         android:layout_width="wrap_content"
@@ -27,7 +27,7 @@
             app:seekBarRotation="CW270"
             android:progressTint="@color/colorAccentLight"
             android:thumbTint="@color/colorAccentLight"
-            android:progressBackgroundTint="@color/gGrey"/>
+            android:progressBackgroundTint="@color/white"/>
 
     </com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBarWrapper>
 
@@ -35,6 +35,6 @@
         android:id="@+id/band_frequency"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/gGrey"/>
+        android:textColor="@color/white"/>
     
 </LinearLayout>
