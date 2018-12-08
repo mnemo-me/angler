@@ -39,6 +39,9 @@ public interface LinkDAO {
     @Query("DELETE FROM links WHERE playlist=:playlist AND track_id=:trackId")
     void deleteTrackFromPlaylist(String playlist, String trackId);
 
+    @Query("DELETE FROM links WHERE playlist=:playlist")
+    void deleteAllTracksFromPlaylist(String playlist);
+
     @Query("UPDATE links SET position = position - 1 WHERE playlist=:playlist AND position > :position")
     void decreasePositionsHigherThan(String playlist, int position);
 

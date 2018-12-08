@@ -1,4 +1,4 @@
-package com.mnemo.angler.ui.main_activity.fragments.playlists.playlist_delete;
+package com.mnemo.angler.ui.main_activity.fragments.playlists.playlist_clear;
 
 
 
@@ -11,17 +11,15 @@ import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.mnemo.angler.R;
-import com.mnemo.angler.ui.main_activity.fragments.playlists.playlist_configuration.PlaylistConfigurationFragment;
+import com.mnemo.angler.ui.main_activity.activity.MainActivity;
 
 
+public class PlaylistClearDialogFragment extends DialogFragment implements PlaylistClearView {
 
-public class PlaylistDeleteDialogFragment extends DialogFragment implements PlaylistDeleteView {
 
-
-    PlaylistDeletePresenter presenter;
+    PlaylistClearPresenter presenter;
 
     @Override
     @NonNull
@@ -30,7 +28,7 @@ public class PlaylistDeleteDialogFragment extends DialogFragment implements Play
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         // Bind Presenter to View
-        presenter = new PlaylistDeletePresenter();
+        presenter = new PlaylistClearPresenter();
         presenter.attachView(this);
 
         // Get title
@@ -39,33 +37,23 @@ public class PlaylistDeleteDialogFragment extends DialogFragment implements Play
         // Setup body
         LinearLayout bodyLayout = (LinearLayout) LayoutInflater.from(getContext()).inflate(R.layout.pm_playlist_delete, null, false);
 
-
         TextView question = bodyLayout.findViewById(R.id.playlist_delete_question);
-        question.setText(getString(R.string.delete_playlist_question) + " '" + title + "'?");
+        question.setText(getString(R.string.clear_playlist_question) + " '" + title + "'?");
 
         // Setup buttons
         TextView yesButton = bodyLayout.findViewById(R.id.playlist_delete_yes);
         yesButton.setOnClickListener(view -> {
 
-            // Delete playlist
-            presenter.deletePlaylist(title);
-
-            // Identify back press
-            PlaylistConfigurationFragment playlistConfigurationFragment = (PlaylistConfigurationFragment) getActivity()
-                    .getSupportFragmentManager().findFragmentByTag("playlist_configuration_fragment");
-
-            if (playlistConfigurationFragment != null) {
-                getActivity().onBackPressed();
-            }
+            // Clear playlist
+            presenter.clearPlaylist(title);
 
             Intent intent = new Intent();
-            intent.setAction("playlist_deleted");
+            intent.setAction("playlist_cleared");
             getContext().sendBroadcast(intent);
 
-            dismiss();
+            ((MainActivity)getActivity()).getAnglerClient().clearQueue();
 
-            // Toast!
-            Toast.makeText(getContext(), "Playlist '" + title + "' deleted", Toast.LENGTH_SHORT).show();
+            dismiss();
         });
 
 

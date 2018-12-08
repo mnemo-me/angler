@@ -30,7 +30,7 @@
 
             <Button
                 android:id="@+id/playlist_conf_play_all"
-                style="@style/play_all_button" />
+                style="@style/play_all_button"/>
 
 
             <android.support.v7.widget.CardView
@@ -82,12 +82,56 @@
 
     </android.support.design.widget.AppBarLayout>
 
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="68dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <Button
+            android:id="@+id/playlist_conf_add_tracks"
+            android:layout_width="172dp"
+            android:layout_height="36dp"
+            android:background="@drawable/white_frame"
+            android:paddingEnd="@dimen/default_margin"
+            android:paddingStart="@dimen/default_margin"
+            android:text="@string/add_tracks_to_playlist"
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toStartOf="@id/playlist_conf_manage_tracks"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <Button
+            android:id="@+id/playlist_conf_manage_tracks"
+            android:layout_width="172dp"
+            android:layout_height="36dp"
+            android:background="@drawable/white_frame"
+            android:paddingEnd="@dimen/default_margin"
+            android:paddingStart="@dimen/default_margin"
+            android:text="@string/manage_tracks"
+            android:textColor="@color/white"
+            android:enabled="false"
+            android:alpha="0.3"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/playlist_conf_add_tracks" />
+
+        <View
+            style="@style/line"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+
+    </android.support.constraint.ConstraintLayout>
+
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/playlist_conf_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="68dp"
         android:clipToPadding="false"
+        android:paddingTop="12dp"
         android:paddingBottom="8dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 

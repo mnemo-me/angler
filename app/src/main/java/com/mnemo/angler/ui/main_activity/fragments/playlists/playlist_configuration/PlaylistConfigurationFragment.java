@@ -30,6 +30,8 @@ import com.mnemo.angler.data.database.Entities.Track;
 import com.mnemo.angler.R;
 import com.mnemo.angler.ui.main_activity.activity.MainActivity;
 import com.mnemo.angler.ui.main_activity.adapters.TrackAdapter;
+import com.mnemo.angler.ui.main_activity.fragments.playlists.add_tracks_to_playlist.AddTracksDialogFragment;
+import com.mnemo.angler.ui.main_activity.fragments.playlists.manage_tracks.ManageTracksDialogFragment;
 import com.mnemo.angler.ui.main_activity.fragments.playlists.playlist_create.PlaylistCreationDialogFragment;
 import com.mnemo.angler.ui.main_activity.misc.play_all.PlayAllDialogFragment;
 import com.mnemo.angler.util.ImageAssistant;
@@ -74,6 +76,10 @@ public class PlaylistConfigurationFragment extends Fragment implements PlaylistC
     @Nullable
     @BindView(R.id.playlist_conf_play_all_button)
     ImageButton playAllButton;
+
+    @Nullable
+    @BindView(R.id.playlist_conf_manage_tracks)
+    Button manageTracksButton;
 
     @BindView(R.id.playlist_conf_list)
     RecyclerView recyclerView;
@@ -276,7 +282,15 @@ public class PlaylistConfigurationFragment extends Fragment implements PlaylistC
     // MVP View methods
     public void setPlaylistTracks(List<Track> tracks){
 
-        adapter = new TrackAdapter(getContext(), "playlist", title, tracks);
+        String type;
+
+        if (orientation == Configuration.ORIENTATION_PORTRAIT){
+            type = "playlist";
+        }else{
+            type = "playlist(land)";
+        }
+
+        adapter = new TrackAdapter(getContext(), type, title, tracks);
         recyclerView.setAdapter(adapter);
 
         checkTracksCount();
@@ -331,6 +345,33 @@ public class PlaylistConfigurationFragment extends Fragment implements PlaylistC
         playAll();
     }
 
+    @Optional
+    @OnClick(R.id.playlist_conf_add_tracks)
+    void addTracks(){
+
+        AddTracksDialogFragment addTracksDialogFragment = new AddTracksDialogFragment();
+
+        Bundle argsToTracks = new Bundle();
+        argsToTracks.putString("title", title);
+        addTracksDialogFragment.setArguments(argsToTracks);
+
+        addTracksDialogFragment.show(((MainActivity)getContext()).getSupportFragmentManager(), "add_tracks_dialog_fragment");
+    }
+
+    @Optional
+    @OnClick(R.id.playlist_conf_manage_tracks)
+    void manageTracks(){
+
+        ManageTracksDialogFragment manageTracksDialogFragment = new ManageTracksDialogFragment();
+
+        Bundle argsToTracks = new Bundle();
+        argsToTracks.putString("title", title);
+        manageTracksDialogFragment.setArguments(argsToTracks);
+
+        manageTracksDialogFragment.show(((MainActivity) getContext()).getSupportFragmentManager(), "manage_tracks_dialog_fragment");
+
+    }
+
     @OnClick(R.id.playlist_conf_back)
     void back(){
         getActivity().onBackPressed();
@@ -342,7 +383,23 @@ public class PlaylistConfigurationFragment extends Fragment implements PlaylistC
     // Track counter
     public void checkTracksCount(){
 
-        tracksCountView.setText(getString(R.string.tracks) + " " + (adapter.getItemCount() - 1));
+        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            tracksCountView.setText(getString(R.string.tracks) + " " + (adapter.getItemCount()));
+
+            if (adapter.getItemCount() == 0){
+                manageTracksButton.setEnabled(false);
+                manageTracksButton.setAlpha(0.3f);
+            }else{
+
+                if (!manageTracksButton.isEnabled()){
+                    manageTracksButton.setEnabled(true);
+                    manageTracksButton.setAlpha(1f);
+                }
+            }
+
+        }else{
+            tracksCountView.setText(getString(R.string.tracks) + ": " + (adapter.getItemCount() - 1));
+        }
     }
 
     // Updating cover

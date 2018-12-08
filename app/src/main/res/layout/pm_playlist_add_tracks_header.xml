@@ -1,24 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:paddingBottom="10dp"
-    android:paddingTop="18dp">
+    android:paddingTop="12dp">
 
-    <TextView
+    <Button
         android:id="@+id/add_tracks"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:drawablePadding="8dp"
-        android:drawableStart="@drawable/add_selector"
-        android:gravity="center_vertical"
-        android:paddingBottom="@dimen/default_margin"
-        android:paddingEnd="8dp"
-        android:paddingStart="22dp"
-        android:paddingTop="@dimen/default_margin"
+        android:layout_width="172dp"
+        android:layout_height="36dp"
+        android:background="@drawable/white_frame"
+        android:paddingEnd="@dimen/default_margin"
+        android:paddingStart="@dimen/default_margin"
         android:text="@string/add_tracks_to_playlist"
-        android:textColor="@color/selected_grey_white"
-        android:textSize="12sp" />
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toStartOf="@id/manage_tracks"
+        app:layout_constraintStart_toStartOf="parent" />
 
-</LinearLayout>
+    <Button
+        android:id="@+id/manage_tracks"
+        android:layout_width="172dp"
+        android:layout_height="36dp"
+        android:background="@drawable/white_frame"
+        android:paddingEnd="@dimen/default_margin"
+        android:paddingStart="@dimen/default_margin"
+        android:text="@string/manage_tracks"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/add_tracks" />
+
+    <View
+        style="@style/line"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@id/add_tracks"/>
+
+
+</android.support.constraint.ConstraintLayout>

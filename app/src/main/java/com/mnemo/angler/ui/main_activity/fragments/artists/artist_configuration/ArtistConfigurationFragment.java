@@ -20,12 +20,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TableLayout;
 import android.widget.TextView;
 
 import com.mnemo.angler.R;
-import com.mnemo.angler.ui.main_activity.activity.MainActivity;
 import com.mnemo.angler.ui.main_activity.misc.cover.CoverDialogFragment;
 import com.mnemo.angler.ui.main_activity.adapters.ArtistTabsAdapter;
 import com.mnemo.angler.ui.main_activity.misc.play_all.PlayAllDialogFragment;
@@ -55,16 +52,21 @@ public class ArtistConfigurationFragment extends Fragment implements ArtistConfi
     @BindView(R.id.artist_conf_image)
     ImageView imageView;
 
+    @Nullable
     @BindView(R.id.artist_conf_artist)
     TextView artistText;
 
     @Nullable
-    @BindView(R.id.artist_conf_play_all)
-    Button playAllLayout;
+    @BindView(R.id.artist_conf_albums_count)
+    TextView albumsCountView;
 
     @Nullable
-    @BindView(R.id.artist_conf_separator)
-    View separator;
+    @BindView(R.id.artist_conf_tracks_count)
+    TextView tracksCountView;
+
+    @Nullable
+    @BindView(R.id.artist_conf_play_all)
+    Button playAllLayout;
 
     @BindView(R.id.artist_conf_tab_layout)
     TabLayout tabLayout;
@@ -115,7 +117,18 @@ public class ArtistConfigurationFragment extends Fragment implements ArtistConfi
         localPlaylistName = "artist/" + artist;
 
         // Assign artist text
-        artistText.setText(artist);
+        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+
+            String artistCollapse = artist;
+
+            if (artist.length() > 20){
+                artistCollapse = artist.substring(0, 19) + "...";
+            }
+
+            collapsingToolbarLayout.setTitle(artistCollapse);
+        } else {
+            artistText.setText(artist);
+        }
 
         // Load artist image
         loadArtistImage();
@@ -128,21 +141,32 @@ public class ArtistConfigurationFragment extends Fragment implements ArtistConfi
 
                     float alpha = 0;
 
-                    artistText.setAlpha(alpha);
+                    albumsCountView.setAlpha(alpha);
+                    tracksCountView.setAlpha(alpha);
                     playAllLayout.setAlpha(alpha);
                     cardView.setAlpha(alpha);
-                    separator.setAlpha(alpha);
-                    back.setAlpha(alpha);
 
                 } else {
 
                     float alpha = 1f - (float) Math.abs(verticalOffset) / (float) (appBarLayout.getTotalScrollRange() / 2);
 
-                    artistText.setAlpha(alpha);
                     playAllLayout.setAlpha(alpha);
                     cardView.setAlpha(alpha);
-                    separator.setAlpha(alpha);
-                    back.setAlpha(alpha);
+                }
+            });
+        }
+
+
+        // Set page transformer for view pager in landscape layout
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE){
+
+            viewPager.setPageTransformer(true, (page, position) -> {
+
+                if (position < 0){
+                    page.setAlpha(1 - Math.abs(position));
+                    page.setScaleX(1 - Math.abs(position));
+                    page.setScaleY(1 - Math.abs(position));
+                    page.setTranslationX(page.getWidth() * - position / 2);
                 }
             });
         }
@@ -238,7 +262,14 @@ public class ArtistConfigurationFragment extends Fragment implements ArtistConfi
         tabLayout.setupWithViewPager(viewPager);
     }
 
+    @Override
+    public void fillCountViews(int tracksCount, int albumsCount) {
 
+        if (orientation == Configuration.ORIENTATION_PORTRAIT){
+            albumsCountView.setText(getString(R.string.albums_dc) + ": " + albumsCount);
+            tracksCountView.setText(getString(R.string.tracks) + ": " + tracksCount);
+        }
+    }
 
     // Support methods
     void loadArtistImage(){

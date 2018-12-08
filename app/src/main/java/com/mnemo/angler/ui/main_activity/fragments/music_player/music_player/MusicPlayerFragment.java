@@ -362,7 +362,7 @@ public class MusicPlayerFragment extends Fragment implements MusicPlayerView {
 
         // Change text color in EditText programmatically
         editText.setHintTextColor(getResources().getColor(R.color.gGrey));
-        editText.setTextColor(getResources().getColor(android.R.color.white));
+        editText.setTextColor(getResources().getColor(android.R.color.black));
 
         searchView.setIconified(false);
         searchView.clearFocus();

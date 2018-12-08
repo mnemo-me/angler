@@ -147,7 +147,7 @@ public class BandsFragment extends Fragment implements BandsView {
 
 
         // Setup spinner with array adapter
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), R.layout.mp_playlist_spinner_item, R.id.playlist_spinner_item_title, equalizerPresets);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), R.layout.eq_spinner_item, R.id.playlist_spinner_item_title, equalizerPresets);
         adapter.setDropDownViewResource(R.layout.mp_playlist_spinner_dropdown_item);
         presetsSpinner.setAdapter(adapter);
         presetsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
