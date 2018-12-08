@@ -5,5 +5,6 @@ import com.mnemo.angler.ui.base.BaseView;
 
 public interface ArtistConfigurationView extends BaseView {
 
-    void initializeTabs(int tracksCount, int artistCount);
+    void initializeTabs(int tracksCount, int albumsCount);
+    void fillCountViews(int tracksCount, int albumsCount);
 }

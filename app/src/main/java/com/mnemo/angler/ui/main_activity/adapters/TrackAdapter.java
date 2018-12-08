@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.mnemo.angler.R;
@@ -16,6 +17,7 @@ import com.mnemo.angler.data.database.Entities.Track;
 import com.mnemo.angler.data.file_storage.AnglerFolder;
 import com.mnemo.angler.ui.main_activity.activity.MainActivity;
 import com.mnemo.angler.ui.main_activity.fragments.playlists.add_tracks_to_playlist.AddTracksDialogFragment;
+import com.mnemo.angler.ui.main_activity.fragments.playlists.manage_tracks.ManageTracksDialogFragment;
 import com.mnemo.angler.ui.main_activity.misc.contextual_menu.ContextualMenuDialogFragment;
 import com.mnemo.angler.util.MediaAssistant;
 
@@ -50,7 +52,10 @@ public class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.ViewHolder>{
     static class HeaderViewHolder extends ViewHolder{
 
         @BindView(R.id.add_tracks)
-        TextView addTracks;
+        Button addTracks;
+
+        @BindView(R.id.manage_tracks)
+        Button manageTracks;
 
         HeaderViewHolder(View itemView) {
             super(itemView);
@@ -84,7 +89,7 @@ public class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.ViewHolder>{
         this.playlist = playlist;
         this.tracks = tracks;
 
-        if (type.equals("playlist")){
+        if (type.equals("playlist(land)")){
             this.isHeaderAttach = true;
         }
     }
@@ -110,15 +115,25 @@ public class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.ViewHolder>{
 
         if (holder instanceof HeaderViewHolder){
 
+            Bundle argsToTracks = new Bundle();
+            argsToTracks.putString("title", playlist);
+
+
             ((HeaderViewHolder)holder).addTracks.setOnClickListener(view -> {
 
                 AddTracksDialogFragment addTracksDialogFragment = new AddTracksDialogFragment();
-
-                Bundle argsToAddTracks = new Bundle();
-                argsToAddTracks.putString("title", playlist);
-                addTracksDialogFragment.setArguments(argsToAddTracks);
+                addTracksDialogFragment.setArguments(argsToTracks);
 
                 addTracksDialogFragment.show(((MainActivity)context).getSupportFragmentManager(), "Add tracks dialog");
+            });
+
+            ((HeaderViewHolder)holder).manageTracks.setOnClickListener(view -> {
+
+                ManageTracksDialogFragment manageTracksDialogFragment = new ManageTracksDialogFragment();
+                manageTracksDialogFragment.setArguments(argsToTracks);
+
+                manageTracksDialogFragment.show(((MainActivity)context).getSupportFragmentManager(), "Manage tracks dialog");
+
             });
 
         }else {

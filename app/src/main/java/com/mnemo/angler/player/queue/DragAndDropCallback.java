@@ -36,7 +36,7 @@ public class DragAndDropCallback extends ItemTouchHelper.Callback {
 
     }
 
-    void setOnDragAndDropListener(OnDragAndDropListener onDragAndDropListener) {
+    public void setOnDragAndDropListener(OnDragAndDropListener onDragAndDropListener) {
         this.onDragAndDropListener = onDragAndDropListener;
     }
 }

@@ -6,6 +6,7 @@
     <string name="library">Library</string>
     <string name="playlist_manager">Playlists</string>
     <string name="albums">Albums</string>
+    <string name="albums_dc">albums</string>
     <string name="change_background">Background</string>
     <string name="equalizer">Equalizer</string>
     <string name="purchase">Purchase Angler</string>
@@ -32,9 +33,10 @@
     <string name="background_added">Background added</string>
     <string name="rename">Rename</string>
     <string name="change_cover">Change cover</string>
-    <string name="add_tracks_to_playlist">Add tracks to playlist</string>
+    <string name="add_tracks_to_playlist">Add tracks</string>
+    <string name="manage_tracks">Manage tracks</string>
     <string name="delete_playlist">Delete playlist</string>
-    <string name="delete_playlist_answer">Are you sure you want delete this playlist?</string>
+    <string name="delete_playlist_question">Are you sure you want delete</string>
     <string name="enter_new_playlist_title">Enter new playlist title</string>
     <string name="playlist_empty_tip">There are no tracks in playlist yet. Select add tracks in dropdown menu to fill playlist</string>
     <string name="default_playlist_visibility">Default playlist visibility</string>
@@ -55,7 +57,6 @@
     <string name="incorrect_playlist_name">Incorrect playlist name</string>
     <string name="track_removed">1 track removed</string>
     <string name="undo">Undo</string>
-    <string name="add_new_source">Add new source</string>
     <string name="add_track_to_playlist">Add track to playlist</string>
     <string name="close">Close</string>
     <string name="create_new_playlist">Create new playlist</string>
@@ -74,7 +75,7 @@
     <string name="save">save</string>
     <string name="create">create</string>
     <string name="configure_playlist">Configure playlist</string>
-    <string name="tracks">tracks:</string>
+    <string name="tracks">tracks</string>
     <string name="queue">Queue</string>
     <string name="play_all">Play all</string>
     <string name="play_now">Play now</string>
@@ -107,5 +108,8 @@
     <string name="delete_image">delete image</string>
     <string name="expand">expand</string>
     <string name="delete_track_from_queue">delete track from queue</string>
+    <string name="clear_playlist_question">Are you sure you want delete all tracks from</string>
+
+
 
 </resources>

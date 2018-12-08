@@ -111,7 +111,7 @@ public class AnglerServicePresenter extends BasePresenter {
 
     // Get library tracks
     void loadLibraryTracks(){
-        repository.loadPlaylistTrack("library", tracks -> {
+        repository.loadPlaylistTracks("library", tracks -> {
 
             if (getView() != null){
                 ((AnglerServiceView)getView()).setQueue(tracks);

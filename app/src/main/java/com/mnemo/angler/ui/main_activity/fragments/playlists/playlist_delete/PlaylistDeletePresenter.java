@@ -12,7 +12,7 @@ public class PlaylistDeletePresenter extends BasePresenter {
     @Inject
     AnglerRepository repository;
 
-    public PlaylistDeletePresenter() {
+    PlaylistDeletePresenter() {
 
         AnglerApp.getAnglerComponent().injectPlaylistDeletePresenter(this);
     }

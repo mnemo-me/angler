@@ -25,6 +25,8 @@ import com.mnemo.angler.ui.main_activity.fragments.music_player.main_playlist.Ma
 import com.mnemo.angler.ui.main_activity.fragments.music_player.music_player.MusicPlayerPresenter;
 import com.mnemo.angler.ui.main_activity.activity.MainActivityPresenter;
 import com.mnemo.angler.ui.main_activity.fragments.playlists.add_tracks_to_playlist.AddTracksPresenter;
+import com.mnemo.angler.ui.main_activity.fragments.playlists.manage_tracks.ManageTracksPresenter;
+import com.mnemo.angler.ui.main_activity.fragments.playlists.playlist_clear.PlaylistClearPresenter;
 import com.mnemo.angler.ui.main_activity.fragments.playlists.playlist_configuration.PlaylistConfigurationPresenter;
 import com.mnemo.angler.ui.main_activity.fragments.playlists.playlist_create.PlaylistCreatePresenter;
 import com.mnemo.angler.ui.main_activity.fragments.playlists.playlist_delete.PlaylistDeletePresenter;
@@ -62,6 +64,8 @@ public interface AnglerComponent {
     void injectPlaylistConfigurationPresenter(PlaylistConfigurationPresenter playlistConfigurationPresenter);
     void injectAddTracksPresenter(AddTracksPresenter addTracksPresenter);
     void injectPlaylistDeletePresenter(PlaylistDeletePresenter playlistDeletePresenter);
+    void injectManageTracksPresenter(ManageTracksPresenter manageTracksPresenter);
+    void injectPlaylistClearPresenter(PlaylistClearPresenter playlistClearPresenter);
 
     // Albums
     void injectAlbumsPresenter(AlbumsPresenter albumsPresenter);

@@ -35,6 +35,7 @@ public class ArtistConfigurationPresenter extends BasePresenter {
                 this.tracks = tracks;
 
                 ((ArtistConfigurationView)getView()).initializeTabs(tracks.size(), getAlbums(tracks).size());
+                ((ArtistConfigurationView)getView()).fillCountViews(tracks.size(), getAlbums(tracks).size());
             }
         });
     }

@@ -14,6 +14,8 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.mnemo.angler.ui.main_activity.adapters.ArtistAdapter;
@@ -35,6 +37,12 @@ public class ArtistsFragment extends Fragment implements DrawerItem, ArtistsView
 
     // Bind views via ButterKnife
     Unbinder unbinder;
+
+    @BindView(R.id.artists_refresh_images)
+    ImageButton refreshButton;
+
+    @BindView(R.id.artists_refresh_progress)
+    ProgressBar refreshProgressBar;
 
     @BindView(R.id.artists_grid)
     RecyclerView recyclerView;
@@ -59,13 +67,18 @@ public class ArtistsFragment extends Fragment implements DrawerItem, ArtistsView
         // Get orientation
         orientation = getResources().getConfiguration().orientation;
 
+        // Inject views
+        unbinder = ButterKnife.bind(this, view);
+
         // Restore refreshing state
         if (savedInstanceState != null){
             isRefreshing = savedInstanceState.getBoolean("is_refreshing");
-        }
 
-        // Inject views
-        unbinder = ButterKnife.bind(this, view);
+            if (isRefreshing){
+                refreshButton.setVisibility(View.GONE);
+                refreshProgressBar.setVisibility(View.VISIBLE);
+            }
+        }
 
         // Setup recycler view
         GridLayoutManager gridLayoutManager;
@@ -127,6 +140,9 @@ public class ArtistsFragment extends Fragment implements DrawerItem, ArtistsView
         if (!isRefreshing) {
             presenter.refreshArtistsImages();
             isRefreshing = true;
+
+            refreshButton.setVisibility(View.GONE);
+            refreshProgressBar.setVisibility(View.VISIBLE);
         }
     }
 
@@ -150,6 +166,10 @@ public class ArtistsFragment extends Fragment implements DrawerItem, ArtistsView
 
         Toast.makeText(getContext(), R.string.artist_images_updated, Toast.LENGTH_SHORT).show();
         isRefreshing = false;
+
+        refreshProgressBar.setVisibility(View.GONE);
+        refreshButton.setVisibility(View.VISIBLE);
+
         adapter.notifyDataSetChanged();
     }
 }

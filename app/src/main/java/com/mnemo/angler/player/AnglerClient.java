@@ -122,7 +122,7 @@ public class AnglerClient{
 
         if (!playlistName.equals(getQueueTitle()) || !((MainActivity)context).getFilter().equals(queueFilter)) {
 
-            mController.getTransportControls().sendCustomAction("clear_queue", null);
+            clearQueue();
 
             for (MediaDescriptionCompat description : MediaAssistant.mergeMediaDescriptionArray(playlistName, tracks)) {
 
@@ -231,9 +231,22 @@ public class AnglerClient{
         mController.getTransportControls().sendCustomAction("replace_queue_items", bundle);
     }
 
+    public void setQueuePosition(int position){
+
+        Bundle bundle = new Bundle();
+        bundle.putInt("queue_position", position);
+
+        mController.getTransportControls().sendCustomAction("update_queue_position", bundle);
+    }
+
+
     public int getQueuePosition() {
 
         return (int) mController.getPlaybackState().getActiveQueueItemId();
+    }
+
+    public void clearQueue(){
+        mController.getTransportControls().sendCustomAction("clear_queue", null);
     }
 
 

@@ -15,31 +15,34 @@
             android:id="@+id/artist_conf_collapsing_toolbar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            app:collapsedTitleTextAppearance="@style/CollapsedText"
+            app:expandedTitleGravity="top"
+            app:expandedTitleMarginStart="24dp"
+            app:expandedTitleMarginTop="72dp"
+            app:expandedTitleTextAppearance="@style/ExpandedText"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <TextView
-                android:id="@+id/artist_conf_artist"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                android:layout_marginTop="60dp"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:maxWidth="230dp"
-                android:textColor="@color/black"
-                android:textSize="18sp"
-                tools:text="Marilyn Manson" />
+                android:id="@+id/artist_conf_albums_count"
+                style="@style/expanded_subtitle"
+                android:layout_marginTop="8dp"
+                tools:text="4 albums" />
+
+            <TextView
+                android:id="@+id/artist_conf_tracks_count"
+                style="@style/expanded_subtitle"
+                android:layout_marginTop="28dp"
+                tools:text="123 tracks" />
 
             <Button
                 android:id="@+id/artist_conf_play_all"
-                style="@style/play_all_button"
-                android:layout_marginBottom="72dp" />
+                style="@style/play_all_button"/>
 
 
             <android.support.v7.widget.CardView
                 android:id="@+id/artist_conf_cardview"
-                android:layout_width="148dp"
-                android:layout_height="148dp"
+                android:layout_width="196dp"
+                android:layout_height="196dp"
                 android:layout_gravity="end"
                 android:layout_marginEnd="4dp"
                 android:layout_marginTop="4dp">
@@ -79,32 +82,33 @@
 
             </android.support.v7.widget.Toolbar>
 
-            <View
-                android:id="@+id/artist_conf_separator"
-                style="@style/line"
-                android:layout_gravity="bottom"
-                android:layout_marginBottom="48dp" />
-
-            <android.support.design.widget.TabLayout
-                android:id="@+id/artist_conf_tab_layout"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:layout_gravity="bottom"
-                android:elevation="4dp"
-                app:tabGravity="fill"
-                app:tabIndicatorHeight="0dp"
-                app:tabMode="fixed"
-                app:tabSelectedTextColor="@color/black"
-                app:tabTextColor="@android:color/secondary_text_light_nodisable" />
-
         </android.support.design.widget.CollapsingToolbarLayout>
 
     </android.support.design.widget.AppBarLayout>
+
+    <android.support.design.widget.TabLayout
+        android:id="@+id/artist_conf_tab_layout"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="4dp"
+        app:tabGravity="fill"
+        app:tabIndicatorHeight="0dp"
+        app:tabMode="fixed"
+        app:tabSelectedTextColor="@color/white"
+        app:tabTextColor="@android:color/secondary_text_light_nodisable"
+        app:layout_anchor="@id/artist_conf_app_bar"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+
+    <View
+        style="@style/line"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:layout_marginTop="55dp"/>
 
     <android.support.v4.view.ViewPager
         android:id="@+id/artist_conf_view_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="56dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
 </android.support.design.widget.CoordinatorLayout>

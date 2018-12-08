@@ -20,17 +20,10 @@
         <TextView
             android:id="@+id/artist_conf_artist"
             style="@style/title"
-            android:width="210dp"
+            android:width="220dp"
             android:ellipsize="end"
             android:maxLines="1"
             tools:text="Marilyn Manson" />
-
-        <ImageButton
-            android:id="@+id/artist_conf_play_all_button"
-            style="@style/button"
-            android:layout_gravity="end"
-            android:contentDescription="@string/play_all"
-            android:src="@drawable/ic_playlist_play_black_24dp" />
 
         <android.support.design.widget.TabLayout
             android:id="@+id/artist_conf_tab_layout"
@@ -70,9 +63,25 @@
 
             <View
                 android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:layout_margin="1dp"
+                android:background="@drawable/skrim"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+            <View
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="1dp"
                 android:background="@drawable/background_selector" />
+
+            <ImageButton
+                android:id="@+id/artist_conf_play_all_button"
+                style="@style/button"
+                android:layout_marginStart="4dp"
+                android:contentDescription="@string/play_all"
+                android:src="@drawable/baseline_playlist_play_white_48dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
         </android.support.constraint.ConstraintLayout>
 

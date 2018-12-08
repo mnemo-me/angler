@@ -366,13 +366,14 @@ public class AnglerRepository {
 
 
     // Load playlist tracks methods
-    public void loadPlaylistTrack(String playlist, AnglerDB.PlaylistLoadListener listener){
+    public void loadPlaylistTracks(String playlist, AnglerDB.PlaylistLoadListener listener){
         anglerDB.loadPlaylistTracks(playlist, listener);
     }
 
     public void loadCheckedPlaylistTracks(String playlist, AnglerDB.PlaylistCheckedTracksLoadListener listener){
         anglerDB.loadCheckedPlaylistTracks(playlist, listener);
     }
+
 
 
     // Create, Delete playlist methods
@@ -408,6 +409,10 @@ public class AnglerRepository {
         anglerFileStorage.copyImage(anglerFileStorage.getTempImageName(), image);
     }
 
+    public void updatePlaylistTracks(String playlist, List<Track> tracks){
+        anglerDB.deleteAllTracksFromPlaylist(playlist, () -> anglerDB.addTracksToPlaylist(playlist, tracks));
+    }
+
 
     // Add tracks to playlist methods
     public void addTracksToPlaylist(String playlist, HashMap<Track, Integer> tracks){
@@ -426,6 +431,10 @@ public class AnglerRepository {
 
     public void restoreTrack(String playlist, String trackId, int position){
         anglerDB.restoreTrackInPlaylist(playlist, trackId, position);
+    }
+
+    public void clearPlaylist(String playlist){
+        anglerDB.deleteAllTracksFromPlaylist(playlist);
     }
 
 

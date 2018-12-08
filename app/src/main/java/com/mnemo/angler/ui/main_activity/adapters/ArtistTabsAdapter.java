@@ -77,11 +77,19 @@ public class ArtistTabsAdapter extends FragmentStatePagerAdapter {
 
             case "tracks":
 
-                return context.getString(R.string.tracks) + " " + tracksCount;
+                if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                    return context.getString(R.string.tracks) + ": " + tracksCount;
+                }else{
+                    return context.getString(R.string.tracks);
+                }
 
             case "albums":
 
-                return context.getString(R.string.albums) + ": " + albumsCount;
+                if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                    return context.getString(R.string.albums) + ": " + albumsCount;
+                }else{
+                    return context.getString(R.string.albums);
+                }
 
             case "bio":
 

@@ -68,6 +68,10 @@ public class AnglerDB{
         void trackDeleted(int position);
     }
 
+    public interface PlaylistClearListener{
+        void playlistCleared();
+    }
+
     @Inject
     public AnglerDB(Context context) {
 
@@ -314,6 +318,14 @@ public class AnglerDB{
 
     }
 
+    public void addTracksToPlaylist(String playlist, List<Track> tracks){
+
+        Observable.fromIterable(tracks)
+                .map(track -> new Link(track.get_id(), playlist,tracks.indexOf(track)))
+                .toList()
+                .subscribe(links -> db.linkDAO().insert(links.toArray(new Link[links.size()])));
+    }
+
     public void addTrackToPlaylist(String playlist, Track track){
 
         db.linkDAO().getTracksCount(playlist)
@@ -349,7 +361,20 @@ public class AnglerDB{
                 .subscribe(() -> db.linkDAO().insert(new Link(trackId, playlist, position)));
     }
 
+    public void deleteAllTracksFromPlaylist(String playlist){
 
+        Completable.fromAction(() -> db.linkDAO().deleteAllTracksFromPlaylist(playlist))
+                .subscribeOn(Schedulers.io())
+                .subscribe();
+    }
+
+
+    public void deleteAllTracksFromPlaylist(String playlist, PlaylistClearListener listener){
+
+        Completable.fromAction(() -> db.linkDAO().deleteAllTracksFromPlaylist(playlist))
+                .subscribeOn(Schedulers.io())
+                .subscribe(() -> listener.playlistCleared());
+    }
 
     // Artists methods
     // Load artists method

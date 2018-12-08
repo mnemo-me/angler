@@ -324,7 +324,7 @@ public class AlbumConfigurationFragment extends Fragment implements AlbumConfigu
     // Support methods
     // Track counter
     public void checkTracksCount(){
-        tracksCountView.setText(getString(R.string.tracks) + " " + (adapter.getItemCount()));
+        tracksCountView.setText(getString(R.string.tracks) + ": " + (adapter.getItemCount()));
     }
 
     // Load cover image

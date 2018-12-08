@@ -24,7 +24,7 @@ public class PlaylistConfigurationPresenter extends BasePresenter {
 
     // Load playlist tracks
     void loadPlaylistTracks(String playlist){
-        repository.loadPlaylistTrack(playlist, tracks -> {
+        repository.loadPlaylistTracks(playlist, tracks -> {
 
             if (getView() != null){
 

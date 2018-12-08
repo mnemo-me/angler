@@ -379,6 +379,8 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
 
                     if (queue != null){
                         queue.clear();
+
+                        mMediaSession.setQueue(queue);
                     }
 
                     break;
@@ -389,6 +391,25 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
 
                     if (mMediaSession.getController().getMetadata() == null){
                         onPrepare();
+                    }
+
+                    break;
+
+
+                case "update_queue_position":
+
+                    queueIndex = extras.getInt("queue_position");
+
+                    if (isPaused){
+                        mMediaSession.setPlaybackState(new PlaybackStateCompat.Builder()
+                                .setState(PlaybackStateCompat.STATE_PAUSED, PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN, 0)
+                                .setActiveQueueItemId((long) queueIndex)
+                                .build());
+                    }else {
+                        mMediaSession.setPlaybackState(new PlaybackStateCompat.Builder()
+                                .setState(PlaybackStateCompat.STATE_PLAYING, PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN, 0)
+                                .setActiveQueueItemId((long) queueIndex)
+                                .build());
                     }
 
                     break;

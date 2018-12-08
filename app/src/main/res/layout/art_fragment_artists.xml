@@ -21,6 +21,15 @@
             style="@style/title"
             android:text="@string/artists" />
 
+        <ProgressBar
+            android:id="@+id/artists_refresh_progress"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginEnd="@dimen/default_margin"
+            android:layout_gravity="end"
+            android:indeterminateTint="@color/gGrey"
+            android:visibility="gone"/>
+
         <ImageButton
             android:id="@+id/artists_refresh_images"
             style="@style/button"
