@@ -3,7 +3,6 @@ package com.mnemo.angler.ui.main_activity.activity;
 
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
