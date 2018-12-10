@@ -150,6 +150,8 @@ public class ArtistConfigurationFragment extends Fragment implements ArtistConfi
 
                     float alpha = 1f - (float) Math.abs(verticalOffset) / (float) (appBarLayout.getTotalScrollRange() / 2);
 
+                    albumsCountView.setAlpha(alpha);
+                    tracksCountView.setAlpha(alpha);
                     playAllLayout.setAlpha(alpha);
                     cardView.setAlpha(alpha);
                 }

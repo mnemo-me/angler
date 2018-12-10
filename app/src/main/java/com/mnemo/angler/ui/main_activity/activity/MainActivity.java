@@ -3,13 +3,16 @@ package com.mnemo.angler.ui.main_activity.activity;
 
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 
@@ -109,64 +112,73 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
 
 
     protected void onCreate(final Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
 
-        // request read/write permission
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+        if (this.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 
-        // get display metrics
-        DisplayMetrics dm = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(dm);
-        density = dm.density;
+            // request read/write permission
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+        }else{
 
-        // get orientation
-        orientation = getResources().getConfiguration().orientation;
+            setContentView(R.layout.activity_main);
 
-        // inject views
-        ButterKnife.bind(this);
+            // get display metrics
+            DisplayMetrics dm = new DisplayMetrics();
+            getWindowManager().getDefaultDisplay().getMetrics(dm);
+            density = dm.density;
 
-        // bind Presenter to View
-        presenter = new MainActivityPresenter();
-        presenter.attachView(this);
+            // get orientation
+            orientation = getResources().getConfiguration().orientation;
 
-        // get client/service bundles
-        Bundle args = null;
+            // inject views
+            ButterKnife.bind(this);
 
-        if (savedInstanceState != null){
 
-            mainPlaylistName = savedInstanceState.getString("main_playlist_name");
-            currentPlaylistName = savedInstanceState.getString("current_playlist_name");
-            filter = savedInstanceState.getString("filter");
-            selectedDrawerItemIndex = savedInstanceState.getInt("selected_drawer_item");
+            // bind Presenter to View
+            presenter = new MainActivityPresenter();
+            presenter.attachView(this);
 
-            args = new Bundle();
-            args.putBundle("client_bundle", savedInstanceState.getBundle("client_bundle"));
-            args.putBundle("service_bundle", savedInstanceState.getBundle("service_bundle"));
+            // get client/service bundles
+            Bundle args = null;
+
+            if (savedInstanceState != null) {
+
+                mainPlaylistName = savedInstanceState.getString("main_playlist_name");
+                currentPlaylistName = savedInstanceState.getString("current_playlist_name");
+                filter = savedInstanceState.getString("filter");
+                selectedDrawerItemIndex = savedInstanceState.getInt("selected_drawer_item");
+
+                args = new Bundle();
+                args.putBundle("client_bundle", savedInstanceState.getBundle("client_bundle"));
+                args.putBundle("service_bundle", savedInstanceState.getBundle("service_bundle"));
+            }
+
+            // initialize player client
+            anglerClient = new AnglerClient(this, args);
+            anglerClient.init();
+
+
+            // Setup seek bar
+            setupSeekBar();
+
+            // create main fragment or restore it visibility
+            if (savedInstanceState == null) {
+
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.main_frame, new MusicPlayerFragment(), "music_player_fragment")
+                        .commit();
+
+            } else {
+
+                mainFrame.setVisibility(savedInstanceState.getInt("main_frame_visibility"));
+            }
+
+
+            // Select current drawer item
+            drawerItems.get(selectedDrawerItemIndex).setSelected(true);
+            drawerItems.get(selectedDrawerItemIndex).setTypeface(null, Typeface.BOLD);
         }
-
-        // initialize player client
-        anglerClient = new AnglerClient(this, args);
-        anglerClient.init();
-
-        // Setup seek bar
-        setupSeekBar();
-
-        // create main fragment or restore it visibility
-        if (savedInstanceState == null) {
-
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.main_frame, new MusicPlayerFragment(), "music_player_fragment")
-                    .commit();
-
-        }else {
-
-            mainFrame.setVisibility(savedInstanceState.getInt("main_frame_visibility"));
-        }
-
-        // Select current drawer item
-        drawerItems.get(selectedDrawerItemIndex).setSelected(true);
-        drawerItems.get(selectedDrawerItemIndex).setTypeface(null, Typeface.BOLD);
     }
 
 
@@ -174,12 +186,17 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
     protected void onStart() {
         super.onStart();
 
-        anglerClient.connect();
+        if (anglerClient != null) {
+            anglerClient.connect();
+        }
 
-        presenter.attachView(this);
+        if (presenter != null) {
+            presenter.attachView(this);
 
-        // Set background
-        presenter.setupBackground();
+            // Set background
+            presenter.setupBackground();
+        }
+
 
         receiver = new BroadcastReceiver() {
             @Override
@@ -215,9 +232,13 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
     protected void onStop() {
         super.onStop();
 
-        anglerClient.disconnect();
+        if (anglerClient != null) {
+            anglerClient.disconnect();
+        }
 
-        presenter.deattachView();
+        if (presenter != null) {
+            presenter.deattachView();
+        }
 
         unregisterReceiver(receiver);
     }
@@ -252,8 +273,31 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
         }
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 
+        switch (requestCode){
 
+            case 1:
+
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED){
+
+                    Intent intent = getIntent();
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+
+                    finish();
+
+                    overridePendingTransition(0, 0);
+
+                    startActivity(getIntent());
+
+                }else{
+                    finish();
+                }
+
+                break;
+        }
+    }
 
     // MVP View methods
     // Set background
