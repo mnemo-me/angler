@@ -112,6 +112,8 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
 
     protected void onCreate(final Bundle savedInstanceState) {
 
+        setTheme(R.style.AppTheme);
+
         super.onCreate(savedInstanceState);
 
         if (this.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
@@ -246,14 +248,16 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        outState.putString("main_playlist_name", mainPlaylistName);
-        outState.putString("current_playlist_name", currentPlaylistName);
-        outState.putString("filter", filter);
-        outState.putInt("selected_drawer_item", selectedDrawerItemIndex);
+        if (anglerClient != null) {
+            outState.putString("main_playlist_name", mainPlaylistName);
+            outState.putString("current_playlist_name", currentPlaylistName);
+            outState.putString("filter", filter);
+            outState.putInt("selected_drawer_item", selectedDrawerItemIndex);
 
-        outState.putInt("main_frame_visibility", findViewById(R.id.main_frame).getVisibility());
-        outState.putBundle("client_bundle", anglerClient.getClientBundle());
-        outState.putBundle("service_bundle", anglerClient.getServiceBundle());
+            outState.putInt("main_frame_visibility", findViewById(R.id.main_frame).getVisibility());
+            outState.putBundle("client_bundle", anglerClient.getClientBundle());
+            outState.putBundle("service_bundle", anglerClient.getServiceBundle());
+        }
     }
 
     @Override

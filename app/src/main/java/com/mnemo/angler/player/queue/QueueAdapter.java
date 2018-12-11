@@ -8,6 +8,7 @@ import android.support.v4.media.MediaDescriptionCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -119,7 +120,7 @@ public class QueueAdapter extends RecyclerView.Adapter<QueueAdapter.ViewHolder> 
         }
 
 
-
+Log.e("vvvvvv", holder.getAdapterPosition() + "   " + queuePosition);
         holder.itemView.setOnClickListener(view -> {
 
             if (holder.getAdapterPosition() == queuePosition){
@@ -131,6 +132,10 @@ public class QueueAdapter extends RecyclerView.Adapter<QueueAdapter.ViewHolder> 
 
         // Delete track button
         holder.deleteTrack.setOnClickListener(view -> {
+
+            if (holder.getAdapterPosition() <= queuePosition){
+                queuePosition--;
+            }
 
             ((MainActivity)context).getAnglerClient().removeQueueItemAt(holder.getAdapterPosition());
             queue.remove(holder.getAdapterPosition());
@@ -169,8 +174,11 @@ public class QueueAdapter extends RecyclerView.Adapter<QueueAdapter.ViewHolder> 
     }
 
     void setPlaybackState(int playbackState) {
-        this.playbackState = playbackState;
-        notifyItemChanged(queuePosition);
+
+        if (this.playbackState != playbackState) {
+            this.playbackState = playbackState;
+            notifyItemChanged(queuePosition);
+        }
     }
 
 }

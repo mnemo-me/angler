@@ -48,7 +48,6 @@
         android:lines="2"
         android:textColor="@color/black"
         android:textSize="14sp"
-        android:transitionName="title"
         tools:text="Library" />
 
 </LinearLayout>

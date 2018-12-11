@@ -2,7 +2,11 @@ package com.mnemo.angler.player.service;
 
 
 
+import android.content.Context;
 import android.content.Intent;
+import android.media.AudioAttributes;
+import android.media.AudioFocusRequest;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.audiofx.BassBoost;
 import android.media.audiofx.Equalizer;
@@ -40,6 +44,9 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
     private MediaPlayer mMediaPlayer;
 
     private boolean isPaused = false;
+
+    private AudioManager mAudioManager;
+    private AudioFocusRequest audioFocusRequest;
 
     private Equalizer mEqualizer;
     private Virtualizer mVirtualizer;
@@ -112,6 +119,9 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
 
 
         mMediaPlayer = new MediaPlayer();
+
+        // Manage audio focus
+        setupAudioFocus();
 
         // Setup equalizer and audio effects
         setupEqualizer();
@@ -195,55 +205,61 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
         @Override
         public void onPlay() {
 
-            startService(new Intent(getApplicationContext(), AnglerService.class));
+            int result = mAudioManager.requestAudioFocus(audioFocusRequest);
 
-            mMediaSession.setPlaybackState(new PlaybackStateCompat.Builder()
-                    .setState(PlaybackStateCompat.STATE_PLAYING, PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN, 0)
-                    .setActiveQueueItemId((long)queueIndex)
-                    .build());
+            if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED){
 
-            if (isPaused){
+                startService(new Intent(getApplicationContext(), AnglerService.class));
 
-                isPaused = false;
-                mAnglerNotificationManager.createNotification();
-                mMediaPlayer.start();
+                mMediaSession.setPlaybackState(new PlaybackStateCompat.Builder()
+                        .setState(PlaybackStateCompat.STATE_PLAYING, PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN, 0)
+                        .setActiveQueueItemId((long)queueIndex)
+                        .build());
 
-            }else {
+                if (isPaused){
 
-                onPrepare();
+                    isPaused = false;
+                    mAnglerNotificationManager.createNotification();
+                    mMediaPlayer.start();
 
-                try {
-                    if (mMediaPlayer.isPlaying()) {
-                        mMediaPlayer.stop();
-                    }
-                    mMediaPlayer.reset();
-                    mMediaPlayer.setOnCompletionListener(mediaPlayer -> {
-                        if (queue.size() > 0) {
-                            anglerServiceCallback.onSkipToNext();
+                }else {
+
+                    onPrepare();
+
+                    try {
+                        if (mMediaPlayer.isPlaying()) {
+                            mMediaPlayer.stop();
                         }
-                    });
-                    mMediaPlayer.setOnPreparedListener(mediaPlayer -> {
-                        mAnglerNotificationManager.createNotification();
-                        mMediaPlayer.start();
-                        mEqualizer = new Equalizer(0, mMediaPlayer.getAudioSessionId());
-                        mVirtualizer = new Virtualizer(0, mMediaPlayer.getAudioSessionId());
-                        mBassBoost = new BassBoost(0, mMediaPlayer.getAudioSessionId());
-                        mAmplifier = new LoudnessEnhancer(mMediaPlayer.getAudioSessionId());
+                        mMediaPlayer.reset();
+                        mMediaPlayer.setOnCompletionListener(mediaPlayer -> {
+                            if (queue.size() > 0) {
+                                anglerServiceCallback.onSkipToNext();
+                            }
+                        });
+                        mMediaPlayer.setOnPreparedListener(mediaPlayer -> {
+                            mAnglerNotificationManager.createNotification();
+                            mMediaPlayer.start();
+                            mEqualizer = new Equalizer(0, mMediaPlayer.getAudioSessionId());
+                            mVirtualizer = new Virtualizer(0, mMediaPlayer.getAudioSessionId());
+                            mBassBoost = new BassBoost(0, mMediaPlayer.getAudioSessionId());
+                            mAmplifier = new LoudnessEnhancer(mMediaPlayer.getAudioSessionId());
 
-                        Intent intent = new Intent();
+                            Intent intent = new Intent();
 
-                        intent.setAction("queue_position_changed");
-                        intent.putExtra("queue_position", queueIndex);
+                            intent.setAction("queue_position_changed");
+                            intent.putExtra("queue_position", queueIndex);
 
-                        sendBroadcast(intent);
+                            sendBroadcast(intent);
 
-                    });
-                    mMediaPlayer.setDataSource(AnglerService.this, metadata.getDescription().getMediaUri());
-                    mMediaPlayer.prepareAsync();
+                        });
+                        mMediaPlayer.setDataSource(AnglerService.this, metadata.getDescription().getMediaUri());
+                        mMediaPlayer.prepareAsync();
 
 
-                } catch (IOException e) {
-                    e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
                 }
             }
 
@@ -270,6 +286,8 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
         @Override
         public void onStop() {
             super.onStop();
+
+            mAudioManager.abandonAudioFocusRequest(audioFocusRequest);
 
             mMediaSession.setPlaybackState(new PlaybackStateCompat.Builder()
                 .setState(PlaybackStateCompat.STATE_STOPPED, PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN, 0)
@@ -420,6 +438,18 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
 
                     if (index <= queueIndex){
                         queueIndex--;
+
+                        if (isPaused){
+                            mMediaSession.setPlaybackState(new PlaybackStateCompat.Builder()
+                                    .setState(PlaybackStateCompat.STATE_PAUSED, PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN, 0)
+                                    .setActiveQueueItemId((long) queueIndex)
+                                    .build());
+                        }else {
+                            mMediaSession.setPlaybackState(new PlaybackStateCompat.Builder()
+                                    .setState(PlaybackStateCompat.STATE_PLAYING, PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN, 0)
+                                    .setActiveQueueItemId((long) queueIndex)
+                                    .build());
+                        }
                     }
 
                     queue.remove(index);
@@ -553,6 +583,54 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
         MediaDescriptionCompat description = queueItem.getDescription();
 
         return MediaAssistant.extractMetadata(description);
+    }
+
+
+    // Audio focus
+    private void setupAudioFocus(){
+
+        mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+
+        AudioAttributes audioAttributes = new AudioAttributes.Builder()
+                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                .build();
+
+        audioFocusRequest = new AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
+                .setAudioAttributes(audioAttributes)
+                .setOnAudioFocusChangeListener(focusChange -> {
+
+                    switch (focusChange){
+
+                        case AudioManager.AUDIOFOCUS_GAIN:
+
+                            mMediaPlayer.setVolume(1f, 1f);
+
+                            if (isPaused) {
+                                mMediaSession.getController().getTransportControls().play();
+                            }
+
+                            break;
+
+                        case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
+
+                            mMediaPlayer.setVolume(0.1f, 0.1f);
+
+                            break;
+
+                        case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
+
+                            mMediaPlayer.setVolume(0.1f, 0.1f);
+
+                            break;
+
+                        case AudioManager.AUDIOFOCUS_LOSS:
+
+                            mMediaSession.getController().getTransportControls().pause();
+
+                            break;
+                    }
+                })
+                .build();
     }
 
 
