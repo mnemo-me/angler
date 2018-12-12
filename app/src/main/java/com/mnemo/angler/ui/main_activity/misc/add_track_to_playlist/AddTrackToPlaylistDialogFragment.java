@@ -1,23 +1,28 @@
 package com.mnemo.angler.ui.main_activity.misc.add_track_to_playlist;
 
 
+import android.app.Dialog;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomSheetBehavior;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.mnemo.angler.data.database.Entities.Playlist;
 
 import com.mnemo.angler.data.database.Entities.Track;
 import com.mnemo.angler.R;
+import com.mnemo.angler.ui.main_activity.activity.MainActivity;
 import com.mnemo.angler.ui.main_activity.adapters.AddTrackToPlaylistAdapter;
 import com.mnemo.angler.ui.main_activity.fragments.playlists.playlist_create.PlaylistCreationDialogFragment;
 
@@ -41,6 +46,28 @@ public class AddTrackToPlaylistDialogFragment extends BottomSheetDialogFragment 
     Track track;
 
     int orientation;
+
+    @NonNull
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+
+        // Configure bottom sheet dialog behavior
+        BottomSheetDialog dialog = (BottomSheetDialog)super.onCreateDialog(savedInstanceState);
+
+        dialog.setOnShowListener(dialogInterface -> {
+
+            BottomSheetDialog bottomSheetDialog = (BottomSheetDialog) dialogInterface;
+
+            FrameLayout bottomSheet = bottomSheetDialog.findViewById(android.support.design.R.id.design_bottom_sheet);
+
+            BottomSheetBehavior behavior = BottomSheetBehavior.from(bottomSheet);
+            behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+            behavior.setSkipCollapsed(true);
+
+        });
+
+        return dialog;
+    }
 
     @Nullable
     @Override
@@ -102,6 +129,20 @@ public class AddTrackToPlaylistDialogFragment extends BottomSheetDialogFragment 
     // MVP View methods
     @Override
     public void setPlaylists(List<Playlist> playlists, List<String> playlistsWithTrack) {
+
+        // Fix bottom padding (if needed)
+        int playlistsOnScreen;
+
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
+            playlistsOnScreen = 8;
+        }else{
+            playlistsOnScreen = 4;
+        }
+
+        if (playlists.size() > playlistsOnScreen){
+            recyclerView.setPadding((int)(12 * MainActivity.density), (int)(12 * MainActivity.density), (int)(4 * MainActivity.density), (int)(60 * MainActivity.density));
+        }
+
 
         adapter = new AddTrackToPlaylistAdapter(getContext(), playlists, playlistsWithTrack);
         adapter.setOnAddTrackToPlaylistListener(playlist -> {

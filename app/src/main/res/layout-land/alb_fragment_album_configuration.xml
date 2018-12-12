@@ -27,13 +27,16 @@
 
         <TextView
             android:id="@+id/album_conf_tracks_count"
-            style="@style/title"
+            style="@android:style/TextAppearance.Material.Widget.TabWidget"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
             android:layout_gravity="end"
             android:layout_marginEnd="16dp"
             android:ellipsize="end"
             android:maxLines="1"
             android:maxWidth="210dp"
-            tools:text="123 tracks" />
+            tools:text="tracks: 123" />
 
         <TextView
             android:id="@+id/album_conf_artist"

@@ -1,13 +1,17 @@
 package com.mnemo.angler.player.queue;
 
 
+import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomSheetBehavior;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,6 +20,7 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,7 +28,6 @@ import com.mnemo.angler.ui.main_activity.activity.MainActivity;
 import com.mnemo.angler.R;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -47,6 +51,28 @@ public class QueueDialogFragment extends BottomSheetDialogFragment {
 
     BroadcastReceiver receiver;
     IntentFilter intentFilter;
+
+    @NonNull
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+
+        // Configure bottom sheet dialog behavior
+        BottomSheetDialog dialog = (BottomSheetDialog)super.onCreateDialog(savedInstanceState);
+
+        dialog.setOnShowListener(dialogInterface -> {
+
+            BottomSheetDialog bottomSheetDialog = (BottomSheetDialog) dialogInterface;
+
+            FrameLayout bottomSheet = bottomSheetDialog.findViewById(android.support.design.R.id.design_bottom_sheet);
+
+            BottomSheetBehavior behavior = BottomSheetBehavior.from(bottomSheet);
+            behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+            behavior.setSkipCollapsed(true);
+
+        });
+
+        return dialog;
+    }
 
     @Nullable
     @Override
@@ -74,6 +100,20 @@ public class QueueDialogFragment extends BottomSheetDialogFragment {
             queue = savedInstanceState.getParcelableArrayList("queue");
         }else {
             queue = ((MainActivity) getActivity()).getAnglerClient().getQueue();
+        }
+
+
+        // Fix bottom padding (if needed)
+        int tracksOnScreen;
+
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
+            tracksOnScreen = 10;
+        }else{
+            tracksOnScreen = 5;
+        }
+
+        if (queue.size() > tracksOnScreen){
+            recyclerView.setPadding(0, (int)(8 * MainActivity.density), 0, (int)(68 * MainActivity.density));
         }
 
         // Set count view
