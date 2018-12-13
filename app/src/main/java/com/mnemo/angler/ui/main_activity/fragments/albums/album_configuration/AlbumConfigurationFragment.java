@@ -212,16 +212,18 @@ public class AlbumConfigurationFragment extends Fragment implements AlbumConfigu
             @Override
             public void onReceive(Context context, Intent intent) {
 
-                switch (intent.getAction()){
+                switch (intent.getAction()) {
                     case "track_changed":
 
                         String trackPlaylist = intent.getStringExtra("track_playlist");
                         String mediaId = intent.getStringExtra("media_id");
 
-                        if (trackPlaylist.equals(localPlaylistName)) {
+                        if (adapter != null) {
 
-                            if (adapter != null){
+                            if (trackPlaylist.equals(localPlaylistName)) {
                                 adapter.setTrack(mediaId);
+                            } else {
+                                adapter.setTrack("");
                             }
                         }
 
@@ -229,7 +231,9 @@ public class AlbumConfigurationFragment extends Fragment implements AlbumConfigu
 
                     case "playback_state_changed":
 
-                        adapter.setPlaybackState(intent.getExtras().getInt("playback_state"));
+                        if (adapter != null) {
+                            adapter.setPlaybackState(intent.getExtras().getInt("playback_state"));
+                        }
 
                         break;
                 }
@@ -286,6 +290,7 @@ public class AlbumConfigurationFragment extends Fragment implements AlbumConfigu
         PlayAllDialogFragment playAllDialogFragment = new PlayAllDialogFragment();
 
         Bundle args = new Bundle();
+        args.putString("type", "album");
         args.putString("playlist", localPlaylistName);
         args.putParcelableArrayList("tracks", (ArrayList<? extends Parcelable>) presenter.getTracks());
         playAllDialogFragment.setArguments(args);

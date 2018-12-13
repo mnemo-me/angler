@@ -248,8 +248,8 @@ public class AnglerRepository {
         return anglerPreferences.getQueueTitle();
     }
 
-    public void setQueuTitle(String queuTitle){
-        anglerPreferences.setQueueTitle(queuTitle);
+    public void setQueueTitle(String queueTitle){
+        anglerPreferences.setQueueTitle(queueTitle);
     }
 
     public Set<String> getQueue(){
@@ -268,6 +268,25 @@ public class AnglerRepository {
         anglerPreferences.setQueueIndex(queueIndex);
     }
 
+    public String getQueueFilter(){
+        return anglerPreferences.getQueueFilter();
+    }
+
+    public void setQueueFilter(String queueFilter){
+        anglerPreferences.setQueueFilter(queueFilter);
+    }
+
+
+    // Playback methods
+    // Seekbar
+    public String getCurrentTrack(){
+        return anglerPreferences.getCurrentTrack();
+    }
+
+    public void setCurrentTrack(String track){
+        anglerPreferences.setCurrentTrack(track);
+    }
+
     public int getSeekbarPosition(){
         return anglerPreferences.getSeekbarPosition();
     }
@@ -276,6 +295,23 @@ public class AnglerRepository {
         anglerPreferences.setSeekbarPosition(seekbarPosition);
     }
 
+    // Repeat
+    public int getRepeatMode(){
+        return anglerPreferences.getRepeatMode();
+    }
+
+    public void setRepeatMode(int repeatMode){
+        anglerPreferences.setRepeatMode(repeatMode);
+    }
+
+    // Shuffle
+    public int getShuffleMode(){
+        return anglerPreferences.getShuffleMode();
+    }
+
+    public void setShuffleMode(int shuffleMode){
+        anglerPreferences.setShuffleMode(shuffleMode);
+    }
 
 
     // File storage methods

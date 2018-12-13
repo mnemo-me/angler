@@ -78,7 +78,7 @@ public class AnglerServicePresenter extends BasePresenter {
     }
 
     void saveQueueTitle(String queueTitle){
-        repository.setQueuTitle(queueTitle);
+        repository.setQueueTitle(queueTitle);
     }
 
     // Queue
@@ -99,6 +99,15 @@ public class AnglerServicePresenter extends BasePresenter {
         repository.setQueueIndex(queueIndex);
     }
 
+    // Current track
+    String getCurrentTrack(){
+        return repository.getCurrentTrack();
+    }
+
+    void saveCurrentTrack(String track){
+        repository.setCurrentTrack(track);
+    }
+
     // Seekbar position
     int getSeekbarPosition(){
         return repository.getSeekbarPosition();
@@ -106,6 +115,24 @@ public class AnglerServicePresenter extends BasePresenter {
 
     void saveSeekbarPosition(int seekbarPosition){
         repository.setSeekbarPosition(seekbarPosition);
+    }
+
+    // Repeat mode
+    int getRepeatMode(){
+        return repository.getRepeatMode();
+    }
+
+    void saveRepeatMode(int repeatMode){
+        repository.setRepeatMode(repeatMode);
+    }
+
+    // Shuffle mode
+    int getShuffleMode(){
+        return repository.getShuffleMode();
+    }
+
+    void saveShuffleMode(int shuffleMode){
+        repository.setShuffleMode(shuffleMode);
     }
 
 

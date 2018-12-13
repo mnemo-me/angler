@@ -14,6 +14,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -121,29 +122,29 @@ public class MainPlaylistFragment extends Fragment implements MainPlaylistView{
             public void onReceive(Context context, Intent intent) {
 
                 switch (intent.getAction()){
+
                     case "track_changed":
 
                         String trackPlaylist = intent.getStringExtra("track_playlist");
                         String mediaId = intent.getStringExtra("media_id");
 
-                        if (trackPlaylist.equals(((MainActivity)getActivity()).getMainPlaylistName())) {
+                        if (adapter != null) {
 
-                            if (adapter != null) {
+                            if (trackPlaylist.equals(((MainActivity) getActivity()).getMainPlaylistName())) {
                                 adapter.setTrack(mediaId);
-                            }
-
-                        }else{
-
-                            if (adapter != null){
+                            } else {
                                 adapter.setTrack("");
                             }
+
                         }
 
                         break;
 
                     case "playback_state_changed":
 
-                        adapter.setPlaybackState(intent.getExtras().getInt("playback_state"));
+                        if (adapter != null) {
+                            adapter.setPlaybackState(intent.getExtras().getInt("playback_state"));
+                        }
 
                         break;
 
@@ -185,7 +186,7 @@ public class MainPlaylistFragment extends Fragment implements MainPlaylistView{
     // MVP View methods
     @Override
     public void setTracks(List<Track> playlistTracks) {
-
+Log.e("jjjjjjjjjjjj", String.valueOf(getActivity() == null));
         adapter = new TrackAdapter(getContext(), "music_player", ((MainActivity)getActivity()).getMainPlaylistName(), playlistTracks);
         recyclerView.setAdapter(adapter);
 

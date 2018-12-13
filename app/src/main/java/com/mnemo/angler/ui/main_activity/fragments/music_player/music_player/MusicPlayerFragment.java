@@ -2,6 +2,7 @@ package com.mnemo.angler.ui.main_activity.fragments.music_player.music_player;
 
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -17,6 +18,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -337,26 +339,6 @@ public class MusicPlayerFragment extends Fragment implements MusicPlayerView {
     // Configure search toolbar
     private void configureSearchToolbar(){
 
-        // Set listener
-        search.setOnClickListener(view -> {
-
-            if (searchView.getVisibility() == View.GONE) {
-
-                search.setAlpha(1f);
-                searchView.setVisibility(View.VISIBLE);
-
-            }else{
-                if (searchView.getQuery().length() > 0) {
-                    searchView.setQuery("", false);
-                }
-
-                search.setAlpha(0.5f);
-                searchView.setVisibility(View.GONE);
-                searchView.findViewById(android.support.v7.appcompat.R.id.search_close_btn).setVisibility(View.GONE);
-            }
-
-        });
-
         // Customize search toolbar
         EditText editText = searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
 
@@ -374,6 +356,33 @@ public class MusicPlayerFragment extends Fragment implements MusicPlayerView {
             searchView.clearFocus();
 
             return false;
+        });
+
+        // Set listener
+        search.setOnClickListener(view -> {
+
+            if (searchView.getVisibility() == View.GONE) {
+
+                search.setAlpha(1f);
+                searchView.setVisibility(View.VISIBLE);
+
+                // Show soft keyboard on searchview open
+                if (searchView.requestFocus()){
+
+                    InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    inputMethodManager.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT);
+                }
+
+            }else{
+                if (searchView.getQuery().length() > 0) {
+                    searchView.setQuery("", false);
+                }
+
+                search.setAlpha(0.5f);
+                searchView.setVisibility(View.GONE);
+                searchView.findViewById(android.support.v7.appcompat.R.id.search_close_btn).setVisibility(View.GONE);
+            }
+
         });
 
 

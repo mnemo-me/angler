@@ -98,6 +98,7 @@ public class PlaylistConfigurationFragment extends Fragment implements PlaylistC
     TrackAdapter adapter;
 
     // Playlist variables
+    String type;
     String title;
     String cover;
     String localPlaylistName;
@@ -132,6 +133,13 @@ public class PlaylistConfigurationFragment extends Fragment implements PlaylistC
         }
 
         localPlaylistName = title;
+
+        // Set type
+        if (orientation == Configuration.ORIENTATION_PORTRAIT){
+            type = "playlist";
+        }else{
+            type = "playlist(land)";
+        }
 
         // Assign title
         if (orientation == Configuration.ORIENTATION_PORTRAIT) {
@@ -223,10 +231,12 @@ public class PlaylistConfigurationFragment extends Fragment implements PlaylistC
                         String trackPlaylist = intent.getStringExtra("track_playlist");
                         String mediaId = intent.getStringExtra("media_id");
 
-                        if (trackPlaylist.equals(localPlaylistName)) {
+                        if (adapter != null) {
 
-                            if (adapter != null){
+                            if (trackPlaylist.equals(localPlaylistName)) {
                                 adapter.setTrack(mediaId);
+                            }else{
+                                adapter.setTrack("");
                             }
                         }
 
@@ -234,7 +244,9 @@ public class PlaylistConfigurationFragment extends Fragment implements PlaylistC
 
                     case "playback_state_changed":
 
-                        adapter.setPlaybackState(intent.getExtras().getInt("playback_state"));
+                        if (adapter != null) {
+                            adapter.setPlaybackState(intent.getExtras().getInt("playback_state"));
+                        }
 
                         break;
                 }
@@ -282,14 +294,6 @@ public class PlaylistConfigurationFragment extends Fragment implements PlaylistC
     // MVP View methods
     public void setPlaylistTracks(List<Track> tracks){
 
-        String type;
-
-        if (orientation == Configuration.ORIENTATION_PORTRAIT){
-            type = "playlist";
-        }else{
-            type = "playlist(land)";
-        }
-
         adapter = new TrackAdapter(getContext(), type, title, tracks);
         recyclerView.setAdapter(adapter);
 
@@ -327,6 +331,7 @@ public class PlaylistConfigurationFragment extends Fragment implements PlaylistC
             PlayAllDialogFragment playAllDialogFragment = new PlayAllDialogFragment();
 
             Bundle args = new Bundle();
+            args.putString("type", type);
             args.putString("playlist", title);
             args.putParcelableArrayList("tracks", (ArrayList<? extends Parcelable>) presenter.getTracks());
             playAllDialogFragment.setArguments(args);
@@ -423,7 +428,18 @@ public class PlaylistConfigurationFragment extends Fragment implements PlaylistC
         title = newTitle;
         cover = AnglerFolder.PATH_PLAYLIST_COVER + File.separator + title.replace(" ", "_") + ".jpeg";
 
-        titleText.setText(title);
+        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+
+            String titleCollapse = title;
+
+            if (title.length() > 20){
+                titleCollapse = title.substring(0, 19) + "...";
+            }
+
+            collapsingToolbarLayout.setTitle(titleCollapse);
+        } else {
+            titleText.setText(title);
+        }
     }
 
     // Update tracks

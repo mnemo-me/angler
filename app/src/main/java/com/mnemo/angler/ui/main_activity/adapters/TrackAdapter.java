@@ -191,7 +191,7 @@ public class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.ViewHolder>{
 
                 } else {
 
-                    ((MainActivity) context).getAnglerClient().playNow(playlist, trackPosition, tracks);
+                    ((MainActivity) context).getAnglerClient().playNow(type, playlist, trackPosition, tracks);
                     setTrack(id);
                 }
             });

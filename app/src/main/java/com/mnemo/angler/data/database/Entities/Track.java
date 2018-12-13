@@ -116,6 +116,10 @@ public class Track implements Parcelable {
         return _id.hashCode();
     }
 
+    @Override
+    public String toString() {
+        return get_id() + ":::" + getTitle() + ":::" + getArtist() + ":::" + getAlbum() + ":::" + getDuration() + ":::" + getUri();
+    }
 
     // Parcelable
     public Track(Parcel parcel) {

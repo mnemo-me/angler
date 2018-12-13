@@ -235,6 +235,7 @@ public class ArtistConfigurationFragment extends Fragment implements ArtistConfi
         PlayAllDialogFragment playAllDialogFragment = new PlayAllDialogFragment();
 
         Bundle args = new Bundle();
+        args.putString("type", "artist");
         args.putString("playlist", localPlaylistName);
         args.putParcelableArrayList("tracks", (ArrayList<? extends Parcelable>) presenter.getTracks());
         playAllDialogFragment.setArguments(args);

@@ -123,23 +123,23 @@ public class PlaylistArtistTracksFragment extends Fragment implements PlaylistAr
                         String trackPlaylist = intent.getStringExtra("track_playlist");
                         String mediaId = intent.getStringExtra("media_id");
 
-                        if (trackPlaylist.equals(localPlaylistName)) {
+                        if (adapter != null) {
 
-                            if (adapter != null) {
+                            if (trackPlaylist.equals(localPlaylistName)) {
                                 adapter.setTrack(mediaId);
-                            }
-                        }else{
-
-                            if (adapter != null){
+                            } else {
                                 adapter.setTrack("");
                             }
+
                         }
 
                         break;
 
                     case "playback_state_changed":
 
-                        adapter.setPlaybackState(intent.getExtras().getInt("playback_state"));
+                        if (adapter != null) {
+                            adapter.setPlaybackState(intent.getExtras().getInt("playback_state"));
+                        }
 
                         break;
 

@@ -184,7 +184,7 @@ public class ContextualMenuDialogFragment extends BottomSheetDialogFragment impl
     @OnClick(R.id.context_menu_play)
     void play(){
 
-        ((MainActivity) getContext()).getAnglerClient().playNow(playlist, tracks.indexOf(track), tracks);
+        ((MainActivity) getContext()).getAnglerClient().playNow(type, playlist, tracks.indexOf(track), tracks);
         new Handler().postDelayed(this::dismiss, 300);
     }
 

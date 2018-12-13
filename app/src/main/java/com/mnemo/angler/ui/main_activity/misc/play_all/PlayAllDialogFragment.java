@@ -25,6 +25,7 @@ public class PlayAllDialogFragment extends DialogFragment {
 
     Unbinder unbinder;
 
+    String type;
     String playlist;
     List<Track> tracks;
 
@@ -35,6 +36,7 @@ public class PlayAllDialogFragment extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 
         // Get tracks variables
+        type = getArguments().getString("type");
         playlist = getArguments().getString("playlist");
         tracks = getArguments().getParcelableArrayList("tracks");
 
@@ -54,7 +56,7 @@ public class PlayAllDialogFragment extends DialogFragment {
     @OnClick(R.id.play_all_play_now)
     void playNow(){
 
-        ((MainActivity)getActivity()).getAnglerClient().playNow(playlist, 0, tracks);
+        ((MainActivity)getActivity()).getAnglerClient().playNow(type, playlist, 0, tracks);
         new Handler().postDelayed(this::dismiss, 300);
     }
 

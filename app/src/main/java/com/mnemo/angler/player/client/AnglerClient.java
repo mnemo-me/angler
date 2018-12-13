@@ -1,4 +1,4 @@
-package com.mnemo.angler.player;
+package com.mnemo.angler.player.client;
 
 
 import android.content.ComponentName;
@@ -16,8 +16,9 @@ import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
-import android.util.Log;
+import android.widget.Toast;
 
+import com.mnemo.angler.R;
 import com.mnemo.angler.data.database.Entities.Track;
 import com.mnemo.angler.player.service.AnglerService;
 import com.mnemo.angler.ui.main_activity.activity.MainActivity;
@@ -26,7 +27,9 @@ import com.mnemo.angler.util.MediaAssistant;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AnglerClient{
+public class AnglerClient implements AnglerClientView{
+
+    private AnglerClientPresenter presenter;
 
     private Context context;
     private MediaBrowserCompat mMediaBrowser;
@@ -56,12 +59,19 @@ public class AnglerClient{
 
             }
         });
+
+        // Bind Presenter to View
+        presenter = new AnglerClientPresenter();
+        presenter.attachView(this);
     }
 
 
     public void connect(){
 
         mMediaBrowser.connect();
+
+        presenter.attachView(this);
+        queueFilter = presenter.getQueueFilter();
     }
 
     public void disconnect(){
@@ -70,16 +80,34 @@ public class AnglerClient{
             mController.unregisterCallback(controllerCallback);
         }
         mMediaBrowser.disconnect();
+
+        presenter.saveQueueFilter(queueFilter);
+        presenter.deattachView();
     }
 
     public void playPause(){
 
         int pbState = mController.getPlaybackState().getState();
 
-        if (pbState == PlaybackStateCompat.STATE_PLAYING) {
-            mController.getTransportControls().pause();
-        } else {
-            mController.getTransportControls().play();
+        switch (pbState){
+
+            case PlaybackStateCompat.STATE_PLAYING:
+
+                mController.getTransportControls().pause();
+
+                break;
+
+            case PlaybackStateCompat.STATE_ERROR:
+
+                Toast.makeText(context, context.getString(R.string.track_is_missing), Toast.LENGTH_SHORT).show();
+
+                break;
+
+            default:
+
+                mController.getTransportControls().play();
+
+                break;
         }
 
     }
@@ -87,7 +115,7 @@ public class AnglerClient{
     public boolean changeRepeatMode(){
 
         int repeatMode = mController.getRepeatMode();
-        Log.e("repeat", String.valueOf(PlaybackStateCompat.REPEAT_MODE_ONE == repeatMode));
+
         if (repeatMode == PlaybackStateCompat.REPEAT_MODE_ONE){
             mController.getTransportControls().setRepeatMode(PlaybackStateCompat.REPEAT_MODE_NONE);
             return false;
@@ -118,9 +146,9 @@ public class AnglerClient{
         mController.getTransportControls().skipToPrevious();
     }
 
-    public void playNow(String playlistName, int position, List<Track> tracks){
+    public void playNow(String type, String playlistName, int position, List<Track> tracks){
 
-        if (!playlistName.equals(getQueueTitle()) || !((MainActivity)context).getFilter().equals(queueFilter)) {
+        if (!playlistName.equals(getQueueTitle()) || (type.equals("music_player") && !((MainActivity)context).getFilter().equals(queueFilter))) {
 
             clearQueue();
 
@@ -135,6 +163,10 @@ public class AnglerClient{
 
             mController.getTransportControls().sendCustomAction("set_queue_title", bundle);
             mController.getTransportControls().sendCustomAction("update_queue", null);
+
+            if (type.equals("music_player")){
+                queueFilter = ((MainActivity)context).getFilter();
+            }
 
         }
 
@@ -318,6 +350,8 @@ public class AnglerClient{
                 }
 
                 setPlayPause(mController.getPlaybackState().getState());
+                setRepeatState(mController.getRepeatMode());
+                setShuffleState(mController.getShuffleMode());
 
                 MediaMetadataCompat metadata = mController.getMetadata();
 
@@ -410,6 +444,25 @@ public class AnglerClient{
         ((MainActivity)context).setPlayPause(playPauseState);
     }
 
+    // set repeat state
+    private void setRepeatState(int repeatMode){
+
+        if (repeatMode == PlaybackStateCompat.REPEAT_MODE_ONE){
+            ((MainActivity)context).setRepeatState(true);
+        }else{
+            ((MainActivity)context).setRepeatState(false);
+        }
+    }
+
+    // set shuffle state
+    private void setShuffleState(int shuffleMode){
+
+        if (shuffleMode == PlaybackStateCompat.SHUFFLE_MODE_ALL){
+            ((MainActivity)context).setShuffleState(true);
+        }else{
+            ((MainActivity)context).setShuffleState(false);
+        }
+    }
 
     // getters/setters
     public long getDurationMS() {
@@ -420,18 +473,8 @@ public class AnglerClient{
     private void openClientServiceBundle(Bundle bundle){
 
         if (bundle != null) {
-            queueFilter = bundle.getString("queue_filter");
             serviceBundle = bundle.getBundle("service_bundle");
         }
-    }
-
-    public Bundle getClientBundle(){
-
-        Bundle bundle = new Bundle();
-        bundle.putString("queue_filter", queueFilter);
-        bundle.putBundle("service_bundle", serviceBundle);
-
-        return bundle;
     }
 
     public Bundle getServiceBundle() {

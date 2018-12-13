@@ -1,4 +1,4 @@
-package com.mnemo.angler.player;
+package com.mnemo.angler.player.notification;
 
 
 import android.app.NotificationChannel;
@@ -74,7 +74,10 @@ public class AnglerNotificationManager {
 
                 switch (action){
                     case ACTION_PLAY:
-                        transportControls.play();
+
+                        if (mediaController.getPlaybackState().getState() != PlaybackStateCompat.STATE_ERROR) {
+                            transportControls.play();
+                        }
                         break;
                     case ACTION_PAUSE:
                         transportControls.pause();

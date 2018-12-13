@@ -98,6 +98,21 @@ public class MediaAssistant {
         return metadataBuilder.build();
     }
 
+    public static MediaMetadataCompat extractMetadata(String track) {
+
+        String[] trackMetadataArray = track.split(":::");
+
+        MediaMetadataCompat.Builder metadataBuilder = new MediaMetadataCompat.Builder()
+                .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, trackMetadataArray[0])
+                .putString(MediaMetadataCompat.METADATA_KEY_TITLE, trackMetadataArray[1])
+                .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, trackMetadataArray[2])
+                .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, trackMetadataArray[3])
+                .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, Long.parseLong(trackMetadataArray[4]))
+                .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI, trackMetadataArray[5]);
+
+        return metadataBuilder.build();
+    }
+
     public static Track combineMetadataInTrack(MediaMetadataCompat metadata){
 
         String mediaId = metadata.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID);
@@ -110,6 +125,7 @@ public class MediaAssistant {
         return new Track(mediaId, title, artist, album, duration, uri);
 
     }
+
 
 
     // Static method converting time from milliseconds in human readable format

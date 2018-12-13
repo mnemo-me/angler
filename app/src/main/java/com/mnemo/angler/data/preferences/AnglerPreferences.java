@@ -17,6 +17,7 @@ public class AnglerPreferences {
     private SharedPreferences appPreferences;
     private SharedPreferences equalizerPreferences;
     private SharedPreferences queuePreferences;
+    private SharedPreferences playbackPreferences;
 
     @Inject
     public AnglerPreferences(Context context) {
@@ -27,6 +28,7 @@ public class AnglerPreferences {
         appPreferences = context.getSharedPreferences("app_pref", Context.MODE_PRIVATE);
         equalizerPreferences = context.getSharedPreferences("equalizer_pref", Context.MODE_PRIVATE);
         queuePreferences = context.getSharedPreferences("queue_pref", Context.MODE_PRIVATE);
+        playbackPreferences = context.getSharedPreferences("playback_pref", Context.MODE_PRIVATE);
     }
 
     public void setBackgroundImage(String backgroundImage){
@@ -164,11 +166,49 @@ public class AnglerPreferences {
         queuePreferences.edit().putInt("queue_index", queueIndex).apply();
     }
 
+    public String getQueueFilter(){
+        return queuePreferences.getString("queue_filter", "");
+    }
+
+    public void setQueueFilter(String queueFilter){
+        queuePreferences.edit().putString("queue_filter", queueFilter).apply();
+    }
+
+
+
+    // Playback methods
+    // Seekbar
+    public String getCurrentTrack(){
+        return queuePreferences.getString("current_track", null);
+    }
+
+    public void setCurrentTrack(String track){
+        queuePreferences.edit().putString("current_track", track).apply();
+    }
+
     public int getSeekbarPosition(){
-        return queuePreferences.getInt("seekbar_position", 0);
+        return playbackPreferences.getInt("seekbar_position", 0);
     }
 
     public void setSeekbarPosition(int seekbarPosition){
-        queuePreferences.edit().putInt("seekbar_position", seekbarPosition).apply();
+        playbackPreferences.edit().putInt("seekbar_position", seekbarPosition).apply();
+    }
+
+    // Repeat
+    public int getRepeatMode(){
+        return playbackPreferences.getInt("repeat_mode", 0);
+    }
+
+    public void setRepeatMode(int repeatMode){
+        playbackPreferences.edit().putInt("repeat_mode", repeatMode).apply();
+    }
+
+    // Shuffle
+    public int getShuffleMode(){
+        return playbackPreferences.getInt("shuffle_mode", 0);
+    }
+
+    public void setShuffleMode(int shuffleMode){
+        playbackPreferences.edit().putInt("shuffle_mode", shuffleMode).apply();
     }
 }
