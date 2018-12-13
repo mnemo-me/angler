@@ -215,6 +215,9 @@ public class PlaylistCreationDialogFragment extends DialogFragment implements Pl
                     // Toast!
                     Toast.makeText(getContext(), getString(R.string.playlist) + " '" + title + "' " + getString(R.string.created), Toast.LENGTH_SHORT).show();
 
+                    if (((MainActivity) getContext()).findViewById(R.id.main_frame).getVisibility() == View.VISIBLE) {
+                        ((MainActivity) getContext()).findViewById(R.id.main_frame).setVisibility(View.GONE);
+                    }
 
                     // Open new playlist
                     PlaylistConfigurationFragment playlistConfigurationFragment = new PlaylistConfigurationFragment();

@@ -16,6 +16,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 
 import android.support.v4.media.session.MediaControllerCompat;
+import android.support.v4.media.session.PlaybackStateCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -72,6 +73,12 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
     // Media panel buttons views (initializing with ButterKnife
     @BindView(R.id.media_panel_play_pause)
     ImageButton mPlayPauseButton;
+
+    @BindView(R.id.media_panel_repeat)
+    ImageButton repeatButton;
+
+    @BindView(R.id.media_panel_shuffle)
+    ImageButton shuffleButton;
 
     @BindView(R.id.media_panel_seek_bar)
     SeekBar seekBar;
@@ -283,19 +290,22 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
 
             case 1:
 
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                if (grantResults.length > 0) {
 
-                    Intent intent = getIntent();
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
-                    finish();
+                        Intent intent = getIntent();
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
 
-                    overridePendingTransition(0, 0);
+                        finish();
 
-                    startActivity(getIntent());
+                        overridePendingTransition(0, 0);
 
-                }else{
-                    finish();
+                        startActivity(getIntent());
+
+                    } else {
+                        finish();
+                    }
                 }
 
                 break;
@@ -389,9 +399,9 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
         boolean isRepeat = anglerClient.changeRepeatMode();
 
         if (isRepeat){
-            v.setAlpha(0.2f);
-        }else{
             v.setAlpha(0.8f);
+        }else{
+            v.setAlpha(0.2f);
         }
     }
 
@@ -401,10 +411,30 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
         boolean isShuffle = anglerClient.changeShuffleMode();
 
         if (isShuffle){
-            v.setAlpha(0.2f);
-        }else{
             v.setAlpha(0.8f);
+        }else{
+            v.setAlpha(0.2f);
         }
+    }
+
+
+    public void setRepeatState(boolean repeatState){
+
+        if (repeatState){
+            repeatButton.setAlpha(0.8f);
+        }else{
+            repeatButton.setAlpha(0.2f);
+        }
+    }
+
+    public void setShuffleState(boolean shuffleState) {
+
+        if (shuffleState) {
+            shuffleButton.setAlpha(0.8f);
+        }else{
+            shuffleButton.setAlpha(0.2f);
+        }
+
     }
 
 
@@ -413,14 +443,21 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
     @OnClick(R.id.media_panel_add_to_playlist)
     void addToPlaylist(){
 
-        Track track = MediaAssistant.combineMetadataInTrack(anglerClient.getCurrentMetadata());
+        if (getPlaybackState() != PlaybackStateCompat.STATE_ERROR) {
 
-        Bundle args = new Bundle();
-        args.putParcelable("track", track);
+            Track track = MediaAssistant.combineMetadataInTrack(anglerClient.getCurrentMetadata());
 
-        AddTrackToPlaylistDialogFragment addTrackToPlaylistDialogFragment = new AddTrackToPlaylistDialogFragment();
-        addTrackToPlaylistDialogFragment.setArguments(args);
-        addTrackToPlaylistDialogFragment.show(getSupportFragmentManager(), "Add track to playlist dialog");
+            Bundle args = new Bundle();
+            args.putParcelable("track", track);
+
+            AddTrackToPlaylistDialogFragment addTrackToPlaylistDialogFragment = new AddTrackToPlaylistDialogFragment();
+            addTrackToPlaylistDialogFragment.setArguments(args);
+            addTrackToPlaylistDialogFragment.show(getSupportFragmentManager(), "Add track to playlist dialog");
+
+        }else{
+
+            Toast.makeText(this, getString(R.string.track_is_missing), Toast.LENGTH_SHORT).show();
+        }
     }
 
 

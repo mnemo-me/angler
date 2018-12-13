@@ -423,7 +423,18 @@ public class PlaylistConfigurationFragment extends Fragment implements PlaylistC
         title = newTitle;
         cover = AnglerFolder.PATH_PLAYLIST_COVER + File.separator + title.replace(" ", "_") + ".jpeg";
 
-        titleText.setText(title);
+        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+
+            String titleCollapse = title;
+
+            if (title.length() > 20){
+                titleCollapse = title.substring(0, 19) + "...";
+            }
+
+            collapsingToolbarLayout.setTitle(titleCollapse);
+        } else {
+            titleText.setText(title);
+        }
     }
 
     // Update tracks

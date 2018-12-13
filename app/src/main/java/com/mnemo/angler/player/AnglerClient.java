@@ -16,8 +16,9 @@ import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
-import android.util.Log;
+import android.widget.Toast;
 
+import com.mnemo.angler.R;
 import com.mnemo.angler.data.database.Entities.Track;
 import com.mnemo.angler.player.service.AnglerService;
 import com.mnemo.angler.ui.main_activity.activity.MainActivity;
@@ -76,10 +77,25 @@ public class AnglerClient{
 
         int pbState = mController.getPlaybackState().getState();
 
-        if (pbState == PlaybackStateCompat.STATE_PLAYING) {
-            mController.getTransportControls().pause();
-        } else {
-            mController.getTransportControls().play();
+        switch (pbState){
+
+            case PlaybackStateCompat.STATE_PLAYING:
+
+                mController.getTransportControls().pause();
+
+                break;
+
+            case PlaybackStateCompat.STATE_ERROR:
+
+                Toast.makeText(context, context.getString(R.string.track_is_missing), Toast.LENGTH_SHORT).show();
+
+                break;
+
+            default:
+
+                mController.getTransportControls().play();
+
+                break;
         }
 
     }
@@ -87,7 +103,7 @@ public class AnglerClient{
     public boolean changeRepeatMode(){
 
         int repeatMode = mController.getRepeatMode();
-        Log.e("repeat", String.valueOf(PlaybackStateCompat.REPEAT_MODE_ONE == repeatMode));
+
         if (repeatMode == PlaybackStateCompat.REPEAT_MODE_ONE){
             mController.getTransportControls().setRepeatMode(PlaybackStateCompat.REPEAT_MODE_NONE);
             return false;
@@ -318,6 +334,8 @@ public class AnglerClient{
                 }
 
                 setPlayPause(mController.getPlaybackState().getState());
+                setRepeatState(mController.getRepeatMode());
+                setShuffleState(mController.getShuffleMode());
 
                 MediaMetadataCompat metadata = mController.getMetadata();
 
@@ -410,6 +428,25 @@ public class AnglerClient{
         ((MainActivity)context).setPlayPause(playPauseState);
     }
 
+    // set repeat state
+    private void setRepeatState(int repeatMode){
+
+        if (repeatMode == PlaybackStateCompat.REPEAT_MODE_ONE){
+            ((MainActivity)context).setRepeatState(true);
+        }else{
+            ((MainActivity)context).setRepeatState(false);
+        }
+    }
+
+    // set shuffle state
+    private void setShuffleState(int shuffleMode){
+
+        if (shuffleMode == PlaybackStateCompat.SHUFFLE_MODE_ALL){
+            ((MainActivity)context).setShuffleState(true);
+        }else{
+            ((MainActivity)context).setShuffleState(false);
+        }
+    }
 
     // getters/setters
     public long getDurationMS() {

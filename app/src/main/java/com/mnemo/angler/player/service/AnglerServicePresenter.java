@@ -108,6 +108,24 @@ public class AnglerServicePresenter extends BasePresenter {
         repository.setSeekbarPosition(seekbarPosition);
     }
 
+    // Repeat mode
+    int getRepeatMode(){
+        return repository.getRepeatMode();
+    }
+
+    void saveRepeatMode(int repeatMode){
+        repository.setRepeatMode(repeatMode);
+    }
+
+    // Shuffle mode
+    int getShuffleMode(){
+        return repository.getShuffleMode();
+    }
+
+    void saveShuffleMode(int shuffleMode){
+        repository.setShuffleMode(shuffleMode);
+    }
+
 
     // Get library tracks
     void loadLibraryTracks(){

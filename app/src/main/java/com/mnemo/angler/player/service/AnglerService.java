@@ -47,6 +47,7 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
 
     private AudioManager mAudioManager;
     private AudioFocusRequest audioFocusRequest;
+    private boolean isPauseBeforeAudioFocusLoss = true;
 
     private Equalizer mEqualizer;
     private Virtualizer mVirtualizer;
@@ -123,6 +124,9 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
         // Manage audio focus
         setupAudioFocus();
 
+        // Setup playback state
+        setupPlaybackState();
+
         // Setup equalizer and audio effects
         setupEqualizer();
         setupAudioEffects();
@@ -142,6 +146,8 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
         presenter.saveQueue(simplifyQueue());
         presenter.saveQueueIndex(queueIndex);
         presenter.saveSeekbarPosition(seekbarPosition);
+        presenter.saveRepeatMode(mMediaSession.getController().getRepeatMode());
+        presenter.saveShuffleMode(mMediaSession.getController().getShuffleMode());
 
         presenter.deattachView();
     }
@@ -231,6 +237,13 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
                             mMediaPlayer.stop();
                         }
                         mMediaPlayer.reset();
+
+                        if (mMediaSession.getController().getRepeatMode() == PlaybackStateCompat.REPEAT_MODE_ONE) {
+                            mMediaPlayer.setLooping(true);
+                        }else{
+                            mMediaPlayer.setLooping(false);
+                        }
+
                         mMediaPlayer.setOnCompletionListener(mediaPlayer -> {
                             if (queue.size() > 0) {
                                 anglerServiceCallback.onSkipToNext();
@@ -251,6 +264,32 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
 
                             sendBroadcast(intent);
 
+                        });
+                        mMediaPlayer.setOnErrorListener((mp, what, extra) -> {
+
+                            if (queue.size() > 1){
+                                onSkipToNext();
+                            }else{
+
+                                isPaused = true;
+
+                                mMediaPlayer.stop();
+
+                                mMediaSession.setPlaybackState(new PlaybackStateCompat.Builder()
+                                        .setState(PlaybackStateCompat.STATE_ERROR, PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN, 0)
+                                        .setActiveQueueItemId((long)queueIndex)
+                                        .build());
+
+                                mAnglerNotificationManager.createNotification();
+                                stopForeground(false);
+
+                                queue.clear();
+
+                                mMediaSession.setQueueTitle("");
+                                mMediaSession.setQueue(queue);
+                            }
+
+                            return true;
                         });
                         mMediaPlayer.setDataSource(AnglerService.this, metadata.getDescription().getMediaUri());
                         mMediaPlayer.prepareAsync();
@@ -287,16 +326,21 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
         public void onStop() {
             super.onStop();
 
-            mAudioManager.abandonAudioFocusRequest(audioFocusRequest);
+            if (mMediaSession.getController().getPlaybackState().getState() != PlaybackStateCompat.STATE_ERROR) {
 
-            mMediaSession.setPlaybackState(new PlaybackStateCompat.Builder()
-                .setState(PlaybackStateCompat.STATE_STOPPED, PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN, 0)
-                .build());
+                mAudioManager.abandonAudioFocusRequest(audioFocusRequest);
 
-            mMediaSession.setActive(false);
-            mMediaSession.release();
-            mMediaPlayer.stop();
-            stopSelf();
+                mMediaSession.setPlaybackState(new PlaybackStateCompat.Builder()
+                        .setState(PlaybackStateCompat.STATE_STOPPED, PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN, 0)
+                        .build());
+
+                mMediaSession.setActive(false);
+                mMediaSession.release();
+                mMediaPlayer.stop();
+                stopSelf();
+            }else {
+                stopSelf();
+            }
         }
 
 
@@ -307,27 +351,48 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
         public void onSkipToPrevious() {
             super.onSkipToPrevious();
 
-            if (queueIndex == 0){
-                queueIndex = queue.size() - 1;
-            }else{
-                queueIndex--;
+            if (mMediaSession.getController().getPlaybackState().getState() != PlaybackStateCompat.STATE_ERROR) {
+
+                if (mMediaSession.getController().getShuffleMode() == PlaybackStateCompat.SHUFFLE_MODE_ALL) {
+
+                    queueIndex = (int) (Math.random() * queue.size());
+
+                } else {
+
+                    if (queueIndex == 0) {
+                        queueIndex = queue.size() - 1;
+                    } else {
+                        queueIndex--;
+                    }
+                }
+
+                isPaused = false;
+                onPlay();
             }
-            isPaused = false;
-            onPlay();
         }
 
         @Override
         public void onSkipToNext() {
             super.onSkipToNext();
 
-            if (queueIndex == queue.size() -1){
-                queueIndex = 0;
-            }else{
-                queueIndex++;
-            }
+            if (mMediaSession.getController().getPlaybackState().getState() != PlaybackStateCompat.STATE_ERROR) {
 
-            isPaused = false;
-            onPlay();
+                if (mMediaSession.getController().getShuffleMode() == PlaybackStateCompat.SHUFFLE_MODE_ALL) {
+
+                    queueIndex = (int) (Math.random() * queue.size());
+
+                } else {
+
+                    if (queueIndex == queue.size() - 1) {
+                        queueIndex = 0;
+                    } else {
+                        queueIndex++;
+                    }
+                }
+
+                isPaused = false;
+                onPlay();
+            }
         }
 
         @Override
@@ -346,10 +411,10 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
         public void onSetRepeatMode(int repeatMode) {
 
             if (repeatMode == PlaybackStateCompat.REPEAT_MODE_ONE) {
-                mMediaSession.setRepeatMode(PlaybackStateCompat.REPEAT_MODE_NONE);
+                mMediaSession.setRepeatMode(PlaybackStateCompat.REPEAT_MODE_ONE);
                 mMediaPlayer.setLooping(true);
             }else{
-                mMediaSession.setRepeatMode(PlaybackStateCompat.REPEAT_MODE_ONE);
+                mMediaSession.setRepeatMode(PlaybackStateCompat.REPEAT_MODE_NONE);
                 mMediaPlayer.setLooping(false);
             }
         }
@@ -358,9 +423,9 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
         public void onSetShuffleMode(int shuffleMode) {
 
             if (shuffleMode == PlaybackStateCompat.SHUFFLE_MODE_ALL){
-                mMediaSession.setShuffleMode(PlaybackStateCompat.SHUFFLE_MODE_NONE);
-            }else{
                 mMediaSession.setShuffleMode(PlaybackStateCompat.SHUFFLE_MODE_ALL);
+            }else{
+                mMediaSession.setShuffleMode(PlaybackStateCompat.SHUFFLE_MODE_NONE);
             }
         }
 
@@ -605,7 +670,7 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
 
                             mMediaPlayer.setVolume(1f, 1f);
 
-                            if (isPaused) {
+                            if (isPaused & !isPauseBeforeAudioFocusLoss) {
                                 mMediaSession.getController().getTransportControls().play();
                             }
 
@@ -625,12 +690,45 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
 
                         case AudioManager.AUDIOFOCUS_LOSS:
 
+                            isPauseBeforeAudioFocusLoss = isPaused;
                             mMediaSession.getController().getTransportControls().pause();
 
                             break;
                     }
                 })
                 .build();
+    }
+
+    // Playback
+    private void setupPlaybackState() {
+
+        // Seekbar
+        seekbarPosition = presenter.getSeekbarPosition();
+
+        if (mMediaPlayer != null) {
+            mMediaPlayer.seekTo(seekbarPosition * mMediaPlayer.getDuration() / 100);
+        }
+
+        // Repeat
+        int repeatMode = presenter.getRepeatMode();
+
+        if (repeatMode == PlaybackStateCompat.REPEAT_MODE_ONE) {
+            mMediaSession.setRepeatMode(PlaybackStateCompat.REPEAT_MODE_ONE);
+            mMediaPlayer.setLooping(true);
+        } else {
+            mMediaSession.setRepeatMode(PlaybackStateCompat.REPEAT_MODE_NONE);
+            mMediaPlayer.setLooping(false);
+        }
+
+
+        // Shuffle
+        int shuffleMode = presenter.getShuffleMode();
+
+        if (shuffleMode == PlaybackStateCompat.SHUFFLE_MODE_ALL){
+            mMediaSession.setShuffleMode(PlaybackStateCompat.SHUFFLE_MODE_ALL);
+        }else{
+            mMediaSession.setShuffleMode(PlaybackStateCompat.SHUFFLE_MODE_NONE);
+        }
     }
 
 
@@ -763,11 +861,6 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
                 mMediaSession.getController().getTransportControls().prepare();
             }
 
-            seekbarPosition = presenter.getSeekbarPosition();
-
-            if (mMediaPlayer != null) {
-                mMediaPlayer.seekTo(seekbarPosition * mMediaPlayer.getDuration() / 100);
-            }
         }
     }
 

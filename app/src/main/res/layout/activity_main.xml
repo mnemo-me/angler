@@ -138,11 +138,11 @@
             android:layout_marginBottom="8dp"
             android:layout_marginStart="16dp"
             android:textColor="@color/gGrey"
+            android:text="0:00"
             android:textSize="12sp"
             app:layout_constraintBottom_toTopOf="@+id/media_panel_play_pause"
             app:layout_constraintEnd_toStartOf="@id/media_panel_seek_bar"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:text="0:00" />
+            app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
             android:id="@+id/media_panel_duration_time"
@@ -152,10 +152,10 @@
             android:layout_marginEnd="16dp"
             android:textColor="@color/gGrey"
             android:textSize="12sp"
+            android:text="0:00"
             app:layout_constraintBottom_toTopOf="@+id/media_panel_play_pause"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/media_panel_seek_bar"
-            tools:text="4:12" />
+            app:layout_constraintStart_toEndOf="@id/media_panel_seek_bar" />
 
 
         <!-- media buttons -->

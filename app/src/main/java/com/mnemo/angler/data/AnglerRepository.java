@@ -268,6 +268,9 @@ public class AnglerRepository {
         anglerPreferences.setQueueIndex(queueIndex);
     }
 
+
+    // Playback methods
+    // Seekbar
     public int getSeekbarPosition(){
         return anglerPreferences.getSeekbarPosition();
     }
@@ -276,6 +279,23 @@ public class AnglerRepository {
         anglerPreferences.setSeekbarPosition(seekbarPosition);
     }
 
+    // Repeat
+    public int getRepeatMode(){
+        return anglerPreferences.getRepeatMode();
+    }
+
+    public void setRepeatMode(int repeatMode){
+        anglerPreferences.setRepeatMode(repeatMode);
+    }
+
+    // Shuffle
+    public int getShuffleMode(){
+        return anglerPreferences.getShuffleMode();
+    }
+
+    public void setShuffleMode(int shuffleMode){
+        anglerPreferences.setShuffleMode(shuffleMode);
+    }
 
 
     // File storage methods
