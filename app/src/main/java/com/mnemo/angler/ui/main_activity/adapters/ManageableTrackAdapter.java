@@ -58,7 +58,17 @@ public class ManageableTrackAdapter extends RecyclerView.Adapter<ManageableTrack
 
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.pm_track_manageable_item, parent, false);
 
-        return new ViewHolder(view);
+        ViewHolder viewHolder = new ViewHolder(view);
+
+        // Delete track button listener
+        viewHolder.deleteTrack.setOnClickListener(v -> {
+
+            tracks.remove(viewHolder.getAdapterPosition());
+            notifyItemRemoved(viewHolder.getAdapterPosition());
+            onTracksChangeListener.onTracksChanged();
+        });
+
+        return viewHolder;
     }
 
     @Override
@@ -73,15 +83,6 @@ public class ManageableTrackAdapter extends RecyclerView.Adapter<ManageableTrack
         // Assign metadata to views
         holder.titleView.setText(title);
         holder.artistView.setText(artist);
-
-
-        // Delete track button
-        holder.deleteTrack.setOnClickListener(view -> {
-
-            tracks.remove(holder.getAdapterPosition());
-            notifyItemRemoved(holder.getAdapterPosition());
-            onTracksChangeListener.onTracksChanged();
-        });
 
     }
 

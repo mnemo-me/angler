@@ -61,6 +61,9 @@ public class PlaylistsFragment extends Fragment implements DrawerItem, Playlists
         unbinder = ButterKnife.bind(this, view);
 
         // Setup recycler view
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setItemViewCacheSize(20);
+
         GridLayoutManager gridLayoutManager;
 
         if (orientation == Configuration.ORIENTATION_PORTRAIT){

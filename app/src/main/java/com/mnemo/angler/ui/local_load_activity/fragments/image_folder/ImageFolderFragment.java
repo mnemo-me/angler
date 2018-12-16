@@ -53,6 +53,9 @@ public class ImageFolderFragment extends Fragment implements ImageFolderView{
         recyclerView.setPadding(0, (int)(16 * MainActivity.density), 0, 0);
         recyclerView.setClipToPadding(false);
 
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setItemViewCacheSize(20);
+
         // Set grid as layout manager for recycler view
         int spanCount;
 

@@ -80,6 +80,9 @@ public class MainPlaylistFragment extends Fragment implements MainPlaylistView{
             recyclerView.setPadding(0, (int) (4 * MainActivity.density), 0, (int) (4 * MainActivity.density));
         }
 
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setItemViewCacheSize(20);
+
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
 

@@ -89,22 +89,10 @@ public class BackgroundImageAdapter extends RecyclerView.Adapter<BackgroundImage
         if (viewType == ADD_IMAGE_VIEW_TYPE){
 
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.bg_background_add_image_item, parent, false);
-            return new BackgroundImageAdapter.AddImageViewHolder(view);
-
-        }else {
-
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.bg_background_item, parent, false);
-            return new BackgroundImageAdapter.ImageViewHolder(view);
-        }
-    }
-
-    @Override
-    public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
-
-        if (holder.getItemViewType() == ADD_IMAGE_VIEW_TYPE){
+            AddImageViewHolder addImageViewHolder = new AddImageViewHolder(view);
 
             // Set listener (open local load activity)
-            holder.itemView.setOnClickListener(view -> {
+            addImageViewHolder.itemView.setOnClickListener(v -> {
 
                 Intent intent = new Intent(context, LocalLoadActivity.class);
                 intent.putExtra("image_type", "background");
@@ -112,7 +100,45 @@ public class BackgroundImageAdapter extends RecyclerView.Adapter<BackgroundImage
                 context.startActivity(intent);
             });
 
-        }else{
+            return addImageViewHolder;
+
+        }else {
+
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.bg_background_item, parent, false);
+            ImageViewHolder imageViewHolder = new ImageViewHolder(view);
+
+            // Set listener (change image)
+            imageViewHolder.itemView.setOnClickListener(v -> {
+
+                String image = images.get(imageViewHolder.getAdapterPosition() - 1);
+
+                selectedImage = image;
+
+                notifyDataSetChanged();
+
+                onImageClickListener.onImageClick(image);
+            });
+
+            // Set delete background listener
+            imageViewHolder.deleteImage.setOnClickListener(v -> {
+
+                String image = images.get(imageViewHolder.getAdapterPosition() - 1);
+
+                images.remove(imageViewHolder.getAdapterPosition() - 1);
+                notifyItemRemoved(imageViewHolder.getAdapterPosition());
+
+                onImageDeleteListener.onImageDelete(image);
+            });
+
+            return imageViewHolder;
+        }
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
+
+        if (holder.getItemViewType() == IMAGE_VIEW_TYPE){
+
 
             String image = images.get(position - 1);
 
@@ -147,15 +173,6 @@ public class BackgroundImageAdapter extends RecyclerView.Adapter<BackgroundImage
             ImageAssistant.loadImage(context, imagePath, ((ImageViewHolder)holder).background, 120);
 
 
-            // Set listener (change image)
-            holder.itemView.setOnClickListener(v -> {
-
-                selectedImage = image;
-                notifyDataSetChanged();
-
-                onImageClickListener.onImageClick(image);
-            });
-
             // Setup delete image button
             // Set visibility
             if (image.startsWith("R.drawable.")){
@@ -168,15 +185,6 @@ public class BackgroundImageAdapter extends RecyclerView.Adapter<BackgroundImage
                     ((ImageViewHolder)holder).deleteImage.setVisibility(View.VISIBLE);
                 }
             }
-
-            // Set listener
-            ((ImageViewHolder)holder).deleteImage.setOnClickListener(view -> {
-
-                images.remove(holder.getAdapterPosition() - 1);
-                notifyItemRemoved(holder.getAdapterPosition());
-
-                onImageDeleteListener.onImageDelete(image);
-            });
         }
 
 

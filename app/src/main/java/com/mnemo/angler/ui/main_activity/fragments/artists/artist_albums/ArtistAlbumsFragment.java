@@ -55,6 +55,9 @@ public class ArtistAlbumsFragment extends Fragment implements ArtistAlbumsView {
         }
         recyclerView.setClipToPadding(false);
 
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setItemViewCacheSize(20);
+
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 3);
         recyclerView.setLayoutManager(gridLayoutManager);
 

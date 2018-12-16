@@ -43,7 +43,18 @@ public class PlaylistArtistsAdapter extends RecyclerView.Adapter<PlaylistArtists
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         View view = LayoutInflater.from(context).inflate(R.layout.mp_artist_item, parent, false);
-        return new ViewHolder(view);
+        ViewHolder viewHolder = new ViewHolder(view);
+
+        // Setup listener
+        viewHolder.itemView.setOnClickListener(v -> {
+
+            String artist = artists.get(viewHolder.getAdapterPosition());
+
+            listener.onArtistSelected(artist);
+            setArtist(artist);
+        });
+
+        return viewHolder;
     }
 
     @Override
@@ -52,12 +63,6 @@ public class PlaylistArtistsAdapter extends RecyclerView.Adapter<PlaylistArtists
         String artist = artists.get(position);
 
         ((TextView)holder.itemView).setText(artist);
-
-
-        holder.itemView.setOnClickListener(view -> {
-            listener.onArtistSelected(artist);
-            setArtist(artist);
-        });
 
         if (artist.equals(selectedArtist)){
             holder.itemView.setSelected(true);

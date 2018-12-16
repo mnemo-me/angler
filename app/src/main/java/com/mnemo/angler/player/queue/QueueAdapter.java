@@ -8,7 +8,6 @@ import android.support.v4.media.MediaDescriptionCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -77,7 +76,32 @@ public class QueueAdapter extends RecyclerView.Adapter<QueueAdapter.ViewHolder> 
 
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.qu_queue_track, parent, false);
 
-        return new ViewHolder(view);
+        ViewHolder viewHolder = new ViewHolder(view);
+
+        // Setup listener
+        viewHolder.itemView.setOnClickListener(v -> {
+
+            if (viewHolder.getAdapterPosition() == queuePosition){
+                ((MainActivity)context).getAnglerClient().playPause();
+            }else {
+                ((MainActivity)context).getAnglerClient().skipToQueuePosition(viewHolder.getAdapterPosition());
+            }
+        });
+
+        // Delete track button listener
+        viewHolder.deleteTrack.setOnClickListener(v -> {
+
+            if (viewHolder.getAdapterPosition() <= queuePosition){
+                queuePosition--;
+            }
+
+            ((MainActivity)context).getAnglerClient().removeQueueItemAt(viewHolder.getAdapterPosition());
+            queue.remove(viewHolder.getAdapterPosition());
+            notifyItemRemoved(viewHolder.getAdapterPosition());
+            onQueueRemovedListener.onQueueRemove();
+        });
+
+        return viewHolder;
     }
 
     @Override
@@ -118,30 +142,6 @@ public class QueueAdapter extends RecyclerView.Adapter<QueueAdapter.ViewHolder> 
                 holder.durationView.setVisibility(View.VISIBLE);
             }
         }
-
-
-Log.e("vvvvvv", holder.getAdapterPosition() + "   " + queuePosition);
-        holder.itemView.setOnClickListener(view -> {
-
-            if (holder.getAdapterPosition() == queuePosition){
-                ((MainActivity)context).getAnglerClient().playPause();
-            }else {
-                ((MainActivity)context).getAnglerClient().skipToQueuePosition(holder.getAdapterPosition());
-            }
-        });
-
-        // Delete track button
-        holder.deleteTrack.setOnClickListener(view -> {
-
-            if (holder.getAdapterPosition() <= queuePosition){
-                queuePosition--;
-            }
-
-            ((MainActivity)context).getAnglerClient().removeQueueItemAt(holder.getAdapterPosition());
-            queue.remove(holder.getAdapterPosition());
-            notifyItemRemoved(holder.getAdapterPosition());
-            onQueueRemovedListener.onQueueRemove();
-        });
 
     }
 

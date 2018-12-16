@@ -59,6 +59,8 @@ public class AlbumsFragment extends Fragment implements DrawerItem, AlbumsView {
         unbinder = ButterKnife.bind(this, view);
 
         // Setup recycler view
+        recyclerView.setItemViewCacheSize(20);
+
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
 

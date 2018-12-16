@@ -57,6 +57,9 @@ public class ManageTracksDialogFragment extends DialogFragment implements Manage
 
 
         // Setup body
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setItemViewCacheSize(20);
+
         LinearLayout bodyLayout = (LinearLayout) LayoutInflater.from(getContext()).inflate(R.layout.pm_fragment_manage_tracks_dialog, null, false);
         recyclerView = bodyLayout.findViewById(R.id.manage_tracks_list);
 

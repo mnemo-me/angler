@@ -85,6 +85,9 @@ public class AddTrackToPlaylistDialogFragment extends BottomSheetDialogFragment 
         track = getArguments().getParcelable("track");
 
         // Setup recycler view
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setItemViewCacheSize(20);
+
         GridLayoutManager gridLayoutManager;
 
         if (orientation == Configuration.ORIENTATION_PORTRAIT){

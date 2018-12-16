@@ -55,22 +55,14 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder
 
         View view = LayoutInflater.from(context).inflate(R.layout.art_artist, parent, false);
 
-        return new ViewHolder(view);
-    }
-
-    @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-
-        // Get artist variables
-        String title = artists.get(position);
-        String image = AnglerFolder.PATH_ARTIST_IMAGE + File.separator + title + ".jpg";
-
-        // Fill views
-        holder.titleView.setText(title);
-        ImageAssistant.loadImage(context, image, holder.imageView, 200);
+        ViewHolder viewHolder = new ViewHolder(view);
 
         // Set listeners
-        holder.itemView.setOnClickListener(view -> {
+        viewHolder.itemView.setOnClickListener(v -> {
+
+            // Get artist variables
+            String title = artists.get(viewHolder.getAdapterPosition());
+            String image = AnglerFolder.PATH_ARTIST_IMAGE + File.separator + title + ".jpg";
 
             ArtistConfigurationFragment artistConfigurationFragment = new ArtistConfigurationFragment();
 
@@ -85,7 +77,11 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder
                     .commit();
         });
 
-        holder.itemView.setOnLongClickListener(view -> {
+        viewHolder.itemView.setOnLongClickListener(v -> {
+
+            // Get artist variables
+            String title = artists.get(viewHolder.getAdapterPosition());
+            String image = AnglerFolder.PATH_ARTIST_IMAGE + File.separator + title + ".jpg";
 
             CoverDialogFragment coverDialogFragment = new CoverDialogFragment();
 
@@ -98,6 +94,20 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder
 
             return true;
         });
+
+        return viewHolder;
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+
+        // Get artist variables
+        String title = artists.get(position);
+        String image = AnglerFolder.PATH_ARTIST_IMAGE + File.separator + title + ".jpg";
+
+        // Fill views
+        holder.titleView.setText(title);
+        ImageAssistant.loadImage(context, image, holder.imageView, 200);
     }
 
     @Override

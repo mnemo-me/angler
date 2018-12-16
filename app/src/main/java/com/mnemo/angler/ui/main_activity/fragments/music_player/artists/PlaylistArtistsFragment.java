@@ -71,6 +71,9 @@ public class PlaylistArtistsFragment extends Fragment implements PlaylistArtists
 
         recyclerView.setClipToPadding(false);
 
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setItemViewCacheSize(20);
+
         linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
 

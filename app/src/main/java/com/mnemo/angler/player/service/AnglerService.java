@@ -22,7 +22,6 @@ import android.support.v4.media.MediaDescriptionCompat;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
-import android.util.Log;
 
 
 import com.mnemo.angler.data.database.Entities.Track;
@@ -45,6 +44,7 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
 
     MediaMetadataCompat metadata;
 
+    private boolean isFirstTrack = true;
     private boolean isPaused = false;
 
     private AudioManager mAudioManager;
@@ -104,16 +104,19 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
             public void run() {
                 if (mMediaPlayer != null){
 
-                    int newSeekbarPosition = mMediaPlayer.getCurrentPosition();
-                    Log.e("ffffffff", "pos + " + seekbarPosition + "       " + newSeekbarPosition);
-                    if (newSeekbarPosition / 1000 != seekbarPosition / 1000){
+                    if (mMediaPlayer.isPlaying()) {
 
-                        seekbarPosition = newSeekbarPosition;
+                        int newSeekbarPosition = mMediaPlayer.getCurrentPosition();
 
-                        Intent intent = new Intent();
-                        intent.setAction("seekbar_progress_changed");
-                        intent.putExtra("seekbar_progress", seekbarPosition);
-                        sendBroadcast(intent);
+                        if (newSeekbarPosition / 1000 != seekbarPosition / 1000) {
+
+                            seekbarPosition = newSeekbarPosition;
+
+                            Intent intent = new Intent();
+                            intent.setAction("seekbar_progress_changed");
+                            intent.putExtra("seekbar_progress", seekbarPosition);
+                            sendBroadcast(intent);
+                        }
                     }
                 }
                 seekHandler.postDelayed(this,100);
@@ -235,6 +238,8 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
                     onPrepare();
 
                     initializeMediaPlayer();
+
+                    mMediaPlayer.prepareAsync();
                 }
             }
 
@@ -336,6 +341,11 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
             queueIndex = (int)id;
 
             isPaused = false;
+
+            if (isFirstTrack){
+                isFirstTrack = false;
+            }
+
             onPlay();
         }
 
@@ -372,8 +382,15 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
         public void onSeekTo(long pos) {
             super.onSeekTo(pos);
             if (mMediaPlayer != null) {
-                Log.e("fffffffffff", "g " + pos);
+
                 mMediaPlayer.seekTo((int) (pos * mMediaPlayer.getDuration() / 100));
+            }
+
+            if (isFirstTrack){
+
+                seekbarPosition = (int) (pos * Integer.parseInt(presenter.getCurrentTrack().split(":::")[4]) / 100);
+
+                mMediaSession.getController().getTransportControls().sendCustomAction("get_track_progress", null);
             }
         }
 
@@ -474,6 +491,15 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
                     }
 
                     mMediaSession.setQueue(queue);
+
+                    break;
+
+                case "get_track_progress":
+
+                    Intent trackProgressIntent = new Intent();
+                    trackProgressIntent.setAction("seekbar_progress_changed");
+                    trackProgressIntent.putExtra("seekbar_progress", seekbarPosition);
+                    sendBroadcast(trackProgressIntent);
 
                     break;
 
@@ -580,10 +606,17 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
 
     private MediaMetadataCompat getCurrentMetadata(){
 
-        MediaSessionCompat.QueueItem queueItem = queue.get(queueIndex);
-        MediaDescriptionCompat description = queueItem.getDescription();
+        try {
+            MediaSessionCompat.QueueItem queueItem = queue.get(queueIndex);
+            MediaDescriptionCompat description = queueItem.getDescription();
 
-        return MediaAssistant.extractMetadata(description);
+            return MediaAssistant.extractMetadata(description);
+
+        }catch (IndexOutOfBoundsException e){
+
+            // Replace broadcast intent "queue_error"
+            return metadata;
+        }
     }
 
 
@@ -607,6 +640,7 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
                             mMediaPlayer.setVolume(1f, 1f);
 
                             if (isPaused & !isPauseBeforeAudioFocusLoss) {
+
                                 mMediaSession.getController().getTransportControls().play();
                             }
 
@@ -656,9 +690,6 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
         // Seekbar
         seekbarPosition = presenter.getSeekbarPosition();
 
-        if (mMediaPlayer != null) {
-            mMediaPlayer.seekTo(seekbarPosition * mMediaPlayer.getDuration() / 100);
-        }
 
         // Repeat
         int repeatMode = presenter.getRepeatMode();
@@ -705,6 +736,12 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
             mMediaPlayer.setOnPreparedListener(mediaPlayer -> {
                 mAnglerNotificationManager.createNotification();
                 mMediaPlayer.start();
+
+                if (isFirstTrack) {
+                    mMediaPlayer.seekTo(seekbarPosition);
+                    isFirstTrack = false;
+                }
+
                 mEqualizer = new Equalizer(0, mMediaPlayer.getAudioSessionId());
                 mVirtualizer = new Virtualizer(0, mMediaPlayer.getAudioSessionId());
                 mBassBoost = new BassBoost(0, mMediaPlayer.getAudioSessionId());
@@ -745,7 +782,6 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
                 return true;
             });
             mMediaPlayer.setDataSource(AnglerService.this, metadata.getDescription().getMediaUri());
-            mMediaPlayer.prepareAsync();
 
 
         } catch (IOException e) {

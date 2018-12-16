@@ -75,12 +75,29 @@ public class AddTrackToPlaylistAdapter extends RecyclerView.Adapter<AddTrackToPl
         if (viewType == CREATE_NEW_PLAYLIST_VIEW_TYPE){
 
             View view = LayoutInflater.from(context).inflate(R.layout.misc_playlist_create_new, parent, false);
-            return new CreateNewPlaylistViewHolder(view);
+            CreateNewPlaylistViewHolder createNewPlaylistViewHolder = new CreateNewPlaylistViewHolder(view);
 
-        }else{
+            String title = context.getResources().getString(R.string.create_new_playlist);
+
+            // Listener
+            createNewPlaylistViewHolder.itemView.setOnClickListener(v -> onAddTrackToPlaylistListener.trackAdded(title));
+
+            return createNewPlaylistViewHolder;
+
+        }else {
 
             View view = LayoutInflater.from(context).inflate(R.layout.pm_playlist_v2_white, parent, false);
-            return new PlaylistViewHolder(view);
+            PlaylistViewHolder playlistViewHolder = new PlaylistViewHolder(view);
+
+            // Listener
+            playlistViewHolder.itemView.setOnClickListener(v -> {
+
+                String title = playlists.get(playlistViewHolder.getAdapterPosition() - 1).getTitle();
+
+                onAddTrackToPlaylistListener.trackAdded(title);
+            });
+
+            return playlistViewHolder;
         }
 
     }
@@ -88,18 +105,13 @@ public class AddTrackToPlaylistAdapter extends RecyclerView.Adapter<AddTrackToPl
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
-        String title;
 
-        if (holder.getItemViewType() == CREATE_NEW_PLAYLIST_VIEW_TYPE){
-
-            title = context.getResources().getString(R.string.create_new_playlist);
-
-        }else{
+        if (holder.getItemViewType() == PLAYLIST_VIEW_TYPE){
 
             // Get playlist variables
             String cover;
 
-            title = playlists.get(position - 1).getTitle();
+            String title = playlists.get(position - 1).getTitle();
             cover = playlists.get(position - 1).getCover();
 
 
@@ -117,11 +129,7 @@ public class AddTrackToPlaylistAdapter extends RecyclerView.Adapter<AddTrackToPl
                     holder.itemView.setAlpha(1f);
                 }
             }
-
         }
-
-        // Listener
-        holder.itemView.setOnClickListener(view -> onAddTrackToPlaylistListener.trackAdded(title));
 
     }
 

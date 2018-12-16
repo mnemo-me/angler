@@ -52,22 +52,14 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.View
 
         View view = LayoutInflater.from(context).inflate(R.layout.pm_playlist_v2, parent, false);
 
-        return new ViewHolder(view);
-    }
-
-    @Override
-    public void onBindViewHolder(@NonNull PlaylistsAdapter.ViewHolder holder, int position) {
-
-        // Get playlist data
-        String title = playlists.get(position).getTitle();
-        String cover = playlists.get(position).getCover();
-
-        // Assign data to views
-        holder.playlistTitle.setText(title);
-        ImageAssistant.loadImage(context, cover, holder.playlistImage, 125);
+        ViewHolder viewHolder = new ViewHolder(view);
 
         // Setup listeners
-        holder.itemView.setOnClickListener(view -> {
+        viewHolder.itemView.setOnClickListener(v -> {
+
+            // Get playlist data
+            String title = playlists.get(viewHolder.getAdapterPosition()).getTitle();
+            String cover = playlists.get(viewHolder.getAdapterPosition()).getCover();
 
             PlaylistConfigurationFragment playlistConfigurationFragment = new PlaylistConfigurationFragment();
 
@@ -82,7 +74,11 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.View
                     .commit();
         });
 
-        holder.itemView.setOnLongClickListener(view -> {
+        viewHolder.itemView.setOnLongClickListener(v -> {
+
+            // Get playlist data
+            String title = playlists.get(viewHolder.getAdapterPosition()).getTitle();
+            String cover = playlists.get(viewHolder.getAdapterPosition()).getCover();
 
             PlaylistCreationDialogFragment playlistCreationDialogFragment = new PlaylistCreationDialogFragment();
 
@@ -96,6 +92,20 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.View
 
             return true;
         });
+
+        return viewHolder;
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull PlaylistsAdapter.ViewHolder holder, int position) {
+
+        // Get playlist data
+        String title = playlists.get(position).getTitle();
+        String cover = playlists.get(position).getCover();
+
+        // Assign data to views
+        holder.playlistTitle.setText(title);
+        ImageAssistant.loadImage(context, cover, holder.playlistImage, 125);
 
     }
 

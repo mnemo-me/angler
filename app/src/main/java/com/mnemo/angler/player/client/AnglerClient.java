@@ -16,6 +16,7 @@ import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.mnemo.angler.R;
@@ -150,29 +151,34 @@ public class AnglerClient implements AnglerClientView{
 
         if (!playlistName.equals(getQueueTitle()) || (type.equals("music_player") && !((MainActivity)context).getFilter().equals(queueFilter))) {
 
-            clearQueue();
-
-            for (MediaDescriptionCompat description : MediaAssistant.mergeMediaDescriptionArray(playlistName, tracks)) {
-
-                mController.addQueueItem(description);
-
-            }
-
-            Bundle bundle = new Bundle();
-            bundle.putString("queue_title", playlistName);
-
-            mController.getTransportControls().sendCustomAction("set_queue_title", bundle);
-            mController.getTransportControls().sendCustomAction("update_queue", null);
-
-            if (type.equals("music_player")){
-                queueFilter = ((MainActivity)context).getFilter();
-            }
-
+            setupQueue(type, playlistName, tracks);
         }
 
         mController.getTransportControls().skipToQueueItem(position);
 
     }
+
+    private void setupQueue(String type, String playlistName, List<Track> tracks){
+
+        clearQueue();
+
+        for (MediaDescriptionCompat description : MediaAssistant.mergeMediaDescriptionArray(playlistName, tracks)) {
+
+            mController.addQueueItem(description);
+
+        }
+
+        Bundle bundle = new Bundle();
+        bundle.putString("queue_title", playlistName);
+
+        mController.getTransportControls().sendCustomAction("set_queue_title", bundle);
+        mController.getTransportControls().sendCustomAction("update_queue", null);
+
+        if (type.equals("music_player")){
+            queueFilter = ((MainActivity)context).getFilter();
+        }
+    }
+
 
     public ArrayList<MediaSessionCompat.QueueItem> getQueue(){
         return (ArrayList<MediaSessionCompat.QueueItem>)mController.getQueue();
@@ -382,6 +388,8 @@ public class AnglerClient implements AnglerClientView{
                     pbIntent.putExtra("playback_state", playbackState);
 
                     context.sendBroadcast(pbIntent);
+
+                    mController.getTransportControls().sendCustomAction("get_track_progress", null);
                 }
 
             }catch (RemoteException e){

@@ -64,6 +64,9 @@ public class ArtistTracksFragment extends Fragment implements ArtistTracksView{
         }
         recyclerView.setClipToPadding(false);
 
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setItemViewCacheSize(20);
+
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
 

@@ -101,25 +101,15 @@ public class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.ViewHolder>{
         if (viewType == HEADER_VIEW_TYPE){
 
             View view = LayoutInflater.from(context).inflate(R.layout.pm_playlist_add_tracks_header, parent, false);
-            return new HeaderViewHolder(view);
+            HeaderViewHolder headerViewHolder = new HeaderViewHolder(view);
 
-        }else {
 
-            View view = LayoutInflater.from(context).inflate(R.layout.mp_track_item, parent, false);
-            return new TrackViewHolder(view);
-        }
-    }
-
-    @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-
-        if (holder instanceof HeaderViewHolder){
-
+            // Setup listeners
             Bundle argsToTracks = new Bundle();
             argsToTracks.putString("title", playlist);
 
 
-            ((HeaderViewHolder)holder).addTracks.setOnClickListener(view -> {
+            headerViewHolder.addTracks.setOnClickListener(v -> {
 
                 AddTracksDialogFragment addTracksDialogFragment = new AddTracksDialogFragment();
                 addTracksDialogFragment.setArguments(argsToTracks);
@@ -127,7 +117,7 @@ public class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.ViewHolder>{
                 addTracksDialogFragment.show(((MainActivity)context).getSupportFragmentManager(), "Add tracks dialog");
             });
 
-            ((HeaderViewHolder)holder).manageTracks.setOnClickListener(view -> {
+            headerViewHolder.manageTracks.setOnClickListener(v -> {
 
                 ManageTracksDialogFragment manageTracksDialogFragment = new ManageTracksDialogFragment();
                 manageTracksDialogFragment.setArguments(argsToTracks);
@@ -136,7 +126,69 @@ public class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.ViewHolder>{
 
             });
 
+            return headerViewHolder;
+
         }else {
+
+            View view = LayoutInflater.from(context).inflate(R.layout.mp_track_item, parent, false);
+            TrackViewHolder trackViewHolder = new TrackViewHolder(view);
+
+            // Set listeners
+            trackViewHolder.itemView.setOnClickListener(v -> {
+
+                int trackPosition = trackViewHolder.getAdapterPosition() + (isHeaderAttach ? 1:0);
+
+                Track track = tracks.get(trackPosition);
+
+                // Get track variables
+                String id = track.get_id();
+
+                if (id.equals(selectedTrackId)) {
+
+                    ((MainActivity) context).getAnglerClient().playPause();
+
+                } else {
+
+                    ((MainActivity) context).getAnglerClient().playNow(type, playlist, trackPosition, tracks);
+                    setTrack(id);
+                }
+            });
+
+            trackViewHolder.itemView.setOnLongClickListener(v -> {
+
+                int trackPosition = trackViewHolder.getAdapterPosition() + (isHeaderAttach ? 1:0);
+
+                Track track = tracks.get(trackPosition);
+
+                // Get track variables
+                String artist = track.getArtist();
+                String album = track.getAlbum();
+
+                String albumCover = AnglerFolder.PATH_ALBUM_COVER + File.separator + artist + File.separator + album + ".jpg";
+
+                ContextualMenuDialogFragment contextualMenuDialogFragment = new ContextualMenuDialogFragment();
+
+                Bundle args = new Bundle();
+                args.putString("type", type);
+                args.putString("playlist", playlist);
+                args.putString("album_cover", albumCover);
+                args.putParcelable("track", track);
+                args.putParcelableArrayList("tracks", (ArrayList<Track>) tracks);
+                contextualMenuDialogFragment.setArguments(args);
+
+                contextualMenuDialogFragment.show(((MainActivity)context).getSupportFragmentManager(), "contextual_menu_dialog_fragment");
+
+                return true;
+            });
+
+            return trackViewHolder;
+        }
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+
+        if (holder instanceof TrackViewHolder){
 
             int trackPosition;
 
@@ -153,10 +205,8 @@ public class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.ViewHolder>{
 
             String title = track.getTitle();
             String artist = track.getArtist();
-            String album = track.getAlbum();
             long duration = track.getDuration();
 
-            String albumCover = AnglerFolder.PATH_ALBUM_COVER + File.separator + artist + File.separator + album + ".jpg";
 
             // Fill views
             ((TrackViewHolder)holder).titleView.setText(title);
@@ -181,37 +231,6 @@ public class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.ViewHolder>{
                     ((TrackViewHolder)holder).durationView.setVisibility(View.VISIBLE);
                 }
             }
-
-            // Set listeners
-            ((TrackViewHolder)holder).itemView.setOnClickListener(view -> {
-
-                if (id.equals(selectedTrackId)) {
-
-                    ((MainActivity) context).getAnglerClient().playPause();
-
-                } else {
-
-                    ((MainActivity) context).getAnglerClient().playNow(type, playlist, trackPosition, tracks);
-                    setTrack(id);
-                }
-            });
-
-            ((TrackViewHolder)holder).itemView.setOnLongClickListener(view -> {
-
-                ContextualMenuDialogFragment contextualMenuDialogFragment = new ContextualMenuDialogFragment();
-
-                Bundle args = new Bundle();
-                args.putString("type", type);
-                args.putString("playlist", playlist);
-                args.putString("album_cover", albumCover);
-                args.putParcelable("track", track);
-                args.putParcelableArrayList("tracks", (ArrayList<Track>) tracks);
-                contextualMenuDialogFragment.setArguments(args);
-
-                contextualMenuDialogFragment.show(((MainActivity)context).getSupportFragmentManager(), "contextual_menu_dialog_fragment");
-
-                return true;
-            });
         }
 
     }

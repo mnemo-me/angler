@@ -40,35 +40,43 @@ public class ImageFolderAdapter extends RecyclerView.Adapter<ImageFolderAdapter.
     public ImageFolderAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.ll_folder_image_item, parent, false);
-        return new ImageFolderAdapter.ViewHolder(view);
-    }
+        ViewHolder viewHolder = new ViewHolder(view);
 
-    @Override
-    public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
+        // Setup listener
+        viewHolder.itemView.setOnClickListener(v -> {
 
-        holder.itemView.setTransitionName(context.getResources().getString(R.string.local_load_image_transition) + holder.getAdapterPosition());
-
-        ImageAssistant.loadImage(context, images.get(position), (ImageView)holder.itemView, 120);
-
-        holder.itemView.setOnClickListener(v -> {
+            String image = images.get(viewHolder.getAdapterPosition());
 
             ImageCarouselFragment imageCarouselFragment = new ImageCarouselFragment();
 
             Bundle args = new Bundle();
             args.putStringArrayList("images",images);
-            args.putString("image",images.get(holder.getAdapterPosition()));
-            args.putInt("position", holder.getAdapterPosition());
+            args.putString("image",image);
+            args.putInt("position", viewHolder.getAdapterPosition());
             imageCarouselFragment.setArguments(args);
 
             imageCarouselFragment.setSharedElementEnterTransition(new Fade());
 
             ((AppCompatActivity)context).getSupportFragmentManager().beginTransaction()
-                    .addSharedElement(holder.itemView, context.getResources().getString(R.string.local_load_image_transition) + holder.getAdapterPosition())
+                    .addSharedElement(viewHolder.itemView, context.getResources().getString(R.string.local_load_image_transition) + viewHolder.getAdapterPosition())
                     .add(R.id.full_frame, imageCarouselFragment)
                     .addToBackStack(null)
                     .commit();
 
         });
+
+        return viewHolder;
+
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
+
+        String image = images.get(holder.getAdapterPosition());
+
+        holder.itemView.setTransitionName(context.getResources().getString(R.string.local_load_image_transition) + holder.getAdapterPosition());
+
+        ImageAssistant.loadImage(context, image, (ImageView)holder.itemView, 120);
 
     }
 

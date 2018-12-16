@@ -183,6 +183,8 @@ public class PlaylistConfigurationFragment extends Fragment implements PlaylistC
 
 
         // Setup recycler view
+        recyclerView.setItemViewCacheSize(20);
+
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
 

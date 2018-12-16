@@ -81,6 +81,9 @@ public class ArtistsFragment extends Fragment implements DrawerItem, ArtistsView
         }
 
         // Setup recycler view
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setItemViewCacheSize(20);
+
         GridLayoutManager gridLayoutManager;
 
         if (orientation == Configuration.ORIENTATION_PORTRAIT){
@@ -158,6 +161,7 @@ public class ArtistsFragment extends Fragment implements DrawerItem, ArtistsView
     public void setArtists(List<String> artists) {
 
         adapter = new ArtistAdapter(getContext(), artists);
+
         recyclerView.setAdapter(adapter);
     }
 

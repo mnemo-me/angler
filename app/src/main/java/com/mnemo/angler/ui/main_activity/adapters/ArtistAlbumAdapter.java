@@ -58,27 +58,17 @@ public class ArtistAlbumAdapter extends RecyclerView.Adapter<ArtistAlbumAdapter.
 
         View view = LayoutInflater.from(context).inflate(R.layout.pm_playlist_v2, parent, false);
 
-        return new ViewHolder(view);
-    }
-
-    @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-
-        // Get album variables
-        String album = albums.get(position).getAlbum();
-
-        // Create album image path
-        String albumImagePath = AnglerFolder.PATH_ALBUM_COVER + File.separator + artist + File.separator + album + ".jpg";
-
-        // Load album image
-        ImageAssistant.loadImage(context, albumImagePath, holder.coverView, 125);
-
-        // Set album title
-        holder.titleView.setText(album);
+        ViewHolder viewHolder = new ViewHolder(view);
 
         // Setup listeners
         // Open albums configuration fragment
-        holder.itemView.setOnClickListener(view -> {
+        viewHolder.itemView.setOnClickListener(v -> {
+
+            // Get album variables
+            String album = albums.get(viewHolder.getAdapterPosition()).getAlbum();
+
+            // Create album image path
+            String albumImagePath = AnglerFolder.PATH_ALBUM_COVER + File.separator + artist + File.separator + album + ".jpg";
 
             AlbumConfigurationFragment albumConfigurationFragment = new AlbumConfigurationFragment();
 
@@ -96,7 +86,13 @@ public class ArtistAlbumAdapter extends RecyclerView.Adapter<ArtistAlbumAdapter.
         });
 
         // Open cover fragment
-        holder.itemView.setOnLongClickListener(view -> {
+        viewHolder.itemView.setOnLongClickListener(v -> {
+
+            // Get album variables
+            String album = albums.get(viewHolder.getAdapterPosition()).getAlbum();
+
+            // Create album image path
+            String albumImagePath = AnglerFolder.PATH_ALBUM_COVER + File.separator + artist + File.separator + album + ".jpg";
 
             CoverDialogFragment coverDialogFragment = new CoverDialogFragment();
 
@@ -110,6 +106,24 @@ public class ArtistAlbumAdapter extends RecyclerView.Adapter<ArtistAlbumAdapter.
 
             return true;
         });
+
+        return viewHolder;
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+
+        // Get album variables
+        String album = albums.get(position).getAlbum();
+
+        // Create album image path
+        String albumImagePath = AnglerFolder.PATH_ALBUM_COVER + File.separator + artist + File.separator + album + ".jpg";
+
+        // Load album image
+        ImageAssistant.loadImage(context, albumImagePath, holder.coverView, 125);
+
+        // Set album title
+        holder.titleView.setText(album);
     }
 
     @Override

@@ -109,6 +109,9 @@ public class BackgroundChangerFragment extends Fragment implements DrawerItem, B
         ((MainActivity)getActivity()).hideBackground();
 
         // Setup recycler view
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setItemViewCacheSize(20);
+
         LinearLayoutManager linearLayoutManager;
 
         if (orientation == Configuration.ORIENTATION_PORTRAIT) {

@@ -142,7 +142,68 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder>{
         }else{
 
             View view = LayoutInflater.from(context).inflate(R.layout.alb_album_line, parent, false);
-            return new AlbumsLineHolder(view);
+            AlbumsLineHolder albumsLineHolder = new AlbumsLineHolder(view);
+
+            // Setup listeners
+
+            for (int i = 0; i < albumsInLine; i ++) {
+
+                // Open albums configuration fragment
+
+                int finalI = i;
+                
+                albumsLineHolder.albumsView.get(i).setOnClickListener(v -> {
+
+                    ArrayList<Album> artistAlbums = ((AlbumLine)items.get(albumsLineHolder.getAdapterPosition())).getAlbums();
+
+                    // Get album variables
+                    String album = artistAlbums.get(finalI).getAlbum();
+                    String artist = artistAlbums.get(finalI).getArtist();
+
+                    // Create album image path
+                    String albumImagePath = AnglerFolder.PATH_ALBUM_COVER + File.separator + artist + File.separator + album + ".jpg";
+
+                    AlbumConfigurationFragment albumConfigurationFragment = new AlbumConfigurationFragment();
+
+                    Bundle args = new Bundle();
+                    args.putString("image", albumImagePath);
+                    args.putString("album_name", album);
+                    args.putString("artist", artist);
+                    albumConfigurationFragment.setArguments(args);
+
+                    ((MainActivity) context).getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.frame, albumConfigurationFragment, "album_configuration_fragment")
+                            .addToBackStack(null)
+                            .commit();
+                });
+
+                // Open cover fragment
+                albumsLineHolder.albumsView.get(i).setOnLongClickListener(v -> {
+
+                    ArrayList<Album> artistAlbums = ((AlbumLine)items.get(albumsLineHolder.getAdapterPosition())).getAlbums();
+
+                    // Get album variables
+                    String album = artistAlbums.get(finalI).getAlbum();
+                    String artist = artistAlbums.get(finalI).getArtist();
+
+                    // Create album image path
+                    String albumImagePath = AnglerFolder.PATH_ALBUM_COVER + File.separator + artist + File.separator + album + ".jpg";
+
+                    CoverDialogFragment coverDialogFragment = new CoverDialogFragment();
+
+                    Bundle args = new Bundle();
+                    args.putString("artist", artist);
+                    args.putString("album", album);
+                    args.putString("image", albumImagePath);
+                    coverDialogFragment.setArguments(args);
+
+                    coverDialogFragment.show(((MainActivity) context).getSupportFragmentManager(), "album_cover_fragment");
+
+                    return true;
+                });
+            }
+
+            return albumsLineHolder;
         }
     }
 
@@ -178,41 +239,6 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder>{
 
                     // Set album title
                     ((AlbumsLineHolder)holder).albumsTitleView.get(i).setText(album);
-
-
-                    // Setup listeners
-                    // Open albums configuration fragment
-                    ((AlbumsLineHolder)holder).albumsView.get(i).setOnClickListener(view -> {
-
-                        AlbumConfigurationFragment albumConfigurationFragment = new AlbumConfigurationFragment();
-
-                        Bundle args = new Bundle();
-                        args.putString("image", albumImagePath);
-                        args.putString("album_name", album);
-                        args.putString("artist", artist);
-                        albumConfigurationFragment.setArguments(args);
-
-                        ((MainActivity)context).getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.frame, albumConfigurationFragment, "album_configuration_fragment")
-                                .addToBackStack(null)
-                                .commit();
-                    });
-
-                    // Open cover fragment
-                    ((AlbumsLineHolder)holder).albumsView.get(i).setOnLongClickListener(view -> {
-
-                        CoverDialogFragment coverDialogFragment = new CoverDialogFragment();
-
-                        Bundle args = new Bundle();
-                        args.putString("artist", artist);
-                        args.putString("album", album);
-                        args.putString("image", albumImagePath);
-                        coverDialogFragment.setArguments(args);
-
-                        coverDialogFragment.show(((MainActivity)context).getSupportFragmentManager(), "album_cover_fragment");
-
-                        return true;
-                    });
 
                 }else{
 

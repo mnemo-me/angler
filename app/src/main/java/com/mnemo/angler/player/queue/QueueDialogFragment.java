@@ -84,6 +84,9 @@ public class QueueDialogFragment extends BottomSheetDialogFragment {
         unbinder = ButterKnife.bind(this, view);
 
         // Setup recycler view
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setItemViewCacheSize(20);
+
         // Set layout manager
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);

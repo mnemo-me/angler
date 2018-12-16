@@ -223,15 +223,21 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
 
                         break;
 
+                    case "queue_error":
+
+
+
+                        break;
+
                 }
             }
         };
 
         intentFilter = new IntentFilter();
         intentFilter.addAction("seekbar_progress_changed");
+        intentFilter.addAction("queue_error");
 
         registerReceiver(receiver, intentFilter);
-
     }
 
 
