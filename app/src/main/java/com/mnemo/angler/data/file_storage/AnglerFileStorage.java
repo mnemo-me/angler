@@ -134,7 +134,17 @@ public class AnglerFileStorage {
                             year = 10000;
                         }
 
-                        tracks.add(new Track(id, title, artist, album, duration, uri, year, 0));
+                        String positionString = mRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_CD_TRACK_NUMBER);
+
+                        int position;
+
+                        if (positionString != null){
+                            position = Integer.parseInt(positionString.split("/")[0]);
+                        }else{
+                            position = 10000;
+                        }
+
+                        tracks.add(new Track(id, title, artist, album, duration, uri, year, position));
 
                     }
                 }

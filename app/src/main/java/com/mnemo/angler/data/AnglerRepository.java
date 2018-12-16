@@ -60,6 +60,7 @@ public class AnglerRepository {
             loadAlbumCovers();
             loadAlbumYear();
             loadArtistImagesAndBios();
+            loadTrackAlbumPosition();
         });
 
 
@@ -96,6 +97,7 @@ public class AnglerRepository {
         });
     }
 
+    // Load missing album years
     private void loadAlbumYear(){
 
         anglerDB.loadAlbumsWithUnknownYear(albums -> {
@@ -128,6 +130,24 @@ public class AnglerRepository {
             }
         });
     }
+
+    // Load missing album track positions
+    private void loadTrackAlbumPosition(){
+
+        anglerDB.getTrackWithUnknownAlbumPosition(tracks -> {
+
+            for (Track track : tracks){
+
+                anglerNetworking.loadTrackAlbumPosition(track.getTitle(), track.getArtist(), track.getAlbum(), albumPosition -> {
+
+                    if (albumPosition != 10000){
+                        anglerDB.updateTrackAlbumPosition(track.get_id(), albumPosition);
+                    }
+                });
+            }
+        });
+    }
+
 
     // Refresh artists images
     public void refreshArtistImages(AnglerFileStorage.OnArtistImagesUpdateListener listener){

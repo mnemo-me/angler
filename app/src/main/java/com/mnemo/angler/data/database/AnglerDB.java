@@ -86,6 +86,10 @@ public class AnglerDB{
         void unknownYearAlbumsLoaded(List<Album> albums);
     }
 
+    public interface UnknownAlbumTrackPositionListener{
+        void tracksWithUnknownAlbumPositionLoaded(List<Track> tracks);
+    }
+
     @Inject
     public AnglerDB(Context context) {
 
@@ -193,6 +197,18 @@ public class AnglerDB{
         return trackIds;
     }
 
+    // Get tracks with unknown album position
+    public void getTrackWithUnknownAlbumPosition(UnknownAlbumTrackPositionListener listener){
+
+        db.trackDAO().getTracksWithAlbumPosition(10000)
+                .subscribeOn(Schedulers.io())
+                .subscribe(listener::tracksWithUnknownAlbumPositionLoaded);
+    }
+
+    public void updateTrackAlbumPosition(String id, int albumPosition){
+        db.trackDAO().updateTrackAlbumPosition(id, albumPosition);
+    }
+
     // Albums methods
     private List<Album> getAlbums(List<Track> tracks){
 
@@ -255,6 +271,15 @@ public class AnglerDB{
 
     public void updateAlbumYear(String id, int year){
         db.albumDAO().updateAlbumYear(id, year);
+    }
+
+    // Load album tracks method
+    public void loadAlbumTracks(String artist, String album, AlbumTracksLoadListener listener){
+
+        db.trackDAO().getAlbumTracks(artist, album)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(listener::albumTracksLoaded);
     }
 
     // Playlists methods
@@ -495,16 +520,6 @@ public class AnglerDB{
                             .subscribe(listener::artistTracksLoaded));
 
         }
-    }
-
-    // Albums methods
-    // Load album tracks method
-    public void loadAlbumTracks(String artist, String album, AlbumTracksLoadListener listener){
-
-        db.trackDAO().getAlbumTracks(artist, album)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(listener::albumTracksLoaded);
     }
 
 }

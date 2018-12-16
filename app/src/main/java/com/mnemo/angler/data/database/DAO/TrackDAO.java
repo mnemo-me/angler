@@ -37,11 +37,17 @@ public interface TrackDAO {
     @Query("SELECT * FROM tracks WHERE artist=:artist AND _id IN (:tracksId) ORDER BY title ASC")
     Flowable<List<Track>> getTracksByArtist(List<String> tracksId, String artist);
 
-    @Query("SELECT * FROM tracks WHERE artist=:artist AND album=:album ORDER BY title ASC")
+    @Query("SELECT * FROM tracks WHERE artist=:artist AND album=:album ORDER BY album_position,title ASC")
     Flowable<List<Track>> getAlbumTracks(String artist, String album);
 
     @Query("SELECT COUNT(*) FROM tracks WHERE artist=:artist AND album=:album")
     int getAlbumsTrackCount(String album, String artist);
+
+    @Query("SELECT * FROM tracks WHERE album_position=:albumPosition")
+    Single<List<Track>> getTracksWithAlbumPosition(int albumPosition);
+
+    @Query("UPDATE tracks SET album_position=:albumPosition WHERE _id=:id")
+    void updateTrackAlbumPosition(String id, int albumPosition);
 
     @Insert
     void insert(Track... tracks);

@@ -35,6 +35,10 @@ public class AnglerNetworking {
         void onArtistBioLoaded(String bio);
     }
 
+    public interface OnTrackAlbumPositionLoadListener{
+        void onTrackAlbumPositionLoaded(int albumPosition);
+    }
+
     private LastFMApiService lastFMApiService;
 
     @Inject
@@ -69,6 +73,7 @@ public class AnglerNetworking {
                 });
     }
 
+    // Load album year
     public void loadAlbumYear(String artist, String album, OnAlbumYearLoadListener listener){
 
         lastFMApiService.getAlbum(Net.LAST_FM_API_KEY,
@@ -125,6 +130,23 @@ public class AnglerNetworking {
                    }
                 });
     }
+
+    // Load track album position
+    public void loadTrackAlbumPosition(String title, String artist, String album, OnTrackAlbumPositionLoadListener listener){
+
+        lastFMApiService.getAlbum(Net.LAST_FM_API_KEY,
+                artist.replace("&", "and"), album.replace("&", "and"), "json")
+                .subscribeOn(Schedulers.io())
+                .subscribe(response -> {
+
+                    if (response.code() == 200){
+                        int albumPosition = getTrackAlbumPosition(response.body(), title);
+                        listener.onTrackAlbumPositionLoaded(albumPosition);
+                    }
+                });
+    }
+
+
 
     // Parse JSON to get image url (album or artist)
     private String getImageUrl(ResponseBody responseBody, String type){
@@ -190,6 +212,36 @@ public class AnglerNetworking {
         }
 
         return null;
+    }
+
+    // Parse JSON to get track album position
+    private int getTrackAlbumPosition(ResponseBody responseBody, String title){
+
+        try {
+            JSONObject jsonObject = new JSONObject(responseBody.string());
+            JSONObject typeJSONObject = jsonObject.getJSONObject("album");
+            JSONObject tracksJSONObject = typeJSONObject.getJSONObject("tracks");
+            JSONArray trackJSONArray = tracksJSONObject.getJSONArray("track");
+
+            for (int i = 0; i < trackJSONArray.length(); i++){
+
+                JSONObject trackJSONObject = trackJSONArray.getJSONObject(i);
+
+                if (trackJSONObject.getString("name").equalsIgnoreCase(title)) {
+
+                    JSONObject attrJSONObject = trackJSONObject.getJSONObject("@attr");
+
+                    return Integer.parseInt(attrJSONObject.getString("rank"));
+                }
+            }
+
+            return 10000;
+
+        }catch (JSONException | IOException e){
+            e.printStackTrace();
+        }
+
+        return 10000;
     }
 
 
