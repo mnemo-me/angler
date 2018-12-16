@@ -9,15 +9,18 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.mnemo.angler.data.database.Entities.Playlist;
+import com.mnemo.angler.ui.main_activity.activity.MainActivity;
 import com.mnemo.angler.ui.main_activity.adapters.PlaylistsAdapter;
 import com.mnemo.angler.R;
 import com.mnemo.angler.ui.main_activity.classes.DrawerItem;
+import com.mnemo.angler.ui.main_activity.fragments.playlists.playlist_configuration.PlaylistConfigurationFragment;
 import com.mnemo.angler.ui.main_activity.fragments.playlists.playlist_create.PlaylistCreationDialogFragment;
 
 import java.util.List;
@@ -34,6 +37,9 @@ public class PlaylistsFragment extends Fragment implements DrawerItem, Playlists
 
     // Bind views with ButterKnife
     Unbinder unbinder;
+
+    @BindView(R.id.playlist_toolbar)
+    Toolbar toolbar;
 
     @BindView(R.id.playlist_grid)
     RecyclerView recyclerView;
@@ -136,6 +142,35 @@ public class PlaylistsFragment extends Fragment implements DrawerItem, Playlists
     public void setPlaylists(List<Playlist> playlists) {
 
         adapter = new PlaylistsAdapter(getContext(), playlists);
+        adapter.setOnPlaylistClickListener((title, cover) -> {
+
+            PlaylistConfigurationFragment playlistConfigurationFragment = new PlaylistConfigurationFragment();
+
+            Bundle args = new Bundle();
+            args.putString("title", title);
+            args.putString("cover", cover);
+            playlistConfigurationFragment.setArguments(args);
+
+            getActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.frame, playlistConfigurationFragment, "playlist_configuration_fragment")
+                    .addToBackStack(null)
+                    .commit();
+        });
+
+        adapter.setOnPlaylistLongClickListener(((title, cover) -> {
+
+            PlaylistCreationDialogFragment playlistCreationDialogFragment = new PlaylistCreationDialogFragment();
+
+            Bundle args = new Bundle();
+            args.putString("action", "change");
+            args.putString("title", title);
+            args.putString("cover", cover);
+            playlistCreationDialogFragment.setArguments(args);
+
+            playlistCreationDialogFragment.show(getActivity().getSupportFragmentManager(), "playlist_creation_dialog_fragment");
+        }));
+
+
         recyclerView.setAdapter(adapter);
     }
 

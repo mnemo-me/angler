@@ -7,9 +7,11 @@
     tools:context=".ui.main_activity.fragments.playlists.playlists.PlaylistsFragment">
 
     <android.support.v7.widget.Toolbar
+        android:id="@+id/playlist_toolbar"
         style="@style/toolbar"
         android:background="@color/softMainGrey"
-        app:contentInsetStart="0dp">
+        app:contentInsetStart="0dp"
+        android:transitionName="toolbar">
 
         <ImageView
             android:id="@+id/playlist_manager_drawer_back"

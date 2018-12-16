@@ -15,23 +15,22 @@
             android:id="@+id/artist_conf_collapsing_toolbar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:collapsedTitleTextAppearance="@style/CollapsedText"
-            app:expandedTitleGravity="top"
-            app:expandedTitleMarginStart="24dp"
-            app:expandedTitleMarginTop="72dp"
-            app:expandedTitleTextAppearance="@style/ExpandedText"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+            <TextView
+                android:id="@+id/artist_conf_artist"
+                style="@style/expanded_title"/>
 
             <TextView
                 android:id="@+id/artist_conf_albums_count"
                 style="@style/expanded_subtitle"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="18dp"
                 tools:text="4 albums" />
 
             <TextView
                 android:id="@+id/artist_conf_tracks_count"
                 style="@style/expanded_subtitle"
-                android:layout_marginTop="28dp"
+                android:layout_marginTop="38dp"
                 tools:text="123 tracks" />
 
             <Button
@@ -45,7 +44,8 @@
                 android:layout_height="196dp"
                 android:layout_gravity="end"
                 android:layout_marginEnd="4dp"
-                android:layout_marginTop="4dp">
+                android:layout_marginTop="4dp"
+                app:cardElevation="0dp">
 
                 <android.support.constraint.ConstraintLayout
                     android:layout_width="match_parent"
@@ -79,6 +79,11 @@
                     style="@style/button"
                     android:contentDescription="@string/back"
                     android:src="@drawable/ic_arrow_back_black_24dp" />
+
+                <TextView
+                    android:id="@+id/artist_conf_collapsed_title"
+                    style="@style/title"
+                    android:visibility="gone"/>
 
             </android.support.v7.widget.Toolbar>
 

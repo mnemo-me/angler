@@ -57,12 +57,18 @@ public class AlbumConfigurationFragment extends Fragment implements AlbumConfigu
     @BindView(R.id.album_conf_image)
     ImageView imageView;
 
-    @Nullable
     @BindView(R.id.album_conf_title)
     TextView titleText;
 
+    @Nullable
+    @BindView(R.id.album_conf_collapsed_title)
+    TextView collapsedTitleText;
+
     @BindView(R.id.album_conf_artist)
     TextView artistView;
+
+    @BindView(R.id.album_conf_year)
+    TextView yearView;
 
     @BindView(R.id.album_conf_tracks_count)
     TextView tracksCountView;
@@ -93,6 +99,7 @@ public class AlbumConfigurationFragment extends Fragment implements AlbumConfigu
     String image;
     String title;
     String artist;
+    int year;
     String localPlaylistName;
 
 
@@ -124,26 +131,25 @@ public class AlbumConfigurationFragment extends Fragment implements AlbumConfigu
         image = getArguments().getString("image");
         title = getArguments().getString("album_name");
         artist = getArguments().getString("artist");
+        year = getArguments().getInt("year");
 
         localPlaylistName = "album/" + artist + "/" + title;
 
         // Load cover image
         loadCover();
 
-        // Assign title & artist
-        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+        // Assign title & artist & year
+        titleText.setText(title);
 
-            String titleCollapse = title;
-
-            if (title.length() > 20){
-                titleCollapse = title.substring(0, 19) + "...";
-            }
-
-            collapsingToolbarLayout.setTitle(titleCollapse);
-        } else {
-            titleText.setText(title);
+        if (orientation == Configuration.ORIENTATION_PORTRAIT){
+            collapsedTitleText.setText(title);
         }
+
         artistView.setText(artist);
+
+        if (year != 10000) {
+            yearView.setText(String.valueOf(year) + " · ");
+        }
 
         // Setup appbar behavior
         if (orientation == Configuration.ORIENTATION_PORTRAIT){
@@ -153,18 +159,35 @@ public class AlbumConfigurationFragment extends Fragment implements AlbumConfigu
 
                     float alpha = 0;
 
+                    titleText.setAlpha(alpha);
                     artistView.setAlpha(alpha);
+                    yearView.setAlpha(alpha);
                     tracksCountView.setAlpha(alpha);
                     playAllLayout.setAlpha(alpha);
                     cardView.setAlpha(alpha);
+
+                    collapsedTitleText.setVisibility(View.VISIBLE);
 
                 } else {
 
-                    float alpha = 1f - (float) Math.abs(verticalOffset) / (float) (appBarLayout.getTotalScrollRange() / 2);
+                    float alpha = 1f - (float) Math.abs(verticalOffset) / (float) (appBarLayout.getTotalScrollRange());
+
+                    titleText.setAlpha(alpha);
                     artistView.setAlpha(alpha);
+                    yearView.setAlpha(alpha);
                     tracksCountView.setAlpha(alpha);
                     playAllLayout.setAlpha(alpha);
                     cardView.setAlpha(alpha);
+
+                    if (alpha < 0.5f) {
+                        if (collapsedTitleText.getVisibility() == View.GONE) {
+                            collapsedTitleText.setVisibility(View.VISIBLE);
+                        }
+                    }else{
+                        if (collapsedTitleText.getVisibility() == View.VISIBLE) {
+                            collapsedTitleText.setVisibility(View.GONE);
+                        }
+                    }
                 }
             });
         }

@@ -8,6 +8,7 @@ import android.graphics.BitmapFactory;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Environment;
+import android.util.Log;
 import android.webkit.MimeTypeMap;
 
 import com.mnemo.angler.data.database.Entities.Track;
@@ -123,7 +124,17 @@ public class AnglerFileStorage {
                         String id = (title + "-" + artist + "-" + album).replace(" ", "_");
                         String uri = filepath + File.separator + file;
 
-                        tracks.add(new Track(id, title, artist, album, duration, uri));
+                        String yearString = mRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_YEAR);
+
+                        int year;
+
+                        if (yearString != null) {
+                            year = Integer.parseInt(yearString);
+                        }else{
+                            year = 10000;
+                        }
+
+                        tracks.add(new Track(id, title, artist, album, duration, uri, year, 0));
 
                     }
                 }

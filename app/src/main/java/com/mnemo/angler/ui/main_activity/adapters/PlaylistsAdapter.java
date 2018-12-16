@@ -2,7 +2,6 @@ package com.mnemo.angler.ui.main_activity.adapters;
 
 
 import android.content.Context;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,9 +12,6 @@ import android.widget.TextView;
 
 import com.mnemo.angler.R;
 import com.mnemo.angler.data.database.Entities.Playlist;
-import com.mnemo.angler.ui.main_activity.activity.MainActivity;
-import com.mnemo.angler.ui.main_activity.fragments.playlists.playlist_configuration.PlaylistConfigurationFragment;
-import com.mnemo.angler.ui.main_activity.fragments.playlists.playlist_create.PlaylistCreationDialogFragment;
 import com.mnemo.angler.util.ImageAssistant;
 
 import java.util.List;
@@ -27,6 +23,9 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.View
 
     private Context context;
     private List<Playlist> playlists;
+
+    private OnPlaylistClickListener onPlaylistClickListener;
+    private OnPlaylistLongClickListener onPlaylistLongClickListener;
 
     static class ViewHolder extends RecyclerView.ViewHolder{
 
@@ -40,6 +39,14 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.View
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
+    }
+
+    public interface OnPlaylistClickListener {
+        void onPlaylistClick(String title, String cover);
+    }
+
+    public interface OnPlaylistLongClickListener {
+        void onPlaylistLongClick(String title, String cover);
     }
 
     public PlaylistsAdapter(Context context, List<Playlist> playlists) {
@@ -61,17 +68,7 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.View
             String title = playlists.get(viewHolder.getAdapterPosition()).getTitle();
             String cover = playlists.get(viewHolder.getAdapterPosition()).getCover();
 
-            PlaylistConfigurationFragment playlistConfigurationFragment = new PlaylistConfigurationFragment();
-
-            Bundle args = new Bundle();
-            args.putString("title", title);
-            args.putString("cover", cover);
-            playlistConfigurationFragment.setArguments(args);
-
-            ((MainActivity)context).getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.frame, playlistConfigurationFragment, "playlist_configuration_fragment")
-                    .addToBackStack(null)
-                    .commit();
+            onPlaylistClickListener.onPlaylistClick(title, cover);
         });
 
         viewHolder.itemView.setOnLongClickListener(v -> {
@@ -80,15 +77,7 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.View
             String title = playlists.get(viewHolder.getAdapterPosition()).getTitle();
             String cover = playlists.get(viewHolder.getAdapterPosition()).getCover();
 
-            PlaylistCreationDialogFragment playlistCreationDialogFragment = new PlaylistCreationDialogFragment();
-
-            Bundle args = new Bundle();
-            args.putString("action", "change");
-            args.putString("title", title);
-            args.putString("cover", cover);
-            playlistCreationDialogFragment.setArguments(args);
-
-            playlistCreationDialogFragment.show(((MainActivity)context).getSupportFragmentManager(), "playlist_creation_dialog_fragment");
+            onPlaylistLongClickListener.onPlaylistLongClick(title, cover);
 
             return true;
         });
@@ -112,5 +101,15 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.View
     @Override
     public int getItemCount() {
         return playlists.size();
+    }
+
+
+    // Setter for listeners
+    public void setOnPlaylistClickListener(OnPlaylistClickListener onPlaylistClickListener) {
+        this.onPlaylistClickListener = onPlaylistClickListener;
+    }
+
+    public void setOnPlaylistLongClickListener(OnPlaylistLongClickListener onPlaylistLongClickListener) {
+        this.onPlaylistLongClickListener = onPlaylistLongClickListener;
     }
 }

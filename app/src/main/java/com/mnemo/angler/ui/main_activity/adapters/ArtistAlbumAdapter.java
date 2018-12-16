@@ -12,9 +12,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.mnemo.angler.R;
+import com.mnemo.angler.data.database.Entities.Album;
 import com.mnemo.angler.data.file_storage.AnglerFolder;
 import com.mnemo.angler.ui.main_activity.activity.MainActivity;
-import com.mnemo.angler.ui.main_activity.classes.Album;
 import com.mnemo.angler.ui.main_activity.fragments.albums.album_configuration.AlbumConfigurationFragment;
 import com.mnemo.angler.ui.main_activity.misc.cover.CoverDialogFragment;
 import com.mnemo.angler.util.ImageAssistant;
@@ -66,6 +66,7 @@ public class ArtistAlbumAdapter extends RecyclerView.Adapter<ArtistAlbumAdapter.
 
             // Get album variables
             String album = albums.get(viewHolder.getAdapterPosition()).getAlbum();
+            int year = albums.get(viewHolder.getAdapterPosition()).getYear();
 
             // Create album image path
             String albumImagePath = AnglerFolder.PATH_ALBUM_COVER + File.separator + artist + File.separator + album + ".jpg";
@@ -77,6 +78,7 @@ public class ArtistAlbumAdapter extends RecyclerView.Adapter<ArtistAlbumAdapter.
             args.putString("image", albumImagePath);
             args.putString("album_name", album);
             args.putString("artist", artist);
+            args.putInt("year", year);
             albumConfigurationFragment.setArguments(args);
 
             ((MainActivity)context).getSupportFragmentManager().beginTransaction()

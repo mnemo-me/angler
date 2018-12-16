@@ -2,7 +2,6 @@ package com.mnemo.angler.ui.main_activity.adapters;
 
 
 import android.content.Context;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,9 +12,6 @@ import android.widget.TextView;
 
 import com.mnemo.angler.R;
 import com.mnemo.angler.data.file_storage.AnglerFolder;
-import com.mnemo.angler.ui.main_activity.activity.MainActivity;
-import com.mnemo.angler.ui.main_activity.fragments.artists.artist_configuration.ArtistConfigurationFragment;
-import com.mnemo.angler.ui.main_activity.misc.cover.CoverDialogFragment;
 import com.mnemo.angler.util.ImageAssistant;
 
 import java.io.File;
@@ -28,6 +24,17 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder
 
     private Context context;
     private List<String> artists;
+
+    private OnArtistClickListener onArtistClickListener;
+    private OnArtistLongClickListener onArtistLongClickListener;
+
+    public interface OnArtistClickListener{
+        void onArtistClick(String artist, String image);
+    }
+
+    public interface OnArtistLongClickListener{
+        void onArtistLongClick(String artist, String image);
+    }
 
     static class ViewHolder extends RecyclerView.ViewHolder{
 
@@ -61,36 +68,19 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder
         viewHolder.itemView.setOnClickListener(v -> {
 
             // Get artist variables
-            String title = artists.get(viewHolder.getAdapterPosition());
-            String image = AnglerFolder.PATH_ARTIST_IMAGE + File.separator + title + ".jpg";
+            String artist = artists.get(viewHolder.getAdapterPosition());
+            String image = AnglerFolder.PATH_ARTIST_IMAGE + File.separator + artist + ".jpg";
 
-            ArtistConfigurationFragment artistConfigurationFragment = new ArtistConfigurationFragment();
-
-            Bundle args = new Bundle();
-            args.putString("artist", title);
-            args.putString("image", image);
-            artistConfigurationFragment.setArguments(args);
-
-            ((MainActivity)context).getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.frame, artistConfigurationFragment, "artist_configuration_fragment")
-                    .addToBackStack(null)
-                    .commit();
+            onArtistClickListener.onArtistClick(artist, image);
         });
 
         viewHolder.itemView.setOnLongClickListener(v -> {
 
             // Get artist variables
-            String title = artists.get(viewHolder.getAdapterPosition());
-            String image = AnglerFolder.PATH_ARTIST_IMAGE + File.separator + title + ".jpg";
+            String artist = artists.get(viewHolder.getAdapterPosition());
+            String image = AnglerFolder.PATH_ARTIST_IMAGE + File.separator + artist + ".jpg";
 
-            CoverDialogFragment coverDialogFragment = new CoverDialogFragment();
-
-            Bundle args = new Bundle();
-            args.putString("artist", title);
-            args.putString("image", image);
-            coverDialogFragment.setArguments(args);
-
-            coverDialogFragment.show(((MainActivity)context).getSupportFragmentManager(), "cover_dialog_fragment");
+            onArtistLongClickListener.onArtistLongClick(artist, image);
 
             return true;
         });
@@ -102,16 +92,26 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
         // Get artist variables
-        String title = artists.get(position);
-        String image = AnglerFolder.PATH_ARTIST_IMAGE + File.separator + title + ".jpg";
+        String artist = artists.get(position);
+        String image = AnglerFolder.PATH_ARTIST_IMAGE + File.separator + artist + ".jpg";
 
         // Fill views
-        holder.titleView.setText(title);
+        holder.titleView.setText(artist);
         ImageAssistant.loadImage(context, image, holder.imageView, 200);
     }
 
     @Override
     public int getItemCount() {
         return artists.size();
+    }
+
+    // Setters for listeners
+
+    public void setOnArtistClickListener(OnArtistClickListener onArtistClickListener) {
+        this.onArtistClickListener = onArtistClickListener;
+    }
+
+    public void setOnArtistLongClickListener(OnArtistLongClickListener onArtistLongClickListener) {
+        this.onArtistLongClickListener = onArtistLongClickListener;
     }
 }

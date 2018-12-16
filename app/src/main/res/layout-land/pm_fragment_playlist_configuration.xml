@@ -9,7 +9,8 @@
         android:id="@+id/playlist_conf_toolbar"
         style="@style/toolbar"
         android:background="@color/softMainGrey"
-        app:contentInsetStart="0dp">
+        app:contentInsetStart="0dp"
+        android:transitionName="toolbar">
 
 
         <ImageButton

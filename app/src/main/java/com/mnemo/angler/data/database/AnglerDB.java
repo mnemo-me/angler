@@ -6,8 +6,10 @@ import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 
+import com.mnemo.angler.data.database.Entities.Album;
 import com.mnemo.angler.data.database.Entities.Link;
 import com.mnemo.angler.data.database.Entities.Playlist;
 import com.mnemo.angler.data.database.Entities.Track;
@@ -72,6 +74,18 @@ public class AnglerDB{
         void playlistCleared();
     }
 
+    public interface AlbumsLoadListener{
+        void albumsLoaded(List<Album> albums);
+    }
+
+    public interface ArtistAlbumsLoadListener{
+        void artistAlbumsLoaded(List<Album> albums);
+    }
+
+    public interface UnknownYearAlbumsLoadListener{
+        void unknownYearAlbumsLoaded(List<Album> albums);
+    }
+
     @Inject
     public AnglerDB(Context context) {
 
@@ -99,6 +113,8 @@ public class AnglerDB{
                     insertTracks(tracks, dbTracks);
                     updateTracks(tracks, dbTracks);
                     deleteTracks(tracks, dbTracks);
+
+                    cleanAlbums();
                 });
 
     }
@@ -139,7 +155,10 @@ public class AnglerDB{
                 })
                 .filter(track -> !dbTracks.contains(track))
                 .toList()
-                .subscribe(tracksToInsert -> db.trackDAO().insert(tracksToInsert.toArray(new Track[tracksToInsert.size()])));
+                .subscribe(tracksToInsert -> {
+                    db.trackDAO().insert(tracksToInsert.toArray(new Track[tracksToInsert.size()]));
+                    db.albumDAO().insert(getAlbums(tracksToInsert).toArray(new Album[tracksToInsert.size()]));
+                });
     }
 
     private void updateTracks(List<Track> tracks, List<Track> dbTracks){
@@ -174,7 +193,69 @@ public class AnglerDB{
         return trackIds;
     }
 
+    // Albums methods
+    private List<Album> getAlbums(List<Track> tracks){
 
+        List<Album> albums = new ArrayList<>();
+
+        for (Track track : tracks){
+
+            String album = track.getAlbum();
+            String artist = track.getArtist();
+            int year = track.getYear();
+
+            String id = (album + "-" + artist).replace(" ", "_");
+
+            albums.add(new Album(id, album, artist, year));
+        }
+        return albums;
+    }
+
+    // Delete unused albums
+    private void cleanAlbums(){
+
+        db.albumDAO().getAlbumsOnce()
+                .subscribe(albums -> Observable.fromIterable(albums)
+                        .filter(album -> db.trackDAO().getAlbumsTrackCount(album.getAlbum(), album.getArtist()) == 0)
+                        .toList()
+                        .subscribe(albumsToDelete -> db.albumDAO().delete(albumsToDelete.toArray(new Album[albumsToDelete.size()]))));
+
+    }
+
+    // Load albums
+    public void loadAlbums(AlbumsLoadListener listener){
+
+        db.albumDAO().getAlbums()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(listener::albumsLoaded);
+    }
+
+    public void loadAlbumsInBackground(AlbumsLoadListener listener){
+
+        db.albumDAO().getAlbumsOnce()
+                .subscribeOn(Schedulers.io())
+                .subscribe(listener::albumsLoaded);
+    }
+
+    public void loadArtistAlbums(String artist, ArtistAlbumsLoadListener listener){
+
+        db.albumDAO().getArtistAlbums(artist)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(listener::artistAlbumsLoaded);
+    }
+
+    public void loadAlbumsWithUnknownYear(UnknownYearAlbumsLoadListener listener){
+
+        db.albumDAO().getAlbumsByYear(10000)
+                .subscribeOn(Schedulers.io())
+                .subscribe(listener::unknownYearAlbumsLoaded);
+    }
+
+    public void updateAlbumYear(String id, int year){
+        db.albumDAO().updateAlbumYear(id, year);
+    }
 
     // Playlists methods
     // Load playlists or/and titles methods

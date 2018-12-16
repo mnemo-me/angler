@@ -14,9 +14,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.mnemo.angler.data.database.Entities.Album;
 import com.mnemo.angler.ui.main_activity.activity.MainActivity;
 import com.mnemo.angler.ui.main_activity.adapters.ArtistAlbumAdapter;
-import com.mnemo.angler.ui.main_activity.classes.Album;
 
 import java.util.List;
 

@@ -15,24 +15,35 @@
             android:id="@+id/album_conf_collapsing_toolbar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:collapsedTitleTextAppearance="@style/CollapsedText"
-            app:expandedTitleGravity="top"
-            app:expandedTitleMarginStart="24dp"
-            app:expandedTitleMarginTop="72dp"
-            app:expandedTitleTextAppearance="@style/ExpandedText"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+            <TextView
+                android:id="@+id/album_conf_title"
+                style="@style/expanded_title"/>
 
             <TextView
                 android:id="@+id/album_conf_artist"
                 style="@style/expanded_subtitle"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="18dp"
                 tools:text="Marilyn Manson" />
 
-            <TextView
-                android:id="@+id/album_conf_tracks_count"
-                style="@style/expanded_subtitle"
-                android:layout_marginTop="28dp"
-                tools:text="123 tracks" />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginTop="38dp">
+
+                <TextView
+                    android:id="@+id/album_conf_year"
+                    style="@style/expanded_subtitle"
+                    tools:text="2007 · "/>
+
+                <TextView
+                    android:id="@+id/album_conf_tracks_count"
+                    style="@style/expanded_subtitle"
+                    android:layout_marginStart="0dp"
+                    tools:text="123 tracks"/>
+            </LinearLayout>
 
             <Button
                 android:id="@+id/album_conf_play_all"
@@ -46,7 +57,8 @@
                 android:layout_height="196dp"
                 android:layout_gravity="end"
                 android:layout_marginEnd="4dp"
-                android:layout_marginTop="4dp">
+                android:layout_marginTop="4dp"
+                app:cardElevation="0dp">
 
                 <android.support.constraint.ConstraintLayout
                     android:layout_width="match_parent"
@@ -80,6 +92,11 @@
                     style="@style/button"
                     android:contentDescription="@string/back"
                     android:src="@drawable/ic_arrow_back_black_24dp" />
+
+                <TextView
+                    android:id="@+id/album_conf_collapsed_title"
+                    style="@style/title"
+                    android:visibility="gone"/>
 
             </android.support.v7.widget.Toolbar>
 

@@ -14,11 +14,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.mnemo.angler.data.database.Entities.Album;
+import com.mnemo.angler.data.file_storage.AnglerFolder;
 import com.mnemo.angler.ui.main_activity.adapters.AlbumAdapter;
 import com.mnemo.angler.ui.main_activity.classes.DrawerItem;
 import com.mnemo.angler.R;
-import com.mnemo.angler.ui.main_activity.classes.Album;
+import com.mnemo.angler.ui.main_activity.fragments.albums.album_configuration.AlbumConfigurationFragment;
+import com.mnemo.angler.ui.main_activity.misc.cover.CoverDialogFragment;
 
+import java.io.File;
 import java.util.List;
 
 import butterknife.BindView;
@@ -121,6 +125,44 @@ public class AlbumsFragment extends Fragment implements DrawerItem, AlbumsView {
         }
 
         adapter = new AlbumAdapter(getContext(), albums, albumsInLine);
+
+        adapter.setOnAlbumClickListener((artist, album, year) -> {
+
+            // Create album image path
+            String albumImagePath = AnglerFolder.PATH_ALBUM_COVER + File.separator + artist + File.separator + album + ".jpg";
+
+            AlbumConfigurationFragment albumConfigurationFragment = new AlbumConfigurationFragment();
+
+            Bundle args = new Bundle();
+            args.putString("image", albumImagePath);
+            args.putString("album_name", album);
+            args.putString("artist", artist);
+            args.putInt("year", year);
+            albumConfigurationFragment.setArguments(args);
+
+            getActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.frame, albumConfigurationFragment, "album_configuration_fragment")
+                    .addToBackStack(null)
+                    .commit();
+        });
+
+        adapter.setOnAlbumLongClickListener((artist, album, year) -> {
+
+            // Create album image path
+            String albumImagePath = AnglerFolder.PATH_ALBUM_COVER + File.separator + artist + File.separator + album + ".jpg";
+
+            CoverDialogFragment coverDialogFragment = new CoverDialogFragment();
+
+            Bundle args = new Bundle();
+            args.putString("artist", artist);
+            args.putString("album", album);
+            args.putString("image", albumImagePath);
+            args.putInt("year", year);
+            coverDialogFragment.setArguments(args);
+
+            coverDialogFragment.show(getActivity().getSupportFragmentManager(), "album_cover_fragment");
+        });
+
         recyclerView.setAdapter(adapter);
     }
 }

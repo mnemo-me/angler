@@ -40,6 +40,9 @@ public interface TrackDAO {
     @Query("SELECT * FROM tracks WHERE artist=:artist AND album=:album ORDER BY title ASC")
     Flowable<List<Track>> getAlbumTracks(String artist, String album);
 
+    @Query("SELECT COUNT(*) FROM tracks WHERE artist=:artist AND album=:album")
+    int getAlbumsTrackCount(String album, String artist);
+
     @Insert
     void insert(Track... tracks);
 

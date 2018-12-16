@@ -2,6 +2,7 @@ package com.mnemo.angler.data.networking;
 
 
 import android.content.Context;
+import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -20,6 +21,10 @@ public class AnglerNetworking {
     // Listener interfaces
     public interface OnAlbumLoadListener{
         void onAlbumLoaded(InputStream inputStream);
+    }
+
+    public interface OnAlbumYearLoadListener{
+        void onAlbumYearLoaded(int year);
     }
 
     public interface OnArtistImageLoadListener{
@@ -60,6 +65,22 @@ public class AnglerNetworking {
                                         }
                                     }
                                 });
+                    }
+                });
+    }
+
+    public void loadAlbumYear(String artist, String album, OnAlbumYearLoadListener listener){
+
+        lastFMApiService.getAlbum(Net.LAST_FM_API_KEY,
+                artist.replace("&", "and"), album.replace("&", "and"), "json")
+                .subscribeOn(Schedulers.io())
+                .subscribe(response -> {
+
+                    if (response.code() == 200) {
+
+                        int year = getAlbumYear(response.body());
+
+                        listener.onAlbumYearLoaded(year);
                     }
                 });
     }
@@ -132,6 +153,27 @@ public class AnglerNetworking {
         return null;
     }
 
+    // Parse JSON to get album year
+    private int getAlbumYear(ResponseBody responseBody){
+
+        try {
+            JSONObject jsonObject = new JSONObject(responseBody.string());
+            JSONObject typeJSONObject = jsonObject.getJSONObject("album");
+            JSONObject wikiJSONObject = typeJSONObject.getJSONObject("wiki");
+
+            String release = wikiJSONObject.getString("published");
+
+            String yearString = release.substring(0, release.indexOf(","));
+            String yearString2 = yearString.substring(yearString.lastIndexOf(" ") + 1);
+
+            return Integer.parseInt(yearString2);
+
+        }catch (JSONException | IOException e){
+            e.printStackTrace();
+        }
+
+        return 10000;
+    }
 
     // Parse JSON to get artist bio
     private String getArtistBio(ResponseBody responseBody){
@@ -139,9 +181,9 @@ public class AnglerNetworking {
         try {
             JSONObject jsonObject = new JSONObject(responseBody.string());
             JSONObject typeJSONObject = jsonObject.getJSONObject("artist");
-            JSONObject bioJSONOnject = typeJSONObject.getJSONObject("bio");
+            JSONObject bioJSONObject = typeJSONObject.getJSONObject("bio");
 
-            return bioJSONOnject.getString("content");
+            return bioJSONObject.getString("content");
 
         }catch (JSONException | IOException e){
             e.printStackTrace();

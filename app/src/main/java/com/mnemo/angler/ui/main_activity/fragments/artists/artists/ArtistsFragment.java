@@ -21,6 +21,8 @@ import android.widget.Toast;
 import com.mnemo.angler.ui.main_activity.adapters.ArtistAdapter;
 import com.mnemo.angler.ui.main_activity.classes.DrawerItem;
 import com.mnemo.angler.R;
+import com.mnemo.angler.ui.main_activity.fragments.artists.artist_configuration.ArtistConfigurationFragment;
+import com.mnemo.angler.ui.main_activity.misc.cover.CoverDialogFragment;
 
 import java.util.List;
 
@@ -161,6 +163,33 @@ public class ArtistsFragment extends Fragment implements DrawerItem, ArtistsView
     public void setArtists(List<String> artists) {
 
         adapter = new ArtistAdapter(getContext(), artists);
+
+        adapter.setOnArtistClickListener((artist, image) -> {
+
+            ArtistConfigurationFragment artistConfigurationFragment = new ArtistConfigurationFragment();
+
+            Bundle args = new Bundle();
+            args.putString("artist", artist);
+            args.putString("image", image);
+            artistConfigurationFragment.setArguments(args);
+
+            getActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.frame, artistConfigurationFragment, "artist_configuration_fragment")
+                    .addToBackStack(null)
+                    .commit();
+        });
+
+        adapter.setOnArtistLongClickListener((artist, image) -> {
+
+            CoverDialogFragment coverDialogFragment = new CoverDialogFragment();
+
+            Bundle args = new Bundle();
+            args.putString("artist", artist);
+            args.putString("image", image);
+            coverDialogFragment.setArguments(args);
+
+            coverDialogFragment.show(getActivity().getSupportFragmentManager(), "cover_dialog_fragment");
+        });
 
         recyclerView.setAdapter(adapter);
     }

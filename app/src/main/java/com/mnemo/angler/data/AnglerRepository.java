@@ -5,13 +5,12 @@ import android.net.Uri;
 
 import com.mnemo.angler.AnglerApp;
 import com.mnemo.angler.data.database.AnglerDB;
+import com.mnemo.angler.data.database.Entities.Album;
 import com.mnemo.angler.data.database.Entities.Track;
 import com.mnemo.angler.data.file_storage.AnglerFileStorage;
 import com.mnemo.angler.data.file_storage.AnglerFolder;
 import com.mnemo.angler.data.networking.AnglerNetworking;
 import com.mnemo.angler.data.preferences.AnglerPreferences;
-import com.mnemo.angler.ui.main_activity.classes.Album;
-import com.mnemo.angler.util.MediaAssistant;
 
 import java.io.File;
 import java.io.InputStream;
@@ -59,6 +58,7 @@ public class AnglerRepository {
         }).subscribeOn(Schedulers.io()).subscribe(() -> {
 
             loadAlbumCovers();
+            loadAlbumYear();
             loadArtistImagesAndBios();
         });
 
@@ -69,8 +69,7 @@ public class AnglerRepository {
     // Load album covers and save them to file storage
     private void loadAlbumCovers(){
 
-        anglerDB.loadPlaylistTracks("library", tracks -> {
-            List<Album> albums = MediaAssistant.getAlbums(tracks);
+        anglerDB.loadAlbumsInBackground(albums -> {
 
             for (Album album : albums){
                 if (!anglerFileStorage.isAlbumCoverExist(album.getArtist(), album.getAlbum())) {
@@ -92,6 +91,22 @@ public class AnglerRepository {
                         }
                     }).subscribeOn(Schedulers.io()).subscribe());
                 }
+            }
+
+        });
+    }
+
+    private void loadAlbumYear(){
+
+        anglerDB.loadAlbumsWithUnknownYear(albums -> {
+
+            for (Album album : albums){
+
+                anglerNetworking.loadAlbumYear(album.getArtist(), album.getAlbum(), year -> {
+                    if (year != 10000){
+                        anglerDB.updateAlbumYear(album.get_id(), year);
+                    }
+                });
             }
         });
     }
@@ -485,6 +500,14 @@ public class AnglerRepository {
 
 
     // Albums methods
+    public void loadAlbums(AnglerDB.AlbumsLoadListener listener){
+        anglerDB.loadAlbums(listener);
+    }
+
+    public void loadArtistAlbums(String artist, AnglerDB.ArtistAlbumsLoadListener listener){
+         anglerDB.loadArtistAlbums(artist, listener);
+    }
+
     public void loadAlbumTracks(String artist, String album, AnglerDB.AlbumTracksLoadListener listener){
         anglerDB.loadAlbumTracks(artist, album, listener);
     }

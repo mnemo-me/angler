@@ -7,12 +7,9 @@ import android.support.v4.media.MediaDescriptionCompat;
 import android.support.v4.media.MediaMetadataCompat;
 
 import com.mnemo.angler.data.database.Entities.Track;
-import com.mnemo.angler.ui.main_activity.classes.Album;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class MediaAssistant {
 
@@ -122,7 +119,10 @@ public class MediaAssistant {
         long duration = metadata.getLong(MediaMetadataCompat.METADATA_KEY_DURATION);
         String uri = metadata.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI);
 
-        return new Track(mediaId, title, artist, album, duration, uri);
+        int year = (int)metadata.getLong(MediaMetadataCompat.METADATA_KEY_YEAR);
+
+
+        return new Track(mediaId, title, artist, album, duration, uri, year, 0);
 
     }
 
@@ -142,25 +142,5 @@ public class MediaAssistant {
         } else {
             return String.format("%d:%02d:%02d", hours, minutes, seconds);
         }
-    }
-
-
-    // Extract albums from tracks
-    public static List<Album> getAlbums(List<Track> tracks){
-
-        List<Album> albums = new ArrayList<>();
-        Set<String> albumTitles = new HashSet<>();
-
-
-        for (Track track : tracks){
-
-            if (!albumTitles.contains(track.getAlbum())){
-
-                albumTitles.add(track.getAlbum());
-                albums.add(new Album(track.getAlbum(), track.getArtist()));
-            }
-        }
-
-        return albums;
     }
 }

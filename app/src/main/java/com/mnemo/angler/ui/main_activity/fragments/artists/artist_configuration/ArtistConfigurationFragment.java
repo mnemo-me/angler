@@ -52,9 +52,12 @@ public class ArtistConfigurationFragment extends Fragment implements ArtistConfi
     @BindView(R.id.artist_conf_image)
     ImageView imageView;
 
-    @Nullable
     @BindView(R.id.artist_conf_artist)
     TextView artistText;
+
+    @Nullable
+    @BindView(R.id.artist_conf_collapsed_title)
+    TextView collapsedTitleText;
 
     @Nullable
     @BindView(R.id.artist_conf_albums_count)
@@ -117,17 +120,10 @@ public class ArtistConfigurationFragment extends Fragment implements ArtistConfi
         localPlaylistName = "artist/" + artist;
 
         // Assign artist text
-        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+        artistText.setText(artist);
 
-            String artistCollapse = artist;
-
-            if (artist.length() > 20){
-                artistCollapse = artist.substring(0, 19) + "...";
-            }
-
-            collapsingToolbarLayout.setTitle(artistCollapse);
-        } else {
-            artistText.setText(artist);
+        if (orientation == Configuration.ORIENTATION_PORTRAIT){
+            collapsedTitleText.setText(artist);
         }
 
         // Load artist image
@@ -141,19 +137,33 @@ public class ArtistConfigurationFragment extends Fragment implements ArtistConfi
 
                     float alpha = 0;
 
+                    artistText.setAlpha(alpha);
                     albumsCountView.setAlpha(alpha);
                     tracksCountView.setAlpha(alpha);
                     playAllLayout.setAlpha(alpha);
                     cardView.setAlpha(alpha);
+
+                    collapsedTitleText.setVisibility(View.VISIBLE);
 
                 } else {
 
-                    float alpha = 1f - (float) Math.abs(verticalOffset) / (float) (appBarLayout.getTotalScrollRange() / 2);
+                    float alpha = 1f - (float) Math.abs(verticalOffset) / (float) (appBarLayout.getTotalScrollRange());
 
+                    artistText.setAlpha(alpha);
                     albumsCountView.setAlpha(alpha);
                     tracksCountView.setAlpha(alpha);
                     playAllLayout.setAlpha(alpha);
                     cardView.setAlpha(alpha);
+
+                    if (alpha < 0.5f) {
+                        if (collapsedTitleText.getVisibility() == View.GONE) {
+                            collapsedTitleText.setVisibility(View.VISIBLE);
+                        }
+                    }else{
+                        if (collapsedTitleText.getVisibility() == View.VISIBLE) {
+                            collapsedTitleText.setVisibility(View.GONE);
+                        }
+                    }
                 }
             });
         }

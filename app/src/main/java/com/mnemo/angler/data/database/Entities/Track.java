@@ -43,13 +43,21 @@ public class Track implements Parcelable {
     @ColumnInfo(name = "uri")
     private String uri;
 
-    public Track(@NonNull String _id, String title, String artist, String album, long duration, String uri) {
+    @ColumnInfo(name = "year")
+    private int year;
+
+    @ColumnInfo(name = "album_position")
+    private int albumPosition;
+
+    public Track(@NonNull String _id, String title, String artist, String album, long duration, String uri, int year, int albumPosition) {
         this._id = _id;
         this.title = title;
         this.artist = artist;
         this.album = album;
         this.duration = duration;
         this.uri = uri;
+        this.year = year;
+        this.albumPosition = albumPosition;
     }
 
     @NonNull
@@ -101,6 +109,22 @@ public class Track implements Parcelable {
         this.uri = uri;
     }
 
+    public int getYear() {
+        return year;
+    }
+
+    public void setYear(int year) {
+        this.year = year;
+    }
+
+    public int getAlbumPosition() {
+        return albumPosition;
+    }
+
+    public void setAlbumPosition(int albumPosition) {
+        this.albumPosition = albumPosition;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -129,6 +153,8 @@ public class Track implements Parcelable {
         this.album = parcel.readString();
         this.duration = parcel.readLong();
         this.uri = parcel.readString();
+        this.year = parcel.readInt();
+        this.albumPosition = parcel.readInt();
     }
 
     @Override
@@ -145,5 +171,7 @@ public class Track implements Parcelable {
         parcel.writeString(this.album);
         parcel.writeLong(this.duration);
         parcel.writeString(this.uri);
+        parcel.writeInt(this.year);
+        parcel.writeInt(this.albumPosition);
     }
 }

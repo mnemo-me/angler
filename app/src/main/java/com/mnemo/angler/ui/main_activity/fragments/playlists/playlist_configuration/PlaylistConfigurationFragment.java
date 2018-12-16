@@ -62,9 +62,12 @@ public class PlaylistConfigurationFragment extends Fragment implements PlaylistC
     @BindView(R.id.playlist_conf_image)
     ImageView imageView;
 
-    @Nullable
     @BindView(R.id.playlist_conf_title)
     TextView titleText;
+
+    @Nullable
+    @BindView(R.id.playlist_conf_collapsed_title)
+    TextView collapsedTitleText;
 
     @BindView(R.id.playlist_conf_tracks_count)
     TextView tracksCountView;
@@ -142,17 +145,10 @@ public class PlaylistConfigurationFragment extends Fragment implements PlaylistC
         }
 
         // Assign title
-        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+        titleText.setText(title);
 
-            String titleCollapse = title;
-
-            if (title.length() > 20){
-                titleCollapse = title.substring(0, 19) + "...";
-            }
-
-            collapsingToolbarLayout.setTitle(titleCollapse);
-        } else {
-            titleText.setText(title);
+        if (orientation == Configuration.ORIENTATION_PORTRAIT){
+            collapsedTitleText.setText(title);
         }
 
         // Load cover image
@@ -166,17 +162,31 @@ public class PlaylistConfigurationFragment extends Fragment implements PlaylistC
 
                     float alpha = 0;
 
+                    titleText.setAlpha(alpha);
                     tracksCountView.setAlpha(alpha);
                     playAllLayout.setAlpha(alpha);
                     cardView.setAlpha(alpha);
+
+                    collapsedTitleText.setVisibility(View.VISIBLE);
 
                 } else {
 
-                    float alpha = 1f - (float) Math.abs(verticalOffset) / (float) (appBarLayout.getTotalScrollRange() / 2);
+                    float alpha = 1f - (float) Math.abs(verticalOffset) / (float) (appBarLayout.getTotalScrollRange());
 
+                    titleText.setAlpha(alpha);
                     tracksCountView.setAlpha(alpha);
                     playAllLayout.setAlpha(alpha);
                     cardView.setAlpha(alpha);
+
+                    if (alpha < 0.5f) {
+                        if (collapsedTitleText.getVisibility() == View.GONE) {
+                            collapsedTitleText.setVisibility(View.VISIBLE);
+                        }
+                    }else{
+                        if (collapsedTitleText.getVisibility() == View.VISIBLE) {
+                            collapsedTitleText.setVisibility(View.GONE);
+                        }
+                    }
                 }
             });
     }
@@ -426,21 +436,14 @@ public class PlaylistConfigurationFragment extends Fragment implements PlaylistC
 
 
     // Changing playlist title also image
-    public void changeTitle(String newTitle){
+    public void changeTitle(String newTitle) {
         title = newTitle;
         cover = AnglerFolder.PATH_PLAYLIST_COVER + File.separator + title.replace(" ", "_") + ".jpeg";
 
+        titleText.setText(title);
+
         if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-
-            String titleCollapse = title;
-
-            if (title.length() > 20){
-                titleCollapse = title.substring(0, 19) + "...";
-            }
-
-            collapsingToolbarLayout.setTitle(titleCollapse);
-        } else {
-            titleText.setText(title);
+            collapsedTitleText.setText(title);
         }
     }
 
