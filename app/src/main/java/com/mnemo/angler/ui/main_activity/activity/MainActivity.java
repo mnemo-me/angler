@@ -10,7 +10,6 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -184,7 +183,6 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
 
             // Select current drawer item
             drawerItems.get(selectedDrawerItemIndex).setSelected(true);
-            drawerItems.get(selectedDrawerItemIndex).setTypeface(null, Typeface.BOLD);
         }
     }
 
@@ -534,12 +532,10 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
         if (!drawerItems.get(drawerItemIndex).isSelected()) {
 
             drawerItems.get(selectedDrawerItemIndex).setSelected(false);
-            drawerItems.get(selectedDrawerItemIndex).setTypeface(null, Typeface.NORMAL);
 
             selectedDrawerItemIndex = drawerItemIndex;
 
             drawerItems.get(selectedDrawerItemIndex).setSelected(true);
-            drawerItems.get(selectedDrawerItemIndex).setTypeface(null, Typeface.BOLD);
         }
     }
 

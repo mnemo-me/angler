@@ -44,7 +44,9 @@ public class PlaylistArtistTracksPresenter extends BasePresenter{
 
         if (filter.equals("")){
 
-            ((PlaylistArtistTracksView)getView()).setTracks(tracks);
+            if (getView() != null) {
+                ((PlaylistArtistTracksView) getView()).setTracks(tracks);
+            }
 
         }else {
 
@@ -53,7 +55,12 @@ public class PlaylistArtistTracksPresenter extends BasePresenter{
                     .observeOn(AndroidSchedulers.mainThread())
                     .filter(track -> (track.getTitle().toLowerCase().contains(filter.toLowerCase())))
                     .toList()
-                    .subscribe(tracks -> ((PlaylistArtistTracksView)getView()).setTracks(tracks));
+                    .subscribe(tracks -> {
+
+                        if (getView() != null) {
+                            ((PlaylistArtistTracksView) getView()).setTracks(tracks);
+                        }
+                    });
         }
     }
 }

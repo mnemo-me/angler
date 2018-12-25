@@ -136,7 +136,7 @@ public class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.ViewHolder>{
             // Set listeners
             trackViewHolder.itemView.setOnClickListener(v -> {
 
-                int trackPosition = trackViewHolder.getAdapterPosition() + (isHeaderAttach ? 1:0);
+                int trackPosition = trackViewHolder.getAdapterPosition() - (isHeaderAttach ? 1:0);
 
                 Track track = tracks.get(trackPosition);
 
@@ -156,7 +156,7 @@ public class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.ViewHolder>{
 
             trackViewHolder.itemView.setOnLongClickListener(v -> {
 
-                int trackPosition = trackViewHolder.getAdapterPosition() + (isHeaderAttach ? 1:0);
+                int trackPosition = trackViewHolder.getAdapterPosition() - (isHeaderAttach ? 1:0);
 
                 Track track = tracks.get(trackPosition);
 
@@ -265,18 +265,7 @@ public class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.ViewHolder>{
     public void setPlaybackState(int state){
 
         playbackState = state;
-        notifyItemChanged(findPositionOfTrack(selectedTrackId));
-    }
-
-    private int findPositionOfTrack(String trackId){
-
-        for (int i = 0; i < tracks.size(); i++){
-            if (tracks.get(i).get_id().equals(trackId)){
-                return isHeaderAttach ? i+1 : i;
-            }
-        }
-
-        return -1;
+        notifyDataSetChanged();
     }
 
 }

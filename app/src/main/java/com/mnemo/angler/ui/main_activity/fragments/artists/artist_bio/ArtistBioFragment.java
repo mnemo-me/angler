@@ -7,7 +7,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.NestedScrollView;
+import android.text.Html;
 import android.text.Layout;
+import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,7 +46,8 @@ public class ArtistBioFragment extends Fragment implements ArtistBioView {
         textView.setTextSize(14);
         textView.setTextColor(getResources().getColor(R.color.white));
         textView.setJustificationMode(Layout.JUSTIFICATION_MODE_INTER_WORD);
-        textView.setPadding((int)(16 * MainActivity.density), (int)(4 * MainActivity.density),(int)(16 * MainActivity.density),(int)(20 * MainActivity.density));
+        textView.setPadding((int)(16 * MainActivity.density), (int)(24 * MainActivity.density),(int)(16 * MainActivity.density),(int)(20 * MainActivity.density));
+        textView.setMovementMethod(LinkMovementMethod.getInstance());
 
         scrollView.addView(textView);
 
@@ -80,6 +83,6 @@ public class ArtistBioFragment extends Fragment implements ArtistBioView {
     // MVP View methods
     @Override
     public void setBio(String bio) {
-        textView.setText(bio);
+        textView.setText(Html.fromHtml(bio));
     }
 }

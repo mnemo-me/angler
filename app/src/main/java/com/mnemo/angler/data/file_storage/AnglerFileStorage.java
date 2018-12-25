@@ -8,7 +8,6 @@ import android.graphics.BitmapFactory;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Environment;
-import android.util.Log;
 import android.webkit.MimeTypeMap;
 
 import com.mnemo.angler.data.database.Entities.Track;
@@ -45,7 +44,7 @@ public class AnglerFileStorage {
     public static final String PHONE_STORAGE = Environment.getExternalStorageDirectory().getPath();
     public static final String TEMP_IMAGE_NAME = AnglerFolder.PATH_PLAYLIST_COVER + File.separator + "temp.jpg";
 
-    Context context;
+    private Context context;
 
     @Inject
     public AnglerFileStorage(Context context) {
@@ -54,6 +53,7 @@ public class AnglerFileStorage {
     }
 
 
+    // Create Angler folder on device
     public void createAppFolder() {
 
         new File(AnglerFolder.PATH_MAIN).mkdir();
@@ -72,11 +72,7 @@ public class AnglerFileStorage {
         }
     }
 
-    public boolean isFileExist(String filepath){
-        return new File(filepath).exists();
-    }
-
-    // recursively retrieve metadata from phone storage
+    // Recursively retrieve metadata from phone storage
     public ArrayList<Track> scanTracks(String filepath){
 
         ArrayList<Track> tracks = new ArrayList<>();
@@ -154,7 +150,7 @@ public class AnglerFileStorage {
         return tracks;
     }
 
-    // get temp image name
+    // Get temp image name
     public String getTempImageName() {
         return TEMP_IMAGE_NAME;
     }
@@ -174,7 +170,7 @@ public class AnglerFileStorage {
     }
 
 
-    // create temp image
+    // Create temp image
     public void createTempImage(){
 
         File outputFile = new File(TEMP_IMAGE_NAME);
@@ -196,7 +192,7 @@ public class AnglerFileStorage {
 
 
 
-    // copy images
+    // Copy images
     public void copyImage(String inputFileName, String outputFileName){
 
         File inputFile = new File(inputFileName);
@@ -605,6 +601,11 @@ public class AnglerFileStorage {
         }
 
         return Uri.fromFile(destinationFile);
+    }
+
+    // Check if file exist
+    public boolean isFileExist(String filepath){
+        return new File(filepath).exists();
     }
 
 

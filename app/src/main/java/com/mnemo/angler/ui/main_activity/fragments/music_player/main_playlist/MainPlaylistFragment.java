@@ -189,7 +189,7 @@ public class MainPlaylistFragment extends Fragment implements MainPlaylistView{
     // MVP View methods
     @Override
     public void setTracks(List<Track> playlistTracks) {
-Log.e("jjjjjjjjjjjj", String.valueOf(getActivity() == null));
+
         adapter = new TrackAdapter(getContext(), "music_player", ((MainActivity)getActivity()).getMainPlaylistName(), playlistTracks);
         recyclerView.setAdapter(adapter);
 

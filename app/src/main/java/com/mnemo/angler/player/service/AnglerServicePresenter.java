@@ -2,6 +2,7 @@ package com.mnemo.angler.player.service;
 
 import com.mnemo.angler.AnglerApp;
 import com.mnemo.angler.data.AnglerRepository;
+import com.mnemo.angler.data.database.Entities.Track;
 import com.mnemo.angler.ui.base.BasePresenter;
 
 
@@ -21,7 +22,6 @@ public class AnglerServicePresenter extends BasePresenter {
     }
 
 
-
     // Equalizer methods
     // Get equalizer state
     boolean getEqualizerState(){
@@ -39,7 +39,7 @@ public class AnglerServicePresenter extends BasePresenter {
     }
 
 
-    // Audio efects
+    // Audio effects
     // Virtualizer
     boolean getVirtualizerState(){
         return repository.getVirtualizerState();
@@ -99,6 +99,16 @@ public class AnglerServicePresenter extends BasePresenter {
         repository.setQueueIndex(queueIndex);
     }
 
+    void refreshQueue(){
+        repository.setOnAppInitializationListener(tracks -> {
+
+            if (getView() != null){
+
+                ((AnglerServiceView)getView()).updateQueue(tracks);
+            }
+        });
+    }
+
     // Current track
     String getCurrentTrack(){
         return repository.getCurrentTrack();
@@ -142,6 +152,7 @@ public class AnglerServicePresenter extends BasePresenter {
 
             if (getView() != null){
                 ((AnglerServiceView)getView()).setQueue(tracks);
+                ((AnglerServiceView)getView()).initializeFirstTrack();
             }
         });
     }

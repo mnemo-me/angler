@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.media.MediaDescriptionCompat;
 import android.support.v4.media.MediaMetadataCompat;
+import android.support.v4.media.session.MediaSessionCompat;
 
 import com.mnemo.angler.data.database.Entities.Track;
 
@@ -124,6 +125,23 @@ public class MediaAssistant {
 
         return new Track(mediaId, title, artist, album, duration, uri, year, 0);
 
+    }
+
+
+    public static MediaSessionCompat.QueueItem changeQueueItemUri(MediaSessionCompat.QueueItem queueItem, String uri){
+
+        String mediaId = queueItem.getDescription().getMediaId();
+        String title = queueItem.getDescription().getTitle().toString();
+        String artist = queueItem.getDescription().getSubtitle().toString();
+        String alnum = queueItem.getDescription().getExtras().getString("album");
+        long duration = queueItem.getDescription().getExtras().getLong("duration");
+        String trackPlaylist = queueItem.getDescription().getExtras().getString("track_playlist");
+
+        long position = queueItem.getQueueId();
+
+        MediaDescriptionCompat description = mergeMediaDescription(mediaId, title, artist, alnum, duration, uri, trackPlaylist);
+
+        return new MediaSessionCompat.QueueItem(description, position);
     }
 
 

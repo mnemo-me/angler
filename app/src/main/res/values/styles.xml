@@ -6,6 +6,7 @@
         <item name="colorPrimary">@color/colorPrimaryDark</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:fontFamily">@font/nexa_light</item>
     </style>
     
     <style name="AppTheme.Launcher">
@@ -120,13 +121,12 @@
     <style name="yes_no_bottom_button">
         <item name="android:layout_height">48dp</item>
         <item name="android:layout_width">0dp</item>
-        <item name="android:gravity">center</item>
+        <item name="android:gravity">center_horizontal|bottom</item>
         <item name="android:textColor">@color/black</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:background">@drawable/black_frame</item>
         <item name="android:textAllCaps">true</item>
         <item name="android:layout_marginTop">8dp</item>
-        <item name="android:layout_marginBottom">8dp</item>
+        <item name="android:paddingBottom">12dp</item>
     </style>
 
     <style name="grey_yes_no_bottom_button" parent="yes_no_bottom_button">
@@ -185,6 +185,7 @@
         <item name="android:gravity">center_vertical</item>
         <item name="android:textColor">@color/selected_drawer_item</item>
         <item name="android:textAllCaps">true</item>
+        <item name="android:textStyle">bold</item>
         <item name="android:paddingStart">@dimen/default_margin</item>
         <item name="android:paddingEnd">@dimen/default_margin</item>
     </style>

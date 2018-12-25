@@ -128,8 +128,8 @@
             android:progressTint="@color/colorAccentLight"
             android:thumbTint="@color/colorAccentLight"
             app:layout_constraintBottom_toTopOf="@+id/media_panel_play_pause"
-            app:layout_constraintEnd_toStartOf="@id/media_panel_duration_time"
-            app:layout_constraintStart_toEndOf="@id/media_panel_progress_time" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
         <TextView
             android:id="@+id/media_panel_progress_time"
@@ -242,11 +242,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:fontFamily="serif"
                 android:text="@string/app_name"
                 android:textAllCaps="true"
+                android:textStyle="bold"
                 android:textColor="@color/black"
-                android:textSize="44sp" />
+                android:textSize="54sp" />
 
             <TextView
                 android:id="@+id/pro_version"
@@ -254,7 +254,6 @@
                 android:layout_height="wrap_content"
                 android:layout_alignEnd="@id/app_name_text"
                 android:layout_below="@id/app_name_text"
-                android:fontFamily="serif"
                 android:gravity="top"
                 android:text="@string/trial_version"
                 android:textAllCaps="true"

@@ -23,9 +23,14 @@
                 style="@style/expanded_title"/>
 
             <TextView
-                android:id="@+id/playlist_conf_tracks_count"
                 style="@style/expanded_subtitle"
                 android:layout_marginTop="18dp"
+                android:text="@string/playlist"/>
+
+            <TextView
+                android:id="@+id/playlist_conf_tracks_count"
+                style="@style/expanded_subtitle"
+                android:layout_marginTop="38dp"
                 tools:text="123 tracks" />
 
             <Button

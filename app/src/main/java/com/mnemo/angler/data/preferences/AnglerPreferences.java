@@ -159,7 +159,7 @@ public class AnglerPreferences {
     }
 
     public int getQueueIndex(){
-        return queuePreferences.getInt("queue_index", 0);
+        return queuePreferences.getInt("queue_index", -1);
     }
 
     public void setQueueIndex(int queueIndex){

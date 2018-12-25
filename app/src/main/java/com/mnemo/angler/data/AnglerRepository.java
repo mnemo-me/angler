@@ -27,6 +27,10 @@ import io.reactivex.schedulers.Schedulers;
 
 public class AnglerRepository {
 
+    public interface OnAppInitializationListener{
+        void onAppInitialized(List<Track> tracks);
+    }
+
     public interface OnGatherBackgroundImagesListener{
         void backgroundImagesGathered(List<String> images);
     }
@@ -43,6 +47,8 @@ public class AnglerRepository {
     @Inject
     AnglerPreferences anglerPreferences;
 
+    private OnAppInitializationListener onAppInitializationListener;
+
     @Inject
     public AnglerRepository() {
 
@@ -55,12 +61,18 @@ public class AnglerRepository {
             ArrayList<Track> tracks = anglerFileStorage.scanTracks(AnglerFileStorage.PHONE_STORAGE);
             anglerDB.updateDatabase(tracks);
 
-        }).subscribeOn(Schedulers.io()).subscribe(() -> {
+            if (onAppInitializationListener != null){
 
-            loadAlbumCovers();
-            loadAlbumYear();
-            loadArtistImagesAndBios();
-            loadTrackAlbumPosition();
+                onAppInitializationListener.onAppInitialized(tracks);
+            }
+
+        }).subscribeOn(Schedulers.io())
+                .subscribe(() -> {
+
+                    loadAlbumCovers();
+                    loadAlbumYear();
+                    loadArtistImagesAndBios();
+                    loadTrackAlbumPosition();
         });
 
 
@@ -349,6 +361,7 @@ public class AnglerRepository {
     }
 
 
+
     // File storage methods
     public void createTempImage(){
         anglerFileStorage.createTempImage();
@@ -416,7 +429,17 @@ public class AnglerRepository {
     // Database methods
     public void updateLibrary(AnglerDB.LibraryUpdateListener listener){
 
-        Completable.fromAction(() -> anglerDB.updateDatabase(anglerFileStorage.scanTracks(AnglerFileStorage.PHONE_STORAGE), listener))
+        Completable.fromAction(() -> {
+
+                    ArrayList<Track> tracks = anglerFileStorage.scanTracks(AnglerFileStorage.PHONE_STORAGE);
+                    anglerDB.updateDatabase(tracks, listener);
+
+                    if (onAppInitializationListener != null){
+
+                        onAppInitializationListener.onAppInitialized(tracks);
+                    }
+
+                })
                 .subscribeOn(Schedulers.io())
                 .subscribe();
     }
@@ -532,4 +555,10 @@ public class AnglerRepository {
         anglerDB.loadAlbumTracks(artist, album, listener);
     }
 
+
+
+    // Listeners
+    public void setOnAppInitializationListener(OnAppInitializationListener onAppInitializationListener) {
+        this.onAppInitializationListener = onAppInitializationListener;
+    }
 }

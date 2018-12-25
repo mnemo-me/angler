@@ -5,7 +5,6 @@ import android.annotation.SuppressLint;
 
 import com.mnemo.angler.AnglerApp;
 import com.mnemo.angler.data.AnglerRepository;
-import com.mnemo.angler.data.database.AnglerDB;
 import com.mnemo.angler.data.database.Entities.Track;
 import com.mnemo.angler.ui.base.BasePresenter;
 
@@ -49,7 +48,9 @@ public class MainPlaylistPresenter extends BasePresenter {
 
         if (filter.equals("")){
 
-            ((MainPlaylistView) getView()).setTracks(tracks);
+            if (getView() != null) {
+                ((MainPlaylistView) getView()).setTracks(tracks);
+            }
 
         }else {
 
@@ -58,7 +59,12 @@ public class MainPlaylistPresenter extends BasePresenter {
                     .observeOn(AndroidSchedulers.mainThread())
                     .filter(track -> (track.getTitle().toLowerCase().contains(filter.toLowerCase())))
                     .toList()
-                    .subscribe(((MainPlaylistView) getView())::setTracks);
+                    .subscribe(tracks -> {
+
+                        if (getView() != null) {
+                            ((MainPlaylistView) getView()).setTracks(tracks);
+                        }
+                    });
         }
     }
 
@@ -69,13 +75,10 @@ public class MainPlaylistPresenter extends BasePresenter {
 
     // Update library
     void updateLibrary(){
-        repository.updateLibrary(new AnglerDB.LibraryUpdateListener() {
-            @Override
-            public void libraryUpdated() {
+        repository.updateLibrary(() -> {
 
-                if (getView() != null){
-                    ((MainPlaylistView)getView()).completeUpdate();
-                }
+            if (getView() != null){
+                ((MainPlaylistView)getView()).completeUpdate();
             }
         });
     }

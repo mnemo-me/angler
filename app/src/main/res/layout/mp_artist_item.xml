@@ -11,6 +11,6 @@
     android:paddingTop="7dp"
     android:textAllCaps="true"
     android:textColor="@color/white"
-    android:textSize="16sp"
+    android:textSize="18sp"
     tools:text="Sweet dreams" />
 

@@ -138,6 +138,7 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
 
         // Initialize queue
         initializeQueue();
+        presenter.refreshQueue();
 
         // Initialize notification manager
         mAnglerNotificationManager = new AnglerNotificationManager(this);
@@ -172,7 +173,54 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
         mMediaSession.setQueue(queue);
     }
 
+    @Override
+    public void updateQueue(List<Track> tracks) {
 
+        for (MediaSessionCompat.QueueItem queueItem : queue){
+
+            boolean isTrackExist = false;
+
+            for (Track track : tracks){
+
+                if (track.get_id().equals(queueItem.getDescription().getMediaId())){
+
+                    isTrackExist = true;
+
+                    if (!track.getUri().equals(queueItem.getDescription().getMediaUri())){
+
+                        queue.set(queue.indexOf(queueItem), MediaAssistant.changeQueueItemUri(queueItem, track.getUri()));
+                    }
+
+                    break;
+                }
+            }
+
+            if (!isTrackExist) {
+
+                Bundle bundle = new Bundle();
+                bundle.putInt("position", queue.indexOf(queueItem));
+
+                mMediaSession.getController().getTransportControls().sendCustomAction("remove_queue_item", bundle);
+            }
+        }
+    }
+
+    @Override
+    public void initializeFirstTrack() {
+
+        if (queue.size() > 0 && queueIndex == -1){
+
+            queueIndex = 0;
+
+            metadata = getCurrentMetadata();
+
+            mMediaSession.setMetadata(metadata);
+
+            if (!mMediaSession.isActive()) {
+                mMediaSession.setActive(true);
+            }
+        }
+    }
 
     // Initialize media session callbacks (play, pause, stop, etc)
     MediaSessionCompat.Callback anglerServiceCallback = new MediaSessionCompat.Callback() {
@@ -200,7 +248,7 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
         @Override
         public void onPrepare() {
 
-            if (queueIndex < 0 || queue.isEmpty()) {
+            if (queueIndex < 0 || queue.isEmpty() || isFirstTrack) {
                 return;
             }
 
@@ -292,23 +340,36 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
         public void onSkipToPrevious() {
             super.onSkipToPrevious();
 
-            if (mMediaSession.getController().getPlaybackState().getState() != PlaybackStateCompat.STATE_ERROR && !queue.isEmpty()) {
+            if (seekbarPosition < 5000) {
 
-                if (mMediaSession.getController().getShuffleMode() == PlaybackStateCompat.SHUFFLE_MODE_ALL) {
+                if (mMediaSession.getController().getPlaybackState().getState() != PlaybackStateCompat.STATE_ERROR && !queue.isEmpty()) {
 
-                    queueIndex = (int) (Math.random() * queue.size());
+                    if (mMediaSession.getController().getShuffleMode() == PlaybackStateCompat.SHUFFLE_MODE_ALL) {
 
-                } else {
+                        queueIndex = (int) (Math.random() * queue.size());
 
-                    if (queueIndex == 0) {
-                        queueIndex = queue.size() - 1;
                     } else {
-                        queueIndex--;
+
+                        if (queueIndex == 0) {
+                            queueIndex = queue.size() - 1;
+                        } else {
+                            queueIndex--;
+                        }
                     }
+
+                    isPaused = false;
+                    onPlay();
                 }
 
-                isPaused = false;
-                onPlay();
+            }else{
+
+                seekbarPosition = 0;
+                mMediaPlayer.seekTo(seekbarPosition);
+
+                Intent intent = new Intent();
+                intent.setAction("seekbar_progress_changed");
+                intent.putExtra("seekbar_progress", seekbarPosition);
+                sendBroadcast(intent);
             }
         }
 
@@ -390,8 +451,9 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
 
                 seekbarPosition = (int) (pos * Integer.parseInt(presenter.getCurrentTrack().split(":::")[4]) / 100);
 
-                mMediaSession.getController().getTransportControls().sendCustomAction("get_track_progress", null);
             }
+
+            mMediaSession.getController().getTransportControls().sendCustomAction("get_track_progress", null);
         }
 
 
@@ -901,12 +963,6 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
             mMediaSession.setQueueTitle(queueTitle);
 
             presenter.loadLibraryTracks();
-
-            queueIndex = 0;
-
-            if (mMediaPlayer != null){
-                mMediaSession.getController().getTransportControls().prepare();
-            }
 
         }else{
 
