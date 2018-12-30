@@ -12,7 +12,6 @@
         android:background="@color/softMainGrey">
 
         <android.support.v7.widget.Toolbar
-            android:id="@+id/local_load_toolbar"
             style="@style/toolbar"
             app:contentInsetStart="0dp"
             app:layout_scrollFlags="scroll|enterAlways|snap">

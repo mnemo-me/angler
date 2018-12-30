@@ -29,6 +29,16 @@ public class MainPlaylistPresenter extends BasePresenter {
         AnglerApp.getAnglerComponent().injectMainPlaylistPresenter(this);
     }
 
+    // Check app first launch state
+    boolean checkAppFirstLaunchState(){
+        return repository.getFirstLaunch();
+    }
+
+    void saveAppFirstLaunchState(boolean appFirstLaunchState){
+        repository.setFirstLaunch(appFirstLaunchState);
+    }
+
+
     // Load playlist from database
     void loadPlaylist(String playlist){
 

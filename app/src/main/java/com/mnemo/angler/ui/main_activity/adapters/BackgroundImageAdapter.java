@@ -25,7 +25,7 @@ import butterknife.ButterKnife;
 public class BackgroundImageAdapter extends RecyclerView.Adapter<BackgroundImageAdapter.ViewHolder>{
 
     static class ViewHolder extends RecyclerView.ViewHolder{
-        public ViewHolder(View itemView) {
+        ViewHolder(View itemView) {
             super(itemView);
         }
     }

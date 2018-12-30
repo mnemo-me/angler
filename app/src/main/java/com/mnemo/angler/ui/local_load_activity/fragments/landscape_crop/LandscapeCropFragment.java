@@ -1,7 +1,6 @@
 package com.mnemo.angler.ui.local_load_activity.fragments.landscape_crop;
 
 
-import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -27,15 +26,14 @@ import butterknife.Unbinder;
 
 public class LandscapeCropFragment extends Fragment implements LandscapeCropView{
 
-    LandscapeCropPresenter presenter;
+    private LandscapeCropPresenter presenter;
 
-    Unbinder unbinder;
+    private Unbinder unbinder;
 
     @BindView(R.id.fragment_landscape_crop_iwa)
     CropIwaView cropIwaView;
 
-    String image;
-    String backgroundImageFileName;
+    private String backgroundImageFileName;
 
 
     public LandscapeCropFragment() {
@@ -53,7 +51,7 @@ public class LandscapeCropFragment extends Fragment implements LandscapeCropView
         unbinder = ButterKnife.bind(this, view);
 
         // Get image and new image name from arguments
-        image = getArguments().getString("image");
+        String image = getArguments().getString("image");
         backgroundImageFileName = getArguments().getString("background_image_file_name");
 
         // Setup CropIwa
@@ -100,7 +98,7 @@ public class LandscapeCropFragment extends Fragment implements LandscapeCropView
     void crop(){
 
         // Crop image and save it to file storage
-        cropIwaView.crop(new CropIwaSaveConfig.Builder(presenter.createNewBackgroundImageFile(backgroundImageFileName, Configuration.ORIENTATION_LANDSCAPE))
+        cropIwaView.crop(new CropIwaSaveConfig.Builder(presenter.createNewBackgroundImageFile(backgroundImageFileName))
                 .setCompressFormat(Bitmap.CompressFormat.JPEG)
                 .build());
 

@@ -19,7 +19,7 @@ import com.mnemo.angler.ui.main_activity.activity.MainActivity;
 public class PlaylistClearDialogFragment extends DialogFragment implements PlaylistClearView {
 
 
-    PlaylistClearPresenter presenter;
+    private PlaylistClearPresenter presenter;
 
     @Override
     @NonNull

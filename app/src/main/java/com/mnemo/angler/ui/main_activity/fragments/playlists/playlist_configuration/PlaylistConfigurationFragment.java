@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -26,6 +27,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.mnemo.angler.data.database.Entities.Track;
 import com.mnemo.angler.R;
 import com.mnemo.angler.ui.main_activity.activity.MainActivity;
@@ -51,10 +53,10 @@ import butterknife.Unbinder;
 public class PlaylistConfigurationFragment extends Fragment implements PlaylistConfigurationView{
 
 
-    PlaylistConfigurationPresenter presenter;
+    private PlaylistConfigurationPresenter presenter;
 
     // Bind views via ButterKnife
-    Unbinder unbinder;
+    private Unbinder unbinder;
 
     @BindView(R.id.playlist_conf_cardview)
     CardView cardView;
@@ -98,19 +100,23 @@ public class PlaylistConfigurationFragment extends Fragment implements PlaylistC
     @BindView(R.id.playlist_conf_collapsing_toolbar)
     CollapsingToolbarLayout collapsingToolbarLayout;
 
-    TrackAdapter adapter;
+    @BindView(R.id.playlist_conf_empty_text)
+    TextView emptyTextView;
+
+    private ShimmerFrameLayout loadingView;
+
+    private TrackAdapter adapter;
 
     // Playlist variables
-    String type;
-    String title;
-    String cover;
-    String localPlaylistName;
+    private String type;
+    private String title;
+    private String cover;
+    private String localPlaylistName;
 
     // Other variables;
-    int orientation;
+    private int orientation;
 
-    BroadcastReceiver receiver;
-    IntentFilter intentFilter;
+    private BroadcastReceiver receiver;
 
     public PlaylistConfigurationFragment() {
         // Required empty public constructor
@@ -128,6 +134,18 @@ public class PlaylistConfigurationFragment extends Fragment implements PlaylistC
 
         // Inject views
         unbinder = ButterKnife.bind(this, view);
+
+        // Loading view appear handler
+        loadingView = view.findViewById(R.id.playlist_conf_loading);
+
+        Handler handler = new Handler();
+        handler.postDelayed(() -> {
+
+            if (adapter == null){
+                loadingView.setVisibility(View.VISIBLE);
+            }
+
+        }, 1000);
 
         // Get playlist variables
         if (title == null) {
@@ -266,7 +284,7 @@ public class PlaylistConfigurationFragment extends Fragment implements PlaylistC
             }
         };
 
-        intentFilter = new IntentFilter();
+        IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction("track_changed");
         intentFilter.addAction("playback_state_changed");
 
@@ -305,6 +323,19 @@ public class PlaylistConfigurationFragment extends Fragment implements PlaylistC
 
     // MVP View methods
     public void setPlaylistTracks(List<Track> tracks){
+
+        // Empty text visibility
+        if (tracks.size() == 0) {
+            emptyTextView.setVisibility(View.VISIBLE);
+        } else {
+            emptyTextView.setVisibility(View.GONE);
+        }
+
+        // Loading text visibility
+        if (loadingView.getVisibility() == View.VISIBLE) {
+            loadingView.setVisibility(View.GONE);
+        }
+
 
         adapter = new TrackAdapter(getContext(), type, title, tracks);
         recyclerView.setAdapter(adapter);
@@ -398,10 +429,10 @@ public class PlaylistConfigurationFragment extends Fragment implements PlaylistC
 
     // Support methods
     // Track counter
-    public void checkTracksCount(){
+    private void checkTracksCount(){
 
         if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-            tracksCountView.setText(getString(R.string.tracks) + " " + (adapter.getItemCount()));
+            tracksCountView.setText(getString(R.string.tracks) + ": " + (adapter.getItemCount()));
 
             if (adapter.getItemCount() == 0){
                 manageTracksButton.setEnabled(false);

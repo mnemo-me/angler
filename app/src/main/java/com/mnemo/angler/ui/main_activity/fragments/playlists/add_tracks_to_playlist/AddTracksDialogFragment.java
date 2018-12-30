@@ -7,7 +7,6 @@ import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.widget.ExpandableListView;
 import android.widget.LinearLayout;
@@ -24,18 +23,17 @@ import java.util.HashMap;
 
 public class AddTracksDialogFragment extends DialogFragment implements AddTracksView {
 
-    AddTracksPresenter presenter;
+    private AddTracksPresenter presenter;
 
-    TextView tracksCountView;
+    private TextView tracksCountView;
 
-    ExpandableListView expandableListView;
-    AddTracksExpandableListAdapter adapter;
+    private ExpandableListView expandableListView;
+    private AddTracksExpandableListAdapter adapter;
 
-    ArrayList<Track> newTracks;
-    boolean[] expandedGroups;
-    int firstVisiblePosition = 0;
+    private ArrayList<Track> newTracks;
+    private boolean[] expandedGroups;
 
-    TextView addButton;
+    private TextView addButton;
 
     @NonNull
     @Override
@@ -55,7 +53,7 @@ public class AddTracksDialogFragment extends DialogFragment implements AddTracks
         if (savedInstanceState != null){
             newTracks = savedInstanceState.getParcelableArrayList("new_tracks");
             expandedGroups = savedInstanceState.getBooleanArray("expanded_groups");
-            firstVisiblePosition = savedInstanceState.getInt("first_visible_position");
+            int firstVisiblePosition = savedInstanceState.getInt("first_visible_position");
         }
 
         // Setup header
@@ -94,7 +92,7 @@ public class AddTracksDialogFragment extends DialogFragment implements AddTracks
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
 
         outState.putParcelableArrayList("new_tracks", adapter.getNewTracks());

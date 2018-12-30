@@ -26,9 +26,9 @@ import butterknife.Unbinder;
 
 public class AudioEffectsFragment extends Fragment implements AudioEffectsView{
 
-    AudioEffectsPresenter presenter;
+    private AudioEffectsPresenter presenter;
 
-    Unbinder unbinder;
+    private Unbinder unbinder;
 
     @BindView(R.id.ae_virtualizer_switch)
     Switch virtualizerSwitch;

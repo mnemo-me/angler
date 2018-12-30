@@ -16,7 +16,7 @@ import butterknife.OnClick;
 
 public class LocalLoadActivity extends AppCompatActivity implements LocalLoadView{
 
-    LocalLoadPresenter presenter;
+    private LocalLoadPresenter presenter;
 
     @BindView(R.id.tab_layout)
     TabLayout tabLayout;
@@ -24,7 +24,7 @@ public class LocalLoadActivity extends AppCompatActivity implements LocalLoadVie
     @BindView(R.id.view_pager)
     ViewPager viewPager;
 
-    String imageType;
+    private String imageType;
 
 
     @Override

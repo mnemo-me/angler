@@ -3,29 +3,39 @@ package com.mnemo.angler.ui.main_activity.fragments.artists.artist_bio;
 
 import android.os.Bundle;
 
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.NestedScrollView;
 import android.text.Html;
-import android.text.Layout;
+import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.mnemo.angler.R;
-import com.mnemo.angler.ui.main_activity.activity.MainActivity;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 
 public class ArtistBioFragment extends Fragment implements ArtistBioView {
 
-    ArtistBioPresenter presenter;
+    private ArtistBioPresenter presenter;
 
+    // Bind views via ButterKnife
+    private Unbinder unbinder;
+
+    @BindView(R.id.artist_bio_text)
     TextView textView;
 
-    String artist;
+    private ShimmerFrameLayout loadingView;
+
+    private String artist;
 
     public ArtistBioFragment() {
         // Required empty public constructor
@@ -35,23 +45,31 @@ public class ArtistBioFragment extends Fragment implements ArtistBioView {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.art_fragment_artist_bio, container, false);
+
+        // Inject views
+        unbinder = ButterKnife.bind(this, view);
+
+        // Loading view appear handler
+        loadingView = view.findViewById(R.id.artist_bio_loading);
+
+        Handler handler = new Handler();
+        handler.postDelayed(() -> {
+
+            if (TextUtils.isEmpty(textView.getText())){
+                loadingView.setVisibility(View.VISIBLE);
+            }
+
+        }, 1000);
 
         // Get artist
         artist = getArguments().getString("artist");
 
-        // Create scrollable TextView
-        NestedScrollView scrollView = new NestedScrollView(getContext());
-
-        textView = new TextView(getContext());
-        textView.setTextSize(14);
-        textView.setTextColor(getResources().getColor(R.color.white));
-        textView.setJustificationMode(Layout.JUSTIFICATION_MODE_INTER_WORD);
-        textView.setPadding((int)(16 * MainActivity.density), (int)(24 * MainActivity.density),(int)(16 * MainActivity.density),(int)(20 * MainActivity.density));
+        // Set link movement method
         textView.setMovementMethod(LinkMovementMethod.getInstance());
 
-        scrollView.addView(textView);
-
-        return scrollView;
+        return view;
     }
 
     @Override
@@ -80,9 +98,22 @@ public class ArtistBioFragment extends Fragment implements ArtistBioView {
         presenter.deattachView();
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        unbinder.unbind();
+    }
+
     // MVP View methods
     @Override
     public void setBio(String bio) {
+
+        // Loading text visibility
+        if (loadingView.getVisibility() == View.VISIBLE) {
+            loadingView.setVisibility(View.GONE);
+        }
+
         textView.setText(Html.fromHtml(bio));
     }
 }

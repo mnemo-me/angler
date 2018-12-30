@@ -37,12 +37,12 @@ import java.util.Set;
 
 public class AnglerService extends MediaBrowserServiceCompat implements AnglerServiceView{
 
-    AnglerServicePresenter presenter;
+    private AnglerServicePresenter presenter;
 
     private MediaSessionCompat mMediaSession;
     private MediaPlayer mMediaPlayer;
 
-    MediaMetadataCompat metadata;
+    private MediaMetadataCompat metadata;
 
     private boolean isFirstTrack = true;
     private boolean isPaused = false;
@@ -57,7 +57,6 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
     private LoudnessEnhancer mAmplifier;
 
     private ArrayList<Integer> bandsFrequencies;
-    private ArrayList<String> equalizerPresets;
 
 
     private AnglerNotificationManager mAnglerNotificationManager;
@@ -66,7 +65,7 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
     private ArrayList<MediaSessionCompat.QueueItem> queue = new ArrayList<>();
     private int queueIndex = -1;
 
-    int seekbarPosition = 0;
+    private int seekbarPosition = 0;
 
 
     public void onCreate() {
@@ -223,7 +222,7 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
     }
 
     // Initialize media session callbacks (play, pause, stop, etc)
-    MediaSessionCompat.Callback anglerServiceCallback = new MediaSessionCompat.Callback() {
+    private MediaSessionCompat.Callback anglerServiceCallback = new MediaSessionCompat.Callback() {
 
 
         // Queue methods
@@ -870,7 +869,7 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
         }
 
 
-        equalizerPresets = new ArrayList<>();
+        ArrayList<String> equalizerPresets = new ArrayList<>();
 
         for (short i = 0; i < mEqualizer.getNumberOfPresets(); i++){
             equalizerPresets.add(mEqualizer.getPresetName(i));
@@ -977,7 +976,7 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
 
 
     // Queue support methods
-    public void setQueue(Set<String> simplifiedQueue){
+    private void setQueue(Set<String> simplifiedQueue){
 
         for (int i = 0; i < simplifiedQueue.size(); i++){
             queue.add(null);

@@ -41,9 +41,8 @@ public class AnglerNotificationManager {
     private MediaControllerCompat mediaController;
     private MediaControllerCompat.TransportControls transportControls;
     private BroadcastReceiver noiseReceiver;
-    private IntentFilter intentFilter;
 
-    MediaSessionCompat.Token token;
+    private MediaSessionCompat.Token token;
 
     //private RemoteViews notificationView;
 
@@ -100,7 +99,7 @@ public class AnglerNotificationManager {
         Configure Intent Filter for Broadcast Receiver
         It describes what intents Broadcast Receiver can receive
          */
-        intentFilter = new IntentFilter();
+        IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(ACTION_PLAY);
         intentFilter.addAction(ACTION_PAUSE);
         intentFilter.addAction(ACTION_STOP);

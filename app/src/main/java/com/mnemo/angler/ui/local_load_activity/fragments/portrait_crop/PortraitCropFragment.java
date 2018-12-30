@@ -1,7 +1,6 @@
 package com.mnemo.angler.ui.local_load_activity.fragments.portrait_crop;
 
 
-import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -27,14 +26,14 @@ import butterknife.Unbinder;
 
 public class PortraitCropFragment extends Fragment implements PortraitCropView{
 
-    PortraitCropPresenter presenter;
+    private PortraitCropPresenter presenter;
 
-    Unbinder unbinder;
+    private Unbinder unbinder;
 
     @BindView(R.id.fragment_portrait_crop_iwa)
     CropIwaView cropIwaView;
 
-    String image;
+    private String image;
 
 
     public PortraitCropFragment() {
@@ -101,7 +100,7 @@ public class PortraitCropFragment extends Fragment implements PortraitCropView{
         String backgroundImageFileName = presenter.generateBackgroundImageFileName(image);
 
         // Crop image and save it to file storage
-        cropIwaView.crop(new CropIwaSaveConfig.Builder(presenter.createNewBackgroundImageFile(backgroundImageFileName, Configuration.ORIENTATION_PORTRAIT))
+        cropIwaView.crop(new CropIwaSaveConfig.Builder(presenter.createNewBackgroundImageFile(backgroundImageFileName))
                 .setCompressFormat(Bitmap.CompressFormat.JPEG)
                 .build());
 

@@ -35,17 +35,14 @@ import butterknife.Unbinder;
 
 public class AddTrackToPlaylistDialogFragment extends BottomSheetDialogFragment implements AddTrackToPlaylistView  {
 
-    AddTrackToPlaylistPresenter presenter;
+    private AddTrackToPlaylistPresenter presenter;
 
-    Unbinder unbinder;
+    private Unbinder unbinder;
 
     @BindView(R.id.add_track_to_playlist_recycler_view)
     RecyclerView recyclerView;
-    AddTrackToPlaylistAdapter adapter;
 
-    Track track;
-
-    int orientation;
+    private Track track;
 
     @NonNull
     @Override
@@ -76,7 +73,7 @@ public class AddTrackToPlaylistDialogFragment extends BottomSheetDialogFragment 
         View view = inflater.inflate(R.layout.misc_add_track_to_playlist_dialog, container, false);
 
         // Get orientation
-        orientation = getResources().getConfiguration().orientation;
+        int orientation = getResources().getConfiguration().orientation;
 
         // Inject views
         unbinder = ButterKnife.bind(this, view);
@@ -126,6 +123,7 @@ public class AddTrackToPlaylistDialogFragment extends BottomSheetDialogFragment 
         super.onDestroyView();
 
         presenter.deattachView();
+        unbinder.unbind();
     }
 
 
@@ -147,7 +145,7 @@ public class AddTrackToPlaylistDialogFragment extends BottomSheetDialogFragment 
         }
 
 
-        adapter = new AddTrackToPlaylistAdapter(getContext(), playlists, playlistsWithTrack);
+        AddTrackToPlaylistAdapter adapter = new AddTrackToPlaylistAdapter(getContext(), playlists, playlistsWithTrack);
         adapter.setOnAddTrackToPlaylistListener(playlist -> {
 
             if (playlist.equals(getResources().getString(R.string.create_new_playlist))){

@@ -48,9 +48,9 @@ import io.reactivex.schedulers.Schedulers;
 
 public class MusicPlayerFragment extends Fragment implements MusicPlayerView {
 
-    MusicPlayerPresenter presenter;
+    private MusicPlayerPresenter presenter;
 
-    Unbinder unbinder;
+    private Unbinder unbinder;
 
     @BindView(R.id.main_fragment_playlist_spinner)
     Spinner spinner;
@@ -71,11 +71,11 @@ public class MusicPlayerFragment extends Fragment implements MusicPlayerView {
     @BindView(R.id.artist_track_separator)
     View separator;
 
-    ArrayAdapter adapter;
+    private ArrayAdapter adapter;
 
-    Disposable disposable;
+    private Disposable disposable;
 
-    int orientation;
+    private int orientation;
     private boolean isSpinnerInitialized = false;
     private String fragmentOnTop = "";
     private String artistSelected;
@@ -202,7 +202,7 @@ public class MusicPlayerFragment extends Fragment implements MusicPlayerView {
 
 
     // Show playlist
-    public void showLibrary(){
+    private void showLibrary(){
 
         playlist.setAlpha(1f);
         artists.setAlpha(0.5f);

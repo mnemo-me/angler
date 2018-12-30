@@ -32,9 +32,9 @@ import butterknife.Unbinder;
 
 public class BandsFragment extends Fragment implements BandsView {
 
-    BandsPresenter presenter;
+    private BandsPresenter presenter;
 
-    Unbinder unbinder;
+    private Unbinder unbinder;
 
     @BindView(R.id.bands_layout)
     LinearLayout bandsLayout;
@@ -44,10 +44,8 @@ public class BandsFragment extends Fragment implements BandsView {
 
     // Equalizer bands variables;
     private short lowerEqualizerBandLevel;
-    private short upperEqualizerBandLevel;
 
     private ArrayList<Integer> bandsFrequencies;
-    private ArrayList<String> equalizerPresets;
 
 
     private BroadcastReceiver receiver;
@@ -76,9 +74,9 @@ public class BandsFragment extends Fragment implements BandsView {
         // Get equalizer parameters from service
         Bundle bundle = ((MainActivity)getActivity()).getAnglerClient().getServiceBundle();
         lowerEqualizerBandLevel = bundle.getShort("lower_equalizer_band_level");
-        upperEqualizerBandLevel = bundle.getShort("upper_equalizer_band_level");
+        short upperEqualizerBandLevel = bundle.getShort("upper_equalizer_band_level");
         bandsFrequencies = bundle.getIntegerArrayList("bands_frequencies");
-        equalizerPresets = bundle.getStringArrayList("equalizer_presets");
+        ArrayList<String> equalizerPresets = bundle.getStringArrayList("equalizer_presets");
 
         if (!equalizerPresets.contains(getResources().getString(R.string.custom))) {
             equalizerPresets.add(0, getResources().getString(R.string.custom));

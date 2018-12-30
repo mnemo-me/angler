@@ -40,11 +40,10 @@ public class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.ViewHolder>{
 
     private boolean isHeaderAttach = false;
     private int HEADER_VIEW_TYPE = 0;
-    private int TRACK_VIEW_TYPE = 1;
 
     static abstract class ViewHolder extends RecyclerView.ViewHolder{
 
-        public ViewHolder(View itemView) {
+        ViewHolder(View itemView) {
             super(itemView);
         }
     }
@@ -258,6 +257,7 @@ public class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.ViewHolder>{
         if (position == 0 && isHeaderAttach){
             return HEADER_VIEW_TYPE;
         }else{
+            int TRACK_VIEW_TYPE = 1;
             return TRACK_VIEW_TYPE;
         }
     }

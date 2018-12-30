@@ -1,9 +1,8 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:context=".ui.main_activity.fragments.playlists.playlists.PlaylistsFragment">
 
     <android.support.v7.widget.Toolbar
@@ -37,10 +36,43 @@
         android:id="@+id/playlist_grid"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="48dp"
         android:clipToPadding="false"
         android:paddingEnd="4dp"
         android:paddingStart="12dp"
         android:paddingTop="18dp"
-        android:verticalSpacing="8dp" />
+        android:verticalSpacing="8dp"/>
 
-</LinearLayout>
+    <TextView
+        android:id="@+id/playlist_empty_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/gGrey"
+        android:textSize="18sp"
+        android:text="@string/no_playlists"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/playlist_toolbar"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/playlist_loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/playlist_toolbar"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:text="@string/loading"/>
+
+    </com.facebook.shimmer.ShimmerFrameLayout>
+
+</android.support.constraint.ConstraintLayout>

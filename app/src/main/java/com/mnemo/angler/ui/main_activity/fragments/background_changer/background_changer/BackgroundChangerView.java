@@ -5,7 +5,7 @@ import com.mnemo.angler.ui.base.BaseView;
 import java.util.List;
 
 
-public interface BackgroundChangerView extends BaseView {
+interface BackgroundChangerView extends BaseView {
 
     void setBackgroundImages(List<String> images);
 }

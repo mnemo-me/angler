@@ -5,7 +5,7 @@ import com.mnemo.angler.ui.base.BaseView;
 
 import java.util.List;
 
-public interface MusicPlayerView extends BaseView {
+interface MusicPlayerView extends BaseView {
 
     void updateSpinner(List<String> playlists);
 }

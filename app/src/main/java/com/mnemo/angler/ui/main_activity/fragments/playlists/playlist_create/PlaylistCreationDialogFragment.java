@@ -37,24 +37,21 @@ import com.steelkiwi.cropiwa.image.CropIwaResultReceiver;
 
 public class PlaylistCreationDialogFragment extends DialogFragment implements PlaylistCreateView {
 
-    PlaylistCreatePresenter presenter;
+    private PlaylistCreatePresenter presenter;
 
-    String action;
+    private String title;
+    private String image;
+    private String dbName;
 
-    String title;
-    String image;
-    String dbName;
+    private String tempImage;
+    private boolean isCoverChanged = false;
 
-    String tempImage;
-    boolean isCoverChanged = false;
-
-    EditText editText;
+    private EditText editText;
 
     // CropIwa receiver
-    CropIwaResultReceiver resultReceiver;
+    private CropIwaResultReceiver resultReceiver;
 
-    BroadcastReceiver receiver;
-    IntentFilter intentFilter;
+    private BroadcastReceiver receiver;
 
     @NonNull
     @Override
@@ -63,7 +60,7 @@ public class PlaylistCreationDialogFragment extends DialogFragment implements Pl
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         // Get action
-        action = getArguments().getString("action");
+        String action = getArguments().getString("action");
 
         // Get cover change variable
         if (savedInstanceState != null){
@@ -323,7 +320,7 @@ public class PlaylistCreationDialogFragment extends DialogFragment implements Pl
             }
         };
 
-        intentFilter = new IntentFilter();
+        IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction("playlist_deleted");
 
         getContext().registerReceiver(receiver, intentFilter);
@@ -342,7 +339,7 @@ public class PlaylistCreationDialogFragment extends DialogFragment implements Pl
 
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
 
         outState.putBoolean("is_cover_changed", isCoverChanged);

@@ -8,6 +8,7 @@ import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.os.Bundle;
 
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -17,31 +18,38 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.facebook.shimmer.ShimmerFrameLayout;
+import com.mnemo.angler.R;
 import com.mnemo.angler.data.database.Entities.Track;
 import com.mnemo.angler.ui.main_activity.activity.MainActivity;
 import com.mnemo.angler.ui.main_activity.adapters.TrackAdapter;
 
 import java.util.List;
 
-
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 
 public class ArtistTracksFragment extends Fragment implements ArtistTracksView{
 
-    ArtistTracksPresenter presenter;
+    private ArtistTracksPresenter presenter;
 
+    // Bind views via ButterKnife
+    private Unbinder unbinder;
+
+    @BindView(R.id.artist_tracks_list)
     RecyclerView recyclerView;
 
-    TrackAdapter adapter;
+    private ShimmerFrameLayout loadingView;
+
+    private TrackAdapter adapter;
 
     // Artist tracks variables
-    String artist;
-    String localPlaylistName;
+    private String artist;
+    private String localPlaylistName;
 
-    int orientation;
-
-    BroadcastReceiver receiver;
-    IntentFilter intentFilter;
+    private BroadcastReceiver receiver;
 
     public ArtistTracksFragment() {
         // Required empty public constructor
@@ -50,19 +58,33 @@ public class ArtistTracksFragment extends Fragment implements ArtistTracksView{
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.art_fragment_artist_tracks, container, false);
 
         // Get orientation
-        orientation = getResources().getConfiguration().orientation;
+        int orientation = getResources().getConfiguration().orientation;
+
+        // Inject views
+        unbinder = ButterKnife.bind(this, view);
+
+        // Loading view appear handler
+        loadingView = view.findViewById(R.id.artist_tracks_loading);
+
+        Handler handler = new Handler();
+        handler.postDelayed(() -> {
+
+            if (adapter == null){
+                loadingView.setVisibility(View.VISIBLE);
+            }
+
+        }, 1000);
 
         // Setup recycler view
-        recyclerView = new RecyclerView(getContext());
-
         if (orientation == Configuration.ORIENTATION_PORTRAIT){
             recyclerView.setPadding(0, (int)(20 * MainActivity.density), 0, (int)(8 * MainActivity.density));
         }else{
             recyclerView.setPadding(0, (int)(24 * MainActivity.density), 0, (int)(16 * MainActivity.density));
         }
-        recyclerView.setClipToPadding(false);
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setItemViewCacheSize(20);
@@ -76,7 +98,7 @@ public class ArtistTracksFragment extends Fragment implements ArtistTracksView{
 
         localPlaylistName = "artist/" + artist;
 
-        return recyclerView;
+        return view;
     }
 
     @Override
@@ -140,7 +162,7 @@ public class ArtistTracksFragment extends Fragment implements ArtistTracksView{
             }
         };
 
-        intentFilter = new IntentFilter();
+        IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction("track_changed");
         intentFilter.addAction("playback_state_changed");
 
@@ -156,10 +178,21 @@ public class ArtistTracksFragment extends Fragment implements ArtistTracksView{
         presenter.deattachView();
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        unbinder.unbind();
+    }
 
     // MVP View methods
     @Override
     public void setArtistTracks(List<Track> tracks) {
+
+        // Loading text visibility
+        if (loadingView.getVisibility() == View.VISIBLE) {
+            loadingView.setVisibility(View.GONE);
+        }
 
         adapter = new TrackAdapter(getContext(), "artist", localPlaylistName, tracks);
         recyclerView.setAdapter(adapter);

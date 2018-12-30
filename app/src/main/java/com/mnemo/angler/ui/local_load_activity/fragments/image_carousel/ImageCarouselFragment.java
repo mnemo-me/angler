@@ -28,7 +28,7 @@ import butterknife.Unbinder;
 
 public class ImageCarouselFragment extends Fragment {
 
-    Unbinder unbinder;
+    private Unbinder unbinder;
 
     @BindView(R.id.image_carousel_tab)
     TabLayout tabLayout;
@@ -36,8 +36,7 @@ public class ImageCarouselFragment extends Fragment {
     @BindView(R.id.image_carousel_view_pager)
     ViewPager viewPager;
 
-    ArrayList<String> images;
-    String image;
+    private ArrayList<String> images;
 
     public ImageCarouselFragment() {
         // Required empty public constructor
@@ -61,7 +60,7 @@ public class ImageCarouselFragment extends Fragment {
         */
         Bundle args = getArguments();
         images = args.getStringArrayList("images");
-        image = args.getString("image");
+        String image = args.getString("image");
 
 
         // Bind TabLayout with ViewPager

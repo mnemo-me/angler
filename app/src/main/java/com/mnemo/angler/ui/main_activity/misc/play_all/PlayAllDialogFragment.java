@@ -23,11 +23,11 @@ import butterknife.Unbinder;
 
 public class PlayAllDialogFragment extends DialogFragment {
 
-    Unbinder unbinder;
+    private Unbinder unbinder;
 
-    String type;
-    String playlist;
-    List<Track> tracks;
+    private String type;
+    private String playlist;
+    private List<Track> tracks;
 
     @NonNull
     @Override

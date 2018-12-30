@@ -185,6 +185,15 @@ public class AnglerRepository {
 
 
     // Shared preferences methods
+    public boolean getFirstLaunch(){
+        return anglerPreferences.getFirstLaunch();
+    }
+
+    public void setFirstLaunch(boolean firstLaunch){
+        anglerPreferences.setFirstLaunch(firstLaunch);
+    }
+
+
     public String getBackgroundImage(){
 
        String backgroundImage = anglerPreferences.getBackgroundImage();
@@ -374,10 +383,9 @@ public class AnglerRepository {
     public void gatherBackgroundImages(OnGatherBackgroundImagesListener listener){
 
         // Create list of images
-        List<String> images = new ArrayList<>();
 
         // Add background images from file storage
-        images.addAll(anglerFileStorage.gatherBackgroundImages());
+        List<String> images = new ArrayList<>(anglerFileStorage.gatherBackgroundImages());
 
         // Add default images to list
         images.add("R.drawable.back");
