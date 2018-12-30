@@ -13,7 +13,7 @@ import javax.inject.Inject;
 
 public class AnglerPreferences {
 
-    Context context;
+    private Context context;
     private SharedPreferences appPreferences;
     private SharedPreferences equalizerPreferences;
     private SharedPreferences queuePreferences;
@@ -29,6 +29,14 @@ public class AnglerPreferences {
         equalizerPreferences = context.getSharedPreferences("equalizer_pref", Context.MODE_PRIVATE);
         queuePreferences = context.getSharedPreferences("queue_pref", Context.MODE_PRIVATE);
         playbackPreferences = context.getSharedPreferences("playback_pref", Context.MODE_PRIVATE);
+    }
+
+    public boolean getFirstLaunch(){
+        return appPreferences.getBoolean("first_launch", true);
+    }
+
+    public void setFirstLaunch(boolean firstLaunch){
+        appPreferences.edit().putBoolean("first_launch", firstLaunch).apply();
     }
 
     public void setBackgroundImage(String backgroundImage){

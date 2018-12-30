@@ -122,4 +122,26 @@
         app:layout_constraintStart_toStartOf="parent" />
 
 
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/album_conf_loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_marginTop="48dp"
+        android:layout_marginStart="284dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:text="@string/loading"/>
+
+    </com.facebook.shimmer.ShimmerFrameLayout>
+
+
 </android.support.constraint.ConstraintLayout>

@@ -31,9 +31,9 @@ import butterknife.Unbinder;
 
 public class EqualizerFragment extends Fragment implements DrawerItem, EqualizerView {
 
-    EqualizerPresenter presenter;
+    private EqualizerPresenter presenter;
 
-    Unbinder unbinder;
+    private Unbinder unbinder;
 
     @BindView(R.id.equalizer_on_off)
     Switch equalizerSwitch;
@@ -44,7 +44,7 @@ public class EqualizerFragment extends Fragment implements DrawerItem, Equalizer
     @Nullable @BindView(R.id.equalizer_audio_effects)
     ImageView audioEffects;
 
-    int orientation;
+    private int orientation;
 
     public EqualizerFragment() {
         // Required empty public constructor

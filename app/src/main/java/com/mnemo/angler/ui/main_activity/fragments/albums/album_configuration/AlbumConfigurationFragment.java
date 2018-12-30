@@ -8,6 +8,7 @@ import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.os.Bundle;
 
+import android.os.Handler;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -26,6 +27,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.mnemo.angler.data.database.Entities.Track;
 import com.mnemo.angler.ui.main_activity.activity.MainActivity;
 import com.mnemo.angler.R;
@@ -46,10 +48,10 @@ import butterknife.Unbinder;
 
 public class AlbumConfigurationFragment extends Fragment implements AlbumConfigurationView{
 
-    AlbumConfigurationPresenter presenter;
+    private AlbumConfigurationPresenter presenter;
 
     // Bind views via ButterKnife
-    Unbinder unbinder;
+    private Unbinder unbinder;
 
     @BindView(R.id.album_conf_cardview)
     CardView cardView;
@@ -92,22 +94,22 @@ public class AlbumConfigurationFragment extends Fragment implements AlbumConfigu
     @BindView(R.id.album_conf_collapsing_toolbar)
     CollapsingToolbarLayout collapsingToolbarLayout;
 
-    TrackAdapter adapter;
+    private ShimmerFrameLayout loadingView;
+
+    private TrackAdapter adapter;
 
 
     // Album variables
-    String image;
-    String title;
-    String artist;
-    int year;
-    String localPlaylistName;
+    private String image;
+    private String title;
+    private String artist;
+    private String localPlaylistName;
 
 
     // Other variables;
-    int orientation;
+    private int orientation;
 
-    BroadcastReceiver receiver;
-    IntentFilter intentFilter;
+    private BroadcastReceiver receiver;
 
 
     public AlbumConfigurationFragment() {
@@ -127,11 +129,23 @@ public class AlbumConfigurationFragment extends Fragment implements AlbumConfigu
         // Inject views
         unbinder = ButterKnife.bind(this, view);
 
+        // Loading view appear handler
+        loadingView = view.findViewById(R.id.album_conf_loading);
+
+        Handler handler = new Handler();
+        handler.postDelayed(() -> {
+
+            if (adapter == null){
+                loadingView.setVisibility(View.VISIBLE);
+            }
+
+        }, 1000);
+
         // Initialize album variables
         image = getArguments().getString("image");
         title = getArguments().getString("album_name");
         artist = getArguments().getString("artist");
-        year = getArguments().getInt("year");
+        int year = getArguments().getInt("year");
 
         localPlaylistName = "album/" + artist + "/" + title;
 
@@ -266,7 +280,7 @@ public class AlbumConfigurationFragment extends Fragment implements AlbumConfigu
             }
         };
 
-        intentFilter = new IntentFilter();
+        IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction("track_changed");
         intentFilter.addAction("playback_state_changed");
 
@@ -340,6 +354,11 @@ public class AlbumConfigurationFragment extends Fragment implements AlbumConfigu
     @Override
     public void setAlbumTracks(List<Track> tracks) {
 
+        // Loading text visibility
+        if (loadingView.getVisibility() == View.VISIBLE) {
+            loadingView.setVisibility(View.GONE);
+        }
+
         adapter = new TrackAdapter(getContext(), "album", localPlaylistName, tracks);
         recyclerView.setAdapter(adapter);
 
@@ -353,12 +372,12 @@ public class AlbumConfigurationFragment extends Fragment implements AlbumConfigu
 
     // Support methods
     // Track counter
-    public void checkTracksCount(){
+    private void checkTracksCount(){
         tracksCountView.setText(getString(R.string.tracks) + ": " + (adapter.getItemCount()));
     }
 
     // Load cover image
-    public void loadCover(){
+    private void loadCover(){
         int imageHeight;
 
         if (orientation == Configuration.ORIENTATION_PORTRAIT){

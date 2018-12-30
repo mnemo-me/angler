@@ -6,7 +6,7 @@ import com.mnemo.angler.ui.base.BaseView;
 
 import java.util.List;
 
-public interface ArtistTracksView extends BaseView {
+interface ArtistTracksView extends BaseView {
 
     void setArtistTracks(List<Track> tracks);
 }

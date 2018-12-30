@@ -132,7 +132,7 @@ public class AnglerDB{
                     deleteTracks(tracks, dbTracks);
                 })
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(() -> listener.libraryUpdated()));
+                        .subscribe(listener::libraryUpdated));
     }
 
     // Insert, Update, Delete track methods
@@ -143,17 +143,10 @@ public class AnglerDB{
 
                     if (track.getTitle() == null){
                         return false;
-                    }else if (track.getArtist() == null){
+                    }else if (track.getArtist() == null) {
                         return false;
-                    }else if (track.getAlbum() == null){
-                        return false;
-                    }else if (track.getDuration() == 0){
-                        return false;
-                    }else if (track.getUri() == null){
-                        return false;
-                    }
-
-                    return true;
+                    } else
+                        return track.getAlbum() != null && track.getDuration() != 0 && track.getUri() != null;
 
                 })
                 .filter(track -> !dbTracks.contains(track))
@@ -478,7 +471,7 @@ public class AnglerDB{
 
         Completable.fromAction(() -> db.linkDAO().deleteAllTracksFromPlaylist(playlist))
                 .subscribeOn(Schedulers.io())
-                .subscribe(() -> listener.playlistCleared());
+                .subscribe(listener::playlistCleared);
     }
 
     // Artists methods

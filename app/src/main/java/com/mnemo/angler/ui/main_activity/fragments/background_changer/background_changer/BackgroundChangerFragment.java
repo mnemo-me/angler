@@ -37,10 +37,10 @@ import butterknife.Unbinder;
 
 public class BackgroundChangerFragment extends Fragment implements DrawerItem, BackgroundChangerView {
 
-    BackgroundChangerPresenter presenter;
+    private BackgroundChangerPresenter presenter;
 
     // Bind views via ButterKnife
-    Unbinder unbinder;
+    private Unbinder unbinder;
 
     @BindView(R.id.overlay_background)
     ImageView background;
@@ -57,22 +57,20 @@ public class BackgroundChangerFragment extends Fragment implements DrawerItem, B
     @BindView(R.id.overlay_seekbar)
     SeekBar seekBar;
 
-    BackgroundImageAdapter backgroundImageAdapter;
+    private BackgroundImageAdapter backgroundImageAdapter;
 
     // Background variables
-    String backgroundImage;
-    String selectedImage;
-    String imageFolder;
-    int imageHeight;
-    int opacity;
+    private String backgroundImage;
+    private String selectedImage;
+    private String imageFolder;
+    private int imageHeight;
+    private int opacity;
 
-    Boolean isInteract = false;
-    Boolean isImageInteract = false;
+    private Boolean isInteract = false;
+    private Boolean isImageInteract = false;
 
     // CropIwa receiver
-    CropIwaResultReceiver resultReceiver;
-
-    int orientation;
+    private CropIwaResultReceiver resultReceiver;
 
     public BackgroundChangerFragment() {
         // Required empty public constructor
@@ -85,7 +83,7 @@ public class BackgroundChangerFragment extends Fragment implements DrawerItem, B
         View view = inflater.inflate(R.layout.bg_fragment_background_changer_v2, container, false);
 
         // Get orientation
-        orientation = getResources().getConfiguration().orientation;
+        int orientation = getResources().getConfiguration().orientation;
 
         // Get image height & folder based on orientation
         if (orientation == Configuration.ORIENTATION_PORTRAIT) {
@@ -321,7 +319,7 @@ public class BackgroundChangerFragment extends Fragment implements DrawerItem, B
 
 
     // Support methods
-    void showBackgroundImage(String image){
+    private void showBackgroundImage(String image){
 
         if (selectedImage.startsWith("R.drawable.")){
             ImageAssistant.loadImage(getContext(), image, background, imageHeight);
@@ -330,7 +328,7 @@ public class BackgroundChangerFragment extends Fragment implements DrawerItem, B
         }
     }
 
-    void selectEnable(Boolean isInteract){
+    private void selectEnable(Boolean isInteract){
         select.setEnabled(isInteract);
 
         if (isInteract){

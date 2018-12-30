@@ -10,7 +10,7 @@ import retrofit2.http.Query;
 import retrofit2.http.Streaming;
 import retrofit2.http.Url;
 
-public interface LastFMApiService {
+interface LastFMApiService {
 
 
     @GET("?method=album.getinfo")

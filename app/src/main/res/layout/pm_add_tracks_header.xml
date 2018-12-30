@@ -16,7 +16,7 @@
     <TextView
         android:id="@+id/add_tracks_count"
         style="@style/dialog_title"
-        android:layout_marginEnd="46dp"
+        android:layout_marginEnd="32dp"
         app:layout_constraintBottom_toTopOf="@id/add_tracks_upper_separator"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"

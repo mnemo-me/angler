@@ -3,6 +3,7 @@ package com.mnemo.angler.ui.local_load_activity.fragments.image_folder;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -12,18 +13,31 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.facebook.shimmer.ShimmerFrameLayout;
+import com.mnemo.angler.R;
 import com.mnemo.angler.ui.local_load_activity.adapters.ImageFolderAdapter;
 import com.mnemo.angler.ui.local_load_activity.misc.ImageDecoration;
-import com.mnemo.angler.ui.main_activity.activity.MainActivity;
 
 import java.util.ArrayList;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 
 public class ImageFolderFragment extends Fragment implements ImageFolderView{
 
-    ImageFolderPresenter presenter;
+    private ImageFolderPresenter presenter;
 
+    // Bind views via ButterKnife
+    private Unbinder unbinder;
+
+    @BindView(R.id.image_folder_list)
     RecyclerView recyclerView;
+
+    private ShimmerFrameLayout loadingView;
+
+    ImageFolderAdapter imageFolderAdapter;
 
     public ImageFolderFragment() {
         // Required empty public constructor
@@ -44,15 +58,28 @@ public class ImageFolderFragment extends Fragment implements ImageFolderView{
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.ll_fragment_image_folder, container, false);
 
         // Get orientation
         int orientation = getContext().getResources().getConfiguration().orientation;
 
-        // Setup RecyclerView
-        recyclerView = new RecyclerView(getContext());
-        recyclerView.setPadding(0, (int)(16 * MainActivity.density), 0, 0);
-        recyclerView.setClipToPadding(false);
+        // Inject views
+        unbinder = ButterKnife.bind(this, view);
 
+        // Loading view appear handler
+        loadingView = view.findViewById(R.id.image_folder_loading);
+
+        Handler handler = new Handler();
+        handler.postDelayed(() -> {
+
+            if (imageFolderAdapter == null){
+                loadingView.setVisibility(View.VISIBLE);
+            }
+
+        }, 1000);
+
+        // Setup RecyclerView
         recyclerView.setHasFixedSize(true);
         recyclerView.setItemViewCacheSize(20);
 
@@ -70,7 +97,7 @@ public class ImageFolderFragment extends Fragment implements ImageFolderView{
 
         recyclerView.addItemDecoration(new ImageDecoration(spanCount));
 
-        return recyclerView;
+        return view;
     }
 
     @Override
@@ -100,11 +127,23 @@ public class ImageFolderFragment extends Fragment implements ImageFolderView{
         presenter.deattachView();
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        unbinder.unbind();
+    }
+
     // MVP View methods
     @Override
     public void setImages(ArrayList<String> images) {
 
-        ImageFolderAdapter imageFolderAdapter = new ImageFolderAdapter(getContext(), images);
+        // Loading text visibility
+        if (loadingView.getVisibility() == View.VISIBLE) {
+            loadingView.setVisibility(View.GONE);
+        }
+
+        imageFolderAdapter = new ImageFolderAdapter(getContext(), images);
         recyclerView.setAdapter(imageFolderAdapter);
     }
 }

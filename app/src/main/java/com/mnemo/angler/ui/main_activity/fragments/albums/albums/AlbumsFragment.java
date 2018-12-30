@@ -3,6 +3,7 @@ package com.mnemo.angler.ui.main_activity.fragments.albums.albums;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -13,7 +14,9 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.mnemo.angler.data.database.Entities.Album;
 import com.mnemo.angler.data.file_storage.AnglerFolder;
 import com.mnemo.angler.ui.main_activity.adapters.AlbumAdapter;
@@ -38,17 +41,22 @@ public class AlbumsFragment extends Fragment implements DrawerItem, AlbumsView {
         // Required empty public constructor
     }
 
-    AlbumsPresenter presenter;
+    private AlbumsPresenter presenter;
 
     // Bind view via ButterKnife
-    Unbinder unbinder;
+    private Unbinder unbinder;
 
     @BindView(R.id.albums_list)
     RecyclerView recyclerView;
 
+    @BindView(R.id.albums_empty_text)
+    TextView emptyTextView;
+
+    private ShimmerFrameLayout loadingView;
+
     AlbumAdapter adapter;
 
-    int orientation;
+    private int orientation;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -61,6 +69,18 @@ public class AlbumsFragment extends Fragment implements DrawerItem, AlbumsView {
 
         // Inject views
         unbinder = ButterKnife.bind(this, view);
+
+        // Loading view appear handler
+        loadingView = view.findViewById(R.id.albums_loading);
+
+        Handler handler = new Handler();
+        handler.postDelayed(() -> {
+
+            if (adapter == null){
+                loadingView.setVisibility(View.VISIBLE);
+            }
+
+        }, 1000);
 
         // Setup recycler view
         recyclerView.setItemViewCacheSize(20);
@@ -115,6 +135,18 @@ public class AlbumsFragment extends Fragment implements DrawerItem, AlbumsView {
     // MVP View methods
     @Override
     public void setAlbums(List<Album> albums) {
+
+        // Empty text visibility
+        if (albums.size() == 0) {
+            emptyTextView.setVisibility(View.VISIBLE);
+        } else {
+            emptyTextView.setVisibility(View.GONE);
+        }
+
+        // Loading text visibility
+        if (loadingView.getVisibility() == View.VISIBLE) {
+            loadingView.setVisibility(View.GONE);
+        }
 
         int albumsInLine;
 

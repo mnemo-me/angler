@@ -8,18 +8,20 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.mnemo.angler.R;
 import com.mnemo.angler.data.database.Entities.Track;
 import com.mnemo.angler.ui.main_activity.activity.MainActivity;
@@ -35,24 +37,28 @@ import butterknife.Unbinder;
 public class MainPlaylistFragment extends Fragment implements MainPlaylistView{
 
 
-    MainPlaylistPresenter presenter;
+    private MainPlaylistPresenter presenter;
 
-    Unbinder unbinder;
+    private Unbinder unbinder;
 
-    @BindView(R.id.mp_list_refresh)
+    @BindView(R.id.mp_refreshable_track_list_refresh)
     SwipeRefreshLayout swipeRefreshLayout;
 
-    @BindView(R.id.mp_list_recycler_view)
+    @BindView(R.id.mp_refreshable_track_list_recycler_view)
     RecyclerView recyclerView;
 
-    TrackAdapter adapter;
+    @BindView(R.id.mp_refreshable_track_list_empty_text)
+    TextView emptyTextView;
 
-    BroadcastReceiver receiver;
-    IntentFilter intentFilter;
+    private ShimmerFrameLayout loadingView;
 
-    int orientation;
+    private TrackAdapter adapter;
 
-    String filter = "";
+    private BroadcastReceiver receiver;
+
+    private String filter = "";
+
+    private boolean isAppFirstLaunch;
 
     public MainPlaylistFragment() {
         // Required empty public constructor
@@ -62,13 +68,25 @@ public class MainPlaylistFragment extends Fragment implements MainPlaylistView{
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.mp_list, container, false);
+        View view = inflater.inflate(R.layout.mp_refreshable_track_list, container, false);
 
         // Get orientation
-        orientation = getResources().getConfiguration().orientation;
+        int orientation = getResources().getConfiguration().orientation;
 
         // Inject views
         unbinder = ButterKnife.bind(this, view);
+
+        // Loading view appear handler
+        loadingView = view.findViewById(R.id.mp_refreshable_track_list_loading);
+
+        Handler handler = new Handler();
+        handler.postDelayed(() -> {
+
+            if (adapter == null){
+                loadingView.setVisibility(View.VISIBLE);
+            }
+
+        }, 1000);
 
         // Get filter
         filter = ((MainActivity)getActivity()).getFilter();
@@ -96,6 +114,12 @@ public class MainPlaylistFragment extends Fragment implements MainPlaylistView{
         // Bind Presenter to View
         presenter = new MainPlaylistPresenter();
         presenter.attachView(this);
+
+        isAppFirstLaunch = presenter.checkAppFirstLaunchState();
+
+        if (isAppFirstLaunch){
+            loadingView.setVisibility(View.VISIBLE);
+        }
 
         // Load tracks
         presenter.loadPlaylist(((MainActivity) getActivity()).getMainPlaylistName());
@@ -162,7 +186,7 @@ public class MainPlaylistFragment extends Fragment implements MainPlaylistView{
             }
         };
 
-        intentFilter = new IntentFilter();
+        IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction("track_changed");
         intentFilter.addAction("playback_state_changed");
         intentFilter.addAction("filter_applied");
@@ -190,12 +214,33 @@ public class MainPlaylistFragment extends Fragment implements MainPlaylistView{
     @Override
     public void setTracks(List<Track> playlistTracks) {
 
-        adapter = new TrackAdapter(getContext(), "music_player", ((MainActivity)getActivity()).getMainPlaylistName(), playlistTracks);
-        recyclerView.setAdapter(adapter);
+        if (isAppFirstLaunch && playlistTracks.size() == 0) {
 
-        if (((MainActivity)getActivity()).getCurrentPlaylistName().equals(((MainActivity)getActivity()).getMainPlaylistName())) {
-            adapter.setTrack(((MainActivity) getActivity()).getCurrentMediaId());
-            adapter.setPlaybackState(((MainActivity) getActivity()).getPlaybackState());
+            isAppFirstLaunch = false;
+            presenter.saveAppFirstLaunchState(isAppFirstLaunch);
+
+        }else{
+
+            // Empty text visibility
+            if (playlistTracks.size() == 0) {
+                emptyTextView.setVisibility(View.VISIBLE);
+            } else {
+                emptyTextView.setVisibility(View.GONE);
+            }
+
+            // Loading text visibility
+            if (loadingView.getVisibility() == View.VISIBLE) {
+                loadingView.setVisibility(View.GONE);
+            }
+
+            adapter = new TrackAdapter(getContext(), "music_player", ((MainActivity) getActivity()).getMainPlaylistName(), playlistTracks);
+            recyclerView.setAdapter(adapter);
+
+            if (((MainActivity) getActivity()).getCurrentPlaylistName().equals(((MainActivity) getActivity()).getMainPlaylistName())) {
+                adapter.setTrack(((MainActivity) getActivity()).getCurrentMediaId());
+                adapter.setPlaybackState(((MainActivity) getActivity()).getPlaybackState());
+            }
+
         }
     }
 

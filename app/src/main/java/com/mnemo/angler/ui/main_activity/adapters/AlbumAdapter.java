@@ -18,7 +18,6 @@ import com.mnemo.angler.util.ImageAssistant;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.TreeSet;
 
@@ -95,7 +94,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder>{
     }
 
     abstract static class ViewHolder extends RecyclerView.ViewHolder{
-        public ViewHolder(View itemView) {
+        ViewHolder(View itemView) {
             super(itemView);
         }
     }
@@ -263,7 +262,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder>{
             this.artist = artist;
         }
 
-        public String getArtist() {
+        String getArtist() {
             return artist;
         }
     }
@@ -277,7 +276,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder>{
             this.albums = albums;
         }
 
-        public ArrayList<Album> getAlbums() {
+        ArrayList<Album> getAlbums() {
             return albums;
         }
     }

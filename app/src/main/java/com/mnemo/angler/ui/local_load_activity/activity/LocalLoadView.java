@@ -4,7 +4,7 @@ import com.mnemo.angler.ui.base.BaseView;
 
 import java.util.List;
 
-public interface LocalLoadView extends BaseView {
+interface LocalLoadView extends BaseView {
 
     void setImageFolders(List<String> imageFolders);
 }

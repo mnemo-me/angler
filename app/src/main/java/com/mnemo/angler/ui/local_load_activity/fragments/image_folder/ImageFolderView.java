@@ -5,7 +5,7 @@ import com.mnemo.angler.ui.base.BaseView;
 import java.util.ArrayList;
 
 
-public interface ImageFolderView extends BaseView {
+interface ImageFolderView extends BaseView {
 
     void setImages(ArrayList<String> images);
 }

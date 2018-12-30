@@ -19,12 +19,10 @@ import butterknife.Unbinder;
 
 public class ImageFragment extends Fragment {
 
-    Unbinder unbinder;
+    private Unbinder unbinder;
 
     @BindView(R.id.image_fragment_image)
     ImageView imageView;
-
-    String image;
 
     public ImageFragment() {
         // Required empty public constructor
@@ -53,7 +51,7 @@ public class ImageFragment extends Fragment {
         unbinder = ButterKnife.bind(this, view);
 
         // Get selected image from arguments
-        image = getArguments().getString("image");
+        String image = getArguments().getString("image");
 
         // Assign image to view
         imageView.setTransitionName(getResources().getString(R.string.local_load_image_transition) + getArguments().getInt("position"));

@@ -25,9 +25,9 @@ public class PortraitCropPresenter extends BasePresenter {
     }
 
     // Create new portrait background image file
-    Uri createNewBackgroundImageFile(String backgroundImageFileName, int orientation){
+    Uri createNewBackgroundImageFile(String backgroundImageFileName){
 
-        return repository.getImageUri(backgroundImageFileName, orientation);
+        return repository.getImageUri(backgroundImageFileName, android.content.res.Configuration.ORIENTATION_PORTRAIT);
     }
 
 }

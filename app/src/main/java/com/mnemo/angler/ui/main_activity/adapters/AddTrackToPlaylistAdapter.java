@@ -36,7 +36,7 @@ public class AddTrackToPlaylistAdapter extends RecyclerView.Adapter<AddTrackToPl
 
 
     static class ViewHolder extends RecyclerView.ViewHolder{
-        public ViewHolder(View itemView) {
+        ViewHolder(View itemView) {
             super(itemView);
         }
     }

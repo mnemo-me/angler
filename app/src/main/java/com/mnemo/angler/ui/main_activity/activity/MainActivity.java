@@ -59,8 +59,8 @@ import butterknife.OnClick;
 
 public class MainActivity extends AppCompatActivity implements MainActivityView {
 
-    MainActivityPresenter presenter;
-    AnglerClient anglerClient;
+    private MainActivityPresenter presenter;
+    private AnglerClient anglerClient;
 
     @BindView(R.id.drawer_layout)
     DrawerLayout drawer;
@@ -106,8 +106,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
     public static float density;
     private int orientation;
 
-    BroadcastReceiver receiver;
-    IntentFilter intentFilter;
+    private BroadcastReceiver receiver;
 
     private String mainPlaylistName = "library";
     private String currentPlaylistName = "";
@@ -231,7 +230,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
             }
         };
 
-        intentFilter = new IntentFilter();
+        IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction("seekbar_progress_changed");
         intentFilter.addAction("queue_error");
 
@@ -362,7 +361,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
             TextView artistView = findViewById(R.id.media_panel_artist);
             artistView.setText(artist);
 
-            durationView.setText(" / " + MediaAssistant.convertToTime(durationMS));
+            durationView.setText(" /" + MediaAssistant.convertToTime(durationMS));
         }
 
     }
@@ -476,7 +475,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
     }
 
     // Setup seekbar
-    void setupSeekBar(){
+    private void setupSeekBar(){
 
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override

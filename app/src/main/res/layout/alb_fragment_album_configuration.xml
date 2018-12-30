@@ -115,4 +115,23 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
 
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/album_conf_loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_marginBottom="210dp"
+        android:layout_gravity="center_horizontal"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:text="@string/loading"/>
+
+    </com.facebook.shimmer.ShimmerFrameLayout>
+
+
 </android.support.design.widget.CoordinatorLayout>

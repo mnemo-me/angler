@@ -21,7 +21,7 @@ import com.mnemo.angler.ui.main_activity.fragments.playlists.playlist_configurat
 public class PlaylistDeleteDialogFragment extends DialogFragment implements PlaylistDeleteView {
 
 
-    PlaylistDeletePresenter presenter;
+    private PlaylistDeletePresenter presenter;
 
     @Override
     @NonNull

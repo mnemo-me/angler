@@ -22,7 +22,6 @@
         tools:text="Juno Reactor" />
 
     <View
-        android:id="@+id/view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginEnd="12dp"

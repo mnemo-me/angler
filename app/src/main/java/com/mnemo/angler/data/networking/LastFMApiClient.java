@@ -16,7 +16,6 @@ import retrofit2.Retrofit;
 class LastFMApiClient {
 
     private static Retrofit retrofit = null;
-    private static int REQUEST_TIMEOUT = 60;
     private static OkHttpClient okHttpClient;
 
     // Get singleton retrofit client
@@ -40,6 +39,7 @@ class LastFMApiClient {
     // Initialize OkHttp client
     private static void initOkHttp(Context context){
 
+        int REQUEST_TIMEOUT = 60;
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .connectTimeout(REQUEST_TIMEOUT, TimeUnit.SECONDS)
                 .readTimeout(REQUEST_TIMEOUT, TimeUnit.SECONDS)

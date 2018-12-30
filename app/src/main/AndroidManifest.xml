@@ -36,7 +36,7 @@
             </intent-filter>
         </service>
 
-        <activity android:name=".ui.local_load_activity.activity.LocalLoadActivity"></activity>
+        <activity android:name=".ui.local_load_activity.activity.LocalLoadActivity"/>
     </application>
 
 </manifest>

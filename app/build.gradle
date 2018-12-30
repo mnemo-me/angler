@@ -7,7 +7,7 @@ repositories {
 
 android {
     compileSdkVersion 28
-    buildToolsVersion '27.0.3'
+    buildToolsVersion '28.0.3'
     defaultConfig {
         applicationId "com.mnemo.angler"
         minSdkVersion 26
@@ -76,5 +76,9 @@ dependencies {
     implementation "com.squareup.okhttp3:okhttp:3.7.0"
     implementation "com.squareup.okhttp3:okhttp-urlconnection:3.0.1"
     implementation "com.squareup.okhttp3:logging-interceptor:3.4.1"
+
+
+    // Shimmer
+    implementation 'com.facebook.shimmer:shimmer:0.3.0'
 
 }

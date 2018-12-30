@@ -69,6 +69,7 @@
     <TextView
         android:id="@+id/context_menu_play"
         style="@style/contextual_menu_item"
+        android:layout_marginTop="8dp"
         android:text="@string/context_menu_play" />
 
     <TextView

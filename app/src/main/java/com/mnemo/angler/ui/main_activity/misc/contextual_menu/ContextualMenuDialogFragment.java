@@ -35,9 +35,9 @@ import butterknife.Unbinder;
 
 public class ContextualMenuDialogFragment extends BottomSheetDialogFragment implements ContextualMenuView{
 
-    ContextualMenuPresenter presenter;
+    private ContextualMenuPresenter presenter;
 
-    Unbinder unbinder;
+    private Unbinder unbinder;
 
     @BindView(R.id.context_menu_title)
     TextView titleView;
@@ -57,11 +57,10 @@ public class ContextualMenuDialogFragment extends BottomSheetDialogFragment impl
     @BindView(R.id.context_menu_remove_from_playlist)
     TextView contextMenuRemoveFromPlaylist;
 
-    String type;
-    String playlist;
-    String albumCover;
-    Track track;
-    List<Track> tracks;
+    private String type;
+    private String playlist;
+    private Track track;
+    private List<Track> tracks;
 
     @NonNull
     @Override
@@ -94,7 +93,7 @@ public class ContextualMenuDialogFragment extends BottomSheetDialogFragment impl
         // Get variables
         type = getArguments().getString("type");
         playlist = getArguments().getString("playlist");
-        albumCover = getArguments().getString("album_cover");
+        String albumCover = getArguments().getString("album_cover");
         track = getArguments().getParcelable("track");
         tracks = getArguments().getParcelableArrayList("tracks");
 

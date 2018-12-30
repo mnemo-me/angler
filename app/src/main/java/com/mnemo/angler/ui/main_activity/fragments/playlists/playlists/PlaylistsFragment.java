@@ -3,6 +3,7 @@ package com.mnemo.angler.ui.main_activity.fragments.playlists.playlists;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -14,9 +15,10 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.mnemo.angler.data.database.Entities.Playlist;
-import com.mnemo.angler.ui.main_activity.activity.MainActivity;
 import com.mnemo.angler.ui.main_activity.adapters.PlaylistsAdapter;
 import com.mnemo.angler.R;
 import com.mnemo.angler.ui.main_activity.classes.DrawerItem;
@@ -33,10 +35,10 @@ import butterknife.Unbinder;
 
 public class PlaylistsFragment extends Fragment implements DrawerItem, PlaylistsView {
 
-    PlaylistsPresenter presenter;
+    private PlaylistsPresenter presenter;
 
     // Bind views with ButterKnife
-    Unbinder unbinder;
+    private Unbinder unbinder;
 
     @BindView(R.id.playlist_toolbar)
     Toolbar toolbar;
@@ -44,9 +46,12 @@ public class PlaylistsFragment extends Fragment implements DrawerItem, Playlists
     @BindView(R.id.playlist_grid)
     RecyclerView recyclerView;
 
-    PlaylistsAdapter adapter;
+    @BindView(R.id.playlist_empty_text)
+    TextView emptyTextView;
 
-    int orientation;
+    private ShimmerFrameLayout loadingView;
+
+    private PlaylistsAdapter adapter;
 
 
     public PlaylistsFragment() {
@@ -61,10 +66,22 @@ public class PlaylistsFragment extends Fragment implements DrawerItem, Playlists
         View view = inflater.inflate(R.layout.pm_fragment_playlists, container, false);
 
         // Get orientation
-        orientation = getResources().getConfiguration().orientation;
+        int orientation = getResources().getConfiguration().orientation;
 
         // Inject views
         unbinder = ButterKnife.bind(this, view);
+
+        // Loading view appear handler
+        loadingView = view.findViewById(R.id.playlist_loading);
+
+        Handler handler = new Handler();
+        handler.postDelayed(() -> {
+
+            if (adapter == null){
+                loadingView.setVisibility(View.VISIBLE);
+            }
+
+        }, 1000);
 
         // Setup recycler view
         recyclerView.setHasFixedSize(true);
@@ -140,6 +157,18 @@ public class PlaylistsFragment extends Fragment implements DrawerItem, Playlists
     // MVP View methods
     @Override
     public void setPlaylists(List<Playlist> playlists) {
+
+        // Empty text visibility
+        if (playlists.size() == 0) {
+            emptyTextView.setVisibility(View.VISIBLE);
+        } else {
+            emptyTextView.setVisibility(View.GONE);
+        }
+
+        // Loading text visibility
+        if (loadingView.getVisibility() == View.VISIBLE) {
+            loadingView.setVisibility(View.GONE);
+        }
 
         adapter = new PlaylistsAdapter(getContext(), playlists);
         adapter.setOnPlaylistClickListener((title, cover) -> {

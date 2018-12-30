@@ -6,7 +6,7 @@ import com.mnemo.angler.ui.base.BaseView;
 
 import java.util.HashMap;
 
-public interface AddTracksView extends BaseView{
+interface AddTracksView extends BaseView{
 
     void setTracks(HashMap<Track, Boolean> checkedTracks);
 }

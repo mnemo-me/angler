@@ -42,7 +42,7 @@ public class AnglerFileStorage {
     }
 
     public static final String PHONE_STORAGE = Environment.getExternalStorageDirectory().getPath();
-    public static final String TEMP_IMAGE_NAME = AnglerFolder.PATH_PLAYLIST_COVER + File.separator + "temp.jpg";
+    private static final String TEMP_IMAGE_NAME = AnglerFolder.PATH_PLAYLIST_COVER + File.separator + "temp.jpg";
 
     private Context context;
 
@@ -317,7 +317,7 @@ public class AnglerFileStorage {
     }
 
     // Get artist bio path
-    public String getArtistBioPath(String artist){
+    private String getArtistBioPath(String artist){
         return AnglerFolder.PATH_ARTIST_BIO + File.separator + artist + ".txt";
     }
 
@@ -419,7 +419,7 @@ public class AnglerFileStorage {
             }
         })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(() -> listener.onArtistImagesUpdated());
+                .subscribe(listener::onArtistImagesUpdated);
 
     }
 
@@ -479,7 +479,7 @@ public class AnglerFileStorage {
             BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
 
             while (bufferedReader.ready()){
-                builder.append("\n" + bufferedReader.readLine());
+                builder.append("\n").append(bufferedReader.readLine());
             }
             bufferedReader.close();
 

@@ -37,7 +37,7 @@ import butterknife.Unbinder;
 public class QueueDialogFragment extends BottomSheetDialogFragment {
 
 
-    Unbinder unbinder;
+    private Unbinder unbinder;
 
     @BindView(R.id.qu_count)
     TextView countView;
@@ -45,12 +45,11 @@ public class QueueDialogFragment extends BottomSheetDialogFragment {
     @BindView(R.id.qu_recycler_view)
     RecyclerView recyclerView;
 
-    QueueAdapter adapter;
+    private QueueAdapter adapter;
 
-    ArrayList<MediaSessionCompat.QueueItem> queue;
+    private ArrayList<MediaSessionCompat.QueueItem> queue;
 
-    BroadcastReceiver receiver;
-    IntentFilter intentFilter;
+    private BroadcastReceiver receiver;
 
     @NonNull
     @Override
@@ -185,7 +184,7 @@ public class QueueDialogFragment extends BottomSheetDialogFragment {
             }
         };
 
-        intentFilter = new IntentFilter();
+        IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction("queue_position_changed");
         intentFilter.addAction("playback_state_changed");
 
@@ -200,7 +199,7 @@ public class QueueDialogFragment extends BottomSheetDialogFragment {
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
 
         outState.putParcelableArrayList("queue", queue);

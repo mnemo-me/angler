@@ -4,6 +4,7 @@ package com.mnemo.angler.ui.main_activity.fragments.artists.artists;
 import android.content.res.Configuration;
 import android.os.Bundle;
 
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -16,8 +17,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.mnemo.angler.ui.main_activity.adapters.ArtistAdapter;
 import com.mnemo.angler.ui.main_activity.classes.DrawerItem;
 import com.mnemo.angler.R;
@@ -34,11 +37,11 @@ import butterknife.Unbinder;
 
 public class ArtistsFragment extends Fragment implements DrawerItem, ArtistsView {
 
-    ArtistsPresenter presenter;
+    private ArtistsPresenter presenter;
 
 
     // Bind views via ButterKnife
-    Unbinder unbinder;
+    private Unbinder unbinder;
 
     @BindView(R.id.artists_refresh_images)
     ImageButton refreshButton;
@@ -49,11 +52,14 @@ public class ArtistsFragment extends Fragment implements DrawerItem, ArtistsView
     @BindView(R.id.artists_grid)
     RecyclerView recyclerView;
 
-    ArtistAdapter adapter;
+    @BindView(R.id.artists_empty_text)
+    TextView emptyTextView;
 
-    int orientation;
+    private ShimmerFrameLayout loadingView;
 
-    boolean isRefreshing = false;
+    private ArtistAdapter adapter;
+
+    private boolean isRefreshing = false;
 
     public ArtistsFragment() {
         // Required empty public constructor
@@ -67,10 +73,22 @@ public class ArtistsFragment extends Fragment implements DrawerItem, ArtistsView
         View view = inflater.inflate(R.layout.art_fragment_artists, container, false);
 
         // Get orientation
-        orientation = getResources().getConfiguration().orientation;
+        int orientation = getResources().getConfiguration().orientation;
 
         // Inject views
         unbinder = ButterKnife.bind(this, view);
+
+        // Loading view appear handler
+        loadingView = view.findViewById(R.id.artists_loading);
+
+        Handler handler = new Handler();
+        handler.postDelayed(() -> {
+
+            if (adapter == null){
+                loadingView.setVisibility(View.VISIBLE);
+            }
+
+        }, 1000);
 
         // Restore refreshing state
         if (savedInstanceState != null){
@@ -161,6 +179,18 @@ public class ArtistsFragment extends Fragment implements DrawerItem, ArtistsView
     // MVP View methods
     @Override
     public void setArtists(List<String> artists) {
+
+        // Empty text visibility
+        if (artists.size() == 0) {
+            emptyTextView.setVisibility(View.VISIBLE);
+        } else {
+            emptyTextView.setVisibility(View.GONE);
+        }
+
+        // Loading text visibility
+        if (loadingView.getVisibility() == View.VISIBLE) {
+            loadingView.setVisibility(View.GONE);
+        }
 
         adapter = new ArtistAdapter(getContext(), artists);
 

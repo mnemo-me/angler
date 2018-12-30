@@ -5,7 +5,7 @@ import com.mnemo.angler.ui.base.BaseView;
 
 import java.util.List;
 
-public interface AnglerServiceView extends BaseView {
+interface AnglerServiceView extends BaseView {
 
     void setQueue(List<Track> tracks);
 

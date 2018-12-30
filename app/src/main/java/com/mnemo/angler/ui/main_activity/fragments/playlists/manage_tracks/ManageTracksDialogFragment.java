@@ -32,15 +32,14 @@ import java.util.List;
 
 public class ManageTracksDialogFragment extends DialogFragment implements ManageTracksView{
 
-    ManageTracksPresenter presenter;
+    private ManageTracksPresenter presenter;
 
-    RecyclerView recyclerView;
-    ManageableTrackAdapter adapter;
+    private RecyclerView recyclerView;
+    private ManageableTrackAdapter adapter;
 
-    TextView saveButton;
+    private TextView saveButton;
 
-    BroadcastReceiver receiver;
-    IntentFilter intentFilter;
+    private BroadcastReceiver receiver;
 
     @NonNull
     @Override
@@ -146,7 +145,7 @@ public class ManageTracksDialogFragment extends DialogFragment implements Manage
             }
         };
 
-        intentFilter = new IntentFilter();
+        IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction("playlist_cleared");
 
         getContext().registerReceiver(receiver, intentFilter);
@@ -155,7 +154,7 @@ public class ManageTracksDialogFragment extends DialogFragment implements Manage
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
 
         outState.putParcelableArrayList("tracks", (ArrayList<? extends Parcelable>) adapter.getTracks());

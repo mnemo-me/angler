@@ -41,10 +41,10 @@ import butterknife.Unbinder;
 public class ArtistConfigurationFragment extends Fragment implements ArtistConfigurationView {
 
 
-    ArtistConfigurationPresenter presenter;
+    private ArtistConfigurationPresenter presenter;
 
     // Bind views via ButterKnife
-    Unbinder unbinder;
+    private Unbinder unbinder;
 
     @BindView(R.id.artist_conf_cardview)
     CardView cardView;
@@ -89,12 +89,12 @@ public class ArtistConfigurationFragment extends Fragment implements ArtistConfi
     ImageButton back;
 
     // Artist variables
-    String image;
-    String artist;
-    String localPlaylistName;
+    private String image;
+    private String artist;
+    private String localPlaylistName;
 
     // Other variables;
-    int orientation;
+    private int orientation;
 
 
     public ArtistConfigurationFragment() {
@@ -285,7 +285,7 @@ public class ArtistConfigurationFragment extends Fragment implements ArtistConfi
     }
 
     // Support methods
-    void loadArtistImage(){
+    private void loadArtistImage(){
 
         int imageHeight;
 

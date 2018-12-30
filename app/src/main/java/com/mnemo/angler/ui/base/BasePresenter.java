@@ -16,7 +16,7 @@ public abstract class BasePresenter {
         baseView = null;
     }
 
-    public BaseView getView() {
+    protected BaseView getView() {
         return baseView;
     }
 }

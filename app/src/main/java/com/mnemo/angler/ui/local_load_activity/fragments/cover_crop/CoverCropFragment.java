@@ -26,14 +26,12 @@ import butterknife.Unbinder;
 
 public class CoverCropFragment extends Fragment implements CoverCropView{
 
-    CoverCropPresenter presenter;
+    private CoverCropPresenter presenter;
 
-    Unbinder unbinder;
+    private Unbinder unbinder;
 
     @BindView(R.id.fragment_playlist_image_crop_crop_iwa)
     CropIwaView cropIwaView;
-
-    String image;
 
     public CoverCropFragment() {
         // Required empty public constructor
@@ -50,7 +48,7 @@ public class CoverCropFragment extends Fragment implements CoverCropView{
         unbinder = ButterKnife.bind(this, view);
 
         // Get image and new image name from arguments
-        image = getArguments().getString("image");
+        String image = getArguments().getString("image");
 
         // Setup CropIwa
         cropIwaView.setImageUri(Uri.fromFile(new File(image)));
