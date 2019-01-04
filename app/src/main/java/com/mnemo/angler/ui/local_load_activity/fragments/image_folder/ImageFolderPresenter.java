@@ -19,8 +19,11 @@ public class ImageFolderPresenter extends BasePresenter {
     // Get folder images
     void getImages(String imageFolder){
 
-        if (getView() != null){
-            ((ImageFolderView)getView()).setImages(repository.getImages(imageFolder));
-        }
+        repository.getImages(imageFolder, images -> {
+
+            if (getView() != null){
+                ((ImageFolderView)getView()).setImages(images);
+            }
+        });
     }
 }

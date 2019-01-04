@@ -16,21 +16,29 @@ import com.mnemo.angler.ui.local_load_activity.fragments.image_carousel.ImageCar
 import com.mnemo.angler.util.ImageAssistant;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class ImageFolderAdapter extends RecyclerView.Adapter<ImageFolderAdapter.ViewHolder>{
 
     static class ViewHolder extends RecyclerView.ViewHolder{
 
+        @BindView(R.id.folder_image)
+        ImageView imageView;
+
         ViewHolder(View view){
             super(view);
+            ButterKnife.bind(this, view);
         }
     }
 
 
     private Context context;
-    private ArrayList<String> images;
+    private List<String> images;
 
-    public ImageFolderAdapter(Context context, ArrayList<String> images) {
+    public ImageFolderAdapter(Context context, List<String> images) {
         this.context = context;
         this.images = images;
     }
@@ -50,7 +58,7 @@ public class ImageFolderAdapter extends RecyclerView.Adapter<ImageFolderAdapter.
             ImageCarouselFragment imageCarouselFragment = new ImageCarouselFragment();
 
             Bundle args = new Bundle();
-            args.putStringArrayList("images",images);
+            args.putStringArrayList("images",new ArrayList<>(images));
             args.putString("image",image);
             args.putInt("position", viewHolder.getAdapterPosition());
             imageCarouselFragment.setArguments(args);
@@ -58,7 +66,7 @@ public class ImageFolderAdapter extends RecyclerView.Adapter<ImageFolderAdapter.
             imageCarouselFragment.setSharedElementEnterTransition(new Fade());
 
             ((AppCompatActivity)context).getSupportFragmentManager().beginTransaction()
-                    .addSharedElement(viewHolder.itemView, context.getResources().getString(R.string.local_load_image_transition) + viewHolder.getAdapterPosition())
+                    .addSharedElement(viewHolder.imageView, context.getResources().getString(R.string.local_load_image_transition) + viewHolder.getAdapterPosition())
                     .add(R.id.full_frame, imageCarouselFragment)
                     .addToBackStack(null)
                     .commit();
@@ -74,9 +82,9 @@ public class ImageFolderAdapter extends RecyclerView.Adapter<ImageFolderAdapter.
 
         String image = images.get(holder.getAdapterPosition());
 
-        holder.itemView.setTransitionName(context.getResources().getString(R.string.local_load_image_transition) + holder.getAdapterPosition());
+        holder.imageView.setTransitionName(context.getResources().getString(R.string.local_load_image_transition) + holder.getAdapterPosition());
 
-        ImageAssistant.loadImage(context, image, (ImageView)holder.itemView, 120);
+        ImageAssistant.loadImage(context, image, holder.imageView, 135);
 
     }
 

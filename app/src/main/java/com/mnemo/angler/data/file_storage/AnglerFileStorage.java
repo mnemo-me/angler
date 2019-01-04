@@ -1,6 +1,7 @@
 package com.mnemo.angler.data.file_storage;
 
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -31,14 +32,24 @@ import java.util.List;
 import javax.inject.Inject;
 
 import io.reactivex.Completable;
+import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 
 public class AnglerFileStorage {
 
     // Listener interfaces
+    public interface OnGatherBackgroundImagesListener{
+        void backgroundImagesGathered(List<String> images);
+    }
+
     public interface OnArtistImagesUpdateListener{
         void onArtistImagesUpdated();
+    }
+
+    public interface OnImageFolderLoadListener{
+        void onImageFolderLoaded(List<String> images);
     }
 
     public static final String PHONE_STORAGE = Environment.getExternalStorageDirectory().getPath();
@@ -250,33 +261,46 @@ public class AnglerFileStorage {
     }
 
     // Gather background images
-    public List<String> gatherBackgroundImages(){
+    @SuppressLint("CheckResult")
+    public void gatherBackgroundImages(OnGatherBackgroundImagesListener listener){
 
-        cleanImages();
+        Completable.fromAction(this::cleanImages)
+                .subscribeOn(Schedulers.io())
+                .subscribe(() -> {
 
-        String imageFolderPath = AnglerFolder.PATH_BACKGROUND_PORTRAIT;
+                    String imageFolderPath = AnglerFolder.PATH_BACKGROUND_PORTRAIT;
 
-        ArrayList<String> images = new ArrayList<>();
+                    File directory = new File(imageFolderPath);
+                    String[] files = directory.list();
 
-        File directory = new File(imageFolderPath);
-        String[] files = directory.list();
+                    Observable.fromArray(files)
+                            .filter(file -> {
 
-        for (String file : files) {
+                                File temp = new File(imageFolderPath + File.separator + file);
+                                String extension = MimeTypeMap.getFileExtensionFromUrl(Uri.fromFile(temp).toString());
+                                String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
 
-            File temp = new File(imageFolderPath + File.separator + file);
-            String extension = MimeTypeMap.getFileExtensionFromUrl(Uri.fromFile(temp).toString());
-            String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
+                                return mimeType != null && mimeType.contains("image/");
 
-            if (mimeType != null) {
-                if (mimeType.contains("image/")) {
-                    images.add(file);
-                }
-            }
-        }
+                            })
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .toList()
+                            .subscribe(images -> {
 
-        images.sort(Comparator.comparing(s -> - (new File(imageFolderPath + File.separator + s).lastModified())));
+                                images.sort(Comparator.comparing(s -> - (new File(imageFolderPath + File.separator + s).lastModified())));
 
-        return images;
+                                // Add default images to list
+                                images.add("R.drawable.back");
+                                images.add("R.drawable.back2");
+                                images.add("R.drawable.back3");
+                                images.add("R.drawable.back4");
+
+                                listener.backgroundImagesGathered(images);
+                            });
+
+                });
+
     }
 
 
@@ -408,6 +432,7 @@ public class AnglerFileStorage {
     }
 
     // Update artist images
+    @SuppressLint("CheckResult")
     public void updateArtistImages(HashMap<String, InputStream> artistImages, OnArtistImagesUpdateListener listener){
 
         Completable.fromAction(() -> {
@@ -534,29 +559,33 @@ public class AnglerFileStorage {
     }
 
     // Get list of images in selected folder
-    public ArrayList<String> getImages(String imageFolder) {
-
-        ArrayList<String> images = new ArrayList<>();
+    @SuppressLint("CheckResult")
+    public void getImages(String imageFolder, OnImageFolderLoadListener listener) {
 
         File directory = new File(imageFolder);
         String[] files = directory.list();
 
-        for (String file : files) {
+        Observable.fromArray(files)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .filter(file -> {
 
-            File temp = new File(imageFolder + File.separator + file);
-            String extension = MimeTypeMap.getFileExtensionFromUrl(Uri.fromFile(temp).toString());
-            String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
+                    File temp = new File(imageFolder + File.separator + file);
+                    String extension = MimeTypeMap.getFileExtensionFromUrl(Uri.fromFile(temp).toString());
+                    String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
 
-            if (mimeType != null) {
-                if (mimeType.contains("image/")) {
-                    images.add(imageFolder + File.separator + file);
-                }
-            }
-        }
+                    return mimeType != null && mimeType.contains("image/");
 
-        images.sort(Comparator.comparing(s -> - (new File(s).lastModified())));
+                })
+                .map(file -> imageFolder + File.separator + file)
+                .toList()
+                .subscribe(images -> {
 
-        return images;
+                    images.sort(Comparator.comparing(s -> - (new File(s).lastModified())));
+                    listener.onImageFolderLoaded(images);
+                });
+
+
     }
 
 

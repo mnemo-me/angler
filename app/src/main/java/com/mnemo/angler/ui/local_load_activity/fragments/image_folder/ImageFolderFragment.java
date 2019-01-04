@@ -19,6 +19,7 @@ import com.mnemo.angler.ui.local_load_activity.adapters.ImageFolderAdapter;
 import com.mnemo.angler.ui.local_load_activity.misc.ImageDecoration;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -136,7 +137,7 @@ public class ImageFolderFragment extends Fragment implements ImageFolderView{
 
     // MVP View methods
     @Override
-    public void setImages(ArrayList<String> images) {
+    public void setImages(List<String> images) {
 
         // Loading text visibility
         if (loadingView.getVisibility() == View.VISIBLE) {

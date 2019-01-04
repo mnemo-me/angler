@@ -1,6 +1,7 @@
 package com.mnemo.angler.data;
 
 
+import android.annotation.SuppressLint;
 import android.net.Uri;
 
 import com.mnemo.angler.AnglerApp;
@@ -31,10 +32,6 @@ public class AnglerRepository {
         void onAppInitialized(List<Track> tracks);
     }
 
-    public interface OnGatherBackgroundImagesListener{
-        void backgroundImagesGathered(List<String> images);
-    }
-
     @Inject
     AnglerDB anglerDB;
 
@@ -49,6 +46,7 @@ public class AnglerRepository {
 
     private OnAppInitializationListener onAppInitializationListener;
 
+    @SuppressLint("CheckResult")
     @Inject
     public AnglerRepository() {
 
@@ -380,20 +378,9 @@ public class AnglerRepository {
         return  anglerFileStorage.getTempImageName();
     }
 
-    public void gatherBackgroundImages(OnGatherBackgroundImagesListener listener){
+    public void gatherBackgroundImages(AnglerFileStorage.OnGatherBackgroundImagesListener listener){
 
-        // Create list of images
-
-        // Add background images from file storage
-        List<String> images = new ArrayList<>(anglerFileStorage.gatherBackgroundImages());
-
-        // Add default images to list
-        images.add("R.drawable.back");
-        images.add("R.drawable.back2");
-        images.add("R.drawable.back3");
-        images.add("R.drawable.back4");
-
-        listener.backgroundImagesGathered(images);
+        anglerFileStorage.gatherBackgroundImages(listener);
     }
 
     public void deleteBackgroundImage(String image){
@@ -416,8 +403,8 @@ public class AnglerRepository {
         return anglerFileStorage.gatherImageFolders(AnglerFileStorage.PHONE_STORAGE);
     }
 
-    public ArrayList<String> getImages(String imageFolder){
-        return anglerFileStorage.getImages(imageFolder);
+    public void getImages(String imageFolder, AnglerFileStorage.OnImageFolderLoadListener listener){
+        anglerFileStorage.getImages(imageFolder, listener);
     }
 
     public String generateNewBackgroundImageName(String image){
