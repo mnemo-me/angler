@@ -10,8 +10,10 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.RemoteException;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaControllerCompat;
@@ -115,13 +117,9 @@ public class AnglerNotificationManager {
         /*
         Creating new Notification Channel
          */
-        createNotificationChannel();
-
-        /*
-        Get Remote View for Notification
-        It allows use custom layouts for Notification instead default ones
-         */
-        //notificationView = new RemoteViews(anglerService.getPackageName(), R.layout.notification_layout);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            createNotificationChannel();
+        }
 
     }
 
@@ -186,15 +184,18 @@ public class AnglerNotificationManager {
     Creating Notification Channel
     Necessary to API >=26
      */
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void createNotificationChannel(){
 
         NotificationManager mNotificationManager = (NotificationManager) anglerService.getSystemService(NOTIFICATION_SERVICE);
         CharSequence name = "angler_service";
         String description = "some media lives here";
         int importance = NotificationManager.IMPORTANCE_LOW;
+
         NotificationChannel mNotificationChannel = new NotificationChannel(channelId, name, importance);
         mNotificationChannel.setDescription(description);
         mNotificationManager.createNotificationChannel(mNotificationChannel);
+
     }
 
 

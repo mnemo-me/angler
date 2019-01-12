@@ -44,7 +44,7 @@ public class AnglerPreferences {
     }
 
     public String getBackgroundImage(){
-        return appPreferences.getString("background", "R.drawable.back");
+        return appPreferences.getString("background", "R.drawable.back1");
     }
 
     public void setBackgroundOpacity(int opacity){

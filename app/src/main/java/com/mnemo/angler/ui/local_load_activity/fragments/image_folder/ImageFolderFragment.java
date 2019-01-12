@@ -18,7 +18,6 @@ import com.mnemo.angler.R;
 import com.mnemo.angler.ui.local_load_activity.adapters.ImageFolderAdapter;
 import com.mnemo.angler.ui.local_load_activity.misc.ImageDecoration;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;

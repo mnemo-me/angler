@@ -4,8 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="60dp"
-    android:orientation="horizontal">
+    android:layout_height="60dp">
 
     <TextView
         android:id="@+id/creation_playlist_dialog_title"
@@ -17,7 +16,7 @@
         android:id="@+id/creation_playlist_dialog_delete_button"
         style="@style/button"
         android:contentDescription="@string/delete_playlist"
-        android:src="@drawable/ic_delete_black_24dp"
+        android:src="@drawable/rec"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

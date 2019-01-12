@@ -46,9 +46,9 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder>{
         void onAlbumLongClick(String artist, String album, int year);
     }
 
-    public AlbumAdapter(Context context, List<Album> albums, int albumsInLine) {
+    public AlbumAdapter(Context context, List<Album> albums) {
         this.context = context;
-        this.albumsInLine = albumsInLine;
+        this.albumsInLine = context.getResources().getInteger(R.integer.playlist_column_count);
 
         // Get artists
         TreeSet<String> artists = new TreeSet<>();

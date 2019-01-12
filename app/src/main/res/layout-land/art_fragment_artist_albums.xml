@@ -8,7 +8,13 @@
         android:id="@+id/artist_albums_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:clipToPadding="false"/>
+        android:paddingStart="4dp"
+        android:paddingTop="16dp"
+        android:paddingEnd="4dp"
+        android:paddingBottom="8dp"
+        android:clipToPadding="false"
+        app:layoutManager="android.support.v7.widget.GridLayoutManager"
+        app:spanCount="3"/>
 
     <com.facebook.shimmer.ShimmerFrameLayout
         android:id="@+id/artist_albums_loading"

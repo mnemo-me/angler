@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.webkit.MimeTypeMap;
 
@@ -25,6 +26,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -136,7 +138,11 @@ public class AnglerFileStorage {
                         int year;
 
                         if (yearString != null) {
-                            year = Integer.parseInt(yearString);
+                            try {
+                                year = Integer.parseInt(yearString);
+                            }catch (NumberFormatException e){
+                                year = 10000;
+                            }
                         }else{
                             year = 10000;
                         }
@@ -288,10 +294,15 @@ public class AnglerFileStorage {
                             .toList()
                             .subscribe(images -> {
 
-                                images.sort(Comparator.comparing(s -> - (new File(imageFolderPath + File.separator + s).lastModified())));
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                    images.sort(Comparator.comparing(s -> - (new File(imageFolderPath + File.separator + s).lastModified())));
+                                }else{
+                                    Collections.sort(images, (image1, image2) -> Long.compare(new File(imageFolderPath + File.separator + image2).lastModified(),
+                                    new File(imageFolderPath + File.separator + image1).lastModified()));
+                                }
 
                                 // Add default images to list
-                                images.add("R.drawable.back");
+                                images.add("R.drawable.back1");
                                 images.add("R.drawable.back2");
                                 images.add("R.drawable.back3");
                                 images.add("R.drawable.back4");
@@ -553,7 +564,11 @@ public class AnglerFileStorage {
             }
         }
 
-        imageFolders.sort(Comparator.comparing(s -> new File(s).getName()));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            imageFolders.sort(Comparator.comparing(s -> new File(s).getName()));
+        }else{
+            Collections.sort(imageFolders, (imageFolder1, imageFolder2) -> new File(imageFolder1).getName().compareTo(new File(imageFolder2).getName()));
+        }
 
         return imageFolders;
     }
@@ -581,7 +596,12 @@ public class AnglerFileStorage {
                 .toList()
                 .subscribe(images -> {
 
-                    images.sort(Comparator.comparing(s -> - (new File(s).lastModified())));
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        images.sort(Comparator.comparing(s -> - (new File(s).lastModified())));
+                    }else{
+                        Collections.sort(images, (image1, image2) -> Long.compare(new File(image2).lastModified(), new File(image1).lastModified()));
+                    }
+
                     listener.onImageFolderLoaded(images);
                 });
 

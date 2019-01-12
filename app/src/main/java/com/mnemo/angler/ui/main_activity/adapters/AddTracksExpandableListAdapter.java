@@ -2,6 +2,7 @@ package com.mnemo.angler.ui.main_activity.adapters;
 
 
 import android.content.Context;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -98,7 +99,12 @@ public class AddTracksExpandableListAdapter extends BaseExpandableListAdapter{
                 artistTracks.add(track);
             }
         }
-        artistTracks.sort(Comparator.comparing(Track::getTitle));
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            artistTracks.sort(Comparator.comparing(Track::getTitle));
+        }else{
+            Collections.sort(artistTracks, (track1, track2) -> track1.getTitle().compareTo(track2.getTitle()));
+        }
 
         return artistTracks.get(i1);
     }

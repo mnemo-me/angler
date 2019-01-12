@@ -25,8 +25,6 @@ public class ImageDecoration extends RecyclerView.ItemDecoration {
             outRect.top = (int)(3 * MainActivity.density);
         }
 
-        if ((itemPosition + 1) % spanCount != 0){
-            outRect.right = (int)(3 * MainActivity.density);
-        }
+        outRect.right = (int)(3 * MainActivity.density);
     }
 }

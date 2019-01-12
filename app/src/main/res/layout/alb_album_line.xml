@@ -3,19 +3,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="180dp"
+    android:layout_height="wrap_content"
     android:paddingBottom="4dp"
-    android:paddingEnd="4dp"
-    android:paddingStart="4dp"
+    android:paddingEnd="8dp"
+    android:paddingStart="8dp"
     android:paddingTop="2dp">
 
 
     <android.support.v7.widget.CardView
         android:id="@+id/album_line_album_one"
-        android:layout_width="125dp"
-        android:layout_height="125dp"
-        app:cardCornerRadius="2dp"
-        app:cardElevation="2dp"
+        style="@style/cover_card"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/album_line_album_two">
 
@@ -48,10 +45,7 @@
 
     <android.support.v7.widget.CardView
         android:id="@+id/album_line_album_two"
-        android:layout_width="125dp"
-        android:layout_height="125dp"
-        app:cardCornerRadius="2dp"
-        app:cardElevation="2dp"
+        style="@style/cover_card"
         app:layout_constraintStart_toEndOf="@id/album_line_album_one"
         app:layout_constraintEnd_toStartOf="@id/album_line_album_three">
 
@@ -84,10 +78,7 @@
 
     <android.support.v7.widget.CardView
         android:id="@+id/album_line_album_three"
-        android:layout_width="125dp"
-        android:layout_height="125dp"
-        app:cardCornerRadius="2dp"
-        app:cardElevation="2dp"
+        style="@style/cover_card"
         app:layout_constraintStart_toEndOf="@id/album_line_album_two"
         app:layout_constraintEnd_toEndOf="parent">
 

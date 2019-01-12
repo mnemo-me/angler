@@ -1,7 +1,6 @@
 package com.mnemo.angler.ui.main_activity.fragments.artists.artists;
 
 
-import android.content.res.Configuration;
 import android.os.Bundle;
 
 import android.os.Handler;
@@ -9,7 +8,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -72,9 +70,6 @@ public class ArtistsFragment extends Fragment implements DrawerItem, ArtistsView
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.art_fragment_artists, container, false);
 
-        // Get orientation
-        int orientation = getResources().getConfiguration().orientation;
-
         // Inject views
         unbinder = ButterKnife.bind(this, view);
 
@@ -103,16 +98,6 @@ public class ArtistsFragment extends Fragment implements DrawerItem, ArtistsView
         // Setup recycler view
         recyclerView.setHasFixedSize(true);
         recyclerView.setItemViewCacheSize(20);
-
-        GridLayoutManager gridLayoutManager;
-
-        if (orientation == Configuration.ORIENTATION_PORTRAIT){
-            gridLayoutManager = new GridLayoutManager(getContext(), 2);
-        }else{
-            gridLayoutManager = new GridLayoutManager(getContext(), 3);
-        }
-
-        recyclerView.setLayoutManager(gridLayoutManager);
 
         return view;
     }

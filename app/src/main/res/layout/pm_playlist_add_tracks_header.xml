@@ -9,11 +9,13 @@
 
     <Button
         android:id="@+id/add_tracks"
-        android:layout_width="172dp"
+        android:layout_width="0dp"
         android:layout_height="36dp"
         android:background="@drawable/white_frame"
         android:paddingEnd="@dimen/default_margin"
         android:paddingStart="@dimen/default_margin"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="10dp"
         android:text="@string/add_tracks_to_playlist"
         android:textColor="@color/white"
         app:layout_constraintEnd_toStartOf="@id/manage_tracks"
@@ -21,11 +23,13 @@
 
     <Button
         android:id="@+id/manage_tracks"
-        android:layout_width="172dp"
+        android:layout_width="0dp"
         android:layout_height="36dp"
         android:background="@drawable/white_frame"
         android:paddingEnd="@dimen/default_margin"
         android:paddingStart="@dimen/default_margin"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="24dp"
         android:text="@string/manage_tracks"
         android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"

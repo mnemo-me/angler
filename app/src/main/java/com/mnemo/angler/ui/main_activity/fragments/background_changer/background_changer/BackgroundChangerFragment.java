@@ -295,9 +295,9 @@ public class BackgroundChangerFragment extends Fragment implements DrawerItem, B
             if (image.equals(backgroundImage)){
 
                 if (selectedImage.equals(backgroundImage)){
-                    selectedImage = "R.drawable.back";
+                    selectedImage = "R.drawable.back1";
                 }
-                backgroundImage = "R.drawable.back";
+                backgroundImage = "R.drawable.back1";
 
                 presenter.saveBackground(backgroundImage, presenter.getCurrentOpacity());
                 showBackgroundImage(backgroundImage);

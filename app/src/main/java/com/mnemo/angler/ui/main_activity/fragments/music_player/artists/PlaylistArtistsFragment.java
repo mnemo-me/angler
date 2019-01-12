@@ -106,6 +106,19 @@ public class PlaylistArtistsFragment extends Fragment implements PlaylistArtists
         // Set empty text
         emptyTextView.setText(R.string.no_artists);
 
+        // Pass to artist tracks fragment
+        if (getArguments() != null) {
+
+            String passArtist = getArguments().getString("artist");
+
+            if (passArtist != null) {
+
+                setArguments(null);
+
+                openArtistTracks(passArtist);
+            }
+        }
+
         return view;
     }
 
@@ -214,13 +227,13 @@ public class PlaylistArtistsFragment extends Fragment implements PlaylistArtists
 
         if (orientation == Configuration.ORIENTATION_PORTRAIT) {
 
-            getParentFragment().getChildFragmentManager().beginTransaction()
+            getActivity().getSupportFragmentManager().beginTransaction()
                     .replace(R.id.song_list, playlistArtistTracksFragment, "artist_track_fragment")
                     .addToBackStack(null)
                     .commit();
         }else{
 
-            getParentFragment().getChildFragmentManager().beginTransaction()
+            getActivity().getSupportFragmentManager().beginTransaction()
                     .replace(R.id.artist_song_list, playlistArtistTracksFragment, "artist_track_fragment")
                     .commit();
         }

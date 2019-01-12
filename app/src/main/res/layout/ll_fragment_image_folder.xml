@@ -8,6 +8,7 @@
         android:id="@+id/image_folder_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginRight="-3dp"
         android:paddingTop="@dimen/default_margin"
         android:clipToPadding="false"/>
 

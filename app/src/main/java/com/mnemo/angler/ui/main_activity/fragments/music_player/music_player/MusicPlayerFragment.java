@@ -23,6 +23,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 
+import android.widget.FrameLayout;
 import android.widget.Spinner;
 
 import com.jakewharton.rxbinding2.widget.RxTextView;
@@ -39,6 +40,7 @@ import java.util.concurrent.TimeUnit;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.Optional;
 import butterknife.Unbinder;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -55,6 +57,7 @@ public class MusicPlayerFragment extends Fragment implements MusicPlayerView {
     @BindView(R.id.main_fragment_playlist_spinner)
     Spinner spinner;
 
+    @Nullable
     @BindView(R.id.search)
     View search;
 
@@ -67,6 +70,9 @@ public class MusicPlayerFragment extends Fragment implements MusicPlayerView {
     @BindView(R.id.artists)
     View artists;
 
+    @BindView(R.id.song_list)
+    FrameLayout songList;
+
     @Nullable
     @BindView(R.id.artist_track_separator)
     View separator;
@@ -77,6 +83,7 @@ public class MusicPlayerFragment extends Fragment implements MusicPlayerView {
 
     private int orientation;
     private boolean isSpinnerInitialized = false;
+    private boolean isSearchBarOpen = false;
     private String fragmentOnTop = "";
     private String artistSelected;
 
@@ -170,7 +177,7 @@ public class MusicPlayerFragment extends Fragment implements MusicPlayerView {
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt("search_toolbar_visibility", searchView.getVisibility());
+        outState.putBoolean("search_toolbar_visibility", isSearchBarOpen);
         outState.putString("fragment_on_top", fragmentOnTop);
         outState.putString("artist_selected", artistSelected);
     }
@@ -210,16 +217,16 @@ public class MusicPlayerFragment extends Fragment implements MusicPlayerView {
         if (orientation == Configuration.ORIENTATION_LANDSCAPE){
 
             // remove artists or artist tracks fragments
-            FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+            FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
 
-            Fragment artistsFragment = getChildFragmentManager().findFragmentById(R.id.artist_list);
+            Fragment artistsFragment = getActivity().getSupportFragmentManager().findFragmentById(R.id.artist_list);
 
             if (artistsFragment != null) {
                 transaction.remove(artistsFragment);
             }
 
 
-            Fragment artistTrackFragment = getChildFragmentManager().findFragmentById(R.id.artist_song_list);
+            Fragment artistTrackFragment = getActivity().getSupportFragmentManager().findFragmentById(R.id.artist_song_list);
 
             if (artistTrackFragment != null){
                 transaction.remove(artistTrackFragment);
@@ -232,7 +239,7 @@ public class MusicPlayerFragment extends Fragment implements MusicPlayerView {
         }
 
         // open playlist fragment
-        getChildFragmentManager().beginTransaction()
+        getActivity().getSupportFragmentManager().beginTransaction()
                 .replace(R.id.song_list,new MainPlaylistFragment())
                 .commit();
 
@@ -249,42 +256,37 @@ public class MusicPlayerFragment extends Fragment implements MusicPlayerView {
 
         if (orientation == Configuration.ORIENTATION_PORTRAIT) {
 
-            // Open artists or artist tracks fragment
-            if (artistSelected != null) {
+            // Open artists fragment
+            PlaylistArtistsFragment playlistArtistsFragment = new PlaylistArtistsFragment();
 
-                PlaylistArtistTracksFragment playlistArtistTracksFragment = new PlaylistArtistTracksFragment();
+            Bundle args = new Bundle();
+            args.putString("artist", artistSelected);
 
-                Bundle args = new Bundle();
-                args.putString("artist", artistSelected);
+            playlistArtistsFragment.setArguments(args);
 
-                playlistArtistTracksFragment.setArguments(args);
-
-                getChildFragmentManager().beginTransaction()
-                    .replace(R.id.song_list, playlistArtistTracksFragment, "artist_track_fragment")
+            getActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.song_list, playlistArtistsFragment, "artists_fragment")
                     .commit();
-            }else {
 
-                getChildFragmentManager().beginTransaction()
-                        .replace(R.id.song_list, new PlaylistArtistsFragment(), "artists_fragment")
-                        .commit();
-            }
         }else{
 
             // Remove playlist fragment
-            Fragment playlistFragment = getChildFragmentManager().findFragmentById(R.id.song_list);
+            Fragment playlistFragment = getActivity().getSupportFragmentManager().findFragmentById(R.id.song_list);
 
-            FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+            FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
 
             if (playlistFragment != null){
                 transaction.remove(playlistFragment);
             }
 
             // Remove artist track fragment
-            Fragment artistTrackFragment = getChildFragmentManager().findFragmentById(R.id.artist_song_list);
+            Fragment artistTrackFragment = getActivity().getSupportFragmentManager().findFragmentById(R.id.artist_song_list);
 
             if (artistTrackFragment != null){
                 transaction.remove(artistTrackFragment);
             }
+
+
 
             // Open artists fragment
             transaction.replace(R.id.artist_list, new PlaylistArtistsFragment(), "artists_fragment");
@@ -303,7 +305,7 @@ public class MusicPlayerFragment extends Fragment implements MusicPlayerView {
 
                 playlistArtistTracksFragment.setArguments(args);
 
-                getChildFragmentManager().beginTransaction()
+                getActivity().getSupportFragmentManager().beginTransaction()
                     .replace(R.id.artist_song_list, playlistArtistTracksFragment, "artist_track_fragment")
                     .commit();
             }
@@ -335,6 +337,29 @@ public class MusicPlayerFragment extends Fragment implements MusicPlayerView {
         ((DrawerLayout) getActivity().findViewById(R.id.drawer_layout)).openDrawer(Gravity.START);
     }
 
+    @Optional
+    @OnClick(R.id.search)
+    void openSearch(){
+
+        if (searchView.getTranslationY() == 0) {
+
+            showSearchToolbar();
+
+            searchView.requestFocus();
+
+        }else{
+            if (searchView.getQuery().length() > 0) {
+                searchView.setQuery("", false);
+            }
+
+            hideSearchToolbar();
+
+            searchView.findViewById(android.support.v7.appcompat.R.id.search_close_btn).setVisibility(View.GONE);
+
+            searchView.clearFocus();
+        }
+    }
+
 
     // Configure search toolbar
     private void configureSearchToolbar(){
@@ -345,6 +370,17 @@ public class MusicPlayerFragment extends Fragment implements MusicPlayerView {
         // Change text color in EditText programmatically
         editText.setHintTextColor(getResources().getColor(R.color.gGrey));
         editText.setTextColor(getResources().getColor(android.R.color.black));
+
+        searchView.setOnQueryTextFocusChangeListener((v, hasFocus) -> {
+
+            InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+
+            if (hasFocus) {
+                inputMethodManager.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT);
+            }else{
+                inputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
+            }
+        });
 
         searchView.setIconified(false);
         searchView.clearFocus();
@@ -357,34 +393,6 @@ public class MusicPlayerFragment extends Fragment implements MusicPlayerView {
 
             return false;
         });
-
-        // Set listener
-        search.setOnClickListener(view -> {
-
-            if (searchView.getVisibility() == View.GONE) {
-
-                search.setAlpha(1f);
-                searchView.setVisibility(View.VISIBLE);
-
-                // Show soft keyboard on searchview open
-                if (searchView.requestFocus()){
-
-                    InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                    inputMethodManager.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT);
-                }
-
-            }else{
-                if (searchView.getQuery().length() > 0) {
-                    searchView.setQuery("", false);
-                }
-
-                search.setAlpha(0.5f);
-                searchView.setVisibility(View.GONE);
-                searchView.findViewById(android.support.v7.appcompat.R.id.search_close_btn).setVisibility(View.GONE);
-            }
-
-        });
-
 
         // Create observer on after text changes events
         Observer<TextViewAfterTextChangeEvent> observer = new Observer<TextViewAfterTextChangeEvent>() {
@@ -437,15 +445,41 @@ public class MusicPlayerFragment extends Fragment implements MusicPlayerView {
     private void restoreSearchBarVisibility(Bundle savedInstanceState){
 
         if (savedInstanceState != null){
-            int searchToolbarVisibility = savedInstanceState.getInt("search_toolbar_visibility");
+            isSearchBarOpen = savedInstanceState.getBoolean("search_toolbar_visibility");
 
-            if (searchToolbarVisibility == View.VISIBLE) {
-                search.setAlpha(1f);
-                searchView.setVisibility(searchToolbarVisibility);
-
+            if (isSearchBarOpen) {
+                showSearchToolbar();
             }
         }
     }
+
+    // Show/hide search toolbar
+    private void showSearchToolbar(){
+
+        if (orientation == Configuration.ORIENTATION_PORTRAIT){
+
+            isSearchBarOpen = true;
+
+            search.setAlpha(1f);
+
+            searchView.animate().translationY(searchView.getHeight());
+            songList.animate().translationY(searchView.getHeight());
+        }
+    }
+
+    private void hideSearchToolbar(){
+
+        isSearchBarOpen = false;
+
+        if (orientation == Configuration.ORIENTATION_PORTRAIT){
+
+            search.setAlpha(0.5f);
+
+            searchView.animate().translationY(0);
+            songList.animate().translationY(0);
+        }
+    }
+
 
     public String getArtistSelected() {
         return artistSelected;

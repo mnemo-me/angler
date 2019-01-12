@@ -207,7 +207,7 @@ public class BackgroundImageAdapter extends RecyclerView.Adapter<BackgroundImage
 
     // Set default background (when current background deleted)
     public void setDefaultBackground(){
-        currentBackground = "R.drawable.back";
+        currentBackground = "R.drawable.back1";
         notifyItemChanged(images.indexOf(currentBackground));
     }
 

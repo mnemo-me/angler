@@ -1,7 +1,6 @@
 package com.mnemo.angler.ui.main_activity.fragments.albums.albums;
 
 
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -56,16 +55,11 @@ public class AlbumsFragment extends Fragment implements DrawerItem, AlbumsView {
 
     AlbumAdapter adapter;
 
-    private int orientation;
-
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.alb_fragment_albums, container, false);
-
-        // Get orientation
-        orientation = getResources().getConfiguration().orientation;
 
         // Inject views
         unbinder = ButterKnife.bind(this, view);
@@ -148,15 +142,8 @@ public class AlbumsFragment extends Fragment implements DrawerItem, AlbumsView {
             loadingView.setVisibility(View.GONE);
         }
 
-        int albumsInLine;
 
-        if (orientation == Configuration.ORIENTATION_PORTRAIT){
-            albumsInLine = 3;
-        }else{
-            albumsInLine = 5;
-        }
-
-        adapter = new AlbumAdapter(getContext(), albums, albumsInLine);
+        adapter = new AlbumAdapter(getContext(), albums);
 
         adapter.setOnAlbumClickListener((artist, album, year) -> {
 

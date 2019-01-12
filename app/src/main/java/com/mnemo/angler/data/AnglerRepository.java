@@ -198,7 +198,7 @@ public class AnglerRepository {
 
         if (!backgroundImage.startsWith("R.drawable.")) {
             if (!anglerFileStorage.isFileExist(AnglerFolder.PATH_BACKGROUND_PORTRAIT + File.separator + backgroundImage)) {
-                backgroundImage = "R.drawable.back";
+                backgroundImage = "R.drawable.back1";
                 anglerPreferences.setBackgroundImage(backgroundImage);
             }
         }

@@ -38,10 +38,12 @@
         android:layout_height="match_parent"
         android:layout_marginTop="48dp"
         android:clipToPadding="false"
-        android:paddingEnd="4dp"
-        android:paddingStart="12dp"
+        android:paddingEnd="8dp"
+        android:paddingStart="8dp"
         android:paddingTop="18dp"
-        android:verticalSpacing="8dp"/>
+        android:verticalSpacing="8dp"
+        app:layoutManager="android.support.v7.widget.GridLayoutManager"
+        app:spanCount="@integer/playlist_column_count"/>
 
     <TextView
         android:id="@+id/playlist_empty_text"

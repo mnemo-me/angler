@@ -1,14 +1,12 @@
 package com.mnemo.angler.ui.main_activity.fragments.playlists.playlists;
 
 
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
@@ -65,9 +63,6 @@ public class PlaylistsFragment extends Fragment implements DrawerItem, Playlists
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.pm_fragment_playlists, container, false);
 
-        // Get orientation
-        int orientation = getResources().getConfiguration().orientation;
-
         // Inject views
         unbinder = ButterKnife.bind(this, view);
 
@@ -86,16 +81,6 @@ public class PlaylistsFragment extends Fragment implements DrawerItem, Playlists
         // Setup recycler view
         recyclerView.setHasFixedSize(true);
         recyclerView.setItemViewCacheSize(20);
-
-        GridLayoutManager gridLayoutManager;
-
-        if (orientation == Configuration.ORIENTATION_PORTRAIT){
-            gridLayoutManager = new GridLayoutManager(getContext(), 3);
-        }else {
-            gridLayoutManager = new GridLayoutManager(getContext(), 5);
-        }
-
-        recyclerView.setLayoutManager(gridLayoutManager);
 
         return view;
     }

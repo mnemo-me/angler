@@ -41,9 +41,11 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:maxWidth">185dp</item>
         <item name="android:layout_marginStart">24dp</item>
-        <item name="android:layout_marginBottom">24dp</item>
-        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:layout_marginBottom">40dp</item>
         <item name="android:gravity">center_vertical</item>
+        <item name="layout_constraintStart_toStartOf">parent</item>
+        <item name="layout_constraintTop_toTopOf">parent</item>
+        <item name="layout_constraintBottom_toBottomOf">parent</item>
         <item name="android:textSize">20sp</item>
         <item name="android:textColor">@color/black</item>
         <item name="android:textStyle">bold</item>
@@ -56,7 +58,7 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:maxWidth">185dp</item>
         <item name="android:layout_marginStart">24dp</item>
-        <item name="android:layout_gravity">center_vertical</item>
+        <item name="layout_constraintStart_toStartOf">parent</item>
         <item name="android:textSize">14sp</item>
         <item name="android:textColor">@color/gGrey</item>
         <item name="android:lines">1</item>
@@ -94,14 +96,16 @@
     </style>
 
     <style name="play_all_button">
-        <item name="android:layout_width">172dp</item>
+        <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">36dp</item>
         <item name="android:layout_marginStart">24dp</item>
+        <item name="android:layout_marginEnd">10dp</item>
         <item name="android:layout_marginBottom">8dp</item>
         <item name="android:paddingStart">@dimen/default_margin</item>
         <item name="android:paddingEnd">@dimen/default_margin</item>
+        <item name="layout_constraintStart_toStartOf">parent</item>
+        <item name="layout_constraintBottom_toBottomOf">parent</item>
         <item name="android:gravity">center</item>
-        <item name="android:layout_gravity">bottom</item>
         <item name="android:background">@drawable/black_frame</item>
         <item name="android:text">@string/play_all</item>
         <item name="android:textColor">@color/black</item>
@@ -131,24 +135,47 @@
 
 
     <!-- Cover -->
+    <style name="cover_card">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:layout_marginStart">3dp</item>
+        <item name="android:layout_marginEnd">3dp</item>
+        <item name="cardCornerRadius">2dp</item>
+        <item name="cardElevation">2dp</item>
+        <item name="layout_constraintDimensionRatio">1</item>
+    </style>
+
+    <style name="cover_card_conf">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:layout_marginStart">4dp</item>
+        <item name="android:layout_marginEnd">4dp</item>
+        <item name="android:layout_marginTop">4dp</item>
+        <item name="android:layout_marginBottom">8dp</item>
+        <item name="cardElevation">0dp</item>
+        <item name="layout_constraintTop_toTopOf">parent</item>
+        <item name="layout_constraintBottom_toBottomOf">parent</item>
+        <item name="layout_constraintEnd_toEndOf">parent</item>
+        <item name="layout_constraintDimensionRatio">1</item>
+    </style>
 
     <style name="cover">
-        <item name="android:layout_width">125dp</item>
-        <item name="android:layout_height">125dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
         <item name="android:layout_margin">1dp</item>
         <item name="android:scaleType">centerCrop</item>
     </style>
 
     <style name="cover_selector">
-        <item name="android:layout_width">125dp</item>
-        <item name="android:layout_height">125dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
         <item name="android:layout_margin">1dp</item>
         <item name="android:background">@drawable/background_selector</item>
     </style>
 
     <style name="album_title">
-        <item name="android:layout_width">125dp</item>
-        <item name="android:layout_height">47dp</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginTop">4dp</item>
         <item name="android:layout_marginBottom">12dp</item>
         <item name="android:textSize">14sp</item>

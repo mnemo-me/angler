@@ -12,6 +12,7 @@ import android.media.audiofx.BassBoost;
 import android.media.audiofx.Equalizer;
 import android.media.audiofx.LoudnessEnhancer;
 import android.media.audiofx.Virtualizer;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -49,6 +50,7 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
 
     private AudioManager mAudioManager;
     private AudioFocusRequest audioFocusRequest;
+    private AudioManager.OnAudioFocusChangeListener audioFocusChangeListener;
     private boolean isPauseBeforeAudioFocusLoss = true;
 
     private Equalizer mEqualizer;
@@ -263,7 +265,13 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
         @Override
         public void onPlay() {
 
-            int result = mAudioManager.requestAudioFocus(audioFocusRequest);
+            int result;
+
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                result = mAudioManager.requestAudioFocus(audioFocusRequest);
+            }else{
+                result = mAudioManager.requestAudioFocus(audioFocusChangeListener, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+            }
 
             if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED){
 
@@ -316,7 +324,11 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
 
             if (mMediaSession.getController().getPlaybackState().getState() != PlaybackStateCompat.STATE_ERROR) {
 
-                mAudioManager.abandonAudioFocusRequest(audioFocusRequest);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    mAudioManager.abandonAudioFocusRequest(audioFocusRequest);
+                }else{
+                    mAudioManager.abandonAudioFocus(audioFocusChangeListener);
+                }
 
                 mMediaSession.setPlaybackState(new PlaybackStateCompat.Builder()
                         .setState(PlaybackStateCompat.STATE_STOPPED, PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN, 0)
@@ -690,44 +702,48 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
                 .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
                 .build();
 
-        audioFocusRequest = new AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
-                .setAudioAttributes(audioAttributes)
-                .setOnAudioFocusChangeListener(focusChange -> {
+        audioFocusChangeListener = focusChange -> {
 
-                    switch (focusChange){
+            switch (focusChange){
 
-                        case AudioManager.AUDIOFOCUS_GAIN:
+                case AudioManager.AUDIOFOCUS_GAIN:
 
-                            mMediaPlayer.setVolume(1f, 1f);
+                    mMediaPlayer.setVolume(1f, 1f);
 
-                            if (isPaused & !isPauseBeforeAudioFocusLoss) {
+                    if (isPaused & !isPauseBeforeAudioFocusLoss) {
 
-                                mMediaSession.getController().getTransportControls().play();
-                            }
-
-                            break;
-
-                        case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
-
-                            mMediaPlayer.setVolume(0.1f, 0.1f);
-
-                            break;
-
-                        case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
-
-                            mMediaPlayer.setVolume(0.1f, 0.1f);
-
-                            break;
-
-                        case AudioManager.AUDIOFOCUS_LOSS:
-
-                            isPauseBeforeAudioFocusLoss = isPaused;
-                            mMediaSession.getController().getTransportControls().pause();
-
-                            break;
+                        mMediaSession.getController().getTransportControls().play();
                     }
-                })
-                .build();
+
+                    break;
+
+                case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
+
+                    mMediaPlayer.setVolume(0.1f, 0.1f);
+
+                    break;
+
+                case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
+
+                    mMediaPlayer.setVolume(0.1f, 0.1f);
+
+                    break;
+
+                case AudioManager.AUDIOFOCUS_LOSS:
+
+                    isPauseBeforeAudioFocusLoss = isPaused;
+                    mMediaSession.getController().getTransportControls().pause();
+
+                    break;
+            }
+        };
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            audioFocusRequest = new AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
+                    .setAudioAttributes(audioAttributes)
+                    .setOnAudioFocusChangeListener(audioFocusChangeListener)
+                    .build();
+        }
     }
 
     // Playback

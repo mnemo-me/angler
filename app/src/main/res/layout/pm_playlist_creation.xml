@@ -7,10 +7,13 @@
 
     <ImageView
         android:id="@+id/playlist_creation_image"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         android:contentDescription="@string/cover"
         android:scaleType="centerCrop"
+        app:layout_constraintDimensionRatio="1"
         tools:src="@drawable/back3" />
 
     <View
