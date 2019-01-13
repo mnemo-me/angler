@@ -1,7 +1,10 @@
 package com.mnemo.angler.data.networking;
 
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -38,15 +41,30 @@ public class AnglerNetworking {
         void onTrackAlbumPositionLoaded(int albumPosition);
     }
 
+    private Context context;
+
     private LastFMApiService lastFMApiService;
 
     @Inject
     public AnglerNetworking(Context context) {
 
+        this.context = context;
+
         lastFMApiService = LastFMApiClient.getClient(context).create(LastFMApiService.class);
     }
 
+    // Check network connection
+    public boolean checkNetworkConnection(){
+
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+
+        return networkInfo != null && networkInfo.isConnected();
+    }
+
     // Load album cover from LastFM
+    @SuppressLint("CheckResult")
     public void loadAlbum(String artist, String album, OnAlbumLoadListener listener){
 
         lastFMApiService.getAlbum(Net.LAST_FM_API_KEY,
@@ -62,9 +80,11 @@ public class AnglerNetworking {
                                     if (response2.code() == 200) {
                                         listener.onAlbumLoaded(response2.body().byteStream());
                                     }else{
-                                        // fix for singles
+                                        // fix for singles, EP
                                         if (album.contains("(Single)")) {
                                             loadAlbum(artist, album.replace(" (Single)", ""), listener);
+                                        }else if (album.contains("(EP)")){
+                                            loadAlbum(artist, album.replace(" (EP)", ""), listener);
                                         }
                                     }
                                 });
@@ -73,6 +93,7 @@ public class AnglerNetworking {
     }
 
     // Load album year
+    @SuppressLint("CheckResult")
     public void loadAlbumYear(String artist, String album, OnAlbumYearLoadListener listener){
 
         lastFMApiService.getAlbum(Net.LAST_FM_API_KEY,
@@ -85,12 +106,20 @@ public class AnglerNetworking {
                         int year = getAlbumYear(response.body());
 
                         listener.onAlbumYearLoaded(year);
+                    }else{
+                        // fix for singles, EP
+                        if (album.contains("(Single)")) {
+                            loadAlbumYear(artist, album.replace(" (Single)", ""), listener);
+                        }else if (album.contains("(EP)")){
+                            loadAlbumYear(artist, album.replace(" (EP)", ""), listener);
+                        }
                     }
                 });
     }
 
 
     // Load artist image from LastFM
+    @SuppressLint("CheckResult")
     public void loadArtistImage(String artist, OnArtistImageLoadListener listener){
 
         lastFMApiService.getArtist(Net.LAST_FM_API_KEY,
@@ -116,6 +145,7 @@ public class AnglerNetworking {
     }
 
     // Load artist bio from LastFM
+    @SuppressLint("CheckResult")
     public void loadArtistBio(String artist, OnArtistBioLoadListener listener){
 
         lastFMApiService.getArtist(Net.LAST_FM_API_KEY,
@@ -131,6 +161,7 @@ public class AnglerNetworking {
     }
 
     // Load track album position
+    @SuppressLint("CheckResult")
     public void loadTrackAlbumPosition(String title, String artist, String album, OnTrackAlbumPositionLoadListener listener){
 
         lastFMApiService.getAlbum(Net.LAST_FM_API_KEY,
@@ -141,6 +172,13 @@ public class AnglerNetworking {
                     if (response.code() == 200){
                         int albumPosition = getTrackAlbumPosition(response.body(), title);
                         listener.onTrackAlbumPositionLoaded(albumPosition);
+                    }else{
+                        // fix for singles, EP
+                        if (album.contains("(Single)")) {
+                            loadTrackAlbumPosition(title, artist, album.replace(" (Single)", ""), listener);
+                        }else if (album.contains("(EP)")){
+                            loadTrackAlbumPosition(title, artist, album.replace(" (EP)", ""), listener);
+                        }
                     }
                 });
     }

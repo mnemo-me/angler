@@ -24,8 +24,7 @@
             <ImageView
                 android:id="@+id/album_line_album_one_image"
                 style="@style/cover"
-                android:contentDescription="@string/cover"
-                tools:src="@drawable/back3" />
+                android:contentDescription="@string/cover"/>
 
             <View style="@style/cover_selector" />
 
@@ -57,8 +56,7 @@
             <ImageView
                 android:id="@+id/album_line_album_two_image"
                 style="@style/cover"
-                android:contentDescription="@string/cover"
-                android:src="@drawable/back3" />
+                android:contentDescription="@string/cover"/>
 
             <View style="@style/cover_selector" />
 
@@ -90,8 +88,7 @@
             <ImageView
                 android:id="@+id/album_line_album_three_image"
                 style="@style/cover"
-                android:contentDescription="@string/cover"
-                android:src="@drawable/back3" />
+                android:contentDescription="@string/cover"/>
 
             <View style="@style/cover_selector" />
 

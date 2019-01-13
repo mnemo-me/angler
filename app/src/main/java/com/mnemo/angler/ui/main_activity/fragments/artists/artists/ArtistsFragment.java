@@ -146,11 +146,12 @@ public class ArtistsFragment extends Fragment implements DrawerItem, ArtistsView
     @OnClick(R.id.artists_refresh_images)
     void refreshArtistImages(){
         if (!isRefreshing) {
-            presenter.refreshArtistsImages();
             isRefreshing = true;
 
             refreshButton.setVisibility(View.GONE);
             refreshProgressBar.setVisibility(View.VISIBLE);
+
+            presenter.refreshArtistsImages();
         }
     }
 
@@ -210,14 +211,18 @@ public class ArtistsFragment extends Fragment implements DrawerItem, ArtistsView
     }
 
     @Override
-    public void completeRefreshingImages() {
+    public void completeRefreshingImages(boolean isSuccess) {
 
-        Toast.makeText(getContext(), R.string.artist_images_updated, Toast.LENGTH_SHORT).show();
         isRefreshing = false;
 
         refreshProgressBar.setVisibility(View.GONE);
         refreshButton.setVisibility(View.VISIBLE);
 
-        adapter.notifyDataSetChanged();
+        if (isSuccess) {
+            Toast.makeText(getContext(), R.string.artist_images_updated, Toast.LENGTH_SHORT).show();
+            adapter.notifyDataSetChanged();
+        }else {
+            Toast.makeText(getContext(), R.string.no_internet_connection, Toast.LENGTH_SHORT).show();
+        }
     }
 }

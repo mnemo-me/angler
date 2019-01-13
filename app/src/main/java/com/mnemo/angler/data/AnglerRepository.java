@@ -96,9 +96,11 @@ public class AnglerRepository {
                             }
                         }
 
-                        if (!anglerFileStorage.isAlbumCoverExist(album.getArtist(), album.getAlbum())) {
-                            anglerNetworking.loadAlbum(album.getArtist(), album.getAlbum(),
-                                    inputStream -> anglerFileStorage.saveAlbumCover(album.getArtist(), album.getAlbum(), inputStream));
+                        if (anglerNetworking.checkNetworkConnection()) {
+                            if (!anglerFileStorage.isAlbumCoverExist(album.getArtist(), album.getAlbum())) {
+                                anglerNetworking.loadAlbum(album.getArtist(), album.getAlbum(),
+                                        inputStream -> anglerFileStorage.saveAlbumCover(album.getArtist(), album.getAlbum(), inputStream));
+                            }
                         }
                     }).subscribeOn(Schedulers.io()).subscribe());
                 }
@@ -110,74 +112,88 @@ public class AnglerRepository {
     // Load missing album years
     private void loadAlbumYear(){
 
-        anglerDB.loadAlbumsWithUnknownYear(albums -> {
+        if (anglerNetworking.checkNetworkConnection()) {
 
-            for (Album album : albums){
+            anglerDB.loadAlbumsWithUnknownYear(albums -> {
 
-                anglerNetworking.loadAlbumYear(album.getArtist(), album.getAlbum(), year -> {
-                    if (year != 10000){
-                        anglerDB.updateAlbumYear(album.get_id(), year);
-                    }
-                });
-            }
-        });
+                for (Album album : albums) {
+
+                    anglerNetworking.loadAlbumYear(album.getArtist(), album.getAlbum(), year -> {
+                        if (year != 10000) {
+                            anglerDB.updateAlbumYear(album.get_id(), year);
+                        }
+                    });
+                }
+            });
+        }
     }
 
     // Load artist images and bios and save them to file storage
     private void loadArtistImagesAndBios(){
 
-        anglerDB.loadArtists("library", artists -> {
+        if (anglerNetworking.checkNetworkConnection()) {
 
-            for (String artist : artists){
+            anglerDB.loadArtists("library", artists -> {
 
-                if (!anglerFileStorage.isArtistImageExist(artist)) {
-                    anglerNetworking.loadArtistImage(artist, inputStream -> anglerFileStorage.saveArtistImage(artist, inputStream));
+                for (String artist : artists) {
+
+                    if (!anglerFileStorage.isArtistImageExist(artist)) {
+                        anglerNetworking.loadArtistImage(artist, inputStream -> anglerFileStorage.saveArtistImage(artist, inputStream));
+                    }
+
+                    if (!anglerFileStorage.isArtistBioExist(artist)) {
+                        anglerNetworking.loadArtistBio(artist, bio -> anglerFileStorage.saveArtistBio(artist, bio));
+                    }
                 }
-
-                if (!anglerFileStorage.isArtistBioExist(artist)) {
-                    anglerNetworking.loadArtistBio(artist, bio -> anglerFileStorage.saveArtistBio(artist, bio));
-                }
-            }
-        });
+            });
+        }
     }
 
     // Load missing album track positions
     private void loadTrackAlbumPosition(){
 
-        anglerDB.getTrackWithUnknownAlbumPosition(tracks -> {
+        if (anglerNetworking.checkNetworkConnection()) {
 
-            for (Track track : tracks){
+            anglerDB.getTrackWithUnknownAlbumPosition(tracks -> {
 
-                anglerNetworking.loadTrackAlbumPosition(track.getTitle(), track.getArtist(), track.getAlbum(), albumPosition -> {
+                for (Track track : tracks) {
 
-                    if (albumPosition != 10000){
-                        anglerDB.updateTrackAlbumPosition(track.get_id(), albumPosition);
-                    }
-                });
-            }
-        });
+                    anglerNetworking.loadTrackAlbumPosition(track.getTitle(), track.getArtist(), track.getAlbum(), albumPosition -> {
+
+                        if (albumPosition != 10000) {
+                            anglerDB.updateTrackAlbumPosition(track.get_id(), albumPosition);
+                        }
+                    });
+                }
+            });
+        }
     }
 
 
     // Refresh artists images
     public void refreshArtistImages(AnglerFileStorage.OnArtistImagesUpdateListener listener){
 
-        anglerDB.loadArtists("library", artists -> {
+        if (anglerNetworking.checkNetworkConnection()) {
 
-            HashMap<String, InputStream> artistImages = new HashMap<>();
+            anglerDB.loadArtists("library", artists -> {
 
-            for (String artist : artists){
+                HashMap<String, InputStream> artistImages = new HashMap<>();
 
-                anglerNetworking.loadArtistImage(artist, inputStream -> {
-                    artistImages.put(artist, inputStream);
+                for (String artist : artists) {
 
-                    if (artistImages.size() == artists.size()){
-                        anglerFileStorage.updateArtistImages(artistImages, listener);
-                    }
-                });
-            }
+                    anglerNetworking.loadArtistImage(artist, inputStream -> {
+                        artistImages.put(artist, inputStream);
 
-        });
+                        if (artistImages.size() == artists.size()) {
+                            anglerFileStorage.updateArtistImages(artistImages, listener);
+                        }
+                    });
+                }
+
+            });
+        }else {
+            listener.onArtistImagesUpdated(false);
+        }
     }
 
 
@@ -422,6 +438,7 @@ public class AnglerRepository {
 
 
     // Database methods
+    @SuppressLint("CheckResult")
     public void updateLibrary(AnglerDB.LibraryUpdateListener listener){
 
         Completable.fromAction(() -> {
@@ -436,7 +453,13 @@ public class AnglerRepository {
 
                 })
                 .subscribeOn(Schedulers.io())
-                .subscribe();
+                .subscribe(() -> {
+
+                    loadAlbumCovers();
+                    loadAlbumYear();
+                    loadArtistImagesAndBios();
+                    loadTrackAlbumPosition();
+                });
     }
 
     // Playlists methods

@@ -28,10 +28,10 @@ public class ArtistsPresenter extends BasePresenter {
 
     // Refresh artists images
     void refreshArtistsImages(){
-        repository.refreshArtistImages(() -> {
+        repository.refreshArtistImages((isSuccess) -> {
 
             if (getView() != null){
-                ((ArtistsView)getView()).completeRefreshingImages();
+                ((ArtistsView)getView()).completeRefreshingImages(isSuccess);
             }
         });
     }

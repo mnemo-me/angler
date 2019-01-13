@@ -47,7 +47,7 @@ public class AnglerFileStorage {
     }
 
     public interface OnArtistImagesUpdateListener{
-        void onArtistImagesUpdated();
+        void onArtistImagesUpdated(boolean isSuccess);
     }
 
     public interface OnImageFolderLoadListener{
@@ -455,7 +455,7 @@ public class AnglerFileStorage {
             }
         })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(listener::onArtistImagesUpdated);
+                .subscribe(() -> listener.onArtistImagesUpdated(true));
 
     }
 

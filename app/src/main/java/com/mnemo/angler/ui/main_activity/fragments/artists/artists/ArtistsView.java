@@ -8,5 +8,5 @@ import java.util.List;
 interface ArtistsView extends BaseView {
 
     void setArtists(List<String> artists);
-    void completeRefreshingImages();
+    void completeRefreshingImages(boolean isSuccess);
 }
