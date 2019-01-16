@@ -2,7 +2,6 @@
 <android.support.constraint.ConstraintLayout android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <ImageView
@@ -14,14 +13,6 @@
         app:layout_constraintDimensionRatio="1"
         android:contentDescription="@string/image_folder_item"
         android:scaleType="centerCrop"
-        tools:src="@drawable/back3" />
-
-    <View
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintDimensionRatio="1"
-        android:background="@drawable/background_selector"/>
+        android:foreground="@drawable/background_selector"/>
 
 </android.support.constraint.ConstraintLayout>

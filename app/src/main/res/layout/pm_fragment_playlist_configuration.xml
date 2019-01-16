@@ -56,24 +56,14 @@
                     style="@style/cover_card_conf"
                     app:layout_constraintStart_toEndOf="@id/playlist_conf_guideline">
 
-                    <android.support.constraint.ConstraintLayout
+                    <ImageView
+                        android:id="@+id/playlist_conf_image"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                        <ImageView
-                            android:id="@+id/playlist_conf_image"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:contentDescription="@string/cover"
-                            android:scaleType="centerCrop"
-                            tools:src="@drawable/back3" />
-
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:background="@drawable/background_selector" />
-
-                    </android.support.constraint.ConstraintLayout>
+                        android:layout_height="match_parent"
+                        android:contentDescription="@string/cover"
+                        android:scaleType="centerCrop"
+                        android:foreground="@drawable/background_selector"
+                        tools:src="@drawable/back3" />
 
                 </android.support.v7.widget.CardView>
 

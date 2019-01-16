@@ -368,6 +368,10 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
                         }
                     }
 
+                    if (isFirstTrack){
+                        isFirstTrack = false;
+                    }
+
                     isPaused = false;
                     onPlay();
                 }
@@ -401,6 +405,10 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
                     } else {
                         queueIndex++;
                     }
+                }
+
+                if (isFirstTrack){
+                    isFirstTrack = false;
                 }
 
                 isPaused = false;
@@ -455,7 +463,8 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
             super.onSeekTo(pos);
             if (mMediaPlayer != null) {
 
-                mMediaPlayer.seekTo((int) (pos * mMediaPlayer.getDuration() / 100));
+                seekbarPosition = (int) (pos * mMediaPlayer.getDuration() / 100);
+                mMediaPlayer.seekTo(seekbarPosition);
             }
 
             if (isFirstTrack){

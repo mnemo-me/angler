@@ -1,6 +1,7 @@
 package com.mnemo.angler.data.database;
 
 
+import android.annotation.SuppressLint;
 import android.arch.persistence.db.SupportSQLiteDatabase;
 import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
@@ -107,6 +108,7 @@ public class AnglerDB{
     }
 
     // Update database
+    @SuppressLint("CheckResult")
     public void updateDatabase(List<Track> tracks){
 
         db.trackDAO().getTracksOnce()
@@ -122,6 +124,7 @@ public class AnglerDB{
 
     }
 
+    @SuppressLint("CheckResult")
     public void updateDatabase(List<Track> tracks, LibraryUpdateListener listener){
 
         db.trackDAO().getTracksOnce()
@@ -136,19 +139,11 @@ public class AnglerDB{
     }
 
     // Insert, Update, Delete track methods
+    @SuppressLint("CheckResult")
     private void insertTracks(List<Track> tracks, List<Track> dbTracks){
 
         Observable.fromIterable(tracks)
-                .filter(track -> {
-
-                    if (track.getTitle() == null){
-                        return false;
-                    }else if (track.getArtist() == null) {
-                        return false;
-                    } else
-                        return track.getAlbum() != null && track.getDuration() != 0 && track.getUri() != null;
-
-                })
+                .filter(track -> track.getTitle() != null && track.getArtist() != null && track.getAlbum() != null && track.getDuration() != 0 && track.getUri() != null)
                 .filter(track -> !dbTracks.contains(track))
                 .toList()
                 .subscribe(tracksToInsert -> {
@@ -157,6 +152,7 @@ public class AnglerDB{
                 });
     }
 
+    @SuppressLint("CheckResult")
     private void updateTracks(List<Track> tracks, List<Track> dbTracks){
 
         Observable.fromIterable(tracks)
@@ -169,6 +165,7 @@ public class AnglerDB{
                 .subscribe(tracksToUpdate -> db.trackDAO().update(tracksToUpdate.toArray(new Track[tracksToUpdate.size()])));
     }
 
+    @SuppressLint("CheckResult")
     private void deleteTracks(List<Track> tracks, List<Track> dbTracks) {
 
         Observable.fromIterable(dbTracks)
@@ -190,6 +187,7 @@ public class AnglerDB{
     }
 
     // Get tracks with unknown album position
+    @SuppressLint("CheckResult")
     public void getTrackWithUnknownAlbumPosition(UnknownAlbumTrackPositionListener listener){
 
         db.trackDAO().getTracksWithAlbumPosition(10000)
@@ -220,6 +218,7 @@ public class AnglerDB{
     }
 
     // Delete unused albums
+    @SuppressLint("CheckResult")
     private void cleanAlbums(){
 
         db.albumDAO().getAlbumsOnce()
@@ -231,6 +230,7 @@ public class AnglerDB{
     }
 
     // Load albums
+    @SuppressLint("CheckResult")
     public void loadAlbums(AlbumsLoadListener listener){
 
         db.albumDAO().getAlbums()
@@ -239,6 +239,7 @@ public class AnglerDB{
                 .subscribe(listener::albumsLoaded);
     }
 
+    @SuppressLint("CheckResult")
     public void loadAlbumsInBackground(AlbumsLoadListener listener){
 
         db.albumDAO().getAlbumsOnce()
@@ -246,6 +247,7 @@ public class AnglerDB{
                 .subscribe(listener::albumsLoaded);
     }
 
+    @SuppressLint("CheckResult")
     public void loadArtistAlbums(String artist, ArtistAlbumsLoadListener listener){
 
         db.albumDAO().getArtistAlbums(artist)
@@ -254,6 +256,7 @@ public class AnglerDB{
                 .subscribe(listener::artistAlbumsLoaded);
     }
 
+    @SuppressLint("CheckResult")
     public void loadAlbumsWithUnknownYear(UnknownYearAlbumsLoadListener listener){
 
         db.albumDAO().getAlbumsByYear(10000)
@@ -266,6 +269,7 @@ public class AnglerDB{
     }
 
     // Load album tracks method
+    @SuppressLint("CheckResult")
     public void loadAlbumTracks(String artist, String album, AlbumTracksLoadListener listener){
 
         db.trackDAO().getAlbumTracks(artist, album)
@@ -276,6 +280,7 @@ public class AnglerDB{
 
     // Playlists methods
     // Load playlists or/and titles methods
+    @SuppressLint("CheckResult")
     public void loadPlaylistTitles(PlaylistsUpdateListener listener){
 
         db.playlistDAO().getPlaylistTitles()
@@ -285,6 +290,7 @@ public class AnglerDB{
     }
 
 
+    @SuppressLint("CheckResult")
     public void loadPlaylistsCreatedByUser(UserPlaylistsUpdateListener listener){
 
         db.playlistDAO().getUserPlaylists()
@@ -293,6 +299,7 @@ public class AnglerDB{
                 .subscribe(listener::playlistsUpdated);
     }
 
+    @SuppressLint("CheckResult")
     public void loadPlaylistsAndTitlesWithTrack(String trackId, PlaylistsAndTitlesWithTrackLoadListener listener){
 
         db.playlistDAO().getUserPlaylists()
@@ -304,6 +311,7 @@ public class AnglerDB{
 
 
     // Load playlist tracks mwthods
+    @SuppressLint("CheckResult")
     public void loadPlaylistTracks(String playlist, PlaylistLoadListener listener){
 
         if (playlist.equals("library")){
@@ -349,6 +357,7 @@ public class AnglerDB{
     }
 
 
+    @SuppressLint("CheckResult")
     public void loadCheckedPlaylistTracks(String playist, PlaylistCheckedTracksLoadListener listener){
 
         db.trackDAO().getTracks()
@@ -406,6 +415,7 @@ public class AnglerDB{
 
 
     // Add tracks to playlist methods
+    @SuppressLint("CheckResult")
     public void addTracksToPlaylist(String playlist, HashMap<Track, Integer> tracksWithPosition){
 
         Observable.fromIterable(tracksWithPosition.keySet())
@@ -416,6 +426,7 @@ public class AnglerDB{
 
     }
 
+    @SuppressLint("CheckResult")
     public void addTracksToPlaylist(String playlist, List<Track> tracks){
 
         Observable.fromIterable(tracks)
@@ -424,6 +435,7 @@ public class AnglerDB{
                 .subscribe(links -> db.linkDAO().insert(links.toArray(new Link[links.size()])));
     }
 
+    @SuppressLint("CheckResult")
     public void addTrackToPlaylist(String playlist, Track track){
 
         db.linkDAO().getTracksCount(playlist)
@@ -443,6 +455,7 @@ public class AnglerDB{
 
 
     // Delete/Restore track in playlist methods
+    @SuppressLint("CheckResult")
     public void deleteTrackFromPlaylist(String playlist, String trackId, TrackDeleteListener listener){
 
         db.linkDAO().getPositionOfTrack(playlist, trackId)
@@ -452,6 +465,7 @@ public class AnglerDB{
                                 .subscribe(() -> listener.trackDeleted(position))));
     }
 
+    @SuppressLint("CheckResult")
     public void restoreTrackInPlaylist(String playlist, String trackId, int position){
 
         Completable.fromAction(() -> db.linkDAO().increasePositionsHigherOrEqual(playlist, position))
@@ -467,6 +481,7 @@ public class AnglerDB{
     }
 
 
+    @SuppressLint("CheckResult")
     public void deleteAllTracksFromPlaylist(String playlist, PlaylistClearListener listener){
 
         Completable.fromAction(() -> db.linkDAO().deleteAllTracksFromPlaylist(playlist))
@@ -476,6 +491,7 @@ public class AnglerDB{
 
     // Artists methods
     // Load artists method
+    @SuppressLint("CheckResult")
     public void loadArtists(String playlist, ArtistsLoadListener listener) {
 
         if (playlist.equals("library")){
@@ -495,6 +511,7 @@ public class AnglerDB{
     }
 
     // Load artist tracks methods
+    @SuppressLint("CheckResult")
     public void loadArtistTracksFromPlaylist(String playlist, String artist, ArtistTracksLoadListener listener){
 
         if (playlist.equals("library")){

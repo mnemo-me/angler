@@ -7,26 +7,20 @@
     android:layout_height="wrap_content"
     android:paddingBottom="4dp">
 
-    <android.support.v7.widget.CardView
+
+    <FrameLayout
         android:id="@+id/playlist_card"
-        style="@style/cover_card"
+        style="@style/card_layout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+        <ImageView
+            android:id="@+id/playlist_image"
+            style="@style/cover"
+            android:contentDescription="@string/cover" />
 
-            <ImageView
-                android:id="@+id/playlist_image"
-                style="@style/cover"
-                android:contentDescription="@string/cover" />
+    </FrameLayout>
 
-            <View style="@style/cover_selector" />
-
-        </RelativeLayout>
-
-    </android.support.v7.widget.CardView>
 
     <TextView
         android:id="@+id/playlist_title"

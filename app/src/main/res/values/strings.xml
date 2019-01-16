@@ -61,7 +61,7 @@
     <string name="add_to_queue">Add to queue</string>
     <string name="empty_queue">Queue is empty</string>
     <string name="added_to">added to</string>
-    <string name="opacity">Opacity</string>
+    <string name="opacity">Filter</string>
     <string name="custom">Custom</string>
     <string name="audio_effects">Audio effects</string>
     <string name="virtualizer">Virtualizer</string>
