@@ -59,6 +59,7 @@
                 android:layout_margin="1dp"
                 android:contentDescription="@string/cover"
                 android:scaleType="centerCrop"
+                android:foreground="@drawable/background_selector"
                 tools:src="@drawable/back3" />
 
             <View
@@ -67,12 +68,6 @@
                 android:layout_margin="1dp"
                 android:background="@drawable/skrim"
                 app:layout_constraintBottom_toBottomOf="parent"/>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="1dp"
-                android:background="@drawable/background_selector" />
 
             <ImageButton
                 android:id="@+id/artist_conf_play_all_button"
