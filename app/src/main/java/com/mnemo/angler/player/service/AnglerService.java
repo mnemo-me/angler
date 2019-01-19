@@ -54,9 +54,19 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
     private boolean isPauseBeforeAudioFocusLoss = true;
 
     private Equalizer mEqualizer;
+    private boolean equalizerOnOffState;
+
     private Virtualizer mVirtualizer;
+    private boolean virtualizerOnOffState;
+    private short virtualizerStrength;
+
     private BassBoost mBassBoost;
+    private boolean bassBoostOnOffState;
+    private short bassBoostStrength;
+
     private LoudnessEnhancer mAmplifier;
+    private boolean amplifierOnOffState;
+    private short amplifierGain;
 
     private ArrayList<Integer> bandsFrequencies;
 
@@ -587,8 +597,26 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
 
                 case "equalizer_on_off":
 
-                    boolean equalizerOnOffState = extras.getBoolean("on_off_state");
+                    equalizerOnOffState = extras.getBoolean("on_off_state");
                     mEqualizer.setEnabled(equalizerOnOffState);
+
+                    if (equalizerOnOffState){
+
+                        mVirtualizer.setEnabled(virtualizerOnOffState);
+                        mVirtualizer.setStrength(virtualizerStrength);
+
+                        mBassBoost.setEnabled(bassBoostOnOffState);
+                        mBassBoost.setStrength(bassBoostStrength);
+
+                        mAmplifier.setEnabled(amplifierOnOffState);
+                        mAmplifier.setTargetGain(amplifierGain);
+
+                    }else{
+
+                        mVirtualizer.setEnabled(false);
+                        mBassBoost.setEnabled(false);
+                        mAmplifier.setEnabled(false);
+                    }
 
                     break;
 
@@ -625,43 +653,43 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
 
                 case "virtualizer_on_off":
 
-                    boolean virtualizerOnOffState = extras.getBoolean("on_off_state");
+                    virtualizerOnOffState = extras.getBoolean("on_off_state");
                     mVirtualizer.setEnabled(virtualizerOnOffState);
 
                     break;
 
                 case "virtualizer_change_band_level":
 
-                    short virtualizerLevel = extras.getShort("virtualizer_band_level");
-                    mVirtualizer.setStrength(virtualizerLevel);
+                    virtualizerStrength = extras.getShort("virtualizer_band_level");
+                    mVirtualizer.setStrength(virtualizerStrength);
 
                     break;
 
                 case "bass_boost_on_off":
 
-                    boolean bassBoostOnOffState = extras.getBoolean("on_off_state");
-                    mVirtualizer.setEnabled(bassBoostOnOffState);
+                    bassBoostOnOffState = extras.getBoolean("on_off_state");
+                    mBassBoost.setEnabled(bassBoostOnOffState);
 
                     break;
 
                 case "bass_boost_change_band_level":
 
-                    short bassBoostLevel = extras.getShort("bass_boost_band_level");
-                    mBassBoost.setStrength(bassBoostLevel);
+                    bassBoostStrength = extras.getShort("bass_boost_band_level");
+                    mBassBoost.setStrength(bassBoostStrength);
 
                     break;
 
                 case "amplifier_on_off":
 
-                    boolean amplifierOnOffState = extras.getBoolean("on_off_state");
+                    amplifierOnOffState = extras.getBoolean("on_off_state");
                     mAmplifier.setEnabled(amplifierOnOffState);
 
                     break;
 
                 case "amplifier_change_band_level":
 
-                    short amplifierLevel = extras.getShort("amplifier_band_level");
-                    mAmplifier.setTargetGain(amplifierLevel);
+                    amplifierGain = extras.getShort("amplifier_band_level");
+                    mAmplifier.setTargetGain(amplifierGain);
 
                     break;
 
@@ -911,10 +939,10 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
 
 
         // Configure equalizer
-        boolean onOffState = presenter.getEqualizerState();
-        mEqualizer.setEnabled(onOffState);
+        equalizerOnOffState = presenter.getEqualizerState();
+        mEqualizer.setEnabled(equalizerOnOffState);
 
-        if (onOffState){
+        if (equalizerOnOffState){
 
             short presetNumber = (short)presenter.getEqualizerPreset();
 
@@ -949,26 +977,35 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
         mAmplifier = new LoudnessEnhancer(mMediaPlayer.getAudioSessionId());
 
         // Virtualizer
-        boolean virtualizerOnOffState = presenter.getVirtualizerState();
-        mVirtualizer.setEnabled(virtualizerOnOffState);
+        virtualizerOnOffState = presenter.getVirtualizerState();
 
-        short virtualizerStrength = (short)presenter.getVirtualizerStrength();
+        if (equalizerOnOffState) {
+            mVirtualizer.setEnabled(virtualizerOnOffState);
+        }
+
+        virtualizerStrength = (short)presenter.getVirtualizerStrength();
         mVirtualizer.setStrength(virtualizerStrength);
 
 
         // Bass boost
-        boolean bassBoostOnOffState = presenter.getBassBoostState();
-        mBassBoost.setEnabled(bassBoostOnOffState);
+        bassBoostOnOffState = presenter.getBassBoostState();
 
-        short bassBoostStrength = (short)presenter.getBassBoostStrength();
+        if (equalizerOnOffState) {
+            mBassBoost.setEnabled(bassBoostOnOffState);
+        }
+
+        bassBoostStrength = (short)presenter.getBassBoostStrength();
         mBassBoost.setStrength(bassBoostStrength);
 
 
         // Amplifier
-        boolean amplifierOnOffState = presenter.getAmplifierState();
-        mAmplifier.setEnabled(amplifierOnOffState);
+        amplifierOnOffState = presenter.getAmplifierState();
 
-        short amplifierGain = (short)presenter.getAmplifierGain();
+        if (equalizerOnOffState) {
+            mAmplifier.setEnabled(amplifierOnOffState);
+        }
+
+        amplifierGain = (short)presenter.getAmplifierGain();
         mAmplifier.setTargetGain(amplifierGain);
 
     }

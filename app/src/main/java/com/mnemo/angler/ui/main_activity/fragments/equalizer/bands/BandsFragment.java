@@ -100,8 +100,6 @@ public class BandsFragment extends Fragment implements BandsView {
             SeekBar seekBar = bandLayout.findViewById(R.id.band_band);
             seekBar.setId(i);
             seekBar.setMax(upperEqualizerBandLevel - lowerEqualizerBandLevel);
-            seekBar.setProgress(bandsLevel.get(i) - lowerEqualizerBandLevel);
-            seekBar.setEnabled(equalizerOnOffState);
 
             seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                 @Override
@@ -134,6 +132,9 @@ public class BandsFragment extends Fragment implements BandsView {
 
                 }
             });
+
+            seekBar.setProgress(bandsLevel.get(i) - lowerEqualizerBandLevel);
+            seekBar.setEnabled(equalizerOnOffState);
 
             // Setup frequency view
             TextView frequencyView = bandLayout.findViewById(R.id.band_frequency);
@@ -207,7 +208,7 @@ public class BandsFragment extends Fragment implements BandsView {
 
                         for (short i = 0; i < bandsLevel.size(); i++){
 
-                            ((SeekBar)getView().findViewById(i)).setProgress(bandsLevel.get(i) - lowerEqualizerBandLevel, true);
+                            ((SeekBar)getView().findViewById(i)).setProgress(bandsLevel.get(i) - lowerEqualizerBandLevel);
                         }
 
                         break;
