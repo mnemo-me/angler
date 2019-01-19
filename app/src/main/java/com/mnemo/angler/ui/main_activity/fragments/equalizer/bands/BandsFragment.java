@@ -9,6 +9,7 @@ import android.os.Bundle;
 
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -100,8 +101,6 @@ public class BandsFragment extends Fragment implements BandsView {
             SeekBar seekBar = bandLayout.findViewById(R.id.band_band);
             seekBar.setId(i);
             seekBar.setMax(upperEqualizerBandLevel - lowerEqualizerBandLevel);
-            seekBar.setProgress(bandsLevel.get(i) - lowerEqualizerBandLevel);
-            seekBar.setEnabled(equalizerOnOffState);
 
             seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                 @Override
@@ -135,8 +134,14 @@ public class BandsFragment extends Fragment implements BandsView {
                 }
             });
 
+            seekBar.setProgress(bandsLevel.get(i) - lowerEqualizerBandLevel);
+            seekBar.setEnabled(equalizerOnOffState);
+
             // Setup frequency view
             TextView frequencyView = bandLayout.findViewById(R.id.band_frequency);
+            frequencyView.setPadding((int)(4 * MainActivity.density), 0, (int)(4 * MainActivity.density), 0);
+            frequencyView.setLines(1);
+            frequencyView.setEllipsize(TextUtils.TruncateAt.END);
             frequencyView.setText(bandsFrequencies.get(i) / 1000 + " Hz");
 
             // Add band to bands layout
@@ -207,7 +212,7 @@ public class BandsFragment extends Fragment implements BandsView {
 
                         for (short i = 0; i < bandsLevel.size(); i++){
 
-                            ((SeekBar)getView().findViewById(i)).setProgress(bandsLevel.get(i) - lowerEqualizerBandLevel, true);
+                            ((SeekBar)getView().findViewById(i)).setProgress(bandsLevel.get(i) - lowerEqualizerBandLevel);
                         }
 
                         break;

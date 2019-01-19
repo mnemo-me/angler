@@ -14,41 +14,43 @@
         android:text="@string/virtualizer"
         android:textColor="@color/white"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/ae_virtualizer_seek_bar"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Switch
         android:id="@+id/ae_virtualizer_switch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/default_margin"
         android:layout_marginTop="@dimen/default_margin"
+        android:layout_marginEnd="@dimen/default_margin"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/ae_virtualizer_level"/>
 
     <SeekBar
         android:id="@+id/ae_virtualizer_seek_bar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
         android:max="1000"
         android:progressBackgroundTint="@color/white"
         android:progressTint="@color/colorAccentLight"
         android:thumbTint="@color/colorAccentLight"
         app:layout_constraintEnd_toStartOf="@id/ae_virtualizer_level"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ae_virtualizer" />
+        app:layout_constraintTop_toBottomOf="@id/ae_virtualizer"
+        app:layout_constraintBottom_toTopOf="@id/ae_bass_boost"/>
 
     <TextView
         android:id="@+id/ae_virtualizer_level"
         android:layout_width="72dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/default_margin"
-        android:layout_marginTop="24dp"
         android:gravity="end"
         android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/ae_virtualizer_seek_bar"
-        app:layout_constraintTop_toBottomOf="@id/ae_virtualizer"
+        app:layout_constraintTop_toBottomOf="@id/ae_virtualizer_switch"
+        app:layout_constraintBottom_toTopOf="@id/ae_bass_boost_switch"
         tools:text="69 %" />
 
 
@@ -57,45 +59,45 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/default_margin"
-        android:layout_marginTop="24dp"
         android:text="@string/bass_boost"
         android:textColor="@color/white"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ae_virtualizer_seek_bar" />
+        app:layout_constraintTop_toBottomOf="@id/ae_virtualizer_seek_bar"
+        app:layout_constraintBottom_toTopOf="@id/ae_bass_boost_seek_bar"/>
 
     <Switch
         android:id="@+id/ae_bass_boost_switch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/default_margin"
-        android:layout_marginTop="24dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ae_virtualizer_seek_bar" />
+        app:layout_constraintTop_toBottomOf="@id/ae_virtualizer_level"
+        app:layout_constraintBottom_toTopOf="@id/ae_bass_boost_level"/>
 
     <SeekBar
         android:id="@+id/ae_bass_boost_seek_bar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
         android:max="1000"
         android:progressBackgroundTint="@color/white"
         android:progressTint="@color/colorAccentLight"
         android:thumbTint="@color/colorAccentLight"
         app:layout_constraintEnd_toStartOf="@id/ae_bass_boost_level"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ae_bass_boost" />
+        app:layout_constraintTop_toBottomOf="@id/ae_bass_boost"
+        app:layout_constraintBottom_toTopOf="@id/ae_amplifier"/>
 
     <TextView
         android:id="@+id/ae_bass_boost_level"
         android:layout_width="72dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/default_margin"
-        android:layout_marginTop="24dp"
         android:gravity="end"
         android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/ae_bass_boost_seek_bar"
-        app:layout_constraintTop_toBottomOf="@id/ae_bass_boost"
+        app:layout_constraintTop_toBottomOf="@id/ae_bass_boost_switch"
+        app:layout_constraintBottom_toTopOf="@id/ae_amplifier_switch"
         tools:text="69 %" />
 
 
@@ -104,45 +106,48 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/default_margin"
-        android:layout_marginTop="24dp"
         android:text="@string/amplifier"
         android:textColor="@color/white"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ae_bass_boost_seek_bar" />
+        app:layout_constraintTop_toBottomOf="@id/ae_bass_boost_seek_bar"
+        app:layout_constraintBottom_toTopOf="@id/ae_amplifier_seek_bar"/>
 
     <Switch
         android:id="@+id/ae_amplifier_switch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/default_margin"
-        android:layout_marginTop="24dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ae_bass_boost_seek_bar" />
+        app:layout_constraintTop_toBottomOf="@id/ae_bass_boost_level"
+        app:layout_constraintBottom_toTopOf="@id/ae_amplifier_level"/>
 
     <SeekBar
         android:id="@+id/ae_amplifier_seek_bar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
         android:max="4000"
         android:progressBackgroundTint="@color/white"
         android:progressTint="@color/colorAccentLight"
         android:thumbTint="@color/colorAccentLight"
         app:layout_constraintEnd_toStartOf="@id/ae_amplifier_level"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ae_amplifier" />
+        app:layout_constraintTop_toBottomOf="@id/ae_amplifier"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
     <TextView
         android:id="@+id/ae_amplifier_level"
         android:layout_width="72dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/default_margin"
-        android:layout_marginTop="24dp"
+        android:layout_marginBottom="2dp"
         android:gravity="end"
         android:textColor="@color/white"
+        android:lines="1"
+        android:ellipsize="end"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/ae_amplifier_seek_bar"
-        app:layout_constraintTop_toBottomOf="@id/ae_amplifier"
+        app:layout_constraintTop_toBottomOf="@id/ae_amplifier_switch"
+        app:layout_constraintBottom_toBottomOf="parent"
         tools:text="1200 dB" />
 
 </android.support.constraint.ConstraintLayout>
