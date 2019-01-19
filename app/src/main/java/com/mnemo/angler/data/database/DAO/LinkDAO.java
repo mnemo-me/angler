@@ -18,11 +18,14 @@ public interface LinkDAO {
     @Query("SELECT * FROM links WHERE playlist=:playlist ORDER BY position ASC")
     Flowable<List<Link>> getLinks(String playlist);
 
+    @Query("SELECT * FROM links WHERE playlist=:playlist ORDER BY position ASC")
+    Single<List<Link>> getLinksOnce(String playlist);
+
     @Query("SELECT track_id FROM links WHERE playlist=:playlist")
     Flowable<List<String>> getTracksId(String playlist);
 
     @Query("SELECT playlist FROM links WHERE track_id=:trackId")
-    Flowable<List<String>> getPlaylistsWithTrack(String trackId);
+    Single<List<String>> getPlaylistsWithTrack(String trackId);
 
     @Query("SELECT count(track_id) FROM links WHERE playlist=:playlist")
     Single<Integer> getTracksCount(String playlist);

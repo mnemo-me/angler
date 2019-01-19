@@ -1,9 +1,11 @@
 package com.mnemo.angler.ui.main_activity.fragments.music_player.artists;
 
 
+import android.annotation.SuppressLint;
+
 import com.mnemo.angler.AnglerApp;
 import com.mnemo.angler.data.AnglerRepository;
-import com.mnemo.angler.ui.base.BasePresenter;
+import com.mnemo.angler.ui.base.DisposableBasePresenter;
 
 import java.util.List;
 
@@ -13,7 +15,7 @@ import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
-public class PlaylistArtistsPresenter extends BasePresenter{
+public class PlaylistArtistsPresenter extends DisposableBasePresenter {
 
     @Inject
     AnglerRepository repository;
@@ -28,17 +30,18 @@ public class PlaylistArtistsPresenter extends BasePresenter{
     // load playlist artists from database
     void loadArtists(String playlist){
 
-        repository.loadArtists(playlist, playlistArtists -> {
+        setListener(repository.loadArtists(playlist, playlistArtists -> {
 
             artists = playlistArtists;
 
             if (getView() != null) {
                 applyFilter(((PlaylistArtistsFragment)getView()).getFilter());
             }
-        });
+        }));
     }
 
     // apply filter to artists
+    @SuppressLint("CheckResult")
     void applyFilter(String filter){
 
         if (filter.equals("")){

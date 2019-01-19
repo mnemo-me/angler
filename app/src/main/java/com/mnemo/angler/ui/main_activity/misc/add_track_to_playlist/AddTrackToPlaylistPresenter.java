@@ -4,12 +4,13 @@ import com.mnemo.angler.AnglerApp;
 import com.mnemo.angler.data.AnglerRepository;
 import com.mnemo.angler.data.database.Entities.Track;
 import com.mnemo.angler.ui.base.BasePresenter;
+import com.mnemo.angler.ui.base.DisposableBasePresenter;
 
 
 import javax.inject.Inject;
 
 
-public class AddTrackToPlaylistPresenter extends BasePresenter {
+public class AddTrackToPlaylistPresenter extends DisposableBasePresenter {
 
     @Inject
     AnglerRepository repository;
@@ -20,13 +21,13 @@ public class AddTrackToPlaylistPresenter extends BasePresenter {
 
     // Load playlists and playlist titles which contain this track
     void loadPlaylistsAndTitlesWithTrack(String trackId) {
-        repository.loadPlaylistsAndTitlesWithTrack(trackId, (playlists, playlistsWithTrack) -> {
+        setListener(repository.loadPlaylistsAndTitlesWithTrack(trackId, (playlists, playlistsWithTrack) -> {
 
             if (getView() != null) {
 
                 ((AddTrackToPlaylistView)getView()).setPlaylists(playlists, playlistsWithTrack);
             }
-        });
+        }));
     }
 
     // Add track to playlist

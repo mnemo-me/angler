@@ -24,6 +24,7 @@ import java.util.Set;
 import javax.inject.Inject;
 
 import io.reactivex.Completable;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 public class AnglerRepository {
@@ -464,26 +465,26 @@ public class AnglerRepository {
 
     // Playlists methods
     // Load playlists or/and titles
-    public void loadPlaylistTitles(AnglerDB.PlaylistsUpdateListener listener){
-        anglerDB.loadPlaylistTitles(listener);
+    public Disposable loadPlaylistTitles(AnglerDB.PlaylistsUpdateListener listener){
+        return anglerDB.loadPlaylistTitles(listener);
     }
 
-    public void loadPlaylistsCreatedByUser(AnglerDB.UserPlaylistsUpdateListener listener){
-        anglerDB.loadPlaylistsCreatedByUser(listener);
+    public Disposable loadPlaylistsCreatedByUser(AnglerDB.UserPlaylistsUpdateListener listener){
+        return anglerDB.loadPlaylistsCreatedByUser(listener);
     }
 
-    public void loadPlaylistsAndTitlesWithTrack(String trackId, AnglerDB.PlaylistsAndTitlesWithTrackLoadListener listener){
-        anglerDB.loadPlaylistsAndTitlesWithTrack(trackId, listener);
+    public Disposable loadPlaylistsAndTitlesWithTrack(String trackId, AnglerDB.PlaylistsAndTitlesWithTrackLoadListener listener){
+        return anglerDB.loadPlaylistsAndTitlesWithTrack(trackId, listener);
     }
 
 
     // Load playlist tracks methods
-    public void loadPlaylistTracks(String playlist, AnglerDB.PlaylistLoadListener listener){
-        anglerDB.loadPlaylistTracks(playlist, listener);
+    public Disposable loadPlaylistTracks(String playlist, AnglerDB.PlaylistLoadListener listener){
+        return anglerDB.loadPlaylistTracks(playlist, listener);
     }
 
-    public void loadCheckedPlaylistTracks(String playlist, AnglerDB.PlaylistCheckedTracksLoadListener listener){
-        anglerDB.loadCheckedPlaylistTracks(playlist, listener);
+    public Disposable loadCheckedPlaylistTracks(String playlist, AnglerDB.PlaylistCheckedTracksLoadListener listener){
+        return anglerDB.loadCheckedPlaylistTracks(playlist, listener);
     }
 
 
@@ -551,26 +552,26 @@ public class AnglerRepository {
 
 
     // Artist methods
-    public void loadArtists(String playlist, AnglerDB.ArtistsLoadListener listener){
-        anglerDB.loadArtists(playlist, listener);
+    public Disposable loadArtists(String playlist, AnglerDB.ArtistsLoadListener listener){
+        return anglerDB.loadArtists(playlist, listener);
     }
 
-    public void loadArtistTracksFromPlaylist(String playlist, String artist, AnglerDB.ArtistTracksLoadListener listener){
-        anglerDB.loadArtistTracksFromPlaylist(playlist, artist, listener);
+    public Disposable loadArtistTracksFromPlaylist(String playlist, String artist, AnglerDB.ArtistTracksLoadListener listener){
+        return anglerDB.loadArtistTracksFromPlaylist(playlist, artist, listener);
     }
 
 
     // Albums methods
-    public void loadAlbums(AnglerDB.AlbumsLoadListener listener){
-        anglerDB.loadAlbums(listener);
+    public Disposable loadAlbums(AnglerDB.AlbumsLoadListener listener){
+        return anglerDB.loadAlbums(listener);
     }
 
-    public void loadArtistAlbums(String artist, AnglerDB.ArtistAlbumsLoadListener listener){
-         anglerDB.loadArtistAlbums(artist, listener);
+    public Disposable loadArtistAlbums(String artist, AnglerDB.ArtistAlbumsLoadListener listener){
+         return anglerDB.loadArtistAlbums(artist, listener);
     }
 
-    public void loadAlbumTracks(String artist, String album, AnglerDB.AlbumTracksLoadListener listener){
-        anglerDB.loadAlbumTracks(artist, album, listener);
+    public Disposable loadAlbumTracks(String artist, String album, AnglerDB.AlbumTracksLoadListener listener){
+        return anglerDB.loadAlbumTracks(artist, album, listener);
     }
 
 

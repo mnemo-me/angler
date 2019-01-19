@@ -2,7 +2,7 @@ package com.mnemo.angler.player.service;
 
 import com.mnemo.angler.AnglerApp;
 import com.mnemo.angler.data.AnglerRepository;
-import com.mnemo.angler.ui.base.BasePresenter;
+import com.mnemo.angler.ui.base.DisposableBasePresenter;
 
 
 import java.util.HashSet;
@@ -11,7 +11,7 @@ import java.util.Set;
 
 import javax.inject.Inject;
 
-public class AnglerServicePresenter extends BasePresenter {
+public class AnglerServicePresenter extends DisposableBasePresenter {
 
     @Inject
     AnglerRepository repository;
@@ -147,13 +147,13 @@ public class AnglerServicePresenter extends BasePresenter {
 
     // Get library tracks
     void loadLibraryTracks(){
-        repository.loadPlaylistTracks("library", tracks -> {
+        setListener(repository.loadPlaylistTracks("library", tracks -> {
 
             if (getView() != null){
                 ((AnglerServiceView)getView()).setQueue(tracks);
                 ((AnglerServiceView)getView()).initializeFirstTrack();
             }
-        });
+        }));
     }
 
 }

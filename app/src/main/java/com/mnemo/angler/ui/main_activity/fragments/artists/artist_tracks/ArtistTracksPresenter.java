@@ -3,11 +3,11 @@ package com.mnemo.angler.ui.main_activity.fragments.artists.artist_tracks;
 
 import com.mnemo.angler.AnglerApp;
 import com.mnemo.angler.data.AnglerRepository;
-import com.mnemo.angler.ui.base.BasePresenter;
+import com.mnemo.angler.ui.base.DisposableBasePresenter;
 
 import javax.inject.Inject;
 
-public class ArtistTracksPresenter extends BasePresenter{
+public class ArtistTracksPresenter extends DisposableBasePresenter {
 
     @Inject
     AnglerRepository repository;
@@ -19,11 +19,11 @@ public class ArtistTracksPresenter extends BasePresenter{
     // Load artist tracks from database
     void loadArtistTracks(String artist){
 
-        repository.loadArtistTracksFromPlaylist("library", artist, tracks -> {
+        setListener(repository.loadArtistTracksFromPlaylist("library", artist, tracks -> {
 
             if (getView() != null){
                 ((ArtistTracksView)getView()).setArtistTracks(tracks);
             }
-        });
+        }));
     }
 }

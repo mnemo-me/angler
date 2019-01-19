@@ -23,6 +23,7 @@ import javax.inject.Inject;
 import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 public class AnglerDB{
@@ -231,9 +232,9 @@ public class AnglerDB{
 
     // Load albums
     @SuppressLint("CheckResult")
-    public void loadAlbums(AlbumsLoadListener listener){
+    public Disposable loadAlbums(AlbumsLoadListener listener){
 
-        db.albumDAO().getAlbums()
+        return db.albumDAO().getAlbums()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(listener::albumsLoaded);
@@ -248,9 +249,9 @@ public class AnglerDB{
     }
 
     @SuppressLint("CheckResult")
-    public void loadArtistAlbums(String artist, ArtistAlbumsLoadListener listener){
+    public Disposable loadArtistAlbums(String artist, ArtistAlbumsLoadListener listener){
 
-        db.albumDAO().getArtistAlbums(artist)
+        return db.albumDAO().getArtistAlbums(artist)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(listener::artistAlbumsLoaded);
@@ -270,9 +271,9 @@ public class AnglerDB{
 
     // Load album tracks method
     @SuppressLint("CheckResult")
-    public void loadAlbumTracks(String artist, String album, AlbumTracksLoadListener listener){
+    public Disposable loadAlbumTracks(String artist, String album, AlbumTracksLoadListener listener){
 
-        db.trackDAO().getAlbumTracks(artist, album)
+        return db.trackDAO().getAlbumTracks(artist, album)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(listener::albumTracksLoaded);
@@ -281,9 +282,9 @@ public class AnglerDB{
     // Playlists methods
     // Load playlists or/and titles methods
     @SuppressLint("CheckResult")
-    public void loadPlaylistTitles(PlaylistsUpdateListener listener){
+    public Disposable loadPlaylistTitles(PlaylistsUpdateListener listener){
 
-        db.playlistDAO().getPlaylistTitles()
+        return db.playlistDAO().getPlaylistTitles()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(listener::playlistsUpdated);
@@ -291,18 +292,18 @@ public class AnglerDB{
 
 
     @SuppressLint("CheckResult")
-    public void loadPlaylistsCreatedByUser(UserPlaylistsUpdateListener listener){
+    public Disposable loadPlaylistsCreatedByUser(UserPlaylistsUpdateListener listener){
 
-        db.playlistDAO().getUserPlaylists()
+        return db.playlistDAO().getUserPlaylists()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(listener::playlistsUpdated);
     }
 
     @SuppressLint("CheckResult")
-    public void loadPlaylistsAndTitlesWithTrack(String trackId, PlaylistsAndTitlesWithTrackLoadListener listener){
+    public Disposable loadPlaylistsAndTitlesWithTrack(String trackId, PlaylistsAndTitlesWithTrackLoadListener listener){
 
-        db.playlistDAO().getUserPlaylists()
+        return db.playlistDAO().getUserPlaylists()
                 .subscribeOn(Schedulers.io())
                 .subscribe(playlists -> db.linkDAO().getPlaylistsWithTrack(trackId)
                         .observeOn(AndroidSchedulers.mainThread())
@@ -312,18 +313,18 @@ public class AnglerDB{
 
     // Load playlist tracks mwthods
     @SuppressLint("CheckResult")
-    public void loadPlaylistTracks(String playlist, PlaylistLoadListener listener){
+    public Disposable loadPlaylistTracks(String playlist, PlaylistLoadListener listener){
 
         if (playlist.equals("library")){
 
-            db.trackDAO().getTracks()
+            return db.trackDAO().getTracks()
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(listener::playlistLoaded);
 
         }else {
 
-            db.linkDAO().getLinks(playlist)
+            return db.linkDAO().getLinks(playlist)
                     .subscribeOn(Schedulers.io())
                     .subscribe(links -> Observable.fromIterable(db.trackDAO().getTracks(getTrackIds(links)))
                             .observeOn(AndroidSchedulers.mainThread())
@@ -358,9 +359,9 @@ public class AnglerDB{
 
 
     @SuppressLint("CheckResult")
-    public void loadCheckedPlaylistTracks(String playist, PlaylistCheckedTracksLoadListener listener){
+    public Disposable loadCheckedPlaylistTracks(String playist, PlaylistCheckedTracksLoadListener listener){
 
-        db.trackDAO().getTracks()
+        return db.trackDAO().getTracks()
                 .map(tracks -> {
 
                     HashMap<Track, Boolean> checkedTracks = new HashMap<>();
@@ -372,7 +373,7 @@ public class AnglerDB{
                     return checkedTracks;
                 })
                 .subscribeOn(Schedulers.io())
-                .subscribe(checkedTracks -> db.linkDAO().getLinks(playist)
+                .subscribe(checkedTracks -> db.linkDAO().getLinksOnce(playist)
                         .observeOn(AndroidSchedulers.mainThread())
                         .map(this::getTrackIds)
                         .subscribe(tracksId -> {
@@ -492,17 +493,17 @@ public class AnglerDB{
     // Artists methods
     // Load artists method
     @SuppressLint("CheckResult")
-    public void loadArtists(String playlist, ArtistsLoadListener listener) {
+    public Disposable loadArtists(String playlist, ArtistsLoadListener listener) {
 
         if (playlist.equals("library")){
 
-            db.trackDAO().getArtists()
+            return db.trackDAO().getArtists()
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(listener::artistsLoaded);
         }else{
 
-            db.linkDAO().getTracksId(playlist)
+            return db.linkDAO().getTracksId(playlist)
                     .subscribeOn(Schedulers.io())
                     .subscribe(tracksId -> db.trackDAO().getArtists(tracksId)
                             .observeOn(AndroidSchedulers.mainThread())
@@ -512,17 +513,17 @@ public class AnglerDB{
 
     // Load artist tracks methods
     @SuppressLint("CheckResult")
-    public void loadArtistTracksFromPlaylist(String playlist, String artist, ArtistTracksLoadListener listener){
+    public Disposable loadArtistTracksFromPlaylist(String playlist, String artist, ArtistTracksLoadListener listener){
 
         if (playlist.equals("library")){
 
-            db.trackDAO().getTracksByArtist(artist)
+            return db.trackDAO().getTracksByArtist(artist)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(listener::artistTracksLoaded);
         }else{
 
-            db.linkDAO().getTracksId(playlist)
+            return db.linkDAO().getTracksId(playlist)
                     .subscribeOn(Schedulers.io())
                     .subscribe(tracksId -> db.trackDAO().getTracksByArtist(tracksId, artist)
                             .observeOn(AndroidSchedulers.mainThread())

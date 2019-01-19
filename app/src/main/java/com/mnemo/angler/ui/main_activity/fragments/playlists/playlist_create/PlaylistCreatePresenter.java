@@ -3,14 +3,14 @@ package com.mnemo.angler.ui.main_activity.fragments.playlists.playlist_create;
 import com.mnemo.angler.AnglerApp;
 import com.mnemo.angler.data.AnglerRepository;
 import com.mnemo.angler.data.database.Entities.Track;
-import com.mnemo.angler.ui.base.BasePresenter;
+import com.mnemo.angler.ui.base.DisposableBasePresenter;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
 
-public class PlaylistCreatePresenter extends BasePresenter {
+public class PlaylistCreatePresenter extends DisposableBasePresenter {
 
     @Inject
     AnglerRepository repository;
@@ -26,7 +26,7 @@ public class PlaylistCreatePresenter extends BasePresenter {
 
     // Load already created playlist titles
     private void loadPlaylistTitles(){
-        repository.loadPlaylistTitles(playlists -> playlistTitles = playlists);
+        setListener(repository.loadPlaylistTitles(playlists -> playlistTitles = playlists));
     }
 
     // Create new playlist

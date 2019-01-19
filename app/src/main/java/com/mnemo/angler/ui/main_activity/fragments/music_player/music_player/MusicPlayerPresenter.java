@@ -3,13 +3,12 @@ package com.mnemo.angler.ui.main_activity.fragments.music_player.music_player;
 
 import com.mnemo.angler.AnglerApp;
 import com.mnemo.angler.data.AnglerRepository;
-import com.mnemo.angler.ui.base.BasePresenter;
-
+import com.mnemo.angler.ui.base.DisposableBasePresenter;
 
 
 import javax.inject.Inject;
 
-public class MusicPlayerPresenter extends BasePresenter {
+public class MusicPlayerPresenter extends DisposableBasePresenter {
 
 
     @Inject
@@ -22,13 +21,13 @@ public class MusicPlayerPresenter extends BasePresenter {
 
     // Load playlists from database
     void loadPlaylists(){
-        repository.loadPlaylistTitles(playlistTitles -> {
+        setListener(repository.loadPlaylistTitles(playlistTitles -> {
 
             if (getView() != null) {
 
                 ((MusicPlayerView) getView()).updateSpinner(playlistTitles);
             }
-        });
+        }));
     }
 
     // Update playlist

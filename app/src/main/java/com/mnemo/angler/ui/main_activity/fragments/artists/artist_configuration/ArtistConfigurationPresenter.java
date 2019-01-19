@@ -4,17 +4,21 @@ import com.mnemo.angler.AnglerApp;
 import com.mnemo.angler.data.AnglerRepository;
 import com.mnemo.angler.data.database.Entities.Album;
 import com.mnemo.angler.data.database.Entities.Track;
-import com.mnemo.angler.ui.base.BasePresenter;
+import com.mnemo.angler.ui.base.DisposableBasePresenter;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
+import io.reactivex.disposables.Disposable;
 
-public class ArtistConfigurationPresenter extends BasePresenter {
+
+public class ArtistConfigurationPresenter extends DisposableBasePresenter {
 
     @Inject
     AnglerRepository repository;
+
+    private Disposable artistAlbumsDisposable;
 
     private List<Track> tracks;
     private List<Album> albums;
@@ -26,11 +30,11 @@ public class ArtistConfigurationPresenter extends BasePresenter {
     // Load artist tracks from database, get tracks and albums count
     void loadTracksAndAlbumsCount(String artist){
 
-        repository.loadArtistTracksFromPlaylist("library", artist, tracks -> {
+        setListener(repository.loadArtistTracksFromPlaylist("library", artist, tracks -> {
 
             this.tracks = tracks;
 
-            repository.loadArtistAlbums(artist, albums -> {
+            artistAlbumsDisposable = repository.loadArtistAlbums(artist, albums -> {
 
                 this.albums = albums;
 
@@ -40,7 +44,7 @@ public class ArtistConfigurationPresenter extends BasePresenter {
                     ((ArtistConfigurationView)getView()).fillCountViews(tracks.size(), albums.size());
                 }
             });
-        });
+        }));
 
 
     }
@@ -51,8 +55,16 @@ public class ArtistConfigurationPresenter extends BasePresenter {
     }
 
     // Get albums
-
     public List<Album> getAlbums() {
         return albums;
+    }
+
+    @Override
+    public void deattachView() {
+        super.deattachView();
+
+        if (artistAlbumsDisposable != null){
+            artistAlbumsDisposable.dispose();
+        }
     }
 }

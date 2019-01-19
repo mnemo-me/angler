@@ -6,7 +6,7 @@ import android.annotation.SuppressLint;
 import com.mnemo.angler.AnglerApp;
 import com.mnemo.angler.data.AnglerRepository;
 import com.mnemo.angler.data.database.Entities.Track;
-import com.mnemo.angler.ui.base.BasePresenter;
+import com.mnemo.angler.ui.base.DisposableBasePresenter;
 
 import java.util.List;
 
@@ -17,7 +17,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
 
-public class MainPlaylistPresenter extends BasePresenter {
+public class MainPlaylistPresenter extends DisposableBasePresenter {
 
     @Inject
     AnglerRepository repository;
@@ -42,14 +42,14 @@ public class MainPlaylistPresenter extends BasePresenter {
     // Load playlist from database
     void loadPlaylist(String playlist){
 
-        repository.loadPlaylistTracks(playlist, playlistTracks -> {
+        setListener(repository.loadPlaylistTracks(playlist, playlistTracks -> {
 
             tracks = playlistTracks;
 
             if (getView() != null) {
                 applyFilter(((MainPlaylistView)getView()).getFilter());
             }
-        });
+        }));
     }
 
     // Apply filter to tracks

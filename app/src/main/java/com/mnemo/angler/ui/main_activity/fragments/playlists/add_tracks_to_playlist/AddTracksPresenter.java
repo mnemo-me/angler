@@ -4,14 +4,14 @@ package com.mnemo.angler.ui.main_activity.fragments.playlists.add_tracks_to_play
 import com.mnemo.angler.AnglerApp;
 import com.mnemo.angler.data.AnglerRepository;
 import com.mnemo.angler.data.database.Entities.Track;
-import com.mnemo.angler.ui.base.BasePresenter;
+import com.mnemo.angler.ui.base.DisposableBasePresenter;
 
 import java.util.HashMap;
 import java.util.List;
 
 import javax.inject.Inject;
 
-public class AddTracksPresenter extends BasePresenter{
+public class AddTracksPresenter extends DisposableBasePresenter {
 
     private int initialPosition = 0;
 
@@ -25,7 +25,7 @@ public class AddTracksPresenter extends BasePresenter{
 
     // Load tracks from database and check them in map
     void loadTracks(String playlist){
-        repository.loadCheckedPlaylistTracks(playlist, tracks -> {
+        setListener(repository.loadCheckedPlaylistTracks(playlist, tracks -> {
 
             if (getView() != null){
                 ((AddTracksView)getView()).setTracks(tracks);
@@ -36,7 +36,7 @@ public class AddTracksPresenter extends BasePresenter{
                     initialPosition++;
                 }
             }
-        });
+        }));
     }
 
     // Add new tracks in playlist

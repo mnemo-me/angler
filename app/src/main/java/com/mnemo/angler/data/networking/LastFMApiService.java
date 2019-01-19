@@ -1,7 +1,6 @@
 package com.mnemo.angler.data.networking;
 
 
-import io.reactivex.Observable;
 import io.reactivex.Single;
 import okhttp3.ResponseBody;
 import retrofit2.Response;
@@ -21,5 +20,5 @@ interface LastFMApiService {
 
     @Streaming
     @GET
-    Observable<Response<ResponseBody>> downloadImage(@Url String url);
+    Single<Response<ResponseBody>> downloadImage(@Url String url);
 }

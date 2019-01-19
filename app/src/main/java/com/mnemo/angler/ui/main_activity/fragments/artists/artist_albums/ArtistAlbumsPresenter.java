@@ -2,13 +2,13 @@ package com.mnemo.angler.ui.main_activity.fragments.artists.artist_albums;
 
 import com.mnemo.angler.AnglerApp;
 import com.mnemo.angler.data.AnglerRepository;
-import com.mnemo.angler.ui.base.BasePresenter;
+import com.mnemo.angler.ui.base.DisposableBasePresenter;
 
 
 import javax.inject.Inject;
 
 
-public class ArtistAlbumsPresenter extends BasePresenter {
+public class ArtistAlbumsPresenter extends DisposableBasePresenter {
 
     @Inject
     AnglerRepository repository;
@@ -19,11 +19,11 @@ public class ArtistAlbumsPresenter extends BasePresenter {
 
     void loadArtistAlbums(String artist){
 
-        repository.loadArtistAlbums(artist, albums -> {
+        setListener(repository.loadArtistAlbums(artist, albums -> {
 
             if (getView() != null){
                 ((ArtistAlbumsView)getView()).setArtistAlbums(albums);
             }
-        });
+        }));
     }
 }

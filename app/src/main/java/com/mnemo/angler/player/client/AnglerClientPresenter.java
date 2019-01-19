@@ -11,7 +11,7 @@ public class AnglerClientPresenter extends BasePresenter {
     @Inject
     AnglerRepository repository;
 
-    public AnglerClientPresenter() {
+    AnglerClientPresenter() {
         AnglerApp.getAnglerComponent().injectAnglerClientPresenter(this);
     }
 
