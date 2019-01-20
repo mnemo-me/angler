@@ -38,4 +38,16 @@ public class AlbumConfigurationPresenter extends DisposableBasePresenter {
     public List<Track> getTracks() {
         return tracks;
     }
+
+    // Get year
+    void getYear(String artist, String album){
+
+        repository.loadAlbumYear(artist, album, year -> {
+
+            if (getView() != null){
+
+                ((AlbumConfigurationView)getView()).setAlbumYear(year);
+            }
+        });
+    }
 }

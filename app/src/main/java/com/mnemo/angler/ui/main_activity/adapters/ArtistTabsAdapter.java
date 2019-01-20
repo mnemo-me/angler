@@ -22,14 +22,16 @@ public class ArtistTabsAdapter extends FragmentStatePagerAdapter {
     private int tracksCount;
     private int albumsCount;
     private int orientation;
+    private boolean isBioIncluded;
 
-    public ArtistTabsAdapter(FragmentManager fm, Context context, String artist, int tracksCount, int albumsCount, int orientation) {
+    public ArtistTabsAdapter(FragmentManager fm, Context context, String artist, int tracksCount, int albumsCount, int orientation, boolean isBioIncluded) {
         super(fm);
         this.context = context;
         this.artist = artist;
         this.tracksCount = tracksCount;
         this. albumsCount = albumsCount;
         this.orientation = orientation;
+        this.isBioIncluded = isBioIncluded;
     }
 
     @Override
@@ -103,6 +105,11 @@ public class ArtistTabsAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public int getCount() {
-        return tabs.length;
+
+        if (!isBioIncluded){
+            return tabs.length - 1;
+        }else {
+            return tabs.length;
+        }
     }
 }

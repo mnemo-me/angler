@@ -59,6 +59,10 @@ public class AnglerDB{
         void albumTracksLoaded(List<Track> tracks);
     }
 
+    public interface OnAlbumYearLoadListener{
+        void onAlbumYearLoaded(int year);
+    }
+
     public interface PlaylistCheckedTracksLoadListener{
         void checkedTracksLoaded(HashMap<Track, Boolean> tracks);
     }
@@ -277,6 +281,16 @@ public class AnglerDB{
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(listener::albumTracksLoaded);
+    }
+
+    // Load album year
+    @SuppressLint("CheckResult")
+    public void loadAlbumYear(String artist, String album, OnAlbumYearLoadListener listener){
+
+        db.albumDAO().getAlbumYear(artist, album)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(listener::onAlbumYearLoaded);
     }
 
     // Playlists methods

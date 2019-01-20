@@ -29,6 +29,9 @@ public interface AlbumDAO {
     @Query("SELECT * FROM albums WHERE year=:year")
     Single<List<Album>> getAlbumsByYear(int year);
 
+    @Query("SELECT year FROM albums WHERE artist=:artist AND album=:album")
+    Single<Integer> getAlbumYear(String artist, String album);
+
     @Query("UPDATE albums SET year=:year WHERE _id=:id")
     void updateAlbumYear(String id, int year);
 

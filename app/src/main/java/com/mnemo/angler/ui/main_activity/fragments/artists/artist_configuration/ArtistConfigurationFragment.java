@@ -271,7 +271,9 @@ public class ArtistConfigurationFragment extends Fragment implements ArtistConfi
     @Override
     public void initializeTabs(int tracksCount, int albumsCount) {
 
-        viewPager.setAdapter(new ArtistTabsAdapter(getActivity().getSupportFragmentManager(), getContext(), artist, tracksCount, albumsCount, orientation));
+        boolean isBioIncluded = presenter.checkArtistBio(artist);
+
+        viewPager.setAdapter(new ArtistTabsAdapter(getActivity().getSupportFragmentManager(), getContext(), artist, tracksCount, albumsCount, orientation, isBioIncluded));
         tabLayout.setupWithViewPager(viewPager);
     }
 

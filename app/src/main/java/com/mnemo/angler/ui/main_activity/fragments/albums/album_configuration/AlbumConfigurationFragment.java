@@ -103,6 +103,7 @@ public class AlbumConfigurationFragment extends Fragment implements AlbumConfigu
     private String image;
     private String title;
     private String artist;
+    private int year;
     private String localPlaylistName;
 
 
@@ -145,7 +146,8 @@ public class AlbumConfigurationFragment extends Fragment implements AlbumConfigu
         image = getArguments().getString("image");
         title = getArguments().getString("album_name");
         artist = getArguments().getString("artist");
-        int year = getArguments().getInt("year");
+        year = getArguments().getInt("year");
+
 
         localPlaylistName = "album/" + artist + "/" + title;
 
@@ -161,9 +163,7 @@ public class AlbumConfigurationFragment extends Fragment implements AlbumConfigu
 
         artistView.setText(artist);
 
-        if (year != 10000) {
-            yearView.setText(String.valueOf(year) + " · ");
-        }
+        setAlbumYear(year);
 
         // Setup appbar behavior
         if (orientation == Configuration.ORIENTATION_PORTRAIT){
@@ -223,6 +223,11 @@ public class AlbumConfigurationFragment extends Fragment implements AlbumConfigu
         // Bind Presenter to View
         presenter = new AlbumConfigurationPresenter();
         presenter.attachView(this);
+
+        // Get year from database if year == 0 in arguments
+        if (year == 0){
+            presenter.getYear(artist, title);
+        }
 
         // Load album tracks
         presenter.loadAlbumTracks(artist, title);
@@ -367,6 +372,14 @@ public class AlbumConfigurationFragment extends Fragment implements AlbumConfigu
         if ((((MainActivity)getActivity()).getCurrentPlaylistName()).equals(localPlaylistName)) {
             adapter.setTrack(((MainActivity) getActivity()).getCurrentMediaId());
             adapter.setPlaybackState(((MainActivity) getActivity()).getPlaybackState());
+        }
+    }
+
+    @Override
+    public void setAlbumYear(int year) {
+
+        if (year != 10000 && year != 0) {
+            yearView.setText(String.valueOf(year) + " · ");
         }
     }
 

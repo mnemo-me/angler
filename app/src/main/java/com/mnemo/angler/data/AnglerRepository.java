@@ -412,8 +412,8 @@ public class AnglerRepository {
         return anglerFileStorage.getAlbumImagePath(artist, album);
     }
 
-    public String loadArtistBio(String artist){
-        return anglerFileStorage.loadArtistBio(artist);
+    public void loadArtistBio(String artist, AnglerFileStorage.OnArtistBioLoadListener listener){
+        anglerFileStorage.loadArtistBio(artist, listener);
     }
 
     public List<String> gatherImageFolders(){
@@ -434,6 +434,10 @@ public class AnglerRepository {
 
     public Uri getTempCoverUri(){
         return anglerFileStorage.getTempCoverUri();
+    }
+
+    public boolean checkArtistBio(String artist){
+        return anglerFileStorage.checkArtistBio(artist);
     }
 
 
@@ -572,6 +576,10 @@ public class AnglerRepository {
 
     public Disposable loadAlbumTracks(String artist, String album, AnglerDB.AlbumTracksLoadListener listener){
         return anglerDB.loadAlbumTracks(artist, album, listener);
+    }
+
+    public void loadAlbumYear(String artist, String album, AnglerDB.OnAlbumYearLoadListener listener){
+        anglerDB.loadAlbumYear(artist, album, listener);
     }
 
 

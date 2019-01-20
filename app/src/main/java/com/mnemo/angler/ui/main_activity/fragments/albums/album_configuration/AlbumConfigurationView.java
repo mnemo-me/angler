@@ -8,4 +8,5 @@ import java.util.List;
 interface AlbumConfigurationView extends BaseView {
 
     void setAlbumTracks(List<Track> tracks);
+    void setAlbumYear(int year);
 }
