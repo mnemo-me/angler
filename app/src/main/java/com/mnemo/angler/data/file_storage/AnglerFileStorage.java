@@ -30,6 +30,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.inject.Inject;
 
@@ -52,6 +53,10 @@ public class AnglerFileStorage {
 
     public interface OnImageFolderLoadListener{
         void onImageFolderLoaded(List<String> images);
+    }
+
+    public interface OnArtistBioLoadListener{
+        void onArtistBioLoaded(String bio);
     }
 
     public static final String PHONE_STORAGE = Environment.getExternalStorageDirectory().getPath();
@@ -505,25 +510,36 @@ public class AnglerFileStorage {
     }
 
 
-    public String loadArtistBio(String artist){
+    @SuppressLint("CheckResult")
+    public void loadArtistBio(String artist, OnArtistBioLoadListener listener){
 
-        StringBuilder builder = new StringBuilder();
+        AtomicReference<String> bio = new AtomicReference<>();
 
-        File file = new File(AnglerFolder.PATH_ARTIST_BIO, artist + ".txt");
+        Completable.fromAction(() -> {
 
-        try {
-            BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
+            StringBuilder builder = new StringBuilder();
 
-            while (bufferedReader.ready()){
-                builder.append("\n").append(bufferedReader.readLine());
+            File file = new File(AnglerFolder.PATH_ARTIST_BIO, artist + ".txt");
+
+            try {
+                BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
+
+                while (bufferedReader.ready()){
+                    builder.append("\n").append(bufferedReader.readLine());
+                }
+                bufferedReader.close();
+
+            }catch (IOException e){
+                e.printStackTrace();
             }
-            bufferedReader.close();
 
-        }catch (IOException e){
-            e.printStackTrace();
-        }
+            bio.set(builder.toString());
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(() -> listener.onArtistBioLoaded(bio.get()));
 
-        return builder.toString();
+
     }
 
     /*
@@ -655,6 +671,11 @@ public class AnglerFileStorage {
     // Check if file exist
     public boolean isFileExist(String filepath){
         return new File(filepath).exists();
+    }
+
+    // Check artist bio
+    public boolean checkArtistBio(String artist){
+        return new File(getArtistBioPath(artist)).length() > 0;
     }
 
 

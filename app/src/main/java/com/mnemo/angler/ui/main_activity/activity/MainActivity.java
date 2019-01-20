@@ -278,6 +278,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
             drawer.closeDrawer(Gravity.START);
         } else if (backStackCount == 1 || (backStackCount == 2 && getSupportFragmentManager().findFragmentById(R.id.song_list) instanceof PlaylistArtistTracksFragment)) {
             findViewById(R.id.main_frame).setVisibility(View.VISIBLE);
+            selectDrawerItem(0);
 
             super.onBackPressed();
         } else {

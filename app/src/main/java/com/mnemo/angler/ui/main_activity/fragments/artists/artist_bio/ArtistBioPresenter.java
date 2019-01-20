@@ -18,10 +18,13 @@ public class ArtistBioPresenter extends BasePresenter {
 
     // Load artist bio
     void loadBio(String artist){
-        String bio = repository.loadArtistBio(artist);
+        repository.loadArtistBio(artist, bio -> {
 
-        if (getView() != null){
-            ((ArtistBioView)getView()).setBio(bio);
-        }
+            if (getView() != null){
+                ((ArtistBioView)getView()).setBio(bio);
+            }
+        });
+
+
     }
 }

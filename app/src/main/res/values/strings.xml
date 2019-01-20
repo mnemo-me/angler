@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">Angler</string>
-    <string name="trial_version">trial version</string>
     <string name="music_player">Music Player</string>
     <string name="playlist_manager">Playlists</string>
     <string name="albums">Albums</string>
@@ -94,6 +93,11 @@
     <string name="no_albums">no albums</string>
     <string name="no_artists">no artists</string>
     <string name="no_internet_connection">No internet connection</string>
+    <string name="trial_version">trial version</string>
+    <string name="free_trial">free trial</string>
+    <string name="quit">quit</string>
+    <string name="trial_period_initialization">Thanks for downloading Angler. You get free trial version for 15 days. After that for continue using app you should purchase it. Also you can do it any time you want.y</string>
+    <string name="trial_period_is_expired">Trial period is expired. To continue using Angler you should purchase it.</string>
 
 
 </resources>

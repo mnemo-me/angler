@@ -67,4 +67,9 @@ public class ArtistConfigurationPresenter extends DisposableBasePresenter {
             artistAlbumsDisposable.dispose();
         }
     }
+
+    // Check bio
+    boolean checkArtistBio(String artist){
+        return repository.checkArtistBio(artist);
+    }
 }
