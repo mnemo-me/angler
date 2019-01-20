@@ -219,13 +219,6 @@ public class MusicPlayerFragment extends Fragment implements MusicPlayerView {
             // remove artists or artist tracks fragments
             FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
 
-            Fragment artistsFragment = getActivity().getSupportFragmentManager().findFragmentById(R.id.artist_list);
-
-            if (artistsFragment != null) {
-                transaction.remove(artistsFragment);
-            }
-
-
             Fragment artistTrackFragment = getActivity().getSupportFragmentManager().findFragmentById(R.id.artist_song_list);
 
             if (artistTrackFragment != null){
@@ -277,6 +270,7 @@ public class MusicPlayerFragment extends Fragment implements MusicPlayerView {
 
             if (playlistFragment != null){
                 transaction.remove(playlistFragment);
+                getActivity().getSupportFragmentManager().popBackStack();
             }
 
             // Remove artist track fragment
@@ -289,7 +283,7 @@ public class MusicPlayerFragment extends Fragment implements MusicPlayerView {
 
 
             // Open artists fragment
-            transaction.replace(R.id.artist_list, new PlaylistArtistsFragment(), "artists_fragment");
+            transaction.replace(R.id.song_list, new PlaylistArtistsFragment(), "artists_fragment");
             transaction.commit();
 
             // Show separator

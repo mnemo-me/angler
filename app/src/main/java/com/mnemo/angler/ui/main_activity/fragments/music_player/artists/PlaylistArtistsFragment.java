@@ -95,6 +95,7 @@ public class PlaylistArtistsFragment extends Fragment implements PlaylistArtists
             recyclerView.setPadding(0, (int) (8 * MainActivity.density), 0, (int) (8 * MainActivity.density));
         }else{
             recyclerView.setPadding(0, (int) (4 * MainActivity.density), 0, (int) (4 * MainActivity.density));
+            recyclerView.getLayoutParams().width = (int)(285 * MainActivity.density);
         }
 
         recyclerView.setHasFixedSize(true);
