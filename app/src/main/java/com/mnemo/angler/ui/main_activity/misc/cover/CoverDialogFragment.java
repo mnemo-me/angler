@@ -2,6 +2,8 @@ package com.mnemo.angler.ui.main_activity.misc.cover;
 
 
 import android.app.Dialog;
+import android.content.res.Configuration;
+import android.graphics.Point;
 import android.os.Bundle;
 
 import android.support.annotation.NonNull;
@@ -59,6 +61,14 @@ public class CoverDialogFragment extends DialogFragment {
         super.onStart();
 
         AlertDialog alertDialog = (AlertDialog)getDialog();
-        alertDialog.getWindow().setLayout((int)(392 * MainActivity.density), (int)(392 * MainActivity.density));
+
+        Point size = new Point();
+        alertDialog.getWindow().getWindowManager().getDefaultDisplay().getSize(size);
+
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            alertDialog.getWindow().setLayout(size.x, size.x);
+        }else {
+            alertDialog.getWindow().setLayout((int) (size.y - 24 * MainActivity.density), (int) (size.y - 24 * MainActivity.density));
+        }
     }
 }

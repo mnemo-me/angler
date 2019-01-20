@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
+import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -333,7 +334,13 @@ public class PlaylistCreationDialogFragment extends DialogFragment implements Pl
         super.onStart();
 
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            getDialog().getWindow().setLayout((int) (600 * MainActivity.density), ViewGroup.LayoutParams.MATCH_PARENT);
+
+            AlertDialog alertDialog = (AlertDialog)getDialog();
+
+            Point size = new Point();
+            alertDialog.getWindow().getWindowManager().getDefaultDisplay().getSize(size);
+
+            alertDialog.getWindow().setLayout((int)(size.x - 120 * MainActivity.density), (int)(size.y - 24 * MainActivity.density));
         }
     }
 

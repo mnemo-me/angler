@@ -27,8 +27,6 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        app:ci_aspect_ratio_h="472"
-        app:ci_aspect_ratio_w="410"
         app:ci_border_width="0dp"
         app:ci_corner_width="0dp"
         app:ci_crop_scale="1"

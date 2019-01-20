@@ -1,7 +1,9 @@
 package com.mnemo.angler.ui.local_load_activity.fragments.portrait_crop;
 
 
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -13,6 +15,8 @@ import android.view.ViewGroup;
 
 import com.mnemo.angler.R;
 import com.mnemo.angler.ui.local_load_activity.fragments.landscape_crop.LandscapeCropFragment;
+import com.mnemo.angler.ui.main_activity.activity.MainActivity;
+import com.steelkiwi.cropiwa.AspectRatio;
 import com.steelkiwi.cropiwa.CropIwaView;
 import com.steelkiwi.cropiwa.config.CropIwaSaveConfig;
 
@@ -54,6 +58,26 @@ public class PortraitCropFragment extends Fragment implements PortraitCropView{
         image = getArguments().getString("image");
 
         // Setup CropIwa
+        Point size = new Point();
+
+        getActivity().getWindowManager().getDefaultDisplay().getSize(size);
+
+        int aspectRatioW;
+        int aspectRatioH;
+
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
+
+            aspectRatioW = (int)(size.x + 20 * MainActivity.density);
+            aspectRatioH = (int)(size.y - (48 + 140) * MainActivity.density);
+        }else{
+            aspectRatioW = (int)(size.y + 20 * MainActivity.density);
+            aspectRatioH = (int)(size.x - (48 + 140) * MainActivity.density);
+        }
+
+        cropIwaView.configureOverlay()
+                .setAspectRatio(new AspectRatio(aspectRatioW, aspectRatioH))
+                .apply();
+
         cropIwaView.setImageUri(Uri.fromFile(new File(image)));
 
         return view;

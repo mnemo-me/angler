@@ -7,18 +7,21 @@
 
     <ImageView
         android:id="@+id/playlist_creation_image"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:adjustViewBounds="true"
+        app:layout_constraintDimensionRatio="1"
         android:contentDescription="@string/cover"
-        android:scaleType="centerCrop"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         tools:src="@drawable/back3" />
 
     <View
-        android:layout_width="180dp"
+        android:layout_width="0dp"
         android:layout_height="100dp"
         android:background="@drawable/skrim"
+        app:layout_constraintStart_toStartOf="@id/playlist_creation_image"
+        app:layout_constraintEnd_toEndOf="@id/playlist_creation_image"
         app:layout_constraintBottom_toBottomOf="@id/playlist_creation_image" />
 
     <View

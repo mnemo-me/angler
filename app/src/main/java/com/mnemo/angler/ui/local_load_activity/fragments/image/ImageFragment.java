@@ -1,6 +1,7 @@
 package com.mnemo.angler.ui.local_load_activity.fragments.image;
 
 
+import android.graphics.Point;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -10,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.mnemo.angler.R;
+import com.mnemo.angler.ui.main_activity.activity.MainActivity;
 import com.mnemo.angler.util.ImageAssistant;
 
 import butterknife.BindView;
@@ -56,6 +58,13 @@ public class ImageFragment extends Fragment {
         // Assign image to view
         imageView.setTransitionName(getResources().getString(R.string.local_load_image_transition) + getArguments().getInt("position"));
         ImageAssistant.loadImage(getContext(), image, imageView, 400);
+
+        Point size = new Point();
+
+        getActivity().getWindowManager().getDefaultDisplay().getSize(size);
+
+        imageView.setMaxHeight((int)(size.y - 120 * MainActivity.density));
+        imageView.setMaxWidth((int)(size.x - 24 * MainActivity.density));
 
         return view;
     }
