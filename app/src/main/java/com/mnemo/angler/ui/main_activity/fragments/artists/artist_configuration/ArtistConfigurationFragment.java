@@ -273,7 +273,7 @@ public class ArtistConfigurationFragment extends Fragment implements ArtistConfi
 
         boolean isBioIncluded = presenter.checkArtistBio(artist);
 
-        viewPager.setAdapter(new ArtistTabsAdapter(getActivity().getSupportFragmentManager(), getContext(), artist, tracksCount, albumsCount, orientation, isBioIncluded));
+        viewPager.setAdapter(new ArtistTabsAdapter(getChildFragmentManager(), getContext(), artist, tracksCount, albumsCount, orientation, isBioIncluded));
         tabLayout.setupWithViewPager(viewPager);
     }
 

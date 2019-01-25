@@ -31,12 +31,21 @@ public class AnglerPreferences {
         playbackPreferences = context.getSharedPreferences("playback_pref", Context.MODE_PRIVATE);
     }
 
+
     public boolean getFirstLaunch(){
         return appPreferences.getBoolean("first_launch", true);
     }
 
     public void setFirstLaunch(boolean firstLaunch){
         appPreferences.edit().putBoolean("first_launch", firstLaunch).apply();
+    }
+
+    public long getTrialTimestamp(){
+        return appPreferences.getLong("trial_timestamp", 0);
+    }
+
+    public void setTrialTimestamp(long timestamp){
+        appPreferences.edit().putLong("trial_timestamp", timestamp).apply();
     }
 
     public void setBackgroundImage(String backgroundImage){

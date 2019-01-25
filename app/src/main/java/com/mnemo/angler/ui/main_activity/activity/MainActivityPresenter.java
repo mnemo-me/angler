@@ -1,6 +1,8 @@
 package com.mnemo.angler.ui.main_activity.activity;
 
 
+import android.util.Log;
+
 import com.mnemo.angler.AnglerApp;
 import com.mnemo.angler.data.AnglerRepository;
 import com.mnemo.angler.ui.base.BasePresenter;
@@ -27,4 +29,43 @@ public class MainActivityPresenter extends BasePresenter {
         ((MainActivityView) getView()).setBackground(backgroundImage, opacity);
 
     }
+
+
+    // Check trial
+    void checkTrial(String accountId, long currentTimestamp){
+
+        //long trialPeriod = 1296000000;
+        long trialPeriod = 43200000;
+
+        long trialTimestamp = repository.getTrialTimestamp();
+
+        if (trialTimestamp != 0){
+
+            if (getView() != null){
+                Log.e("%%%%", currentTimestamp + "        " +  trialTimestamp + "         " + String.valueOf(currentTimestamp - trialTimestamp) + "    " + trialPeriod);
+                Log.e("%%%%", String.valueOf(currentTimestamp - trialTimestamp < trialPeriod));
+                ((MainActivityView)getView()).setTrial(currentTimestamp - trialTimestamp < trialPeriod);
+            }
+
+        }else {
+
+
+            repository.syncTimestamps(accountId, currentTimestamp, (currentTrialTimestamp ,isTrialInitialized) -> {
+
+                repository.setTrialTimestamp(currentTrialTimestamp);
+
+                if (getView() != null){
+
+                    ((MainActivityView)getView()).setTrial(currentTimestamp - currentTrialTimestamp < trialPeriod);
+
+                    if (isTrialInitialized) {
+                        ((MainActivityView) getView()).showWelcomeDialog();
+                    }
+                }
+
+            });
+        }
+    }
+
+
 }

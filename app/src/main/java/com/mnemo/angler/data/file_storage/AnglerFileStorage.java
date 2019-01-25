@@ -162,7 +162,9 @@ public class AnglerFileStorage {
                             position = 10000;
                         }
 
-                        tracks.add(new Track(id, title, artist, album, duration, uri, year, position));
+                        if (title != null && artist != null && album != null && duration != 0) {
+                            tracks.add(new Track(id, title, artist, album, duration, uri, year, position));
+                        }
 
                     }
                 }

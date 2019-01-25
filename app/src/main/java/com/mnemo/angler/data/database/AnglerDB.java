@@ -31,6 +31,10 @@ public class AnglerDB{
     private AnglerRoomDatabase db;
 
     // Listener interfaces
+    public interface UpdateDatabaseListener{
+        void onDatabaseUpdated();
+    }
+
     public interface LibraryUpdateListener{
         void libraryUpdated();
     }
@@ -95,6 +99,10 @@ public class AnglerDB{
         void tracksWithUnknownAlbumPositionLoaded(List<Track> tracks);
     }
 
+    public interface LibraryTracksCountListener{
+        void onLibraryTracksCount(int count);
+    }
+
     @Inject
     public AnglerDB(Context context) {
 
@@ -114,7 +122,7 @@ public class AnglerDB{
 
     // Update database
     @SuppressLint("CheckResult")
-    public void updateDatabase(List<Track> tracks){
+    public void updateDatabase(List<Track> tracks, UpdateDatabaseListener listener){
 
         db.trackDAO().getTracksOnce()
                 .subscribeOn(Schedulers.io())
@@ -125,23 +133,12 @@ public class AnglerDB{
                     deleteTracks(tracks, dbTracks);
 
                     cleanAlbums();
+
+                    listener.onDatabaseUpdated();
                 });
 
     }
 
-    @SuppressLint("CheckResult")
-    public void updateDatabase(List<Track> tracks, LibraryUpdateListener listener){
-
-        db.trackDAO().getTracksOnce()
-                .subscribeOn(Schedulers.io())
-                .subscribe(dbTracks -> Completable.fromAction(() -> {
-                    insertTracks(tracks, dbTracks);
-                    updateTracks(tracks, dbTracks);
-                    deleteTracks(tracks, dbTracks);
-                })
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(listener::libraryUpdated));
-    }
 
     // Insert, Update, Delete track methods
     @SuppressLint("CheckResult")
@@ -189,6 +186,16 @@ public class AnglerDB{
         }
 
         return trackIds;
+    }
+
+    // Get library tracks count
+    @SuppressLint("CheckResult")
+    public void getLibraryTracksCount(LibraryTracksCountListener listener){
+
+        db.trackDAO().getLibraryTrackCount()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(listener::onLibraryTracksCount);
     }
 
     // Get tracks with unknown album position
@@ -295,7 +302,6 @@ public class AnglerDB{
 
     // Playlists methods
     // Load playlists or/and titles methods
-    @SuppressLint("CheckResult")
     public Disposable loadPlaylistTitles(PlaylistsUpdateListener listener){
 
         return db.playlistDAO().getPlaylistTitles()
@@ -369,6 +375,12 @@ public class AnglerDB{
                             })
                             .subscribe(listener::playlistLoaded));
         }
+    }
+
+
+    public List<Track> loadLibrary() {
+
+        return db.trackDAO().getLibrary();
     }
 
 

@@ -225,13 +225,6 @@ public class AnglerClient implements AnglerClientView{
         mController.getTransportControls().sendCustomAction("update_queue", null);
     }
 
-    public void addToPlaylistQueue(Track track){
-
-        MediaDescriptionCompat description = MediaAssistant.mergeMediaDescription(track, getQueueTitle());
-        mController.addQueueItem(description);
-
-        mController.getTransportControls().sendCustomAction("update_queue", null);
-    }
 
     public void addToPlaylistQueue(List<Track> tracks){
 
@@ -361,6 +354,12 @@ public class AnglerClient implements AnglerClientView{
                 MediaMetadataCompat metadata = mController.getMetadata();
 
                 if (metadata != null) {
+
+                    Intent intent = new Intent();
+                    intent.setAction("initialize_media");
+                    intent.putExtra("is_media", true);
+                    context.sendBroadcast(intent);
+
                     showMetadata(metadata);
 
                     String mediaId = metadata.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID);

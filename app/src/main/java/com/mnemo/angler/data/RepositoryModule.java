@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.mnemo.angler.data.database.AnglerDB;
 import com.mnemo.angler.data.file_storage.AnglerFileStorage;
+import com.mnemo.angler.data.firebase_database.AnglerFirebaseDatabase;
 import com.mnemo.angler.data.networking.AnglerNetworking;
 import com.mnemo.angler.data.preferences.AnglerPreferences;
 
@@ -53,7 +54,13 @@ public class RepositoryModule {
 
     @Provides
     @Singleton
-    AnglerPreferences providesPreferences(){
+    AnglerPreferences providePreferences(){
         return new AnglerPreferences(provideContext());
+    }
+
+    @Provides
+    @Singleton
+    AnglerFirebaseDatabase provideFirebaseDatabase(){
+        return new AnglerFirebaseDatabase();
     }
 }

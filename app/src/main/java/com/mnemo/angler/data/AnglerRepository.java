@@ -10,6 +10,7 @@ import com.mnemo.angler.data.database.Entities.Album;
 import com.mnemo.angler.data.database.Entities.Track;
 import com.mnemo.angler.data.file_storage.AnglerFileStorage;
 import com.mnemo.angler.data.file_storage.AnglerFolder;
+import com.mnemo.angler.data.firebase_database.AnglerFirebaseDatabase;
 import com.mnemo.angler.data.networking.AnglerNetworking;
 import com.mnemo.angler.data.preferences.AnglerPreferences;
 
@@ -24,6 +25,7 @@ import java.util.Set;
 import javax.inject.Inject;
 
 import io.reactivex.Completable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
@@ -35,6 +37,9 @@ public class AnglerRepository {
 
     @Inject
     AnglerDB anglerDB;
+
+    @Inject
+    AnglerFirebaseDatabase anglerFirebaseDB;
 
     @Inject
     AnglerFileStorage anglerFileStorage;
@@ -58,21 +63,22 @@ public class AnglerRepository {
             anglerFileStorage.createAppFolder();
 
             ArrayList<Track> tracks = anglerFileStorage.scanTracks(AnglerFileStorage.PHONE_STORAGE);
-            anglerDB.updateDatabase(tracks);
+            anglerDB.updateDatabase(tracks, () -> {
 
-            if (onAppInitializationListener != null){
+                if (onAppInitializationListener != null){
 
-                onAppInitializationListener.onAppInitialized(tracks);
-            }
+                    onAppInitializationListener.onAppInitialized(anglerDB.loadLibrary());
+                }
+
+                loadAlbumCovers();
+                loadAlbumYear();
+                loadArtistImagesAndBios();
+                loadTrackAlbumPosition();
+
+            });
 
         }).subscribeOn(Schedulers.io())
-                .subscribe(() -> {
-
-                    loadAlbumCovers();
-                    loadAlbumYear();
-                    loadArtistImagesAndBios();
-                    loadTrackAlbumPosition();
-        });
+                .subscribe();
 
 
     }
@@ -206,6 +212,18 @@ public class AnglerRepository {
 
     public void setFirstLaunch(boolean firstLaunch){
         anglerPreferences.setFirstLaunch(firstLaunch);
+    }
+
+    public long getTrialTimestamp(){
+        return anglerPreferences.getTrialTimestamp();
+    }
+
+    public void setTrialTimestamp(long timestamp){
+        anglerPreferences.setTrialTimestamp(timestamp);
+    }
+
+    public void syncTimestamps(String accountId, long timestamp, AnglerFirebaseDatabase.OnSyncTimeStampsListener listener){
+        anglerFirebaseDB.syncTimestamps(accountId, timestamp, listener);
     }
 
 
@@ -351,7 +369,19 @@ public class AnglerRepository {
     // Playback methods
     // Seekbar
     public String getCurrentTrack(){
-        return anglerPreferences.getCurrentTrack();
+
+        String currentTrack = anglerPreferences.getCurrentTrack();
+
+        if (currentTrack != null) {
+
+            String trackUri = currentTrack.split(":::")[5];
+
+            if (!anglerFileStorage.isFileExist(trackUri)) {
+                currentTrack = null;
+            }
+        }
+
+        return currentTrack;
     }
 
     public void setCurrentTrack(String track){
@@ -449,22 +479,29 @@ public class AnglerRepository {
         Completable.fromAction(() -> {
 
                     ArrayList<Track> tracks = anglerFileStorage.scanTracks(AnglerFileStorage.PHONE_STORAGE);
-                    anglerDB.updateDatabase(tracks, listener);
+                    anglerDB.updateDatabase(tracks, () -> {
 
-                    if (onAppInitializationListener != null){
+                        if (onAppInitializationListener != null){
 
-                        onAppInitializationListener.onAppInitialized(tracks);
-                    }
+                            onAppInitializationListener.onAppInitialized(anglerDB.loadLibrary());
+                        }
+
+                        loadAlbumCovers();
+                        loadAlbumYear();
+                        loadArtistImagesAndBios();
+                        loadTrackAlbumPosition();
+
+                    });
+
 
                 })
                 .subscribeOn(Schedulers.io())
-                .subscribe(() -> {
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(listener::libraryUpdated);
+    }
 
-                    loadAlbumCovers();
-                    loadAlbumYear();
-                    loadArtistImagesAndBios();
-                    loadTrackAlbumPosition();
-                });
+    public void getLibraryTracksCount(AnglerDB.LibraryTracksCountListener listener){
+        anglerDB.getLibraryTracksCount(listener);
     }
 
     // Playlists methods
@@ -581,6 +618,7 @@ public class AnglerRepository {
     public void loadAlbumYear(String artist, String album, AnglerDB.OnAlbumYearLoadListener listener){
         anglerDB.loadAlbumYear(artist, album, listener);
     }
+
 
 
 

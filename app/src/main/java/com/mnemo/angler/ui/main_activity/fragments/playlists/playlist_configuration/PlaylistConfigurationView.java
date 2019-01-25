@@ -9,4 +9,5 @@ import java.util.List;
 interface PlaylistConfigurationView extends BaseView{
 
     void setPlaylistTracks(List<Track> tracks);
+    void setAddTracksAvailable(boolean isAddTracksAvailable);
 }

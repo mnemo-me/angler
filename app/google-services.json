@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "567518988378",
+    "firebase_url": "https://angler-190914.firebaseio.com",
+    "project_id": "angler-190914",
+    "storage_bucket": "angler-190914.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:567518988378:android:0c65028f79beb0ed",
+        "android_client_info": {
+          "package_name": "com.mnemo.angler"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "567518988378-vqp29ve2d48d9a1dn4qbef35a1567s1s.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mnemo.angler",
+            "certificate_hash": "d576c9ec3a30d6f6296f14c3da1e55e7fb2f706b"
+          }
+        },
+        {
+          "client_id": "567518988378-drsbafq7k01t1ttr1uteli3vhks9a0gu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAaXyYd1-dDKjARYmZU4fiKsKuA9vHPJqo"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "567518988378-drsbafq7k01t1ttr1uteli3vhks9a0gu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

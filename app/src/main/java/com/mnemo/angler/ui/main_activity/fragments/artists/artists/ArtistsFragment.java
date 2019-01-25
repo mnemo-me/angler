@@ -145,6 +145,12 @@ public class ArtistsFragment extends Fragment implements DrawerItem, ArtistsView
     // Refresh artists images
     @OnClick(R.id.artists_refresh_images)
     void refreshArtistImages(){
+
+        if (adapter.getItemCount() == 0){
+            Toast.makeText(getContext(), R.string.no_artists, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         if (!isRefreshing) {
             isRefreshing = true;
 

@@ -15,6 +15,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -76,6 +77,11 @@ public class MainPlaylistFragment extends Fragment implements MainPlaylistView{
         // Inject views
         unbinder = ButterKnife.bind(this, view);
 
+        // Show track list in portrait orientation
+        if (orientation == Configuration.ORIENTATION_PORTRAIT){
+            getActivity().findViewById(R.id.song_list).setVisibility(View.VISIBLE);
+        }
+
         // Loading view appear handler
         loadingView = view.findViewById(R.id.mp_refreshable_track_list_loading);
 
@@ -121,9 +127,6 @@ public class MainPlaylistFragment extends Fragment implements MainPlaylistView{
             loadingView.setVisibility(View.VISIBLE);
         }
 
-        // Load tracks
-        presenter.loadPlaylist(((MainActivity) getActivity()).getMainPlaylistName());
-
         // Configure swipe behavior
         swipeRefreshLayout.setOnRefreshListener(() -> presenter.updateLibrary());
     }
@@ -133,6 +136,9 @@ public class MainPlaylistFragment extends Fragment implements MainPlaylistView{
         super.onStart();
 
         presenter.attachView(this);
+
+        // Load tracks
+        presenter.loadPlaylist(((MainActivity) getActivity()).getMainPlaylistName());
 
         // Set current track
         if (((MainActivity)getActivity()).getCurrentPlaylistName().equals(((MainActivity)getActivity()).getMainPlaylistName())) {

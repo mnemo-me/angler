@@ -83,6 +83,10 @@ public class PlaylistConfigurationFragment extends Fragment implements PlaylistC
     ImageButton playAllButton;
 
     @Nullable
+    @BindView(R.id.playlist_conf_add_tracks)
+    Button addTracksButton;
+
+    @Nullable
     @BindView(R.id.playlist_conf_manage_tracks)
     Button manageTracksButton;
 
@@ -227,9 +231,6 @@ public class PlaylistConfigurationFragment extends Fragment implements PlaylistC
         // Bind Presenter to View
         presenter = new PlaylistConfigurationPresenter();
         presenter.attachView(this);
-
-        // Load tracks
-        presenter.loadPlaylistTracks(title);
     }
 
     @Override
@@ -240,6 +241,9 @@ public class PlaylistConfigurationFragment extends Fragment implements PlaylistC
         drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 
         presenter.attachView(this);
+
+        // Load tracks
+        presenter.loadPlaylistTracks(title);
 
         // Set current track
         if (((MainActivity)getActivity()).getCurrentPlaylistName().equals(localPlaylistName)){
@@ -341,6 +345,7 @@ public class PlaylistConfigurationFragment extends Fragment implements PlaylistC
         recyclerView.setAdapter(adapter);
 
         checkTracksCount();
+        presenter.checkLibraryTracksCount();
 
         if (((((MainActivity)getActivity()).getCurrentPlaylistName())).equals(localPlaylistName)) {
 
@@ -349,6 +354,20 @@ public class PlaylistConfigurationFragment extends Fragment implements PlaylistC
         }
     }
 
+    @Override
+    public void setAddTracksAvailable(boolean isAddTracksAvailable) {
+
+        if (!isAddTracksAvailable) {
+
+            if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+
+                addTracksButton.setEnabled(false);
+                addTracksButton.setAlpha(0.3f);
+            }else{
+                adapter.disableAddTracksButton();
+            }
+        }
+    }
 
     // Setup listeners
     @OnClick(R.id.playlist_conf_cardview)

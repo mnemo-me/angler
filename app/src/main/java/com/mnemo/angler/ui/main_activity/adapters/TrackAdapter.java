@@ -41,6 +41,8 @@ public class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.ViewHolder>{
     private boolean isHeaderAttach = false;
     private int HEADER_VIEW_TYPE = 0;
 
+    private boolean isAddTracksButtonActive = true;
+
     static abstract class ViewHolder extends RecyclerView.ViewHolder{
 
         ViewHolder(View itemView) {
@@ -102,6 +104,16 @@ public class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.ViewHolder>{
             View view = LayoutInflater.from(context).inflate(R.layout.pm_playlist_add_tracks_header, parent, false);
             HeaderViewHolder headerViewHolder = new HeaderViewHolder(view);
 
+            // Check buttons
+            if (!isAddTracksButtonActive){
+                headerViewHolder.addTracks.setEnabled(false);
+                headerViewHolder.addTracks.setAlpha(0.3f);
+            }
+
+            if (getItemCount() == 1){
+                headerViewHolder.manageTracks.setEnabled(false);
+                headerViewHolder.manageTracks.setAlpha(0.3f);
+            }
 
             // Setup listeners
             Bundle argsToTracks = new Bundle();
@@ -266,6 +278,11 @@ public class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.ViewHolder>{
 
         playbackState = state;
         notifyDataSetChanged();
+    }
+
+    public void disableAddTracksButton(){
+        isAddTracksButtonActive = false;
+        notifyItemChanged(0);
     }
 
 }
