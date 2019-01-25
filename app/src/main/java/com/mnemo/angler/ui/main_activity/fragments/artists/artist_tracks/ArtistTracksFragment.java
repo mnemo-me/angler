@@ -5,7 +5,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.res.Configuration;
 import android.os.Bundle;
 
 import android.os.Handler;
@@ -61,9 +60,6 @@ public class ArtistTracksFragment extends Fragment implements ArtistTracksView{
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.art_fragment_artist_tracks, container, false);
 
-        // Get orientation
-        int orientation = getResources().getConfiguration().orientation;
-
         // Inject views
         unbinder = ButterKnife.bind(this, view);
 
@@ -80,11 +76,6 @@ public class ArtistTracksFragment extends Fragment implements ArtistTracksView{
         }, 1000);
 
         // Setup recycler view
-        if (orientation == Configuration.ORIENTATION_PORTRAIT){
-            recyclerView.setPadding(0, (int)(20 * MainActivity.density), 0, (int)(8 * MainActivity.density));
-        }else{
-            recyclerView.setPadding(0, (int)(12 * MainActivity.density), 0, (int)(16 * MainActivity.density));
-        }
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setItemViewCacheSize(20);
@@ -116,8 +107,6 @@ public class ArtistTracksFragment extends Fragment implements ArtistTracksView{
     @Override
     public void onStart() {
         super.onStart();
-
-        presenter.attachView(this);
 
         // Set current track
         if (((MainActivity)getActivity()).getCurrentPlaylistName().equals(localPlaylistName)){
@@ -174,14 +163,13 @@ public class ArtistTracksFragment extends Fragment implements ArtistTracksView{
         super.onStop();
 
         getContext().unregisterReceiver(receiver);
-
-        presenter.deattachView();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
 
+        presenter.deattachView();
         unbinder.unbind();
     }
 

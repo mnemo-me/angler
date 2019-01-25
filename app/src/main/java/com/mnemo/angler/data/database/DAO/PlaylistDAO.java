@@ -9,6 +9,7 @@ import com.mnemo.angler.data.database.Entities.Playlist;
 import java.util.List;
 
 import io.reactivex.Flowable;
+import io.reactivex.Single;
 
 @Dao
 public interface PlaylistDAO {
@@ -18,6 +19,9 @@ public interface PlaylistDAO {
 
     @Query("SELECT * FROM playlists WHERE title NOT LIKE 'library'")
     Flowable<List<Playlist>> getUserPlaylists();
+
+    @Query("SELECT * FROM playlists WHERE title NOT LIKE 'library'")
+    Single<List<Playlist>> getUserPlaylistsOnce();
 
     @Query("SELECT title FROM playlists")
     Flowable<List<String>> getPlaylistTitles();

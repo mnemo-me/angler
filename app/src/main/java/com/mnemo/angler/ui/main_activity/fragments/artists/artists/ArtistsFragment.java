@@ -115,20 +115,6 @@ public class ArtistsFragment extends Fragment implements DrawerItem, ArtistsView
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-
-        presenter.attachView(this);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-
-        presenter.deattachView();
-    }
-
-    @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
 
@@ -139,12 +125,19 @@ public class ArtistsFragment extends Fragment implements DrawerItem, ArtistsView
     public void onDestroyView() {
         super.onDestroyView();
 
+        presenter.deattachView();
         unbinder.unbind();
     }
 
     // Refresh artists images
     @OnClick(R.id.artists_refresh_images)
     void refreshArtistImages(){
+
+        if (adapter.getItemCount() == 0){
+            Toast.makeText(getContext(), R.string.no_artists, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         if (!isRefreshing) {
             isRefreshing = true;
 

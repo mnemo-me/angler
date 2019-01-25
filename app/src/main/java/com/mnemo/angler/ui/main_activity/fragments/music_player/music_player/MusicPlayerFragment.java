@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 
 import android.support.v7.widget.SearchView;
@@ -28,7 +27,6 @@ import android.widget.Spinner;
 
 import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.jakewharton.rxbinding2.widget.TextViewAfterTextChangeEvent;
-import com.mnemo.angler.ui.main_activity.fragments.music_player.artist_tracks.PlaylistArtistTracksFragment;
 import com.mnemo.angler.ui.main_activity.fragments.music_player.artists.PlaylistArtistsFragment;
 import com.mnemo.angler.ui.main_activity.fragments.music_player.main_playlist.MainPlaylistFragment;
 import com.mnemo.angler.ui.main_activity.activity.MainActivity;
@@ -84,7 +82,6 @@ public class MusicPlayerFragment extends Fragment implements MusicPlayerView {
     private int orientation;
     private boolean isSpinnerInitialized = false;
     private boolean isSearchBarOpen = false;
-    private String fragmentOnTop = "";
     private String artistSelected;
 
 
@@ -106,7 +103,6 @@ public class MusicPlayerFragment extends Fragment implements MusicPlayerView {
 
         // Restore visibility of fragments
         if (savedInstanceState != null) {
-            fragmentOnTop = savedInstanceState.getString("fragment_on_top");
             artistSelected = savedInstanceState.getString("artist_selected");
         }
 
@@ -133,6 +129,10 @@ public class MusicPlayerFragment extends Fragment implements MusicPlayerView {
                 }else{
 
                     isSpinnerInitialized = true;
+
+                    if (getActivity().getSupportFragmentManager().findFragmentById(R.id.song_list) == null){
+                        showLibrary();
+                    }
                 }
             }
 
@@ -163,22 +163,9 @@ public class MusicPlayerFragment extends Fragment implements MusicPlayerView {
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        presenter.attachView(this);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        presenter.deattachView();
-    }
-
-    @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean("search_toolbar_visibility", isSearchBarOpen);
-        outState.putString("fragment_on_top", fragmentOnTop);
         outState.putString("artist_selected", artistSelected);
     }
 
@@ -186,6 +173,7 @@ public class MusicPlayerFragment extends Fragment implements MusicPlayerView {
     public void onDestroyView() {
         super.onDestroyView();
 
+        presenter.deattachView();
         unbinder.unbind();
     }
 
@@ -199,11 +187,6 @@ public class MusicPlayerFragment extends Fragment implements MusicPlayerView {
         spinner.setSelection(playlists.indexOf(((MainActivity) getActivity()).getMainPlaylistName()));
         adapter.notifyDataSetChanged();
 
-        if (fragmentOnTop.equals("artists")) {
-            showArtistList();
-        }else{
-            showLibrary();
-        }
     }
 
 
@@ -216,17 +199,6 @@ public class MusicPlayerFragment extends Fragment implements MusicPlayerView {
 
         if (orientation == Configuration.ORIENTATION_LANDSCAPE){
 
-            // remove artists or artist tracks fragments
-            FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-
-            Fragment artistTrackFragment = getActivity().getSupportFragmentManager().findFragmentById(R.id.artist_song_list);
-
-            if (artistTrackFragment != null){
-                transaction.remove(artistTrackFragment);
-            }
-
-            transaction.commit();
-
             // hide separator
             separator.setVisibility(View.INVISIBLE);
         }
@@ -236,7 +208,14 @@ public class MusicPlayerFragment extends Fragment implements MusicPlayerView {
                 .replace(R.id.song_list,new MainPlaylistFragment())
                 .commit();
 
-        fragmentOnTop = "playlist";
+        // Hide artist tracks fragment and show tracks fragment
+        Fragment artistTracksFragment = getActivity().getSupportFragmentManager().findFragmentByTag("artist_track_fragment");
+
+        if (artistTracksFragment != null) {
+            getActivity().getSupportFragmentManager().beginTransaction()
+                    .remove(artistTracksFragment)
+                    .commit();
+        }
 
     }
 
@@ -247,65 +226,28 @@ public class MusicPlayerFragment extends Fragment implements MusicPlayerView {
         artists.setAlpha(1f);
         playlist.setAlpha(0.5f);
 
-        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+        // Hide artist tracks fragment and show tracks fragment
+        Fragment artistTracksFragment = getActivity().getSupportFragmentManager().findFragmentByTag("artist_track_fragment");
 
-            // Open artists fragment
-            PlaylistArtistsFragment playlistArtistsFragment = new PlaylistArtistsFragment();
-
-            Bundle args = new Bundle();
-            args.putString("artist", artistSelected);
-
-            playlistArtistsFragment.setArguments(args);
-
+        if (artistTracksFragment != null) {
             getActivity().getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.song_list, playlistArtistsFragment, "artists_fragment")
+                    .remove(artistTracksFragment)
                     .commit();
 
-        }else{
-
-            // Remove playlist fragment
-            Fragment playlistFragment = getActivity().getSupportFragmentManager().findFragmentById(R.id.song_list);
-
-            FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-
-            if (playlistFragment != null){
-                transaction.remove(playlistFragment);
-                getActivity().getSupportFragmentManager().popBackStack();
-            }
-
-            // Remove artist track fragment
-            Fragment artistTrackFragment = getActivity().getSupportFragmentManager().findFragmentById(R.id.artist_song_list);
-
-            if (artistTrackFragment != null){
-                transaction.remove(artistTrackFragment);
-            }
-
-
-
-            // Open artists fragment
-            transaction.replace(R.id.song_list, new PlaylistArtistsFragment(), "artists_fragment");
-            transaction.commit();
-
-            // Show separator
-            separator.setVisibility(View.VISIBLE);
-
-            // Open artist track fragment
-            if (artistSelected != null){
-
-                PlaylistArtistTracksFragment playlistArtistTracksFragment = new PlaylistArtistTracksFragment();
-
-                Bundle args = new Bundle();
-                args.putString("artist", artistSelected);
-
-                playlistArtistTracksFragment.setArguments(args);
-
-                getActivity().getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.artist_song_list, playlistArtistTracksFragment, "artist_track_fragment")
-                    .commit();
-            }
         }
 
-        fragmentOnTop = "artists";
+        // Open artists fragment
+        PlaylistArtistsFragment playlistArtistsFragment = new PlaylistArtistsFragment();
+
+        Bundle args = new Bundle();
+        args.putString("artist", artistSelected);
+
+        playlistArtistsFragment.setArguments(args);
+
+        getActivity().getSupportFragmentManager().beginTransaction()
+                .replace(R.id.song_list, playlistArtistsFragment, "artists_fragment")
+                .commit();
+
     }
 
 
@@ -482,5 +424,6 @@ public class MusicPlayerFragment extends Fragment implements MusicPlayerView {
     public void setArtistSelected(String artistSelected) {
         this.artistSelected = artistSelected;
     }
+
 
 }

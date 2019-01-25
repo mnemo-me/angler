@@ -250,8 +250,6 @@ public class AudioEffectsFragment extends Fragment implements AudioEffectsView{
     public void onStart() {
         super.onStart();
 
-        presenter.attachView(this);
-
         // Initialize broadcast receiver
         receiver = new BroadcastReceiver() {
             @Override
@@ -305,8 +303,6 @@ public class AudioEffectsFragment extends Fragment implements AudioEffectsView{
         super.onStop();
 
         getContext().unregisterReceiver(receiver);
-
-        presenter.deattachView();
     }
 
     @Override
@@ -321,6 +317,8 @@ public class AudioEffectsFragment extends Fragment implements AudioEffectsView{
 
         presenter.saveAmplifierState(amplifierSwitch.isChecked());
         presenter.saveAmplifierGain(amplifierSeekBar.getProgress());
+
+        presenter.deattachView();
 
         unbinder.unbind();
     }

@@ -8,8 +8,5 @@ import java.util.List;
 interface AnglerServiceView extends BaseView {
 
     void setQueue(List<Track> tracks);
-
     void updateQueue(List<Track> tracks);
-
-    void initializeFirstTrack();
 }

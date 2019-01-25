@@ -114,23 +114,10 @@ public class ImageFolderFragment extends Fragment implements ImageFolderView{
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-
-        presenter.attachView(this);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-
-        presenter.deattachView();
-    }
-
-    @Override
     public void onDestroy() {
         super.onDestroy();
 
+        presenter.deattachView();
         unbinder.unbind();
     }
 

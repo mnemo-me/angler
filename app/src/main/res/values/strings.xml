@@ -6,7 +6,7 @@
     <string name="albums_dc">albums</string>
     <string name="change_background">Background</string>
     <string name="equalizer">Equalizer</string>
-    <string name="purchase">Purchase Angler</string>
+    <string name="purchase_angler">Purchase Angler</string>
     <string name="settings">settings</string>
     <string name="background_image">background_image</string>
     <string name="playlist">playlist</string>
@@ -92,12 +92,15 @@
     <string name="no_playlists">no playlists</string>
     <string name="no_albums">no albums</string>
     <string name="no_artists">no artists</string>
+    <string name="no_media">no media</string>
     <string name="no_internet_connection">No internet connection</string>
-    <string name="trial_version">trial version</string>
+    <string name="trial_version">Trial version</string>
     <string name="free_trial">free trial</string>
     <string name="quit">quit</string>
-    <string name="trial_period_initialization">Thanks for downloading Angler. You get free trial version for 15 days. After that for continue using app you should purchase it. Also you can do it any time you want.y</string>
+    <string name="purchase">purchase</string>
+    <string name="trial_period_initialization">Thanks for downloading Angler. You get free trial version for 15 days. After that for continue using app you should purchase it. Also you can do it any time you want.</string>
     <string name="trial_period_is_expired">Trial period is expired. To continue using Angler you should purchase it.</string>
+    <string name="welcome">Welcome</string>
 
 
 </resources>

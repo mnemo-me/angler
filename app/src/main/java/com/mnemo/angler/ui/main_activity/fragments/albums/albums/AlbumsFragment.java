@@ -98,24 +98,12 @@ public class AlbumsFragment extends Fragment implements DrawerItem, AlbumsView {
         presenter.loadAlbums();
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        presenter.attachView(this);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-
-        presenter.deattachView();
-    }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
 
+        presenter.deattachView();
         unbinder.unbind();
     }
 

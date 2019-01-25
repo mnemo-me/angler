@@ -83,6 +83,10 @@ public class PlaylistConfigurationFragment extends Fragment implements PlaylistC
     ImageButton playAllButton;
 
     @Nullable
+    @BindView(R.id.playlist_conf_add_tracks)
+    Button addTracksButton;
+
+    @Nullable
     @BindView(R.id.playlist_conf_manage_tracks)
     Button manageTracksButton;
 
@@ -239,8 +243,6 @@ public class PlaylistConfigurationFragment extends Fragment implements PlaylistC
         DrawerLayout drawerLayout = getActivity().findViewById(R.id.drawer_layout);
         drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 
-        presenter.attachView(this);
-
         // Set current track
         if (((MainActivity)getActivity()).getCurrentPlaylistName().equals(localPlaylistName)){
 
@@ -301,8 +303,6 @@ public class PlaylistConfigurationFragment extends Fragment implements PlaylistC
         drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
 
         getActivity().unregisterReceiver(receiver);
-
-        presenter.deattachView();
     }
 
     @Override
@@ -316,6 +316,7 @@ public class PlaylistConfigurationFragment extends Fragment implements PlaylistC
     public void onDestroyView() {
         super.onDestroyView();
 
+        presenter.deattachView();
         unbinder.unbind();
     }
 
@@ -341,6 +342,7 @@ public class PlaylistConfigurationFragment extends Fragment implements PlaylistC
         recyclerView.setAdapter(adapter);
 
         checkTracksCount();
+        presenter.checkLibraryTracksCount();
 
         if (((((MainActivity)getActivity()).getCurrentPlaylistName())).equals(localPlaylistName)) {
 
@@ -349,6 +351,20 @@ public class PlaylistConfigurationFragment extends Fragment implements PlaylistC
         }
     }
 
+    @Override
+    public void setAddTracksAvailable(boolean isAddTracksAvailable) {
+
+        if (!isAddTracksAvailable) {
+
+            if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+
+                addTracksButton.setEnabled(false);
+                addTracksButton.setAlpha(0.3f);
+            }else{
+                adapter.disableAddTracksButton();
+            }
+        }
+    }
 
     // Setup listeners
     @OnClick(R.id.playlist_conf_cardview)

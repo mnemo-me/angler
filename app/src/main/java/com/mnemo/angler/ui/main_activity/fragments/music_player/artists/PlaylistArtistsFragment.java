@@ -71,6 +71,13 @@ public class PlaylistArtistsFragment extends Fragment implements PlaylistArtists
         // Inject views
         unbinder = ButterKnife.bind(this, view);
 
+        // Show artist list in portrait orientation
+        if (orientation == Configuration.ORIENTATION_PORTRAIT){
+            getActivity().findViewById(R.id.song_list).setVisibility(View.VISIBLE);
+        }else {
+            getActivity().findViewById(R.id.artist_track_separator).setVisibility(View.VISIBLE);
+        }
+
         // Loading view appear handler
         loadingView = view.findViewById(R.id.mp_track_list_loading);
 
@@ -140,8 +147,6 @@ public class PlaylistArtistsFragment extends Fragment implements PlaylistArtists
     public void onStart() {
         super.onStart();
 
-        presenter.attachView(this);
-
         // Initialize broadcast receiver
         receiver = new BroadcastReceiver() {
             @Override
@@ -170,7 +175,6 @@ public class PlaylistArtistsFragment extends Fragment implements PlaylistArtists
     public void onStop() {
         super.onStop();
 
-        presenter.deattachView();
         getContext().unregisterReceiver(receiver);
     }
 
@@ -178,6 +182,7 @@ public class PlaylistArtistsFragment extends Fragment implements PlaylistArtists
     public void onDestroyView() {
         super.onDestroyView();
 
+        presenter.deattachView();
         unbinder.unbind();
     }
 
@@ -226,18 +231,10 @@ public class PlaylistArtistsFragment extends Fragment implements PlaylistArtists
 
         playlistArtistTracksFragment.setArguments(args);
 
-        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+        getActivity().getSupportFragmentManager().beginTransaction()
+                .replace(R.id.artist_song_list, playlistArtistTracksFragment, "artist_track_fragment")
+                .commit();
 
-            getActivity().getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.song_list, playlistArtistTracksFragment, "artist_track_fragment")
-                    .addToBackStack(null)
-                    .commit();
-        }else{
-
-            getActivity().getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.artist_song_list, playlistArtistTracksFragment, "artist_track_fragment")
-                    .commit();
-        }
 
         ((MusicPlayerFragment)getActivity().getSupportFragmentManager().findFragmentByTag("music_player_fragment")).setArtistSelected(artist);
 

@@ -25,6 +25,12 @@ public interface TrackDAO {
     @Query("SELECT * FROM tracks WHERE _id IN (:tracksId)")
     List<Track> getTracks(List<String> tracksId);
 
+    @Query("SELECT * FROM tracks ORDER BY title ASC")
+    List<Track> getLibrary();
+
+    @Query("SELECT COUNT(*) FROM tracks")
+    Single<Integer> getLibraryTrackCount();
+
     @Query("SELECT artist FROM tracks GROUP BY artist ORDER BY artist ASC")
     Flowable<List<String>> getArtists();
 

@@ -21,7 +21,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintDimensionRatio="1"
-        tools:src="@drawable/back3"
+        tools:src="@drawable/logo"
         android:foreground="@drawable/background_selector"/>
 
     <View

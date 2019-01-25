@@ -5,7 +5,7 @@
 
     <item android:top="60dp">
 
-        <bitmap android:src="@mipmap/mm"
+        <bitmap android:src="@drawable/logo"
             android:gravity="center"/>
 
     </item>

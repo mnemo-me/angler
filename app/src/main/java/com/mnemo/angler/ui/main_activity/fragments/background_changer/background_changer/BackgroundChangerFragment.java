@@ -188,8 +188,6 @@ public class BackgroundChangerFragment extends Fragment implements DrawerItem, B
     public void onStart() {
         super.onStart();
 
-        presenter.attachView(this);
-
         // CropIwa result receiver updating image cover when new cover cropped
         resultReceiver = new CropIwaResultReceiver();
         resultReceiver.setListener(new CropIwaResultReceiver.Listener() {
@@ -211,8 +209,6 @@ public class BackgroundChangerFragment extends Fragment implements DrawerItem, B
         super.onStop();
 
         resultReceiver.unregister(getContext());
-
-        presenter.deattachView();
     }
 
     @Override
@@ -233,6 +229,7 @@ public class BackgroundChangerFragment extends Fragment implements DrawerItem, B
         // Show background
         ((MainActivity)getActivity()).showBackground();
 
+        presenter.deattachView();
         unbinder.unbind();
     }
 

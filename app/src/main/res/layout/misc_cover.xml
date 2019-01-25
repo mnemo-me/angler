@@ -20,7 +20,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:contentDescription="@string/cover"
             android:scaleType="centerCrop"
-            tools:src="@drawable/back3" />
+            tools:src="@drawable/logo" />
 
         <View
             android:layout_width="match_parent"

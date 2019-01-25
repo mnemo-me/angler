@@ -203,8 +203,6 @@ public class ArtistConfigurationFragment extends Fragment implements ArtistConfi
         super.onStart();
         DrawerLayout drawerLayout = getActivity().findViewById(R.id.drawer_layout);
         drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-
-        presenter.attachView(this);
     }
 
     @Override
@@ -212,14 +210,13 @@ public class ArtistConfigurationFragment extends Fragment implements ArtistConfi
         super.onStop();
         DrawerLayout drawerLayout = getActivity().findViewById(R.id.drawer_layout);
         drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
-
-        presenter.deattachView();
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
 
+        presenter.deattachView();
         unbinder.unbind();
     }
 
@@ -273,7 +270,7 @@ public class ArtistConfigurationFragment extends Fragment implements ArtistConfi
 
         boolean isBioIncluded = presenter.checkArtistBio(artist);
 
-        viewPager.setAdapter(new ArtistTabsAdapter(getActivity().getSupportFragmentManager(), getContext(), artist, tracksCount, albumsCount, orientation, isBioIncluded));
+        viewPager.setAdapter(new ArtistTabsAdapter(getChildFragmentManager(), getContext(), artist, tracksCount, albumsCount, orientation, isBioIncluded));
         tabLayout.setupWithViewPager(viewPager);
     }
 

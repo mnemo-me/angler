@@ -19,7 +19,7 @@
             style="@style/cover"
             android:layout_margin="0dp"
             android:contentDescription="@string/cover"
-            tools:src="@drawable/back3" />
+            tools:src="@drawable/logo" />
 
     </android.support.v7.widget.CardView>
 

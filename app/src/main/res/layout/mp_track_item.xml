@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="56dp"
     android:background="@drawable/selected_track_background"
+    android:foreground="?android:attr/selectableItemBackground"
     android:paddingEnd="8dp"
     android:paddingStart="12dp">
 

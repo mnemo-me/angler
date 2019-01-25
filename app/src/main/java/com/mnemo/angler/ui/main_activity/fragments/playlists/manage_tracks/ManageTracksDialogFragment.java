@@ -165,8 +165,8 @@ public class ManageTracksDialogFragment extends DialogFragment implements Manage
     public void onDestroyView() {
         super.onDestroyView();
 
-        presenter.deattachView();
         getContext().unregisterReceiver(receiver);
+        presenter.deattachView();
     }
 
     @Override

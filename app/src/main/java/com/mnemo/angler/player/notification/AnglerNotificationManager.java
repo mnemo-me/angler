@@ -4,10 +4,7 @@ package com.mnemo.angler.player.notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
@@ -31,18 +28,10 @@ import static android.content.Context.NOTIFICATION_SERVICE;
 
 public class AnglerNotificationManager {
 
-    private static final String ACTION_PLAY = "action_play";
-    private static final String ACTION_PAUSE = "action_pause";
-    private static final String ACTION_STOP = "action_stop";
-    private static final String ACTION_NEXT = "action_next";
-    private static final String ACTION_PREV = "action_prev";
-
     private String channelId = "angler_service_channel";
 
     private AnglerService anglerService;
     private MediaControllerCompat mediaController;
-    private MediaControllerCompat.TransportControls transportControls;
-    private BroadcastReceiver noiseReceiver;
 
     private MediaSessionCompat.Token token;
 
@@ -59,64 +48,12 @@ public class AnglerNotificationManager {
         token = anglerService.getSessionToken();
         try {
             mediaController = new MediaControllerCompat(anglerService, token);
-            transportControls = mediaController.getTransportControls();
         }catch (RemoteException e){
             e.printStackTrace();
         }
 
-        /*
-        Creating Broadcast Receiver to manage intents, getting from Notification and run corresponding Transport Controls action
-         */
-        noiseReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
 
-                String action = intent.getAction();
-
-                switch (action){
-                    case ACTION_PLAY:
-
-                        if (mediaController.getPlaybackState().getState() != PlaybackStateCompat.STATE_ERROR) {
-                            transportControls.play();
-                        }
-                        break;
-                    case ACTION_PAUSE:
-                        transportControls.pause();
-                        break;
-                    case ACTION_STOP:
-                        context.unregisterReceiver(noiseReceiver);
-                        transportControls.stop();
-                        break;
-                    case ACTION_NEXT:
-                        transportControls.skipToNext();
-                        break;
-                    case ACTION_PREV:
-                        transportControls.skipToPrevious();
-                        break;
-                }
-            }
-        };
-
-        /*
-        Configure Intent Filter for Broadcast Receiver
-        It describes what intents Broadcast Receiver can receive
-         */
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(ACTION_PLAY);
-        intentFilter.addAction(ACTION_PAUSE);
-        intentFilter.addAction(ACTION_STOP);
-        intentFilter.addAction(ACTION_NEXT);
-        intentFilter.addAction(ACTION_PREV);
-
-        /*
-        Registering Broadcast Receiver with Intent Filter
-         */
-        anglerService.registerReceiver(noiseReceiver, intentFilter);
-
-
-        /*
-        Creating new Notification Channel
-         */
+        // Creating new Notification Channel
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             createNotificationChannel();
         }
@@ -158,20 +95,20 @@ public class AnglerNotificationManager {
                 .setSubText(album)
                 .setLargeIcon(albumImage)
                 .addAction(new NotificationCompat.Action(R.drawable.baseline_fast_rewind_white_36dp_left_cut, "previous",
-                        PendingIntent.getBroadcast(anglerService, 0, new Intent(ACTION_PREV), 0)))
+                        PendingIntent.getBroadcast(anglerService, 0, new Intent("action_previous"), 0)))
                 .addAction((mediaController.getPlaybackState().getState() == PlaybackStateCompat.STATE_PLAYING) ?
                         new NotificationCompat.Action(R.drawable.baseline_pause_white_36dp, "pause",
-                        PendingIntent.getBroadcast(anglerService, 0, new Intent(ACTION_PAUSE), 0)) :
+                        PendingIntent.getBroadcast(anglerService, 0, new Intent("action_pause"), 0)) :
                         new NotificationCompat.Action(R.drawable.baseline_play_arrow_white_36dp, "play",
-                        PendingIntent.getBroadcast(anglerService, 0, new Intent(ACTION_PLAY), 0)))
+                        PendingIntent.getBroadcast(anglerService, 0, new Intent("action_play"), 0)))
                 .addAction(new NotificationCompat.Action(R.drawable.baseline_fast_forward_white_36dp, "next",
-                        PendingIntent.getBroadcast(anglerService, 0, new Intent(ACTION_NEXT), 0)))
+                        PendingIntent.getBroadcast(anglerService, 0, new Intent("action_next"), 0)))
                 .setShowWhen(false)
                 .setStyle(new android.support.v4.media.app.NotificationCompat.MediaStyle()
                         .setMediaSession(token)
                         .setShowActionsInCompactView(0,1,2))
                 .setContentIntent(PendingIntent.getActivity(anglerService,1, contentIntent,0))
-                .setDeleteIntent(PendingIntent.getBroadcast(anglerService,0,new Intent(ACTION_STOP),PendingIntent.FLAG_CANCEL_CURRENT))
+                .setDeleteIntent(PendingIntent.getBroadcast(anglerService,0,new Intent("action_stop"),PendingIntent.FLAG_CANCEL_CURRENT))
                 .setOngoing(false);
 
 

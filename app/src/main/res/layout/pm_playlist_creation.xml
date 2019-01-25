@@ -14,7 +14,7 @@
         android:contentDescription="@string/cover"
         android:scaleType="centerCrop"
         app:layout_constraintDimensionRatio="1"
-        tools:src="@drawable/back3" />
+        tools:src="@drawable/logo" />
 
     <View
         android:layout_width="match_parent"

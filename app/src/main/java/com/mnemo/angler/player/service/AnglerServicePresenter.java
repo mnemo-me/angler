@@ -1,5 +1,6 @@
 package com.mnemo.angler.player.service;
 
+
 import com.mnemo.angler.AnglerApp;
 import com.mnemo.angler.data.AnglerRepository;
 import com.mnemo.angler.ui.base.DisposableBasePresenter;
@@ -151,7 +152,7 @@ public class AnglerServicePresenter extends DisposableBasePresenter {
 
             if (getView() != null){
                 ((AnglerServiceView)getView()).setQueue(tracks);
-                ((AnglerServiceView)getView()).initializeFirstTrack();
+                //((AnglerServiceView)getView()).initializeFirstTrack();
             }
         }));
     }

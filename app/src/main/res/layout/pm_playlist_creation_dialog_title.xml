@@ -16,7 +16,7 @@
         android:id="@+id/creation_playlist_dialog_delete_button"
         style="@style/button"
         android:contentDescription="@string/delete_playlist"
-        android:src="@drawable/rec"
+        android:src="@drawable/ic_delete_black_24dp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

@@ -73,6 +73,7 @@
         <!-- media panel -->
 
         <android.support.constraint.ConstraintLayout
+            android:id="@+id/media_panel"
             android:layout_width="match_parent"
             android:layout_height="65dp"
             android:background="@color/softMainGrey"
@@ -89,9 +90,10 @@
                 android:maxWidth="176dp"
                 android:textColor="@color/black"
                 android:textSize="14sp"
+                android:text="@string/no_media"
                 app:layout_constraintBottom_toTopOf="@id/media_panel_artist"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/media_panel_seek_bar"
+                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_chainStyle="packed"
                 tools:text="Sweet dreams" />
 
@@ -100,7 +102,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="8dp"
                 android:layout_marginStart="@dimen/default_margin"
                 android:ellipsize="end"
                 android:maxLines="1"
@@ -131,23 +132,10 @@
                 android:src="@drawable/baseline_queue_music_black_24dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/media_panel_seek_bar" />
+                app:layout_constraintTop_toTopOf="parent" />
 
 
-            <!-- SeekBar and time views -->
-            <SeekBar
-                android:id="@+id/media_panel_seek_bar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:paddingEnd="0dp"
-                android:paddingStart="0dp"
-                android:progressBackgroundTint="#22000000"
-                android:progressTint="@color/colorAccentLight"
-                android:thumbTint="@color/colorAccentLight"
-                app:layout_constraintBottom_toTopOf="@+id/media_panel_play_pause"
-                app:layout_constraintEnd_toStartOf="@id/media_panel_duration_time"
-                app:layout_constraintStart_toEndOf="@id/media_panel_progress_time" />
+            <!-- Time views -->
 
             <TextView
                 android:id="@+id/media_panel_progress_time"
@@ -159,7 +147,7 @@
                 android:text="0:00"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/media_panel_duration_time"
-                app:layout_constraintTop_toBottomOf="@id/media_panel_seek_bar"/>
+                app:layout_constraintTop_toTopOf="parent"/>
 
             <TextView
                 android:id="@+id/media_panel_duration_time"
@@ -171,7 +159,7 @@
                 android:text=" / 0:00"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/media_panel_queue"
-                app:layout_constraintTop_toBottomOf="@id/media_panel_seek_bar"/>
+                app:layout_constraintTop_toTopOf="parent"/>
 
 
             <!-- media buttons -->
@@ -179,9 +167,9 @@
             <ImageButton
                 android:id="@+id/media_panel_previous_track"
                 style="@style/playlist_media_button"
-                android:layout_marginBottom="12dp"
                 android:contentDescription="@string/skip_to_previous"
                 android:src="@drawable/ic_skip_previous_black_24dp"
+                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/media_panel_play_pause"
                 app:layout_constraintStart_toEndOf="@+id/media_panel_add_to_playlist" />
@@ -190,9 +178,9 @@
             <ImageButton
                 android:id="@+id/media_panel_play_pause"
                 style="@style/playlist_media_button"
-                android:layout_marginBottom="12dp"
                 android:contentDescription="@string/play_pause"
                 android:src="@drawable/ic_play_arrow_black_48dp"
+                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/media_panel_next_track"
                 app:layout_constraintHorizontal_chainStyle="spread"
@@ -202,9 +190,9 @@
             <ImageButton
                 android:id="@+id/media_panel_next_track"
                 style="@style/playlist_media_button"
-                android:layout_marginBottom="12dp"
                 android:contentDescription="@string/skip_to_next"
                 android:src="@drawable/ic_skip_next_black_24dp"
+                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/media_panel_repeat"
                 app:layout_constraintStart_toEndOf="@id/media_panel_play_pause" />
@@ -213,10 +201,10 @@
             <ImageButton
                 android:id="@+id/media_panel_repeat"
                 style="@style/playlist_media_button"
-                android:layout_marginBottom="12dp"
                 android:alpha="0.2"
                 android:contentDescription="@string/repeat"
                 android:src="@drawable/ic_repeat_black_24dp"
+                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/media_panel_shuffle"
                 app:layout_constraintStart_toEndOf="@+id/media_panel_next_track" />
@@ -225,17 +213,32 @@
             <ImageButton
                 android:id="@+id/media_panel_shuffle"
                 style="@style/playlist_media_button"
-                android:layout_marginBottom="12dp"
                 android:layout_marginEnd="140dp"
                 android:alpha="0.2"
                 android:contentDescription="@string/shuffle"
                 android:src="@drawable/ic_shuffle_black_24dp"
+                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/media_panel_repeat" />
 
 
         </android.support.constraint.ConstraintLayout>
+
+        <!-- Seekbar -->
+
+        <SeekBar
+            android:id="@+id/media_panel_seek_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:paddingEnd="0dp"
+            android:paddingStart="0dp"
+            android:progressBackgroundTint="#22000000"
+            android:progressTint="@color/colorAccentLight"
+            android:thumbTint="@color/colorAccentLight"
+            app:layout_constraintTop_toTopOf="@id/media_panel"
+            app:layout_constraintBottom_toTopOf="@id/media_panel"/>
 
     </android.support.constraint.ConstraintLayout>
 
@@ -274,20 +277,21 @@
                         android:fontFamily="serif"
                         android:text="@string/app_name"
                         android:textAllCaps="true"
-                        android:textColor="@color/black"
-                        android:textSize="44sp" />
+                        android:textColor="@color/gGrey"
+                        android:textSize="50sp" />
 
                     <TextView
+                        android:id="@+id/trial_version_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignEnd="@id/app_name_text"
                         android:layout_below="@id/app_name_text"
+                        android:layout_centerHorizontal="true"
                         android:fontFamily="serif"
-                        android:gravity="top"
                         android:text="@string/trial_version"
                         android:textAllCaps="true"
-                        android:textColor="@color/black"
-                        android:textSize="12sp" />
+                        android:textColor="@color/gGrey"
+                        android:textSize="12sp"
+                        android:visibility="gone"/>
 
                 </RelativeLayout>
 
@@ -334,11 +338,13 @@
                     android:layout_height="80dp">
 
                     <TextView
+                        android:id="@+id/purchase_button"
                         style="@style/drawer_item"
                         android:layout_marginTop="@dimen/default_margin"
                         android:background="@color/colorAccent"
-                        android:text="@string/purchase"
-                        android:textColor="@color/white" />
+                        android:text="@string/purchase_angler"
+                        android:textColor="@color/white"
+                        android:visibility="gone"/>
 
                 </FrameLayout>
 

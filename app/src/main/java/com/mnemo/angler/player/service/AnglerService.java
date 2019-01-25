@@ -2,8 +2,10 @@ package com.mnemo.angler.player.service;
 
 
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.media.AudioAttributes;
 import android.media.AudioFocusRequest;
 import android.media.AudioManager;
@@ -37,6 +39,7 @@ import java.util.Set;
 
 
 public class AnglerService extends MediaBrowserServiceCompat implements AnglerServiceView{
+
 
     private AnglerServicePresenter presenter;
 
@@ -79,6 +82,8 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
 
     private int seekbarPosition = 0;
 
+    private BroadcastReceiver receiver;
+
 
     public void onCreate() {
 
@@ -90,12 +95,7 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
 
         // Setup media session on service, set playback state and callbacks
         mMediaSession = new MediaSessionCompat(this, "Angler Service");
-        mMediaSession.setPlaybackState(new PlaybackStateCompat.Builder()
-                .setActions(
-                                    PlaybackStateCompat.ACTION_PLAY |
-                                    PlaybackStateCompat.ACTION_PLAY_PAUSE |
-                                    PlaybackStateCompat.ACTION_PAUSE |
-                                    PlaybackStateCompat.STATE_PLAYING).build());
+        mMediaSession.setPlaybackState(createPlaybackState(PlaybackStateCompat.STATE_PAUSED));
         mMediaSession.setFlags(
                 MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS |
                 MediaSessionCompat.FLAG_HANDLES_QUEUE_COMMANDS |
@@ -153,6 +153,67 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
 
         // Initialize notification manager
         mAnglerNotificationManager = new AnglerNotificationManager(this);
+
+        // Start service
+        startService(new Intent(getApplicationContext(), AnglerService.class));
+
+        // Register broadcast receiver
+        receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+
+                switch (intent.getAction()){
+
+                    case AudioManager.ACTION_AUDIO_BECOMING_NOISY:
+
+                        mMediaSession.getController().getTransportControls().pause();
+
+                        break;
+
+                    case "action_play":
+
+                        if (mMediaSession.getController().getPlaybackState().getState() != PlaybackStateCompat.STATE_ERROR) {
+                            mMediaSession.getController().getTransportControls().play();
+                        }
+                        break;
+
+                    case "action_pause":
+
+                        mMediaSession.getController().getTransportControls().pause();
+
+                        break;
+
+                    case "action_stop":
+
+                        mMediaSession.getController().getTransportControls().stop();
+
+                        break;
+
+                    case "action_next":
+
+                        mMediaSession.getController().getTransportControls().skipToNext();
+
+                        break;
+
+                    case "action_previous":
+
+                        mMediaSession.getController().getTransportControls().skipToPrevious();
+
+                        break;
+                }
+            }
+        };
+
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(AudioManager.ACTION_AUDIO_BECOMING_NOISY);
+        intentFilter.addAction("action_play");
+        intentFilter.addAction("action_pause");
+        intentFilter.addAction("action_stop");
+        intentFilter.addAction("action_next");
+        intentFilter.addAction("action_previous");
+
+
+        registerReceiver(receiver, intentFilter);
     }
 
     @Override
@@ -166,6 +227,8 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
         presenter.saveSeekbarPosition(seekbarPosition);
         presenter.saveRepeatMode(mMediaSession.getController().getRepeatMode());
         presenter.saveShuffleMode(mMediaSession.getController().getShuffleMode());
+
+        unregisterReceiver(receiver);
 
         presenter.deattachView();
     }
@@ -197,7 +260,7 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
 
                     isTrackExist = true;
 
-                    if (!track.getUri().equals(queueItem.getDescription().getMediaUri())){
+                    if (!track.getUri().equals(queueItem.getDescription().getMediaUri().toString())){
 
                         queue.set(queue.indexOf(queueItem), MediaAssistant.changeQueueItemUri(queueItem, track.getUri()));
                     }
@@ -212,23 +275,6 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
                 bundle.putInt("position", queue.indexOf(queueItem));
 
                 mMediaSession.getController().getTransportControls().sendCustomAction("remove_queue_item", bundle);
-            }
-        }
-    }
-
-    @Override
-    public void initializeFirstTrack() {
-
-        if (queue.size() > 0 && queueIndex == -1){
-
-            queueIndex = 0;
-
-            metadata = getCurrentMetadata();
-
-            mMediaSession.setMetadata(metadata);
-
-            if (!mMediaSession.isActive()) {
-                mMediaSession.setActive(true);
             }
         }
     }
@@ -269,6 +315,8 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
             if (!mMediaSession.isActive()) {
                 mMediaSession.setActive(true);
             }
+
+            initializeMedia(true);
         }
 
 
@@ -285,12 +333,7 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
 
             if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED){
 
-                startService(new Intent(getApplicationContext(), AnglerService.class));
-
-                mMediaSession.setPlaybackState(new PlaybackStateCompat.Builder()
-                        .setState(PlaybackStateCompat.STATE_PLAYING, PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN, 0)
-                        .setActiveQueueItemId((long)queueIndex)
-                        .build());
+                mMediaSession.setPlaybackState(createPlaybackState(PlaybackStateCompat.STATE_PLAYING));
 
                 if (isPaused){
 
@@ -304,7 +347,11 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
 
                     initializeMediaPlayer();
 
-                    mMediaPlayer.prepareAsync();
+                    try {
+                        mMediaPlayer.prepareAsync();
+                    }catch (IllegalStateException e){
+                        mMediaPlayer.pause();
+                    }
                 }
             }
 
@@ -319,10 +366,7 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
             mMediaPlayer.pause();
             isPaused = true;
 
-            mMediaSession.setPlaybackState(new PlaybackStateCompat.Builder()
-                .setState(PlaybackStateCompat.STATE_PAUSED,PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN,0)
-                    .setActiveQueueItemId((long)queueIndex)
-                    .build());
+            mMediaSession.setPlaybackState(createPlaybackState(PlaybackStateCompat.STATE_PAUSED));
 
             mAnglerNotificationManager.createNotification();
             stopForeground(false);
@@ -340,9 +384,7 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
                     mAudioManager.abandonAudioFocus(audioFocusChangeListener);
                 }
 
-                mMediaSession.setPlaybackState(new PlaybackStateCompat.Builder()
-                        .setState(PlaybackStateCompat.STATE_STOPPED, PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN, 0)
-                        .build());
+                mMediaSession.setPlaybackState(createPlaybackState(PlaybackStateCompat.STATE_STOPPED));
 
                 mMediaSession.setActive(false);
                 mMediaSession.release();
@@ -529,15 +571,9 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
                     queueIndex = extras.getInt("queue_position");
 
                     if (isPaused){
-                        mMediaSession.setPlaybackState(new PlaybackStateCompat.Builder()
-                                .setState(PlaybackStateCompat.STATE_PAUSED, PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN, 0)
-                                .setActiveQueueItemId((long) queueIndex)
-                                .build());
+                        mMediaSession.setPlaybackState(createPlaybackState(PlaybackStateCompat.STATE_PAUSED));
                     }else {
-                        mMediaSession.setPlaybackState(new PlaybackStateCompat.Builder()
-                                .setState(PlaybackStateCompat.STATE_PLAYING, PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN, 0)
-                                .setActiveQueueItemId((long) queueIndex)
-                                .build());
+                        mMediaSession.setPlaybackState(createPlaybackState(PlaybackStateCompat.STATE_PLAYING));
                     }
 
                     break;
@@ -550,15 +586,9 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
                         queueIndex--;
 
                         if (isPaused){
-                            mMediaSession.setPlaybackState(new PlaybackStateCompat.Builder()
-                                    .setState(PlaybackStateCompat.STATE_PAUSED, PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN, 0)
-                                    .setActiveQueueItemId((long) queueIndex)
-                                    .build());
+                            mMediaSession.setPlaybackState(createPlaybackState(PlaybackStateCompat.STATE_PAUSED));
                         }else {
-                            mMediaSession.setPlaybackState(new PlaybackStateCompat.Builder()
-                                    .setState(PlaybackStateCompat.STATE_PLAYING, PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN, 0)
-                                    .setActiveQueueItemId((long) queueIndex)
-                                    .build());
+                            mMediaSession.setPlaybackState(createPlaybackState(PlaybackStateCompat.STATE_PLAYING));
                         }
                     }
 
@@ -798,6 +828,11 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
                 mMediaSession.setActive(true);
             }
 
+            initializeMedia(true);
+
+        }else{
+
+            initializeMedia(false);
         }
 
 
@@ -877,12 +912,9 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
 
                     isPaused = true;
 
-                    mMediaPlayer.stop();
+                    mp.stop();
 
-                    mMediaSession.setPlaybackState(new PlaybackStateCompat.Builder()
-                            .setState(PlaybackStateCompat.STATE_ERROR, PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN, 0)
-                            .setActiveQueueItemId((long)queueIndex)
-                            .build());
+                    mMediaSession.setPlaybackState(createPlaybackState(PlaybackStateCompat.STATE_ERROR));
 
                     mAnglerNotificationManager.createNotification();
                     stopForeground(false);
@@ -1023,6 +1055,8 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
             queueTitle = "Library";
             mMediaSession.setQueueTitle(queueTitle);
 
+            initializeMedia(false);
+
             presenter.loadLibraryTracks();
 
         }else{
@@ -1087,11 +1121,38 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
 
     private String simplifyCurrentlyPlaylingTrack(){
 
-        MediaMetadataCompat currentMetadata = mMediaSession.getController().getMetadata();
+        try {
+            MediaMetadataCompat currentMetadata = mMediaSession.getController().getMetadata();
 
-        Track currentTrack = MediaAssistant.combineMetadataInTrack(currentMetadata);
+            Track currentTrack = MediaAssistant.combineMetadataInTrack(currentMetadata);
 
-        return currentTrack.toString();
+            return currentTrack.toString();
+
+        }catch (NullPointerException e){
+            return null;
+        }
+    }
+
+    public void initializeMedia(boolean isMedia) {
+
+        Intent intent = new Intent();
+        intent.setAction("initialize_media");
+        intent.putExtra("is_media", isMedia);
+        sendBroadcast(intent);
+    }
+
+    // Playback state method
+    private PlaybackStateCompat createPlaybackState(int state){
+
+        PlaybackStateCompat.Builder builder = new PlaybackStateCompat.Builder();
+
+        builder.setActions(
+                PlaybackStateCompat.ACTION_PLAY | PlaybackStateCompat.ACTION_PLAY_PAUSE |
+                PlaybackStateCompat.ACTION_PAUSE | PlaybackStateCompat.ACTION_SKIP_TO_NEXT | PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS);
+        builder.setState(state, PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN, 0);
+        builder.setActiveQueueItemId((long)queueIndex);
+
+        return builder.build();
     }
 
 }

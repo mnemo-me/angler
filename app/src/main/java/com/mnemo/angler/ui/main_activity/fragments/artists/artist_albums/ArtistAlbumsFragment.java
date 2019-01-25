@@ -90,24 +90,12 @@ public class ArtistAlbumsFragment extends Fragment implements ArtistAlbumsView {
         presenter.loadArtistAlbums(artist);
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        presenter.attachView(this);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-
-        presenter.deattachView();
-    }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
 
+        presenter.deattachView();
         unbinder.unbind();
     }
 

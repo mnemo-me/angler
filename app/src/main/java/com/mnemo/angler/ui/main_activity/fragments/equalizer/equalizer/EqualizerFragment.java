@@ -115,24 +115,12 @@ public class EqualizerFragment extends Fragment implements DrawerItem, Equalizer
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-
-        presenter.attachView(this);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-
-        presenter.saveEqualizerState(equalizerSwitch.isChecked());
-        presenter.deattachView();
-    }
-
-    @Override
     public void onDestroyView() {
         super.onDestroyView();
 
+        presenter.saveEqualizerState(equalizerSwitch.isChecked());
+
+        presenter.deattachView();
         unbinder.unbind();
     }
 

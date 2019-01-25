@@ -185,8 +185,6 @@ public class BandsFragment extends Fragment implements BandsView {
     public void onStart() {
         super.onStart();
 
-        presenter.attachView(this);
-
         // Initialize broadcast receiver
         receiver = new BroadcastReceiver() {
             @Override
@@ -232,7 +230,6 @@ public class BandsFragment extends Fragment implements BandsView {
         super.onStop();
 
         getContext().unregisterReceiver(receiver);
-        presenter.deattachView();
     }
 
     @Override
@@ -252,6 +249,7 @@ public class BandsFragment extends Fragment implements BandsView {
 
         presenter.saveBandsLevel(bandsLevel);
 
+        presenter.deattachView();
         unbinder.unbind();
     }
 

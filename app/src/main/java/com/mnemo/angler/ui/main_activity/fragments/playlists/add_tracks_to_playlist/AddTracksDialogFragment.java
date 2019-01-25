@@ -53,7 +53,6 @@ public class AddTracksDialogFragment extends DialogFragment implements AddTracks
         if (savedInstanceState != null){
             newTracks = savedInstanceState.getParcelableArrayList("new_tracks");
             expandedGroups = savedInstanceState.getBooleanArray("expanded_groups");
-            int firstVisiblePosition = savedInstanceState.getInt("first_visible_position");
         }
 
         // Setup header

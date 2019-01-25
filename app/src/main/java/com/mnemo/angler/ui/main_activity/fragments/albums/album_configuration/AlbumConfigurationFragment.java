@@ -240,8 +240,6 @@ public class AlbumConfigurationFragment extends Fragment implements AlbumConfigu
         DrawerLayout drawerLayout = getActivity().findViewById(R.id.drawer_layout);
         drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 
-        presenter.attachView(this);
-
         // Set current track
         if (((MainActivity)getActivity()).getCurrentPlaylistName().equals(localPlaylistName)){
 
@@ -299,8 +297,6 @@ public class AlbumConfigurationFragment extends Fragment implements AlbumConfigu
         DrawerLayout drawerLayout = getActivity().findViewById(R.id.drawer_layout);
         drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
 
-        presenter.deattachView();
-
         getContext().unregisterReceiver(receiver);
     }
 
@@ -308,6 +304,7 @@ public class AlbumConfigurationFragment extends Fragment implements AlbumConfigu
     public void onDestroyView() {
         super.onDestroyView();
 
+        presenter.deattachView();
         unbinder.unbind();
     }
 

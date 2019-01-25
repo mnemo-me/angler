@@ -8,6 +8,8 @@
         android:id="@+id/artist_tracks_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:paddingTop="20dp"
+        android:paddingBottom="8dp"
         android:clipToPadding="false"/>
 
     <com.facebook.shimmer.ShimmerFrameLayout

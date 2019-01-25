@@ -10,7 +10,9 @@
     <LinearLayout
         style="@style/toolbar"
         android:background="@color/softMainGrey"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:clickable="true"
+        android:focusable="true">
 
         <ImageView
             android:id="@+id/settings"
@@ -67,10 +69,17 @@
         app:closeIcon="@drawable/ic_clear_black_24dp"
         app:queryHint="@string/search_hint"
         app:searchHintIcon="@null"
+        app:iconifiedByDefault="false"
         app:searchIcon="@null"/>
 
     <FrameLayout
         android:id="@+id/song_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="48dp"/>
+
+    <FrameLayout
+        android:id="@+id/artist_song_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="48dp"/>

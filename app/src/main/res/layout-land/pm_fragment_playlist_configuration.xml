@@ -69,7 +69,7 @@
                 android:contentDescription="@string/cover"
                 android:scaleType="centerCrop"
                 android:foreground="@drawable/background_selector"
-                tools:src="@drawable/back3" />
+                tools:src="@drawable/logo" />
 
             <View
                 android:layout_width="match_parent"
@@ -100,7 +100,7 @@
         android:layout_marginTop="48dp"
         android:clipToPadding="false"
         android:paddingTop="8dp"
-        android:paddingBottom="@dimen/default_margin"
+        android:paddingBottom="4dp"
         app:layout_constraintStart_toEndOf="@id/playlist_conf_cardview"
         app:layout_constraintEnd_toEndOf="parent"/>
 

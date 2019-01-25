@@ -41,15 +41,17 @@ import com.mnemo.angler.player.client.AnglerClient;
 import com.mnemo.angler.ui.main_activity.classes.DrawerItem;
 import com.mnemo.angler.R;
 import com.mnemo.angler.player.queue.QueueDialogFragment;
+import com.mnemo.angler.ui.main_activity.misc.trial_expired.TrialExpiredDialogFragment;
+import com.mnemo.angler.ui.main_activity.misc.welcome.WelcomeDialogFragment;
 import com.mnemo.angler.util.ImageAssistant;
 import com.mnemo.angler.util.MediaAssistant;
 import com.mnemo.angler.ui.main_activity.fragments.equalizer.equalizer.EqualizerFragment;
 
-import com.mnemo.angler.ui.main_activity.fragments.music_player.artist_tracks.PlaylistArtistTracksFragment;
 import com.mnemo.angler.ui.main_activity.misc.add_track_to_playlist.AddTrackToPlaylistDialogFragment;
 import com.mnemo.angler.ui.main_activity.fragments.playlists.playlists.PlaylistsFragment;
 
 import java.io.File;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
@@ -69,6 +71,12 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
     @BindView(R.id.main_frame)
     FrameLayout mainFrame;
 
+    @BindView(R.id.trial_version_text)
+    TextView trialVersionText;
+
+    @BindView(R.id.purchase_button)
+    TextView purchaseButton;
+
 
     // Media panel buttons views (initializing with ButterKnife
     @BindView(R.id.media_panel_play_pause)
@@ -79,6 +87,9 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
 
     @BindView(R.id.media_panel_shuffle)
     ImageButton shuffleButton;
+
+    @BindView(R.id.media_panel_title)
+    TextView titleView;
 
     @BindView(R.id.media_panel_seek_bar)
     SeekBar seekBar;
@@ -104,6 +115,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
 
 
     // other variables
+    private Boolean isTrialAvailable;
     public static float density;
     private int orientation;
 
@@ -114,6 +126,8 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
     private String filter = "";
 
     private int selectedDrawerItemIndex = 0;
+
+    private boolean isMedia = false;
 
 
     protected void onCreate(final Bundle savedInstanceState) {
@@ -151,6 +165,9 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
 
             if (savedInstanceState != null) {
 
+                isTrialAvailable = savedInstanceState.getBoolean("is_trial_available");
+                isMedia = savedInstanceState.getBoolean("is_media");
+
                 mainPlaylistName = savedInstanceState.getString("main_playlist_name");
                 currentPlaylistName = savedInstanceState.getString("current_playlist_name");
                 filter = savedInstanceState.getString("filter");
@@ -183,6 +200,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
 
             // Select current drawer item
             drawerItems.get(selectedDrawerItemIndex).setSelected(true);
+
         }
     }
 
@@ -197,6 +215,9 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
 
         if (presenter != null) {
             presenter.attachView(this);
+
+            // Check app status
+            checkAppStatus();
 
             // Set background
             presenter.setupBackground();
@@ -227,6 +248,26 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
 
                         break;
 
+
+                    case "initialize_media":
+
+                        boolean initializeMedia = intent.getExtras().getBoolean("is_media");
+
+                        if (isMedia != initializeMedia) {
+
+                            isMedia = initializeMedia;
+
+                            if (!isMedia) {
+
+                                titleView.setText(getResources().getString(R.string.no_media));
+                                seekBar.setEnabled(false);
+                            } else {
+                                seekBar.setEnabled(true);
+                            }
+                        }
+
+                        break;
+
                 }
             }
         };
@@ -234,6 +275,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction("seekbar_progress_changed");
         intentFilter.addAction("queue_error");
+        intentFilter.addAction("initialize_media");
 
         registerReceiver(receiver, intentFilter);
     }
@@ -258,6 +300,12 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
+        if (isTrialAvailable != null) {
+            outState.putBoolean("is_trial_available", isTrialAvailable);
+        }
+
+        outState.putBoolean("is_media", isMedia);
+
         if (anglerClient != null) {
             outState.putString("main_playlist_name", mainPlaylistName);
             outState.putString("current_playlist_name", currentPlaylistName);
@@ -276,11 +324,24 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
 
         if (drawer.isDrawerOpen(Gravity.START)) {
             drawer.closeDrawer(Gravity.START);
-        } else if (backStackCount == 1 || (backStackCount == 2 && getSupportFragmentManager().findFragmentById(R.id.song_list) instanceof PlaylistArtistTracksFragment)) {
+
+        } else if (backStackCount == 1 ) {
             findViewById(R.id.main_frame).setVisibility(View.VISIBLE);
             selectDrawerItem(0);
 
             super.onBackPressed();
+
+        }else if (getSupportFragmentManager().findFragmentByTag("artist_track_fragment") != null &&
+                backStackCount == 0 &&
+                orientation == Configuration.ORIENTATION_PORTRAIT){
+
+            getSupportFragmentManager().beginTransaction()
+                    .remove(getSupportFragmentManager().findFragmentByTag("artist_track_fragment"))
+                    .commit();
+
+            ((MusicPlayerFragment)getSupportFragmentManager().findFragmentByTag("music_player_fragment")).setArtistSelected(null);
+
+            findViewById(R.id.song_list).setVisibility(View.VISIBLE);
         } else {
             super.onBackPressed();
         }
@@ -350,14 +411,12 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
         //binding metadata to views
         if (orientation == Configuration.ORIENTATION_PORTRAIT) {
 
-            TextView titleView = findViewById(R.id.media_panel_title);
             titleView.setText(artist + " - " + title);
 
             durationView.setText(MediaAssistant.convertToTime(durationMS));
 
         } else {
 
-            TextView titleView = findViewById(R.id.media_panel_title);
             titleView.setText(title);
 
             TextView artistView = findViewById(R.id.media_panel_artist);
@@ -378,21 +437,54 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
         }
     }
 
-    // Setup media control buttons
+    @Override
+    public void setTrial(boolean isTrialAvailable) {
 
+        this.isTrialAvailable = isTrialAvailable;
+        checkTrial();
+    }
+
+    @Override
+    public void showWelcomeDialog() {
+
+        WelcomeDialogFragment welcomeDialogFragment = new WelcomeDialogFragment();
+
+        welcomeDialogFragment.show(getSupportFragmentManager(), "Welcome dialog fragment");
+
+    }
+
+    // Setup media control buttons
     @OnClick(R.id.media_panel_play_pause)
     void playPause(){
+
+        if (!isMedia){
+            showNoMediaMessage();
+            return;
+        }
+
         anglerClient.playPause();
     }
 
 
     @OnClick(R.id.media_panel_next_track)
     void nextTrack(){
+
+        if (!isMedia){
+            showNoMediaMessage();
+            return;
+        }
+
         anglerClient.nextTrack();
     }
 
     @OnClick(R.id.media_panel_previous_track)
     void previousTrack(){
+
+        if (!isMedia){
+            showNoMediaMessage();
+            return;
+        }
+
         anglerClient.previousTrack();
     }
 
@@ -446,6 +538,11 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
     @OnClick(R.id.media_panel_add_to_playlist)
     void addToPlaylist(){
 
+        if (!isMedia){
+            showNoMediaMessage();
+            return;
+        }
+
         if (getPlaybackState() != PlaybackStateCompat.STATE_ERROR) {
 
             Track track = MediaAssistant.combineMetadataInTrack(anglerClient.getCurrentMetadata());
@@ -478,6 +575,8 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
 
     // Setup seekbar
     private void setupSeekBar(){
+
+        seekBar.setEnabled(isMedia);
 
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -589,6 +688,12 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
     }
 
 
+    // Show "no media" message
+    private void showNoMediaMessage(){
+        Toast.makeText(this, R.string.no_media, Toast.LENGTH_SHORT).show();
+    }
+
+
     // Getter
     public AnglerClient getAnglerClient() {
         return anglerClient;
@@ -627,5 +732,55 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
 
     public void setFilter(String filter) {
         this.filter = filter;
+    }
+
+    public boolean isMedia() {
+        return isMedia;
+    }
+
+    public void setMedia(boolean isMedia) {
+        this.isMedia = isMedia;
+    }
+
+
+
+    // App status methods
+    void checkAppStatus(){
+
+        if (!checkPremium()){
+            checkTrial();
+        }
+    }
+
+    boolean checkPremium(){
+
+        return false;
+    }
+
+    void checkTrial(){
+
+        trialVersionText.setVisibility(View.VISIBLE);
+        purchaseButton.setVisibility(View.VISIBLE);
+
+        if (isTrialAvailable != null){
+
+            if (!isTrialAvailable){
+
+                if (getSupportFragmentManager().findFragmentByTag("Trial expired dialog") == null) {
+
+                    TrialExpiredDialogFragment trialExpiredDialogFragment = new TrialExpiredDialogFragment();
+
+                    trialExpiredDialogFragment.setCancelable(false);
+
+                    trialExpiredDialogFragment.show(getSupportFragmentManager(), "Trial expired dialog");
+                }
+            }
+
+        }else {
+
+            String accountId = "mnemo";
+
+            presenter.checkTrial(accountId, new Date().getTime());
+        }
     }
 }

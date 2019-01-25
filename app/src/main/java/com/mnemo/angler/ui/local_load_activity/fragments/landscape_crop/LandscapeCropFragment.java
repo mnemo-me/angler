@@ -94,23 +94,10 @@ public class LandscapeCropFragment extends Fragment implements LandscapeCropView
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-
-        presenter.attachView(this);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-
-        presenter.deattachView();
-    }
-
-    @Override
     public void onDestroyView() {
         super.onDestroyView();
 
+        presenter.deattachView();
         unbinder.unbind();
     }
 

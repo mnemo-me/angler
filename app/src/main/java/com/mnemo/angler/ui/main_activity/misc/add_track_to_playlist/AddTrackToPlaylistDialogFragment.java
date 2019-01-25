@@ -112,13 +112,6 @@ public class AddTrackToPlaylistDialogFragment extends BottomSheetDialogFragment 
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-
-        presenter.attachView(this);
-    }
-
-    @Override
     public void onDestroyView() {
         super.onDestroyView();
 

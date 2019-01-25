@@ -63,7 +63,7 @@
                         android:contentDescription="@string/cover"
                         android:scaleType="centerCrop"
                         android:foreground="@drawable/background_selector"
-                        tools:src="@drawable/back3" />
+                        tools:src="@drawable/logo" />
 
                 </android.support.v7.widget.CardView>
 

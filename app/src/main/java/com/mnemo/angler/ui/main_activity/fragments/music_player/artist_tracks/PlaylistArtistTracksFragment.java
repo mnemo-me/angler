@@ -69,6 +69,11 @@ public class PlaylistArtistTracksFragment extends Fragment implements PlaylistAr
         // Inject views
         unbinder = ButterKnife.bind(this, view);
 
+        // Hide artist list in portrait orientation
+        if (orientation == Configuration.ORIENTATION_PORTRAIT){
+            getActivity().findViewById(R.id.song_list).setVisibility(View.GONE);
+        }
+
         // Loading view appear handler
         loadingView = view.findViewById(R.id.mp_track_list_loading);
 
@@ -86,8 +91,7 @@ public class PlaylistArtistTracksFragment extends Fragment implements PlaylistAr
 
         // Get artist
         if (savedInstanceState == null) {
-            Bundle arguments = getArguments();
-            artist = arguments.getString("artist");
+            artist = getArguments().getString("artist");
         }else{
             artist = savedInstanceState.getString("artist");
         }
@@ -128,8 +132,6 @@ public class PlaylistArtistTracksFragment extends Fragment implements PlaylistAr
     @Override
     public void onStart() {
         super.onStart();
-
-        presenter.attachView(this);
 
         // Set current track
         if (((MainActivity)getActivity()).getCurrentPlaylistName().equals(localPlaylistName)) {
@@ -195,7 +197,6 @@ public class PlaylistArtistTracksFragment extends Fragment implements PlaylistAr
     public void onStop() {
         super.onStop();
 
-        presenter.deattachView();
         getContext().unregisterReceiver(receiver);
     }
 
@@ -211,6 +212,7 @@ public class PlaylistArtistTracksFragment extends Fragment implements PlaylistAr
     public void onDestroyView() {
         super.onDestroyView();
 
+        presenter.deattachView();
         unbinder.unbind();
     }
 

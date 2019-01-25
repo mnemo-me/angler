@@ -18,7 +18,6 @@ import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -42,7 +41,6 @@ public class PlaylistCreationDialogFragment extends DialogFragment implements Pl
 
     private String title;
     private String image;
-    private String dbName;
 
     private String tempImage;
     private boolean isCoverChanged = false;
@@ -120,7 +118,6 @@ public class PlaylistCreationDialogFragment extends DialogFragment implements Pl
 
                 Bundle argsToDelete = new Bundle();
                 argsToDelete.putString("title", title);
-                argsToDelete.putString("db_name", dbName);
                 playlistDeleteDialogFragment.setArguments(argsToDelete);
 
                 playlistDeleteDialogFragment.show(getActivity().getSupportFragmentManager(), "Delete playlist dialog");
@@ -356,9 +353,10 @@ public class PlaylistCreationDialogFragment extends DialogFragment implements Pl
     public void onDestroyView() {
         super.onDestroyView();
 
-        presenter.deattachView();
         getContext().unregisterReceiver(receiver);
         resultReceiver.unregister(getContext());
+
+        presenter.deattachView();
     }
 
 
