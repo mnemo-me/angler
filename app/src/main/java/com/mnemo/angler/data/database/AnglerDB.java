@@ -2,11 +2,11 @@ package com.mnemo.angler.data.database;
 
 
 import android.annotation.SuppressLint;
-import android.arch.persistence.db.SupportSQLiteDatabase;
-import android.arch.persistence.room.Room;
-import android.arch.persistence.room.RoomDatabase;
+import androidx.sqlite.db.SupportSQLiteDatabase;
+import androidx.room.Room;
+import androidx.room.RoomDatabase;
 import android.content.Context;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 
 import com.mnemo.angler.data.database.Entities.Album;

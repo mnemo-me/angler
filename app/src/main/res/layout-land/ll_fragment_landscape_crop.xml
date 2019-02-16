@@ -6,7 +6,7 @@
     android:orientation="vertical"
     tools:context=".ui.local_load_activity.fragments.portrait_crop.PortraitCropFragment">
 
-    <android.support.v7.widget.Toolbar
+    <androidx.appcompat.widget.Toolbar
         style="@style/toolbar"
         android:background="@color/softMainGrey"
         app:contentInsetStart="0dp">
@@ -20,7 +20,7 @@
             style="@style/title"
             android:text="@string/landscape_crop" />
 
-    </android.support.v7.widget.Toolbar>
+    </androidx.appcompat.widget.Toolbar>
 
     <com.steelkiwi.cropiwa.CropIwaView
         android:id="@+id/fragment_landscape_crop_iwa"
@@ -36,7 +36,7 @@
         app:ci_grid_color="#66FFFFFF"
         app:ci_grid_width="1dp" />
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="65dp"
         android:background="@color/softMainGrey">
@@ -62,6 +62,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/fragment_landscape_back" />
 
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </LinearLayout>

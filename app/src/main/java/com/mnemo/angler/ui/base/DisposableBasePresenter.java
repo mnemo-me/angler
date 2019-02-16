@@ -6,7 +6,7 @@ public class DisposableBasePresenter extends BasePresenter {
 
     private Disposable disposable;
 
-    public void setListener(Disposable disposable){
+    protected void setListener(Disposable disposable){
         this.disposable = disposable;
     }
 

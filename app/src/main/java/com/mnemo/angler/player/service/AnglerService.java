@@ -17,10 +17,10 @@ import android.media.audiofx.Virtualizer;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import android.support.v4.media.MediaBrowserCompat;
-import android.support.v4.media.MediaBrowserServiceCompat;
+import androidx.media.MediaBrowserServiceCompat;
 import android.support.v4.media.MediaDescriptionCompat;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaSessionCompat;
@@ -1133,7 +1133,7 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
         }
     }
 
-    public void initializeMedia(boolean isMedia) {
+    private void initializeMedia(boolean isMedia) {
 
         Intent intent = new Intent();
         intent.setAction("initialize_media");

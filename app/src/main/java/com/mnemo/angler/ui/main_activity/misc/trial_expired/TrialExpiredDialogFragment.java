@@ -4,9 +4,9 @@ package com.mnemo.angler.ui.main_activity.misc.trial_expired;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,10 +29,7 @@ public class TrialExpiredDialogFragment extends DialogFragment {
 
         // Setup buttons
         TextView quitButton = bodyLayout.findViewById(R.id.trial_expired_quit);
-        quitButton.setOnClickListener(v -> {
-
-            getActivity().finish();
-        });
+        quitButton.setOnClickListener(v -> getActivity().finish());
 
         TextView purchaseButton = bodyLayout.findViewById(R.id.trial_expired_purchase);
         purchaseButton.setOnClickListener(v -> {

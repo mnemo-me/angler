@@ -8,12 +8,12 @@ import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,8 +51,6 @@ public class PlaylistArtistsFragment extends Fragment implements PlaylistArtists
 
     private BroadcastReceiver receiver;
 
-    private int orientation;
-
     private String filter;
     private String selectedArtist = "";
 
@@ -66,7 +64,7 @@ public class PlaylistArtistsFragment extends Fragment implements PlaylistArtists
         View view = inflater.inflate(R.layout.mp_track_list, container, false);
 
         // Get orientation
-        orientation = getResources().getConfiguration().orientation;
+        int orientation = getResources().getConfiguration().orientation;
 
         // Inject views
         unbinder = ButterKnife.bind(this, view);

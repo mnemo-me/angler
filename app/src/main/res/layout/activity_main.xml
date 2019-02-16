@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/drawer_layout"
@@ -9,14 +9,14 @@
     tools:context=".ui.main_activity.activity.MainActivity">
 
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
 
         <!-- background -->
 
-        <android.support.constraint.Group
+        <androidx.constraintlayout.widget.Group
             android:id="@+id/background_group"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -64,7 +64,7 @@
 
         <!-- media panel -->
 
-        <android.support.constraint.ConstraintLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/media_panel"
             android:layout_width="match_parent"
             android:layout_height="140dp"
@@ -211,9 +211,9 @@
                 app:layout_constraintStart_toEndOf="@+id/media_panel_next_track" />
 
 
-        </android.support.constraint.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
     <!-- drawer -->
@@ -224,7 +224,8 @@
         android:layout_gravity="start"
         android:background="@color/softMainGrey"
         android:clickable="true"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:focusable="true">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -314,4 +315,4 @@
     </LinearLayout>
 
 
-</android.support.v4.widget.DrawerLayout>
+</androidx.drawerlayout.widget.DrawerLayout>

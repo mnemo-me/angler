@@ -6,10 +6,10 @@ import android.content.res.Configuration;
 import android.graphics.Point;
 import android.os.Bundle;
 
-import android.support.annotation.NonNull;
-import android.support.v4.app.DialogFragment;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.CardView;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.DialogFragment;
+import androidx.appcompat.app.AlertDialog;
+import androidx.cardview.widget.CardView;
 import android.view.LayoutInflater;
 import android.widget.ImageView;
 import android.widget.TextView;

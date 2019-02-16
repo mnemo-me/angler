@@ -7,13 +7,13 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.widget.DrawerLayout;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.view.GravityCompat;
+import androidx.fragment.app.Fragment;
+import androidx.drawerlayout.widget.DrawerLayout;
 
-import android.support.v7.widget.SearchView;
-import android.view.Gravity;
+import androidx.appcompat.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -270,7 +270,7 @@ public class MusicPlayerFragment extends Fragment implements MusicPlayerView {
 
     @OnClick(R.id.settings)
     void drawerBack(){
-        ((DrawerLayout) getActivity().findViewById(R.id.drawer_layout)).openDrawer(Gravity.START);
+        ((DrawerLayout) getActivity().findViewById(R.id.drawer_layout)).openDrawer(GravityCompat.START);
     }
 
     @Optional
@@ -290,7 +290,7 @@ public class MusicPlayerFragment extends Fragment implements MusicPlayerView {
 
             hideSearchToolbar();
 
-            searchView.findViewById(android.support.v7.appcompat.R.id.search_close_btn).setVisibility(View.GONE);
+            searchView.findViewById(androidx.appcompat.R.id.search_close_btn).setVisibility(View.GONE);
 
             searchView.clearFocus();
         }
@@ -301,7 +301,7 @@ public class MusicPlayerFragment extends Fragment implements MusicPlayerView {
     private void configureSearchToolbar(){
 
         // Customize search toolbar
-        EditText editText = searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
+        EditText editText = searchView.findViewById(androidx.appcompat.R.id.search_src_text);
 
         // Change text color in EditText programmatically
         editText.setHintTextColor(getResources().getColor(R.color.gGrey));
@@ -320,7 +320,7 @@ public class MusicPlayerFragment extends Fragment implements MusicPlayerView {
 
         searchView.setIconified(false);
         searchView.clearFocus();
-        searchView.findViewById(android.support.v7.appcompat.R.id.search_close_btn).setVisibility(View.GONE);
+        searchView.findViewById(androidx.appcompat.R.id.search_close_btn).setVisibility(View.GONE);
 
         searchView.setOnCloseListener(() -> {
 
@@ -344,7 +344,7 @@ public class MusicPlayerFragment extends Fragment implements MusicPlayerView {
                 String filter = textViewAfterTextChangeEvent.editable().toString();
 
                 if (filter.equals("")) {
-                    searchView.findViewById(android.support.v7.appcompat.R.id.search_close_btn).setVisibility(View.GONE);
+                    searchView.findViewById(androidx.appcompat.R.id.search_close_btn).setVisibility(View.GONE);
                 }
 
                 ((MainActivity)getActivity()).setFilter(filter);

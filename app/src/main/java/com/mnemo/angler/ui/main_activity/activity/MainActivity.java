@@ -10,17 +10,18 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Color;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
 
-import android.support.v4.content.ContextCompat;
+import androidx.core.content.ContextCompat;
 import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.AppCompatActivity;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -31,6 +32,12 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.billingclient.api.BillingClient;
+import com.android.billingclient.api.BillingClientStateListener;
+import com.android.billingclient.api.BillingFlowParams;
+import com.android.billingclient.api.Purchase;
+import com.android.billingclient.api.SkuDetails;
+import com.android.billingclient.api.SkuDetailsParams;
 import com.mnemo.angler.data.database.Entities.Track;
 import com.mnemo.angler.data.file_storage.AnglerFolder;
 import com.mnemo.angler.ui.main_activity.fragments.albums.albums.AlbumsFragment;
@@ -51,6 +58,7 @@ import com.mnemo.angler.ui.main_activity.misc.add_track_to_playlist.AddTrackToPl
 import com.mnemo.angler.ui.main_activity.fragments.playlists.playlists.PlaylistsFragment;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -64,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
 
     private MainActivityPresenter presenter;
     private AnglerClient anglerClient;
+    private BillingClient billingClient;
 
     @BindView(R.id.drawer_layout)
     DrawerLayout drawer;
@@ -128,6 +137,8 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
     private int selectedDrawerItemIndex = 0;
 
     private boolean isMedia = false;
+
+    private BillingFlowParams flowParams;
 
 
     protected void onCreate(final Bundle savedInstanceState) {
@@ -438,10 +449,10 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
     }
 
     @Override
-    public void setTrial(boolean isTrialAvailable) {
+    public void setTrial(String accountId, boolean isTrialAvailable) {
 
         this.isTrialAvailable = isTrialAvailable;
-        checkTrial();
+        checkTrial(accountId);
     }
 
     @Override
@@ -677,6 +688,14 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
         createDrawerItemFragment(5, new BackgroundChangerFragment(), "Background fragment");
     }
 
+    @OnClick(R.id.purchase_button)
+    void purchaseAngler(){
+
+        if (billingClient != null && flowParams != null) {
+            billingClient.launchBillingFlow(this, flowParams);
+        }
+    }
+
 
     // Show/hide methods
     public void showBackground() {
@@ -745,19 +764,82 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
 
 
     // App status methods
-    void checkAppStatus(){
-
-        if (!checkPremium()){
-            checkTrial();
-        }
+    private void checkAppStatus(){
+        checkPremium();
     }
 
-    boolean checkPremium(){
+    private void checkPremium(){
 
-        return false;
+        billingClient = BillingClient.newBuilder(this).setListener((responseCode, purchases) -> {
+
+            if (responseCode == BillingClient.BillingResponse.OK && purchases != null){
+
+                Purchase purchase = purchases.get(0);
+
+                if (purchase.getSku().equals("premium")){
+
+                    trialVersionText.setVisibility(View.GONE);
+                    purchaseButton.setVisibility(View.GONE);
+                }
+            }
+
+        }).build();
+
+        billingClient.startConnection(new BillingClientStateListener() {
+            @Override
+            public void onBillingSetupFinished(int responseCode) {
+
+                if (responseCode == BillingClient.BillingResponse.OK) {
+
+                    // Check premium purchase
+                    Purchase.PurchasesResult purchasesResult = billingClient.queryPurchases(BillingClient.SkuType.INAPP);
+
+                    if (purchasesResult.getResponseCode() == BillingClient.BillingResponse.OK){
+
+                        List<Purchase> purchases = purchasesResult.getPurchasesList();
+
+                        if (purchases.size() > 0){
+
+                            if (purchases.get(0).getSku().equals("premium")){
+                                return;
+                            }
+                        }
+
+                        // Query in-app product list
+                        List<String> skuList = new ArrayList<>();
+                        skuList.add("premium");
+                        SkuDetailsParams.Builder params = SkuDetailsParams.newBuilder();
+                        params.setSkusList(skuList).setType(BillingClient.SkuType.INAPP);
+
+                        billingClient.querySkuDetailsAsync(params.build(), (responseCode1, skuDetailsList) -> {
+
+                            if (responseCode1 == BillingClient.BillingResponse.OK && skuDetailsList != null) {
+
+                                if (skuDetailsList.size() > 0){
+                                    SkuDetails premiumSkuDetails = skuDetailsList.get(0);
+                                    Log.e("0909090", premiumSkuDetails.getPrice());
+
+                                    BillingFlowParams flowParams = BillingFlowParams.newBuilder()
+                                            .setSkuDetails(premiumSkuDetails)
+                                            .build();
+
+                                    checkTrial(flowParams.getAccountId());
+                                }
+
+                            }
+                        });
+                    }
+                }
+            }
+
+            @Override
+            public void onBillingServiceDisconnected() {
+
+            }
+        });
     }
 
-    void checkTrial(){
+    private void checkTrial(String accountId){
 
         trialVersionText.setVisibility(View.VISIBLE);
         purchaseButton.setVisibility(View.VISIBLE);
@@ -777,8 +859,6 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
             }
 
         }else {
-
-            String accountId = "mnemo";
 
             presenter.checkTrial(accountId, new Date().getTime());
         }

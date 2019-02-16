@@ -44,7 +44,7 @@ public class MainActivityPresenter extends BasePresenter {
             if (getView() != null){
                 Log.e("%%%%", currentTimestamp + "        " +  trialTimestamp + "         " + String.valueOf(currentTimestamp - trialTimestamp) + "    " + trialPeriod);
                 Log.e("%%%%", String.valueOf(currentTimestamp - trialTimestamp < trialPeriod));
-                ((MainActivityView)getView()).setTrial(currentTimestamp - trialTimestamp < trialPeriod);
+                ((MainActivityView)getView()).setTrial(accountId, currentTimestamp - trialTimestamp < trialPeriod);
             }
 
         }else {
@@ -56,7 +56,7 @@ public class MainActivityPresenter extends BasePresenter {
 
                 if (getView() != null){
 
-                    ((MainActivityView)getView()).setTrial(currentTimestamp - currentTrialTimestamp < trialPeriod);
+                    ((MainActivityView)getView()).setTrial(accountId, currentTimestamp - currentTrialTimestamp < trialPeriod);
 
                     if (isTrialInitialized) {
                         ((MainActivityView) getView()).showWelcomeDialog();

@@ -1,7 +1,7 @@
 package com.mnemo.angler.data.database;
 
-import android.arch.persistence.room.Database;
-import android.arch.persistence.room.RoomDatabase;
+import androidx.room.Database;
+import androidx.room.RoomDatabase;
 
 import com.mnemo.angler.data.database.DAO.AlbumDAO;
 import com.mnemo.angler.data.database.DAO.LinkDAO;

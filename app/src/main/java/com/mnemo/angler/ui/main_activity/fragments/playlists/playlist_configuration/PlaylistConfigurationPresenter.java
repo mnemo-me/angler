@@ -43,9 +43,6 @@ public class PlaylistConfigurationPresenter extends DisposableBasePresenter {
     // Get library tracks count
     public void checkLibraryTracksCount(){
 
-        repository.getLibraryTracksCount(count -> {
-
-            ((PlaylistConfigurationView)getView()).setAddTracksAvailable(count != 0);
-        });
+        repository.getLibraryTracksCount(count -> ((PlaylistConfigurationView)getView()).setAddTracksAvailable(count != 0));
     }
 }

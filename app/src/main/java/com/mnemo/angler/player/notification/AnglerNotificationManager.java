@@ -10,8 +10,9 @@ import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.RemoteException;
-import android.support.annotation.RequiresApi;
-import android.support.v4.app.NotificationCompat;
+import androidx.annotation.RequiresApi;
+import androidx.core.app.NotificationCompat;
+
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.MediaSessionCompat;
@@ -104,7 +105,7 @@ public class AnglerNotificationManager {
                 .addAction(new NotificationCompat.Action(R.drawable.baseline_fast_forward_white_36dp, "next",
                         PendingIntent.getBroadcast(anglerService, 0, new Intent("action_next"), 0)))
                 .setShowWhen(false)
-                .setStyle(new android.support.v4.media.app.NotificationCompat.MediaStyle()
+                .setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
                         .setMediaSession(token)
                         .setShowActionsInCompactView(0,1,2))
                 .setContentIntent(PendingIntent.getActivity(anglerService,1, contentIntent,0))
