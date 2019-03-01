@@ -10,7 +10,8 @@ import com.mnemo.angler.data.database.Entities.Album;
 import com.mnemo.angler.data.database.Entities.Track;
 import com.mnemo.angler.data.file_storage.AnglerFileStorage;
 import com.mnemo.angler.data.file_storage.AnglerFolder;
-import com.mnemo.angler.data.firebase_database.AnglerFirebaseDatabase;
+import com.mnemo.angler.data.firebase.AnglerFirebase;
+import com.mnemo.angler.data.firebase.firebase_database.AnglerFirebaseDatabase;
 import com.mnemo.angler.data.networking.AnglerNetworking;
 import com.mnemo.angler.data.preferences.AnglerPreferences;
 
@@ -39,9 +40,6 @@ public class AnglerRepository {
     AnglerDB anglerDB;
 
     @Inject
-    AnglerFirebaseDatabase anglerFirebaseDB;
-
-    @Inject
     AnglerFileStorage anglerFileStorage;
 
     @Inject
@@ -49,6 +47,9 @@ public class AnglerRepository {
 
     @Inject
     AnglerPreferences anglerPreferences;
+
+    @Inject
+    AnglerFirebase anglerFirebase;
 
     private OnAppInitializationListener onAppInitializationListener;
 
@@ -98,15 +99,17 @@ public class AnglerRepository {
 
                             if (inputStream1 != null){
 
-                                anglerFileStorage.saveAlbumCover(track.getArtist(), track.getAlbum(), inputStream1);
-                                return;
-                            }
-                        }
+                                Uri albumCoverUri = anglerFileStorage.saveAlbumCover(track.getArtist(), track.getAlbum(), inputStream1);
 
-                        if (anglerNetworking.checkNetworkConnection()) {
-                            if (!anglerFileStorage.isAlbumCoverExist(album.getArtist(), album.getAlbum())) {
-                                anglerNetworking.loadAlbum(album.getArtist(), album.getAlbum(),
-                                        inputStream -> anglerFileStorage.saveAlbumCover(album.getArtist(), album.getAlbum(), inputStream));
+                                if (anglerNetworking.checkNetworkConnection()) {
+                                    anglerFirebase.uploadAlbumCover(album.getArtist(), albumCoverUri);
+                                }
+
+                                return;
+                            }else{
+
+                                // Download album cover from firebase
+                                anglerFirebase.downloadAlbumCover(album.getArtist(), album.getAlbum(), anglerFileStorage.getAlbumImageUri(album.getArtist(), album.getAlbum()));
                             }
                         }
                     }).subscribeOn(Schedulers.io()).subscribe());
@@ -145,7 +148,7 @@ public class AnglerRepository {
                 for (String artist : artists) {
 
                     if (!anglerFileStorage.isArtistImageExist(artist)) {
-                        anglerNetworking.loadArtistImage(artist, inputStream -> anglerFileStorage.saveArtistImage(artist, inputStream));
+                        anglerFirebase.downloadArtistImage(artist, anglerFileStorage.getArtistImageUri(artist));
                     }
 
                     if (!anglerFileStorage.isArtistBioExist(artist)) {
@@ -176,35 +179,6 @@ public class AnglerRepository {
         }
     }
 
-
-    // Refresh artists images
-    public void refreshArtistImages(AnglerFileStorage.OnArtistImagesUpdateListener listener){
-
-        if (anglerNetworking.checkNetworkConnection()) {
-
-            anglerDB.loadArtists("library", artists -> {
-
-                HashMap<String, InputStream> artistImages = new HashMap<>();
-
-                for (String artist : artists) {
-
-                    anglerNetworking.loadArtistImage(artist, inputStream -> {
-                        artistImages.put(artist, inputStream);
-
-                        if (artistImages.size() == artists.size()) {
-                            anglerFileStorage.updateArtistImages(artistImages, listener);
-                        }
-                    });
-                }
-
-            });
-        }else {
-            listener.onArtistImagesUpdated(false);
-        }
-    }
-
-
-
     // Shared preferences methods
     public boolean getFirstLaunch(){
         return anglerPreferences.getFirstLaunch();
@@ -223,7 +197,7 @@ public class AnglerRepository {
     }
 
     public void syncTimestamps(String accountId, long timestamp, AnglerFirebaseDatabase.OnSyncTimeStampsListener listener){
-        anglerFirebaseDB.syncTimestamps(accountId, timestamp, listener);
+        anglerFirebase.syncTimestamps(accountId, timestamp, listener);
     }
 
 

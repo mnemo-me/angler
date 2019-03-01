@@ -2,6 +2,7 @@ package com.mnemo.angler.player.service;
 
 
 
+import android.app.Notification;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -20,6 +21,7 @@ import android.os.Handler;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import android.support.v4.media.MediaBrowserCompat;
+
 import androidx.media.MediaBrowserServiceCompat;
 import android.support.v4.media.MediaDescriptionCompat;
 import android.support.v4.media.MediaMetadataCompat;
@@ -36,6 +38,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 
 public class AnglerService extends MediaBrowserServiceCompat implements AnglerServiceView{
@@ -77,7 +80,7 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
     private AnglerNotificationManager mAnglerNotificationManager;
 
     private String queueTitle;
-    private ArrayList<MediaSessionCompat.QueueItem> queue = new ArrayList<>();
+    private CopyOnWriteArrayList<MediaSessionCompat.QueueItem> queue = new CopyOnWriteArrayList<>();
     private int queueIndex = -1;
 
     private int seekbarPosition = 0;
@@ -151,11 +154,17 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
         initializeQueue();
         presenter.refreshQueue();
 
+        // Start service
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            startService(new Intent(getApplicationContext(), AnglerService.class));
+        }else {
+            startForegroundService(new Intent(getApplicationContext(), AnglerService.class));
+            startForeground(191, new Notification.Builder(this).build());
+            stopForeground(false);
+        }
+
         // Initialize notification manager
         mAnglerNotificationManager = new AnglerNotificationManager(this);
-
-        // Start service
-        startService(new Intent(getApplicationContext(), AnglerService.class));
 
         // Register broadcast receiver
         receiver = new BroadcastReceiver() {
@@ -592,7 +601,12 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
                         }
                     }
 
-                    queue.remove(index);
+                    try {
+                        queue.remove(index);
+                    }catch (IndexOutOfBoundsException e){
+                        e.printStackTrace();
+                    }
+
                     mMediaSession.setQueue(queue);
 
                     break;

@@ -6,17 +6,14 @@ import android.os.Bundle;
 import android.os.Handler;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.view.GravityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.RecyclerView;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
-import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.mnemo.angler.ui.main_activity.adapters.ArtistAdapter;
@@ -41,12 +38,6 @@ public class ArtistsFragment extends Fragment implements DrawerItem, ArtistsView
     // Bind views via ButterKnife
     private Unbinder unbinder;
 
-    @BindView(R.id.artists_refresh_images)
-    ImageButton refreshButton;
-
-    @BindView(R.id.artists_refresh_progress)
-    ProgressBar refreshProgressBar;
-
     @BindView(R.id.artists_grid)
     RecyclerView recyclerView;
 
@@ -56,8 +47,6 @@ public class ArtistsFragment extends Fragment implements DrawerItem, ArtistsView
     private ShimmerFrameLayout loadingView;
 
     private ArtistAdapter adapter;
-
-    private boolean isRefreshing = false;
 
     public ArtistsFragment() {
         // Required empty public constructor
@@ -85,16 +74,6 @@ public class ArtistsFragment extends Fragment implements DrawerItem, ArtistsView
 
         }, 1000);
 
-        // Restore refreshing state
-        if (savedInstanceState != null){
-            isRefreshing = savedInstanceState.getBoolean("is_refreshing");
-
-            if (isRefreshing){
-                refreshButton.setVisibility(View.GONE);
-                refreshProgressBar.setVisibility(View.VISIBLE);
-            }
-        }
-
         // Setup recycler view
         recyclerView.setHasFixedSize(true);
         recyclerView.setItemViewCacheSize(20);
@@ -115,13 +94,6 @@ public class ArtistsFragment extends Fragment implements DrawerItem, ArtistsView
     }
 
     @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-
-        outState.putBoolean("is_refreshing", isRefreshing);
-    }
-
-    @Override
     public void onDestroyView() {
         super.onDestroyView();
 
@@ -129,29 +101,10 @@ public class ArtistsFragment extends Fragment implements DrawerItem, ArtistsView
         unbinder.unbind();
     }
 
-    // Refresh artists images
-    @OnClick(R.id.artists_refresh_images)
-    void refreshArtistImages(){
-
-        if (adapter.getItemCount() == 0){
-            Toast.makeText(getContext(), R.string.no_artists, Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        if (!isRefreshing) {
-            isRefreshing = true;
-
-            refreshButton.setVisibility(View.GONE);
-            refreshProgressBar.setVisibility(View.VISIBLE);
-
-            presenter.refreshArtistsImages();
-        }
-    }
-
     // Setup drawer menu button
     @OnClick(R.id.artists_drawer_back)
     void drawerBack(){
-        ((DrawerLayout) getActivity().findViewById(R.id.drawer_layout)).openDrawer(Gravity.START);
+        ((DrawerLayout) getActivity().findViewById(R.id.drawer_layout)).openDrawer(GravityCompat.START);
     }
 
 
@@ -201,21 +154,5 @@ public class ArtistsFragment extends Fragment implements DrawerItem, ArtistsView
         });
 
         recyclerView.setAdapter(adapter);
-    }
-
-    @Override
-    public void completeRefreshingImages(boolean isSuccess) {
-
-        isRefreshing = false;
-
-        refreshProgressBar.setVisibility(View.GONE);
-        refreshButton.setVisibility(View.VISIBLE);
-
-        if (isSuccess) {
-            Toast.makeText(getContext(), R.string.artist_images_updated, Toast.LENGTH_SHORT).show();
-            adapter.notifyDataSetChanged();
-        }else {
-            Toast.makeText(getContext(), R.string.no_internet_connection, Toast.LENGTH_SHORT).show();
-        }
     }
 }

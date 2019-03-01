@@ -32,7 +32,7 @@ public class MainActivityPresenter extends BasePresenter {
 
 
     // Check trial
-    void checkTrial(String accountId, long currentTimestamp){
+    void checkTrial(String androidId, long currentTimestamp){
 
         //long trialPeriod = 1296000000;
         long trialPeriod = 43200000;
@@ -44,19 +44,19 @@ public class MainActivityPresenter extends BasePresenter {
             if (getView() != null){
                 Log.e("%%%%", currentTimestamp + "        " +  trialTimestamp + "         " + String.valueOf(currentTimestamp - trialTimestamp) + "    " + trialPeriod);
                 Log.e("%%%%", String.valueOf(currentTimestamp - trialTimestamp < trialPeriod));
-                ((MainActivityView)getView()).setTrial(accountId, currentTimestamp - trialTimestamp < trialPeriod);
+                ((MainActivityView)getView()).setTrial(currentTimestamp - trialTimestamp < trialPeriod);
             }
 
         }else {
 
 
-            repository.syncTimestamps(accountId, currentTimestamp, (currentTrialTimestamp ,isTrialInitialized) -> {
+            repository.syncTimestamps(androidId, currentTimestamp, (currentTrialTimestamp ,isTrialInitialized) -> {
 
                 repository.setTrialTimestamp(currentTrialTimestamp);
 
                 if (getView() != null){
 
-                    ((MainActivityView)getView()).setTrial(accountId, currentTimestamp - currentTrialTimestamp < trialPeriod);
+                    ((MainActivityView)getView()).setTrial(currentTimestamp - currentTrialTimestamp < trialPeriod);
 
                     if (isTrialInitialized) {
                         ((MainActivityView) getView()).showWelcomeDialog();

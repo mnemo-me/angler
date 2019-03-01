@@ -101,6 +101,7 @@
     <string name="trial_period_initialization">Thanks for downloading Angler. You get free trial version for 15 days. After that for continue using app you should purchase it. Also you can do it any time you want.</string>
     <string name="trial_period_is_expired">Trial period is expired. To continue using Angler you should purchase it.</string>
     <string name="welcome">Welcome</string>
+    <string name="queue_updated">queue updated</string>
 
 
 </resources>

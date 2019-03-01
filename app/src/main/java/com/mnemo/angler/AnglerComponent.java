@@ -2,6 +2,7 @@ package com.mnemo.angler;
 
 import com.mnemo.angler.data.AnglerRepository;
 import com.mnemo.angler.data.RepositoryModule;
+import com.mnemo.angler.data.firebase.AnglerFirebase;
 import com.mnemo.angler.player.client.AnglerClientPresenter;
 import com.mnemo.angler.player.service.AnglerServicePresenter;
 import com.mnemo.angler.ui.local_load_activity.activity.LocalLoadPresenter;
@@ -46,6 +47,9 @@ public interface AnglerComponent {
 
     // Repository
     void injectAnglerRepository(AnglerRepository anglerRepository);
+
+    // Firebase
+    void injectAnglerFirebase(AnglerFirebase anglerFirebase);
 
     // Client
     void injectAnglerClientPresenter(AnglerClientPresenter anglerClientPresenter);

@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.mnemo.angler.R;
+import com.mnemo.angler.ui.main_activity.activity.MainActivity;
 
 public class TrialExpiredDialogFragment extends DialogFragment {
 
@@ -32,10 +33,7 @@ public class TrialExpiredDialogFragment extends DialogFragment {
         quitButton.setOnClickListener(v -> getActivity().finish());
 
         TextView purchaseButton = bodyLayout.findViewById(R.id.trial_expired_purchase);
-        purchaseButton.setOnClickListener(v -> {
-
-            dismiss();
-        });
+        purchaseButton.setOnClickListener(v -> ((MainActivity)getActivity()).purchaseAngler());
 
         builder.setView(bodyLayout);
 

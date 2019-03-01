@@ -358,6 +358,10 @@ public class AnglerFileStorage {
         return AnglerFolder.PATH_ARTIST_IMAGE + File.separator + artist + ".jpg";
     }
 
+    public Uri getArtistImageUri(String artist){
+        return Uri.fromFile(new File(getArtistImagePath(artist)));
+    }
+
     // Get artist bio path
     private String getArtistBioPath(String artist){
         return AnglerFolder.PATH_ARTIST_BIO + File.separator + artist + ".txt";
@@ -368,11 +372,15 @@ public class AnglerFileStorage {
         return AnglerFolder.PATH_ALBUM_COVER + File.separator + artist + File.separator + album + ".jpg";
     }
 
+    public Uri getAlbumImageUri(String artist, String album){
+        return Uri.fromFile(new File(getAlbumImagePath(artist, album)));
+    }
+
 
 
 
     // Save album cover
-    public void saveAlbumCover(String artist, String album, InputStream inputStream){
+    public Uri saveAlbumCover(String artist, String album, InputStream inputStream){
 
         String path = AnglerFolder.PATH_ALBUM_COVER + File.separator + artist;
 
@@ -409,6 +417,8 @@ public class AnglerFileStorage {
                 }
             }
         }
+
+        return Uri.fromFile(file);
     }
 
     // Save artist image

@@ -95,6 +95,10 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder
         String artist = artists.get(position);
         String image = AnglerFolder.PATH_ARTIST_IMAGE + File.separator + artist + ".jpg";
 
+        if (!new File(image).exists()){
+            image = "R.drawable.black_rectangle";
+        }
+
         // Fill views
         holder.titleView.setText(artist);
         ImageAssistant.loadImage(context, image, holder.imageView, 200);

@@ -26,6 +26,8 @@ import com.mnemo.angler.ui.main_activity.activity.MainActivity;
 import com.mnemo.angler.ui.main_activity.adapters.AddTrackToPlaylistAdapter;
 import com.mnemo.angler.ui.main_activity.fragments.playlists.playlist_create.PlaylistCreationDialogFragment;
 
+
+import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;
@@ -156,6 +158,11 @@ public class AddTrackToPlaylistDialogFragment extends BottomSheetDialogFragment 
                 presenter.addTrackToPlaylist(playlist, track);
                 Toast.makeText(getContext(), "'" + track.getArtist() + " - " + track.getTitle() + "' " + getString(R.string.added_to) + " '" + playlist + "'",
                         Toast.LENGTH_SHORT).show();
+
+                // Update playlist queue if needed
+                if (playlist.equals(((MainActivity)getActivity()).getAnglerClient().getQueueTitle())){
+                    ((MainActivity)getActivity()).getAnglerClient().addToPlaylistQueue(Collections.singletonList(track));
+                }
             }
                 dismiss();
 

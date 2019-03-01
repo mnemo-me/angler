@@ -57,8 +57,10 @@ public class ArtistBioFragment extends Fragment implements ArtistBioView {
         Handler handler = new Handler();
         handler.postDelayed(() -> {
 
-            if (TextUtils.isEmpty(textView.getText())){
-                loadingView.setVisibility(View.VISIBLE);
+            if (textView != null) {
+                if (TextUtils.isEmpty(textView.getText())) {
+                    loadingView.setVisibility(View.VISIBLE);
+                }
             }
 
         }, 1000);

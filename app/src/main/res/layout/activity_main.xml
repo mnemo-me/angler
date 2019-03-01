@@ -305,9 +305,12 @@
                 android:id="@+id/purchase_button"
                 style="@style/drawer_item"
                 android:layout_marginTop="@dimen/default_margin"
+                android:foreground="?android:attr/selectableItemBackground"
                 android:background="@color/colorAccent"
                 android:text="@string/purchase_angler"
                 android:textColor="@color/white"
+                android:drawableEnd="@drawable/baseline_shop_white_36dp"
+                android:gravity="center_vertical"
                 android:visibility="gone"/>
 
         </FrameLayout>

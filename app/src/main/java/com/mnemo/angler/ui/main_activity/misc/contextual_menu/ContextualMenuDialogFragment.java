@@ -25,6 +25,7 @@ import com.mnemo.angler.ui.main_activity.fragments.artists.artist_configuration.
 import com.mnemo.angler.ui.main_activity.misc.add_track_to_playlist.AddTrackToPlaylistDialogFragment;
 import com.mnemo.angler.util.ImageAssistant;
 
+import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;
@@ -283,6 +284,11 @@ public class ContextualMenuDialogFragment extends BottomSheetDialogFragment impl
 
             // Undo deleting
             presenter.restoreTrack(playlist, trackId, position);
+/*
+            // Restore track in playlist queue if needed
+            if (playlist.equals(((MainActivity)getActivity()).getAnglerClient().getQueueTitle())){
+                ((MainActivity)getActivity()).getAnglerClient().addToPlaylistQueue(position, Collections.singletonList(track));
+            }*/
 
         });
 

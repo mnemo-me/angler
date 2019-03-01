@@ -25,14 +25,4 @@ public class ArtistsPresenter extends DisposableBasePresenter {
             }
         }));
     }
-
-    // Refresh artists images
-    void refreshArtistsImages(){
-        repository.refreshArtistImages((isSuccess) -> {
-
-            if (getView() != null){
-                ((ArtistsView)getView()).completeRefreshingImages(isSuccess);
-            }
-        });
-    }
 }

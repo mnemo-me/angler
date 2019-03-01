@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.mnemo.angler.R;
+import com.mnemo.angler.ui.main_activity.activity.MainActivity;
 
 public class WelcomeDialogFragment extends DialogFragment {
 
@@ -30,7 +31,7 @@ public class WelcomeDialogFragment extends DialogFragment {
         freeTrialButton.setOnClickListener(v -> dismiss());
 
         TextView purchaseButton = bodyLayout.findViewById(R.id.welcome_purchase);
-        purchaseButton.setOnClickListener(v -> dismiss());
+        purchaseButton.setOnClickListener(v -> ((MainActivity)getActivity()).purchaseAngler());
 
         builder.setView(bodyLayout);
 

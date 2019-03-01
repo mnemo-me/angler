@@ -206,6 +206,8 @@ public class AnglerClient implements AnglerClientView{
 
         mController.getTransportControls().sendCustomAction("set_queue_title", bundle);
         mController.getTransportControls().sendCustomAction("update_queue", null);
+
+        Toast.makeText(context, R.string.queue_updated, Toast.LENGTH_SHORT).show();
     }
 
     public void addToQueue(Track track, String playlist, boolean isPlayNext){
@@ -223,6 +225,8 @@ public class AnglerClient implements AnglerClientView{
 
         mController.getTransportControls().sendCustomAction("set_queue_title", bundle);
         mController.getTransportControls().sendCustomAction("update_queue", null);
+
+        Toast.makeText(context, R.string.queue_updated, Toast.LENGTH_SHORT).show();
     }
 
 
@@ -230,6 +234,16 @@ public class AnglerClient implements AnglerClientView{
 
         for (MediaDescriptionCompat description : MediaAssistant.mergeMediaDescriptionArray(getQueueTitle(), tracks)) {
             mController.addQueueItem(description);
+        }
+
+        mController.getTransportControls().sendCustomAction("update_queue", null);
+    }
+
+
+    public void addToPlaylistQueue(int position, List<Track> tracks){
+
+        for (MediaDescriptionCompat description : MediaAssistant.mergeMediaDescriptionArray(getQueueTitle(), tracks)) {
+            mController.addQueueItem(description, position - getQueue().size());
         }
 
         mController.getTransportControls().sendCustomAction("update_queue", null);

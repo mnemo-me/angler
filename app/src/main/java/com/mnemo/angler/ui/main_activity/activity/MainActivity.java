@@ -12,9 +12,12 @@ import android.content.res.Configuration;
 import android.graphics.Color;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
+import androidx.core.view.GravityCompat;
 import androidx.fragment.app.Fragment;
 
 import androidx.core.content.ContextCompat;
+
+import android.provider.Settings;
 import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -22,7 +25,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -333,8 +335,8 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
 
         int backStackCount = getSupportFragmentManager().getBackStackEntryCount();
 
-        if (drawer.isDrawerOpen(Gravity.START)) {
-            drawer.closeDrawer(Gravity.START);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
 
         } else if (backStackCount == 1 ) {
             findViewById(R.id.main_frame).setVisibility(View.VISIBLE);
@@ -449,10 +451,10 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
     }
 
     @Override
-    public void setTrial(String accountId, boolean isTrialAvailable) {
+    public void setTrial( boolean isTrialAvailable) {
 
         this.isTrialAvailable = isTrialAvailable;
-        checkTrial(accountId);
+        checkTrial();
     }
 
     @Override
@@ -624,7 +626,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
                 .commit();
 
         mainFrame.setVisibility(View.GONE);
-        drawer.closeDrawer(Gravity.START);
+        drawer.closeDrawer(GravityCompat.START);
     }
 
 
@@ -689,7 +691,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
     }
 
     @OnClick(R.id.purchase_button)
-    void purchaseAngler(){
+    public void purchaseAngler(){
 
         if (billingClient != null && flowParams != null) {
             billingClient.launchBillingFlow(this, flowParams);
@@ -819,11 +821,11 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
                                     SkuDetails premiumSkuDetails = skuDetailsList.get(0);
                                     Log.e("0909090", premiumSkuDetails.getPrice());
 
-                                    BillingFlowParams flowParams = BillingFlowParams.newBuilder()
+                                    flowParams = BillingFlowParams.newBuilder()
                                             .setSkuDetails(premiumSkuDetails)
                                             .build();
 
-                                    checkTrial(flowParams.getAccountId());
+                                    checkTrial();
                                 }
 
                             }
@@ -839,7 +841,10 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
         });
     }
 
-    private void checkTrial(String accountId){
+    private void checkTrial(){
+
+        String androidId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        Log.e("ANDROID_ID", androidId);
 
         trialVersionText.setVisibility(View.VISIBLE);
         purchaseButton.setVisibility(View.VISIBLE);
@@ -860,7 +865,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
 
         }else {
 
-            presenter.checkTrial(accountId, new Date().getTime());
+            presenter.checkTrial(androidId, new Date().getTime());
         }
     }
 }
