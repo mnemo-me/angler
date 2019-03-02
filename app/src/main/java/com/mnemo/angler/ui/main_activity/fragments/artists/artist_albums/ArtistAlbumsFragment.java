@@ -12,12 +12,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.mnemo.angler.R;
 import com.mnemo.angler.data.database.Entities.Album;
+import com.mnemo.angler.data.file_storage.AnglerFolder;
 import com.mnemo.angler.ui.main_activity.adapters.ArtistAlbumAdapter;
+import com.mnemo.angler.ui.main_activity.fragments.albums.album_configuration.AlbumConfigurationFragment;
+import com.mnemo.angler.ui.main_activity.misc.cover.CoverDialogFragment;
 
+import java.io.File;
 import java.util.List;
 
 import butterknife.BindView;
@@ -110,6 +115,51 @@ public class ArtistAlbumsFragment extends Fragment implements ArtistAlbumsView {
         }
 
         adapter = new ArtistAlbumAdapter(getContext(), artist, albums);
+
+        adapter.setOnAlbumClickListener((artist, album, year) -> {
+
+            // Create album image path
+            String albumImagePath = AnglerFolder.PATH_ALBUM_COVER + File.separator + artist + File.separator + album + ".jpg";
+
+            AlbumConfigurationFragment albumConfigurationFragment = new AlbumConfigurationFragment();
+
+            Bundle args = new Bundle();
+            args.putString("image", albumImagePath);
+            args.putString("album_name", album);
+            args.putString("artist", artist);
+            args.putInt("year", year);
+            albumConfigurationFragment.setArguments(args);
+
+            getActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.frame, albumConfigurationFragment, "album_configuration_fragment")
+                    .addToBackStack(null)
+                    .commit();
+        });
+
+        adapter.setOnAlbumLongClickListener((artist, album, year) -> {
+
+            // Create album image path
+            String albumImagePath = AnglerFolder.PATH_ALBUM_COVER + File.separator + artist + File.separator + album + ".jpg";
+
+            if (presenter.checkAlbumCoverExist(artist, album)) {
+
+                CoverDialogFragment coverDialogFragment = new CoverDialogFragment();
+
+                Bundle args = new Bundle();
+                args.putString("artist", artist);
+                args.putString("album", album);
+                args.putString("image", albumImagePath);
+                args.putInt("year", year);
+                coverDialogFragment.setArguments(args);
+
+                coverDialogFragment.show(getActivity().getSupportFragmentManager(), "album_cover_fragment");
+
+            }else{
+
+                Toast.makeText(getContext(), R.string.no_image, Toast.LENGTH_SHORT).show();
+            }
+        });
+
         recyclerView.setAdapter(adapter);
     }
 }

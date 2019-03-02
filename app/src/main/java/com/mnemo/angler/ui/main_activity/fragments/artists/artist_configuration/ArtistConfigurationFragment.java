@@ -21,6 +21,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.mnemo.angler.R;
 import com.mnemo.angler.ui.main_activity.misc.cover.CoverDialogFragment;
@@ -126,9 +127,6 @@ public class ArtistConfigurationFragment extends Fragment implements ArtistConfi
             collapsedTitleText.setText(artist);
         }
 
-        // Load artist image
-        loadArtistImage();
-
         // Setup appbar behavior
         if (orientation == Configuration.ORIENTATION_PORTRAIT){
             appBarLayout.addOnOffsetChangedListener((appBarLayout, verticalOffset) -> {
@@ -194,6 +192,9 @@ public class ArtistConfigurationFragment extends Fragment implements ArtistConfi
         presenter = new ArtistConfigurationPresenter();
         presenter.attachView(this);
 
+        // Load artist image
+        loadArtistImage();
+
         // Load track & albums count
         presenter.loadTracksAndAlbumsCount(artist);
     }
@@ -225,14 +226,21 @@ public class ArtistConfigurationFragment extends Fragment implements ArtistConfi
     @OnClick(R.id.artist_conf_cardview)
     void openCover() {
 
-     CoverDialogFragment coverDialogFragment = new CoverDialogFragment();
+        if (presenter.checkArtistImageExist(artist)) {
 
-     Bundle args = new Bundle();
-     args.putString("artist", artist);
-     args.putString("image", image);
-     coverDialogFragment.setArguments(args);
+            CoverDialogFragment coverDialogFragment = new CoverDialogFragment();
 
-     coverDialogFragment.show(getActivity().getSupportFragmentManager(), "cover_dialog_fragment");
+            Bundle args = new Bundle();
+            args.putString("artist", artist);
+            args.putString("image", image);
+            coverDialogFragment.setArguments(args);
+
+            coverDialogFragment.show(getActivity().getSupportFragmentManager(), "cover_dialog_fragment");
+
+        }else{
+
+            Toast.makeText(getContext(), R.string.no_image, Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Optional
@@ -294,6 +302,11 @@ public class ArtistConfigurationFragment extends Fragment implements ArtistConfi
             imageHeight = 240;
         }
 
-        ImageAssistant.loadImage(getContext(), image, imageView, imageHeight);
+        if (presenter.checkArtistImageExist(artist)) {
+            ImageAssistant.loadImage(getContext(), image, imageView, imageHeight);
+        }else{
+            ImageAssistant.loadImage(getContext(), "R.drawable.black_logo", imageView, imageHeight);
+        }
+
     }
 }

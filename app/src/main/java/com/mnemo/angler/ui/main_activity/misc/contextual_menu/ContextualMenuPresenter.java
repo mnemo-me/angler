@@ -22,7 +22,12 @@ public class ContextualMenuPresenter extends BasePresenter {
 
     // Get album image path
     String getAlbumImagePath(String artist, String album){
-        return  repository.getAlbumImagePath(artist, album);
+        return repository.getAlbumImagePath(artist, album);
+    }
+
+    // Check album cover exist
+    boolean checkAlbumCoverExist(String artist, String album){
+        return repository.checkAlbumCoverExist(artist, album);
     }
 
     // Delete track from playlist

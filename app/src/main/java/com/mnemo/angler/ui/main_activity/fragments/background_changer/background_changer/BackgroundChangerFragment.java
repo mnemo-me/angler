@@ -7,11 +7,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.view.GravityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -113,9 +113,9 @@ public class BackgroundChangerFragment extends Fragment implements DrawerItem, B
         LinearLayoutManager linearLayoutManager;
 
         if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-            linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
+            linearLayoutManager = new LinearLayoutManager(getActivity(), RecyclerView.HORIZONTAL, false);
         }else{
-            linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+            linearLayoutManager = new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false);
         }
 
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -252,7 +252,7 @@ public class BackgroundChangerFragment extends Fragment implements DrawerItem, B
     // Setup drawer menu button
     @OnClick(R.id.background_changer_drawer_back)
     void back() {
-        ((DrawerLayout) getActivity().findViewById(R.id.drawer_layout)).openDrawer(Gravity.START);
+        ((DrawerLayout) getActivity().findViewById(R.id.drawer_layout)).openDrawer(GravityCompat.START);
     }
 
 

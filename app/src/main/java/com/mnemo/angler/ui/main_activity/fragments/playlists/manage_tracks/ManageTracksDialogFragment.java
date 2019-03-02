@@ -62,7 +62,7 @@ public class ManageTracksDialogFragment extends DialogFragment implements Manage
         recyclerView.setHasFixedSize(true);
         recyclerView.setItemViewCacheSize(20);
 
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
 
         // Setup buttons

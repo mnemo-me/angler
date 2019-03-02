@@ -25,4 +25,9 @@ public class ArtistsPresenter extends DisposableBasePresenter {
             }
         }));
     }
+
+    // Check artist image exist
+    boolean checkArtistImageExist(String artist){
+        return repository.checkArtistImageExist(artist);
+    }
 }

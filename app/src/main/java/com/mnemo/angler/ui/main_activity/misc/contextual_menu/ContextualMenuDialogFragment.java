@@ -25,7 +25,6 @@ import com.mnemo.angler.ui.main_activity.fragments.artists.artist_configuration.
 import com.mnemo.angler.ui.main_activity.misc.add_track_to_playlist.AddTrackToPlaylistDialogFragment;
 import com.mnemo.angler.util.ImageAssistant;
 
-import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;
@@ -60,6 +59,7 @@ public class ContextualMenuDialogFragment extends BottomSheetDialogFragment impl
 
     private String type;
     private String playlist;
+    private String albumCover;
     private Track track;
     private List<Track> tracks;
 
@@ -94,18 +94,16 @@ public class ContextualMenuDialogFragment extends BottomSheetDialogFragment impl
         // Get variables
         type = getArguments().getString("type");
         playlist = getArguments().getString("playlist");
-        String albumCover = getArguments().getString("album_cover");
+        albumCover = getArguments().getString("album_cover");
         track = getArguments().getParcelable("track");
         tracks = getArguments().getParcelableArrayList("tracks");
 
         // Inject views
         unbinder = ButterKnife.bind(this, view);
 
-        // Fill views
+        // Fill text views
         titleView.setText(track.getTitle());
         artistView.setText(track.getArtist());
-        ImageAssistant.loadImage(getContext(), albumCover, albumCoverView, 80);
-
 
         // Set visibility of optional actions
         switch (type){
@@ -157,6 +155,13 @@ public class ContextualMenuDialogFragment extends BottomSheetDialogFragment impl
         // Bind Presenter to View
         presenter = new ContextualMenuPresenter();
         presenter.attachView(this);
+
+        // Fill album cover
+        if (presenter.checkAlbumCoverExist(track.getArtist(), track.getAlbum())){
+            ImageAssistant.loadImage(getContext(), albumCover, albumCoverView, 80);
+        }else{
+            ImageAssistant.loadImage(getContext(), "R.drawable.black_logo", albumCoverView, 80);
+        }
     }
 
     @Override

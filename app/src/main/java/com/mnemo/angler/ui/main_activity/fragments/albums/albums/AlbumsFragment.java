@@ -5,15 +5,16 @@ import android.os.Bundle;
 import android.os.Handler;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.view.GravityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.mnemo.angler.data.database.Entities.Album;
@@ -79,7 +80,7 @@ public class AlbumsFragment extends Fragment implements DrawerItem, AlbumsView {
         // Setup recycler view
         recyclerView.setItemViewCacheSize(20);
 
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
 
         return view;
@@ -110,7 +111,7 @@ public class AlbumsFragment extends Fragment implements DrawerItem, AlbumsView {
     // Setup drawer menu button
     @OnClick(R.id.albums_drawer_back)
     void drawerBack(){
-        ((DrawerLayout) getActivity().findViewById(R.id.drawer_layout)).openDrawer(Gravity.START);
+        ((DrawerLayout) getActivity().findViewById(R.id.drawer_layout)).openDrawer(GravityCompat.START);
     }
 
 
@@ -158,16 +159,24 @@ public class AlbumsFragment extends Fragment implements DrawerItem, AlbumsView {
             // Create album image path
             String albumImagePath = AnglerFolder.PATH_ALBUM_COVER + File.separator + artist + File.separator + album + ".jpg";
 
-            CoverDialogFragment coverDialogFragment = new CoverDialogFragment();
+            if (presenter.checkAlbumCoverExist(artist, album)){
 
-            Bundle args = new Bundle();
-            args.putString("artist", artist);
-            args.putString("album", album);
-            args.putString("image", albumImagePath);
-            args.putInt("year", year);
-            coverDialogFragment.setArguments(args);
+                CoverDialogFragment coverDialogFragment = new CoverDialogFragment();
 
-            coverDialogFragment.show(getActivity().getSupportFragmentManager(), "album_cover_fragment");
+                Bundle args = new Bundle();
+                args.putString("artist", artist);
+                args.putString("album", album);
+                args.putString("image", albumImagePath);
+                args.putInt("year", year);
+                coverDialogFragment.setArguments(args);
+
+                coverDialogFragment.show(getActivity().getSupportFragmentManager(), "album_cover_fragment");
+
+            }else{
+
+                Toast.makeText(getContext(), R.string.no_image, Toast.LENGTH_SHORT).show();
+            }
+
         });
 
         recyclerView.setAdapter(adapter);

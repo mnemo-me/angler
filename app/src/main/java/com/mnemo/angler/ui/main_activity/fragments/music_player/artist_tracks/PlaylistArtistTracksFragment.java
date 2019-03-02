@@ -110,7 +110,7 @@ public class PlaylistArtistTracksFragment extends Fragment implements PlaylistAr
         recyclerView.setHasFixedSize(true);
         recyclerView.setItemViewCacheSize(20);
 
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
 
         return view;

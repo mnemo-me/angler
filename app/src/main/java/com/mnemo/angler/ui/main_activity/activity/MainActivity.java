@@ -124,6 +124,16 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
     @BindViews({R.id.music_player_drawer_item, R.id.playlists_drawer_item, R.id.albums_drawer_item, R.id.artists_drawer_item, R.id.equalizer_drawer_item, R.id.background_drawer_item})
     List<TextView> drawerItems;
 
+    // bind lines
+    @BindView(R.id.grey_line1)
+    View greyLine1;
+
+    @BindView(R.id.grey_line2)
+    View greyLine2;
+
+    @BindView(R.id.grey_line3)
+    View greyLine3;
+
 
     // other variables
     private Boolean isTrialAvailable;
@@ -648,7 +658,48 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
 
             selectedDrawerItemIndex = drawerItemIndex;
 
+            manageGreyLinesVisibility();
+
             drawerItems.get(selectedDrawerItemIndex).setSelected(true);
+        }
+    }
+
+    // Show / hide grey lines
+    private void manageGreyLinesVisibility(){
+
+        switch (selectedDrawerItemIndex){
+
+            case 0:
+
+                greyLine1.setVisibility(View.INVISIBLE);
+                greyLine2.setVisibility(View.INVISIBLE);
+                greyLine3.setVisibility(View.VISIBLE);
+
+                break;
+
+            case 1:
+
+                greyLine1.setVisibility(View.VISIBLE);
+                greyLine2.setVisibility(View.INVISIBLE);
+                greyLine3.setVisibility(View.VISIBLE);
+
+                break;
+
+            case 5:
+
+                greyLine1.setVisibility(View.VISIBLE);
+                greyLine2.setVisibility(View.VISIBLE);
+                greyLine3.setVisibility(View.INVISIBLE);
+
+                break;
+
+            default:
+
+                greyLine1.setVisibility(View.VISIBLE);
+                greyLine2.setVisibility(View.VISIBLE);
+                greyLine3.setVisibility(View.VISIBLE);
+
+                break;
         }
     }
 
@@ -844,7 +895,6 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
     private void checkTrial(){
 
         String androidId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-        Log.e("ANDROID_ID", androidId);
 
         trialVersionText.setVisibility(View.VISIBLE);
         purchaseButton.setVisibility(View.VISIBLE);

@@ -35,15 +35,13 @@
                 <TextView
                     android:id="@+id/album_conf_artist"
                     style="@style/expanded_subtitle"
-                    app:layout_constraintBottom_toTopOf="@id/album_conf_tracks_count_year_line"
+                    app:layout_constraintTop_toBottomOf="@id/album_conf_title"
                     tools:text="Marilyn Manson"/>
 
                 <LinearLayout
-                    android:id="@+id/album_conf_tracks_count_year_line"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    app:layout_constraintBottom_toTopOf="@id/album_conf_play_all">
+                    app:layout_constraintTop_toBottomOf="@id/album_conf_artist">
 
                     <TextView
                         android:id="@+id/album_conf_year"

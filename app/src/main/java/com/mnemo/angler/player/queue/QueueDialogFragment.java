@@ -87,7 +87,7 @@ public class QueueDialogFragment extends BottomSheetDialogFragment {
         recyclerView.setItemViewCacheSize(20);
 
         // Set layout manager
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
 
         return view;

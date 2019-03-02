@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.mnemo.angler.ui.main_activity.adapters.ArtistAdapter;
@@ -143,14 +144,21 @@ public class ArtistsFragment extends Fragment implements DrawerItem, ArtistsView
 
         adapter.setOnArtistLongClickListener((artist, image) -> {
 
-            CoverDialogFragment coverDialogFragment = new CoverDialogFragment();
+            if (presenter.checkArtistImageExist(artist)) {
 
-            Bundle args = new Bundle();
-            args.putString("artist", artist);
-            args.putString("image", image);
-            coverDialogFragment.setArguments(args);
+                CoverDialogFragment coverDialogFragment = new CoverDialogFragment();
 
-            coverDialogFragment.show(getActivity().getSupportFragmentManager(), "cover_dialog_fragment");
+                Bundle args = new Bundle();
+                args.putString("artist", artist);
+                args.putString("image", image);
+                coverDialogFragment.setArguments(args);
+
+                coverDialogFragment.show(getActivity().getSupportFragmentManager(), "cover_dialog_fragment");
+
+            }else {
+
+                Toast.makeText(getContext(), R.string.no_image, Toast.LENGTH_SHORT).show();
+            }
         });
 
         recyclerView.setAdapter(adapter);

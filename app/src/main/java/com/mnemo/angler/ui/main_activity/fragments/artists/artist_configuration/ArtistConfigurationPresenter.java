@@ -49,6 +49,11 @@ public class ArtistConfigurationPresenter extends DisposableBasePresenter {
 
     }
 
+    // Check artist image exist
+    boolean checkArtistImageExist(String artist){
+        return repository.checkArtistImageExist(artist);
+    }
+
     // Get tracks
     public List<Track> getTracks() {
         return tracks;

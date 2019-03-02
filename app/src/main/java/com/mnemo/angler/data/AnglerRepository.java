@@ -444,6 +444,14 @@ public class AnglerRepository {
         return anglerFileStorage.checkArtistBio(artist);
     }
 
+    public boolean checkAlbumCoverExist(String artist, String album){
+        return anglerFileStorage.isAlbumCoverExist(artist, album);
+    }
+
+    public boolean checkArtistImageExist(String artist){
+        return anglerFileStorage.isArtistImageExist(artist);
+    }
+
 
 
     // Database methods

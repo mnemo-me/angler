@@ -2,7 +2,6 @@ package com.mnemo.angler.ui.main_activity.adapters;
 
 
 import android.content.Context;
-import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -14,9 +13,6 @@ import android.widget.TextView;
 import com.mnemo.angler.R;
 import com.mnemo.angler.data.database.Entities.Album;
 import com.mnemo.angler.data.file_storage.AnglerFolder;
-import com.mnemo.angler.ui.main_activity.activity.MainActivity;
-import com.mnemo.angler.ui.main_activity.fragments.albums.album_configuration.AlbumConfigurationFragment;
-import com.mnemo.angler.ui.main_activity.misc.cover.CoverDialogFragment;
 import com.mnemo.angler.util.ImageAssistant;
 
 import java.io.File;
@@ -30,6 +26,18 @@ public class ArtistAlbumAdapter extends RecyclerView.Adapter<ArtistAlbumAdapter.
     private Context context;
     private String artist;
     private List<Album> albums;
+
+    private OnAlbumClickListener onAlbumClickListener;
+    private OnAlbumLongClickListener onAlbumLongClickListener;
+
+
+    public interface OnAlbumClickListener{
+        void onAlbumClick(String artist, String album, int year);
+    }
+
+    public interface OnAlbumLongClickListener{
+        void onAlbumLongClick(String artist, String album, int year);
+    }
 
     static class ViewHolder extends RecyclerView.ViewHolder{
 
@@ -68,23 +76,7 @@ public class ArtistAlbumAdapter extends RecyclerView.Adapter<ArtistAlbumAdapter.
             String album = albums.get(viewHolder.getAdapterPosition()).getAlbum();
             int year = albums.get(viewHolder.getAdapterPosition()).getYear();
 
-            // Create album image path
-            String albumImagePath = AnglerFolder.PATH_ALBUM_COVER + File.separator + artist + File.separator + album + ".jpg";
-
-            AlbumConfigurationFragment albumConfigurationFragment = new AlbumConfigurationFragment();
-
-            Bundle args = new Bundle();
-            args.putString("type", "album");
-            args.putString("image", albumImagePath);
-            args.putString("album_name", album);
-            args.putString("artist", artist);
-            args.putInt("year", year);
-            albumConfigurationFragment.setArguments(args);
-
-            ((MainActivity)context).getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.frame, albumConfigurationFragment, "album_configuration_fragment")
-                    .addToBackStack(null)
-                    .commit();
+            onAlbumClickListener.onAlbumClick(artist, album, year);
         });
 
         // Open cover fragment
@@ -92,19 +84,9 @@ public class ArtistAlbumAdapter extends RecyclerView.Adapter<ArtistAlbumAdapter.
 
             // Get album variables
             String album = albums.get(viewHolder.getAdapterPosition()).getAlbum();
+            int year = albums.get(viewHolder.getAdapterPosition()).getYear();
 
-            // Create album image path
-            String albumImagePath = AnglerFolder.PATH_ALBUM_COVER + File.separator + artist + File.separator + album + ".jpg";
-
-            CoverDialogFragment coverDialogFragment = new CoverDialogFragment();
-
-            Bundle args = new Bundle();
-            args.putString("artist", artist);
-            args.putString("album", album);
-            args.putString("image", albumImagePath);
-            coverDialogFragment.setArguments(args);
-
-            coverDialogFragment.show(((MainActivity) context).getSupportFragmentManager(), "album_cover_fragment");
+            onAlbumLongClickListener.onAlbumLongClick(artist, album, year);
 
             return true;
         });
@@ -122,6 +104,10 @@ public class ArtistAlbumAdapter extends RecyclerView.Adapter<ArtistAlbumAdapter.
         String albumImagePath = AnglerFolder.PATH_ALBUM_COVER + File.separator + artist + File.separator + album + ".jpg";
 
         // Load album image
+        if (!new File(albumImagePath).exists()){
+            albumImagePath = "R.drawable.black_logo";
+        }
+
         ImageAssistant.loadImage(context, albumImagePath, holder.coverView, 125);
 
         // Set album title
@@ -131,5 +117,15 @@ public class ArtistAlbumAdapter extends RecyclerView.Adapter<ArtistAlbumAdapter.
     @Override
     public int getItemCount() {
         return albums.size();
+    }
+
+
+    // Setters for listeners
+    public void setOnAlbumClickListener(OnAlbumClickListener onAlbumClickListener) {
+        this.onAlbumClickListener = onAlbumClickListener;
+    }
+
+    public void setOnAlbumLongClickListener(OnAlbumLongClickListener onAlbumLongClickListener) {
+        this.onAlbumLongClickListener = onAlbumLongClickListener;
     }
 }

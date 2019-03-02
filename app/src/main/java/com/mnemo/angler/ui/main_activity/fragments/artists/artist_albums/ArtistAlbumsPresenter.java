@@ -26,4 +26,9 @@ public class ArtistAlbumsPresenter extends DisposableBasePresenter {
             }
         }));
     }
+
+    // Check album cover exist
+    boolean checkAlbumCoverExist(String artist, String album){
+        return repository.checkAlbumCoverExist(artist, album);
+    }
 }

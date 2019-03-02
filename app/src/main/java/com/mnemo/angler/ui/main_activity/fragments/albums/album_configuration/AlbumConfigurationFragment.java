@@ -26,6 +26,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.mnemo.angler.data.database.Entities.Track;
@@ -151,9 +152,6 @@ public class AlbumConfigurationFragment extends Fragment implements AlbumConfigu
 
         localPlaylistName = "album/" + artist + "/" + title;
 
-        // Load cover image
-        loadCover();
-
         // Assign title & artist & year
         titleText.setText(title);
 
@@ -210,7 +208,7 @@ public class AlbumConfigurationFragment extends Fragment implements AlbumConfigu
         recyclerView.setHasFixedSize(true);
         recyclerView.setItemViewCacheSize(20);
 
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
 
         return view;
@@ -223,6 +221,9 @@ public class AlbumConfigurationFragment extends Fragment implements AlbumConfigu
         // Bind Presenter to View
         presenter = new AlbumConfigurationPresenter();
         presenter.attachView(this);
+
+        // Load cover image
+        loadCover();
 
         // Get year from database if year == 0 in arguments
         if (year == 0){
@@ -313,15 +314,22 @@ public class AlbumConfigurationFragment extends Fragment implements AlbumConfigu
     @OnClick(R.id.album_conf_cardview)
     void openCover() {
 
-     CoverDialogFragment coverDialogFragment = new CoverDialogFragment();
+        if (presenter.checkAlbumCoverExist(artist, title)) {
 
-     Bundle args = new Bundle();
-     args.putString("artist", artist);
-     args.putString("album", title);
-     args.putString("image", image);
-     coverDialogFragment.setArguments(args);
+            CoverDialogFragment coverDialogFragment = new CoverDialogFragment();
 
-     coverDialogFragment.show(getActivity().getSupportFragmentManager(), "Album cover fragment");
+            Bundle args = new Bundle();
+            args.putString("artist", artist);
+            args.putString("album", title);
+            args.putString("image", image);
+            coverDialogFragment.setArguments(args);
+
+            coverDialogFragment.show(getActivity().getSupportFragmentManager(), "Album cover fragment");
+
+        }else{
+
+            Toast.makeText(getContext(), R.string.no_image, Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Optional
@@ -388,6 +396,7 @@ public class AlbumConfigurationFragment extends Fragment implements AlbumConfigu
 
     // Load cover image
     private void loadCover(){
+
         int imageHeight;
 
         if (orientation == Configuration.ORIENTATION_PORTRAIT){
@@ -396,6 +405,11 @@ public class AlbumConfigurationFragment extends Fragment implements AlbumConfigu
             imageHeight = 240;
         }
 
-        ImageAssistant.loadImage(getContext(), image, imageView, imageHeight);
+        if (presenter.checkAlbumCoverExist(artist, title)){
+            ImageAssistant.loadImage(getContext(), image, imageView, imageHeight);
+        }else{
+            ImageAssistant.loadImage(getContext(), "R.drawable.black_logo", imageView, imageHeight);
+        }
+
     }
 }

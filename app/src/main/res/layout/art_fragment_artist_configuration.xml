@@ -36,14 +36,13 @@
                 <TextView
                     android:id="@+id/artist_conf_albums_count"
                     style="@style/expanded_subtitle"
-                    app:layout_constraintBottom_toTopOf="@id/artist_conf_tracks_count"
+                    app:layout_constraintTop_toBottomOf="@id/artist_conf_artist"
                     tools:text="4 albums"/>
 
                 <TextView
                     android:id="@+id/artist_conf_tracks_count"
                     style="@style/expanded_subtitle"
-                    android:layout_marginBottom="8dp"
-                    app:layout_constraintBottom_toTopOf="@id/artist_conf_play_all"
+                    app:layout_constraintTop_toBottomOf="@id/artist_conf_albums_count"
                     tools:text="123 tracks" />
 
                 <Button
@@ -95,20 +94,16 @@
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/artist_conf_tab_layout"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_marginTop="4dp"
+        android:layout_height="56dp"
         app:tabGravity="fill"
-        app:tabIndicatorHeight="0dp"
+        app:tabIndicatorHeight="1dp"
         app:tabMode="fixed"
+        android:background="@color/black"
         app:tabSelectedTextColor="@color/white"
+        app:tabIndicatorColor="@color/white"
         app:tabTextColor="@android:color/secondary_text_light_nodisable"
         app:layout_anchor="@id/artist_conf_app_bar"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
-
-    <View
-        style="@style/line"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:layout_marginTop="55dp"/>
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/artist_conf_view_pager"

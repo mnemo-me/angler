@@ -62,7 +62,7 @@
         <item name="android:maxWidth">185dp</item>
         <item name="android:layout_marginStart">24dp</item>
         <item name="layout_constraintStart_toStartOf">parent</item>
-        <item name="android:textSize">14sp</item>
+        <item name="android:textSize">16sp</item>
         <item name="android:textColor">@color/gGrey</item>
         <item name="android:lines">1</item>
         <item name="android:ellipsize">end</item>
@@ -103,7 +103,7 @@
         <item name="android:layout_height">36dp</item>
         <item name="android:layout_marginStart">24dp</item>
         <item name="android:layout_marginEnd">10dp</item>
-        <item name="android:layout_marginBottom">8dp</item>
+        <item name="android:layout_marginBottom">4dp</item>
         <item name="android:paddingStart">@dimen/default_margin</item>
         <item name="android:paddingEnd">@dimen/default_margin</item>
         <item name="layout_constraintStart_toStartOf">parent</item>
@@ -161,10 +161,7 @@
     <style name="cover_card_conf">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">0dp</item>
-        <item name="android:layout_marginStart">4dp</item>
-        <item name="android:layout_marginEnd">4dp</item>
-        <item name="android:layout_marginTop">4dp</item>
-        <item name="android:layout_marginBottom">8dp</item>
+        <item name="android:layout_margin">4dp</item>
         <item name="cardElevation">0dp</item>
         <item name="layout_constraintTop_toTopOf">parent</item>
         <item name="layout_constraintBottom_toBottomOf">parent</item>
@@ -212,7 +209,8 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">48dp</item>
         <item name="android:gravity">center_vertical</item>
-        <item name="android:textColor">@color/selected_drawer_item</item>
+        <item name="android:textColor">@color/selected_grey_white2</item>
+        <item name="android:background">@drawable/selected_drawer_item</item>
         <item name="android:textAllCaps">true</item>
         <item name="android:textStyle">bold</item>
         <item name="android:paddingStart">@dimen/default_margin</item>

@@ -28,7 +28,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -198,7 +197,7 @@ public class AnglerFileStorage {
     public void createTempImage(){
 
         File outputFile = new File(TEMP_IMAGE_NAME);
-        Bitmap bm = BitmapFactory.decodeResource(context.getResources(), context.getResources().getIdentifier("logo", "drawable", context.getPackageName()));
+        Bitmap bm = BitmapFactory.decodeResource(context.getResources(), context.getResources().getIdentifier("black_logo", "drawable", context.getPackageName()));
 
         try {
 
@@ -419,61 +418,6 @@ public class AnglerFileStorage {
         }
 
         return Uri.fromFile(file);
-    }
-
-    // Save artist image
-    public void saveArtistImage(String artist, InputStream inputStream){
-
-
-        File file = new File(getArtistImagePath(artist));
-
-        FileOutputStream outputStream = null;
-
-        try {
-            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-
-            outputStream = new FileOutputStream(file);
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
-
-        } catch (IOException e) {
-
-            e.printStackTrace();
-
-        } finally {
-
-            if (inputStream != null) {
-                try {
-                    inputStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (outputStream != null) {
-                try {
-                    outputStream.flush();
-                    outputStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
-    // Update artist images
-    @SuppressLint("CheckResult")
-    public void updateArtistImages(HashMap<String, InputStream> artistImages, OnArtistImagesUpdateListener listener){
-
-        Completable.fromAction(() -> {
-            for (String artist : artistImages.keySet()){
-
-                if (artistImages.get(artist) != null) {
-                    saveArtistImage(artist, artistImages.get(artist));
-                }
-            }
-        })
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(() -> listener.onArtistImagesUpdated(true));
-
     }
 
     // Save artist bio

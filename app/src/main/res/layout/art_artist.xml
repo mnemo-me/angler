@@ -15,7 +15,8 @@
         android:layout_height="0dp"
         android:scaleType="centerCrop"
         android:layout_margin="1dp"
-        app:layout_constraintDimensionRatio="1"/>
+        app:layout_constraintDimensionRatio="1"
+        android:contentDescription="@string/artist"/>
 
     <View
         android:layout_width="match_parent"

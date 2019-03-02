@@ -102,6 +102,8 @@
     <string name="trial_period_is_expired">Trial period is expired. To continue using Angler you should purchase it.</string>
     <string name="welcome">Welcome</string>
     <string name="queue_updated">queue updated</string>
+    <string name="no_image">no image</string>
+    <string name="artist">artist</string>
 
 
 </resources>

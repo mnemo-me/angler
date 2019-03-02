@@ -297,14 +297,20 @@
                 </RelativeLayout>
 
 
-                <View style="@style/line" />
+                <View
+                    android:id="@+id/grey_line1"
+                    style="@style/line"
+                    android:visibility="invisible"/>
 
                 <TextView
                     android:id="@+id/music_player_drawer_item"
                     style="@style/drawer_item"
                     android:text="@string/music_player" />
 
-                <View style="@style/line" />
+                <View
+                    android:id="@+id/grey_line2"
+                    style="@style/line"
+                    android:visibility="invisible"/>
 
                 <TextView
                     android:id="@+id/playlists_drawer_item"
@@ -332,7 +338,9 @@
                     android:text="@string/change_background" />
 
 
-                <View style="@style/line" />
+                <View
+                    android:id="@+id/grey_line3"
+                    style="@style/line"/>
 
                 <FrameLayout
                     android:layout_width="match_parent"

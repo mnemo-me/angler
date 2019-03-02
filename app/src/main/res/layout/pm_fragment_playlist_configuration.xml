@@ -34,15 +34,15 @@
                     style="@style/expanded_title"/>
 
                 <TextView
+                    android:id="@+id/playlist_conf_playlist_text"
                     style="@style/expanded_subtitle"
                     android:text="@string/playlist"
-                    app:layout_constraintBottom_toTopOf="@id/playlist_conf_tracks_count"/>
+                    app:layout_constraintTop_toBottomOf="@id/playlist_conf_title"/>
 
                 <TextView
                     android:id="@+id/playlist_conf_tracks_count"
                     style="@style/expanded_subtitle"
-                    android:layout_marginBottom="8dp"
-                    app:layout_constraintBottom_toTopOf="@id/playlist_conf_play_all"
+                    app:layout_constraintTop_toBottomOf="@id/playlist_conf_playlist_text"
                     tools:text="123 tracks"/>
 
                 <Button
@@ -97,18 +97,19 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="68dp"
+        android:layout_height="56dp"
+        android:background="@color/black"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <Button
             android:id="@+id/playlist_conf_add_tracks"
             android:layout_width="172dp"
             android:layout_height="36dp"
-            android:background="@drawable/white_frame"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
             android:paddingEnd="@dimen/default_margin"
             android:paddingStart="@dimen/default_margin"
             android:text="@string/add_tracks_to_playlist"
-            android:textColor="@color/white"
+            android:textColor="@color/selected_grey_white"
             app:layout_constraintEnd_toStartOf="@id/playlist_conf_manage_tracks"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -118,21 +119,17 @@
             android:id="@+id/playlist_conf_manage_tracks"
             android:layout_width="172dp"
             android:layout_height="36dp"
-            android:background="@drawable/white_frame"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
             android:paddingEnd="@dimen/default_margin"
             android:paddingStart="@dimen/default_margin"
             android:text="@string/manage_tracks"
-            android:textColor="@color/white"
+            android:textColor="@color/selected_grey_white"
             android:enabled="false"
             android:alpha="0.3"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/playlist_conf_add_tracks" />
-
-        <View
-            style="@style/line"
-            app:layout_constraintBottom_toBottomOf="parent"/>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -142,9 +139,9 @@
         android:id="@+id/playlist_conf_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="68dp"
+        android:layout_marginTop="56dp"
         android:clipToPadding="false"
-        android:paddingTop="12dp"
+        android:paddingTop="24dp"
         android:paddingBottom="8dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
@@ -157,7 +154,7 @@
         android:textSize="18sp"
         android:text="@string/no_tracks"
         android:visibility="gone"
-        android:layout_marginBottom="140dp"
+        android:layout_marginBottom="146dp"
         android:layout_gravity="center_horizontal"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
@@ -167,7 +164,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        android:layout_marginBottom="140dp"
+        android:layout_marginBottom="146dp"
         android:layout_gravity="center_horizontal"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 

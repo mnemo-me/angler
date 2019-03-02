@@ -36,8 +36,6 @@ public class AnglerNotificationManager {
 
     private MediaSessionCompat.Token token;
 
-    //private RemoteViews notificationView;
-
     public AnglerNotificationManager(AnglerService anglerService) {
 
         this.anglerService = anglerService;
@@ -61,26 +59,29 @@ public class AnglerNotificationManager {
 
     }
 
-    /*
-    Creating new Notification
-     */
+
+    // Creating new Notification
     public void createNotification(){
 
-        /*
-        Get metadata via Media Controller
-         */
+
+        //Get metadata via Media Controller
         MediaMetadataCompat metadata = mediaController.getMetadata();
         String title = String.valueOf(metadata.getDescription().getTitle());
         String artist = String.valueOf(metadata.getDescription().getSubtitle());
         String album = String.valueOf(metadata.getDescription().getDescription());
 
         String albumImagePath = AnglerFolder.PATH_ALBUM_COVER + File.separator + artist + File.separator + album + ".jpg";
-        Bitmap albumImage = BitmapFactory.decodeFile(albumImagePath);
+
+        Bitmap albumImage;
+
+        if (new File(albumImagePath).exists()){
+            albumImage = BitmapFactory.decodeFile(albumImagePath);
+        }else{
+            albumImage = BitmapFactory.decodeResource(anglerService.getResources(), R.drawable.black_logo);
+        }
 
 
-        /*
-        Creating Content Intent that launch Angler Client on Notification click
-         */
+        // Creating Content Intent that launch Angler Client on Notification click
         Intent contentIntent = new Intent(anglerService, MainActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable("meta", metadata);

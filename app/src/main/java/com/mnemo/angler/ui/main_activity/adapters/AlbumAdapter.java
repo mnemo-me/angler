@@ -215,6 +215,10 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder>{
                     // Create album image path
                     String albumImagePath = AnglerFolder.PATH_ALBUM_COVER + File.separator + artist + File.separator + album + ".jpg";
 
+                    if (!new File(albumImagePath).exists()){
+                        albumImagePath = "R.drawable.black_logo";
+                    }
+
                     // Load album image
                     ImageAssistant.loadImage(context,
                             albumImagePath,
