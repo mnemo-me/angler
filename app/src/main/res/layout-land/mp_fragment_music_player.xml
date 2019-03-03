@@ -26,12 +26,11 @@
         android:id="@+id/main_fragment_playlist_spinner"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:maxWidth="260dp"
         android:background="@null"
         android:backgroundTint="@color/gGrey"
         app:layout_constraintBottom_toBottomOf="@id/main_fragment_spinner_layout"
         app:layout_constraintStart_toEndOf="@id/settings"
-        app:layout_constraintEnd_toStartOf="@id/search"
+        app:layout_constraintEnd_toStartOf="@id/artist_track_guideline"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
@@ -85,17 +84,23 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/artist_track_guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.43"/>
+
     <View
         android:id="@+id/artist_track_separator"
         android:layout_width="1dp"
         android:layout_height="match_parent"
         android:layout_marginBottom="@dimen/default_margin"
-        android:layout_marginStart="284dp"
         android:layout_marginTop="64dp"
         android:background="@color/gGrey"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@id/artist_track_guideline"
         app:layout_constraintTop_toTopOf="parent" />
 
     <FrameLayout
@@ -110,8 +115,7 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_marginTop="48dp"
-        android:layout_marginStart="284dp"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@id/artist_track_separator"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

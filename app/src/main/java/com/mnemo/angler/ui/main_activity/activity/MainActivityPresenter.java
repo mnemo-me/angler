@@ -34,8 +34,7 @@ public class MainActivityPresenter extends BasePresenter {
     // Check trial
     void checkTrial(String androidId, long currentTimestamp){
 
-        //long trialPeriod = 1296000000;
-        long trialPeriod = 43200000;
+        long trialPeriod = 1296000000;
 
         long trialTimestamp = repository.getTrialTimestamp();
 

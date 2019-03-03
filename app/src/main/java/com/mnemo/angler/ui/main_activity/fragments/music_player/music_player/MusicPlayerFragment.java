@@ -72,6 +72,10 @@ public class MusicPlayerFragment extends Fragment implements MusicPlayerView {
     FrameLayout songList;
 
     @Nullable
+    @BindView(R.id.artist_song_list)
+    FrameLayout artistSongList;
+
+    @Nullable
     @BindView(R.id.artist_track_separator)
     View separator;
 
@@ -400,6 +404,7 @@ public class MusicPlayerFragment extends Fragment implements MusicPlayerView {
 
             searchView.animate().translationY(searchView.getHeight());
             songList.animate().translationY(searchView.getHeight());
+            artistSongList.animate().translationY(searchView.getHeight());
         }
     }
 
@@ -413,6 +418,7 @@ public class MusicPlayerFragment extends Fragment implements MusicPlayerView {
 
             searchView.animate().translationY(0);
             songList.animate().translationY(0);
+            artistSongList.animate().translationY(0);
         }
     }
 

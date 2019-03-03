@@ -1,0 +1,241 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimaryDark</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:fontFamily">@font/nexa_light</item>
+    </style>
+    
+    <style name="AppTheme.Launcher">
+        <item name="android:windowBackground">@drawable/launcher</item>
+    </style>
+
+
+
+    <!-- Text -->
+
+    <style name="title">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">8dp</item>
+        <item name="android:layout_marginEnd">24dp</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:lines">1</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+
+    <style name="dialog_title">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">24dp</item>
+        <item name="android:paddingTop">@dimen/default_margin</item>
+        <item name="android:paddingBottom">@dimen/default_margin</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="expanded_title">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:maxWidth">185dp</item>
+        <item name="android:layout_marginStart">24dp</item>
+        <item name="android:layout_marginBottom">40dp</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="layout_constraintStart_toStartOf">parent</item>
+        <item name="layout_constraintTop_toTopOf">parent</item>
+        <item name="layout_constraintBottom_toBottomOf">parent</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:lines">2</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+
+    <style name="expanded_subtitle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:maxWidth">185dp</item>
+        <item name="android:layout_marginStart">24dp</item>
+        <item name="layout_constraintStart_toStartOf">parent</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/gGrey</item>
+        <item name="android:lines">1</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+
+    <style name="tab_text_appearance" parent="TextAppearance.Design.Tab">
+        <item name="textAllCaps">false</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+
+
+
+
+
+
+    <!-- Buttons -->
+
+    <style name="button">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">?android:attr/selectableItemBackgroundBorderless</item>
+        <item name="android:layout_marginStart">8dp</item>
+        <item name="android:layout_marginEnd">8dp</item>
+        <item name="android:padding">8dp</item>
+        <item name="android:layout_gravity">center_vertical</item>
+    </style>
+
+    <style name="playlist_media_button">
+        <item name="android:layout_width">36dp</item>
+        <item name="android:layout_height">36dp</item>
+        <item name="android:background">?android:attr/selectableItemBackgroundBorderless</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:alpha">0.8</item>
+    </style>
+
+    <style name="play_all_button">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">36dp</item>
+        <item name="android:layout_marginStart">24dp</item>
+        <item name="android:layout_marginEnd">10dp</item>
+        <item name="android:layout_marginBottom">4dp</item>
+        <item name="android:paddingStart">@dimen/default_margin</item>
+        <item name="android:paddingEnd">@dimen/default_margin</item>
+        <item name="layout_constraintStart_toStartOf">parent</item>
+        <item name="layout_constraintBottom_toBottomOf">parent</item>
+        <item name="android:gravity">center</item>
+        <item name="android:background">@drawable/black_frame</item>
+        <item name="android:text">@string/play_all</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="yes_no_bottom_button">
+        <item name="android:layout_height">48dp</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:gravity">center_horizontal|bottom</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:paddingBottom">12dp</item>
+    </style>
+
+    <style name="grey_yes_no_bottom_button" parent="yes_no_bottom_button">
+        <item name="android:textColor">@color/selected_grey_white</item>
+    </style>
+
+    <style name="check_box_style">
+        <item name="colorAccent">@color/colorAccentLight</item>
+        <item name="android:textColorSecondary">@color/black</item>
+    </style>
+
+
+
+
+    <!-- Cover -->
+    <style name="cover_card">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:layout_marginStart">3dp</item>
+        <item name="android:layout_marginEnd">3dp</item>
+        <item name="cardCornerRadius">2dp</item>
+        <item name="cardElevation">2dp</item>
+        <item name="layout_constraintDimensionRatio">1</item>
+        <item name="cardBackgroundColor">@android:color/transparent</item>
+    </style>
+
+    <style name="card_layout">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:layout_marginStart">3dp</item>
+        <item name="android:layout_marginEnd">3dp</item>
+        <item name="layout_constraintDimensionRatio">1</item>
+        <item name="android:foreground">@drawable/white_frame_with_corners</item>
+    </style>
+
+    <style name="cover_card_conf">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:layout_margin">4dp</item>
+        <item name="cardElevation">0dp</item>
+        <item name="layout_constraintTop_toTopOf">parent</item>
+        <item name="layout_constraintBottom_toBottomOf">parent</item>
+        <item name="layout_constraintEnd_toEndOf">parent</item>
+        <item name="layout_constraintDimensionRatio">1</item>
+    </style>
+
+    <style name="cover">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_margin">1dp</item>
+        <item name="android:scaleType">centerCrop</item>
+        <item name="android:foreground">@drawable/background_selector</item>
+    </style>
+
+    <style name="cover_selector">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_margin">1dp</item>
+        <item name="android:background">@drawable/background_selector</item>
+    </style>
+
+    <style name="album_title">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">4dp</item>
+        <item name="android:layout_marginBottom">12dp</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:lines">2</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+
+
+
+    <!-- Other -->
+
+    <style name="toolbar">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="android:elevation">4dp</item>
+    </style>
+
+    <style name="drawer_item">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:textColor">@color/selected_grey_white2</item>
+        <item name="android:background">@drawable/selected_drawer_item</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:paddingStart">@dimen/default_margin</item>
+        <item name="android:paddingEnd">@dimen/default_margin</item>
+    </style>
+
+
+    <style name="contextual_menu_item">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">40dp</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:background">?android:attr/selectableItemBackground</item>
+        <item name="android:paddingStart">@dimen/default_margin</item>
+        <item name="android:paddingEnd">@dimen/default_margin</item>
+    </style>
+
+    <style name="line">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:background">@color/gGrey</item>
+        <item name="android:layout_marginStart">@dimen/default_margin</item>
+        <item name="android:layout_marginEnd">@dimen/default_margin</item>
+    </style>
+
+
+
+</resources>
