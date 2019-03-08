@@ -4,6 +4,8 @@ import com.google.android.material.tabs.TabLayout;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.TextView;
 
 import com.mnemo.angler.R;
 import com.mnemo.angler.ui.local_load_activity.adapters.LocalLoadAdapter;
@@ -23,6 +25,9 @@ public class LocalLoadActivity extends AppCompatActivity implements LocalLoadVie
 
     @BindView(R.id.view_pager)
     ViewPager viewPager;
+
+    @BindView(R.id.empty_image_text)
+    TextView emptyText;
 
     private String imageType;
 
@@ -67,6 +72,11 @@ public class LocalLoadActivity extends AppCompatActivity implements LocalLoadVie
     // MVP View methods
     @Override
     public void setImageFolders(List<String> imageFolders) {
+
+        // Show empty text if no image folders
+        if (imageFolders.size() == 0){
+            emptyText.setVisibility(View.VISIBLE);
+        }
 
         // Setup TabLayout and bind ViewPager with it
         viewPager.setAdapter(new LocalLoadAdapter(getSupportFragmentManager(), imageFolders));

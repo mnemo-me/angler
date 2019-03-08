@@ -9,7 +9,7 @@
     <View
         android:id="@+id/main_fragment_spinner_layout"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="@dimen/toolbar_height"
         android:background="@color/softMainGrey" />
 
     <ImageView
@@ -17,6 +17,7 @@
         style="@style/button"
         android:contentDescription="@string/settings"
         android:src="@drawable/selected_menu"
+        android:layout_marginStart="4dp"
         app:layout_constraintBottom_toBottomOf="@id/main_fragment_spinner_layout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/main_fragment_playlist_spinner"
@@ -64,7 +65,6 @@
     <ImageButton
         android:id="@+id/playlist"
         style="@style/button"
-        android:layout_marginEnd="4dp"
         android:layout_marginStart="4dp"
         android:alpha="1"
         android:contentDescription="@string/playlist"
@@ -76,7 +76,7 @@
     <ImageButton
         android:id="@+id/artists"
         style="@style/button"
-        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp"
         android:alpha="0.5"
         android:contentDescription="@string/artists"
         android:src="@drawable/baseline_people_black_24dp"
@@ -89,7 +89,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.43"/>
+        app:layout_constraintGuide_percent="0.4"/>
 
     <View
         android:id="@+id/artist_track_separator"
@@ -107,14 +107,14 @@
         android:id="@+id/song_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="@dimen/toolbar_height"
         app:layout_constraintTop_toTopOf="parent" />
 
     <FrameLayout
         android:id="@+id/artist_song_list"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="@dimen/toolbar_height"
         app:layout_constraintStart_toEndOf="@id/artist_track_separator"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

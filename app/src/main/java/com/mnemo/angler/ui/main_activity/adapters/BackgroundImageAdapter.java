@@ -68,6 +68,7 @@ public class BackgroundImageAdapter extends RecyclerView.Adapter<BackgroundImage
     private List<String> images;
     private String currentBackground;
     private String selectedImage;
+    private int imageHeight;
 
     private OnImageClickListener onImageClickListener;
     private OnImageDeleteListener onImageDeleteListener;
@@ -80,6 +81,18 @@ public class BackgroundImageAdapter extends RecyclerView.Adapter<BackgroundImage
         this.images = images;
 
         orientation = context.getResources().getConfiguration().orientation;
+
+        if (orientation == Configuration.ORIENTATION_PORTRAIT){
+            imageHeight = (int)((context.getResources().getConfiguration().screenHeightDp
+                    - context.getResources().getDimension(R.dimen.toolbar_height)
+                    - context.getResources().getDimension(R.dimen.media_panel_height_port))
+                    / 3);
+        }else{
+            imageHeight = (int)((context.getResources().getConfiguration().screenHeightDp
+                    - context.getResources().getDimension(R.dimen.toolbar_height)
+                    - context.getResources().getDimension(R.dimen.media_panel_height_land))
+                    / 2);
+        }
     }
 
     @Override
@@ -145,7 +158,7 @@ public class BackgroundImageAdapter extends RecyclerView.Adapter<BackgroundImage
             // Image path variable
             String imagePath;
 
-            if (image.startsWith("R.drawable.")){
+            if (image.contains("/.default/")){
                 imagePath = image;
             }else {
                 if (orientation == Configuration.ORIENTATION_PORTRAIT) {
@@ -170,12 +183,12 @@ public class BackgroundImageAdapter extends RecyclerView.Adapter<BackgroundImage
             }
 
             // Load background image
-            ImageAssistant.loadImage(context, imagePath, ((ImageViewHolder)holder).background, 120);
+            ImageAssistant.loadImage(context, imagePath, ((ImageViewHolder)holder).background, imageHeight);
 
 
             // Setup delete image button
             // Set visibility
-            if (image.startsWith("R.drawable.")){
+            if (image.contains("/.default/")){
 
                 ((ImageViewHolder)holder).deleteImage.setVisibility(View.GONE);
 
@@ -207,7 +220,7 @@ public class BackgroundImageAdapter extends RecyclerView.Adapter<BackgroundImage
 
     // Set default background (when current background deleted)
     public void setDefaultBackground(){
-        currentBackground = "R.drawable.back1";
+        currentBackground = AnglerFolder.PATH_BACKGROUND_DEFAULT + File.separator + "back1.jpg";
         notifyItemChanged(images.indexOf(currentBackground));
     }
 

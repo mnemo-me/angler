@@ -178,7 +178,6 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
             // inject views
             ButterKnife.bind(this);
 
-
             // bind Presenter to View
             presenter = new MainActivityPresenter();
             presenter.attachView(this);
@@ -220,6 +219,12 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
                 mainFrame.setVisibility(savedInstanceState.getInt("main_frame_visibility"));
             }
 
+            // Set title text max width
+            if (orientation == Configuration.ORIENTATION_PORTRAIT){
+                titleView.setMaxWidth((int)(getResources().getConfiguration().screenWidthDp * MainActivity.density * 0.75));
+            }else{
+                titleView.setMaxWidth((int)(getResources().getConfiguration().screenWidthDp * MainActivity.density * 0.25));
+            }
 
             // Select current drawer item
             drawerItems.get(selectedDrawerItemIndex).setSelected(true);
@@ -380,16 +385,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
                 if (grantResults.length > 0) {
 
                     if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                        Intent intent = getIntent();
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-
-                        finish();
-
-                        overridePendingTransition(0, 0);
-
-                        startActivity(getIntent());
-
+                        launchApp();
                     } else {
                         finish();
                     }
@@ -399,15 +395,15 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
         }
     }
 
+
     // MVP View methods
     // Set background
-    public void setBackground(String backgroundImage, int opacity) {
+    public void setBackground(String backgroundImage) {
 
         // Set image path & height based on orientation
         String imagePath;
-        int imageHeight;
 
-        if (backgroundImage.startsWith("R.drawable.")) {
+        if (backgroundImage.contains("/.default/")) {
             imagePath = backgroundImage;
         }else {
             if (orientation == Configuration.ORIENTATION_PORTRAIT) {
@@ -417,16 +413,26 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
             }
         }
 
+        int imageHeight;
+
         if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-            imageHeight = 520;
+            imageHeight = (int) (getResources().getConfiguration().screenHeightDp
+                    - getResources().getDimension(R.dimen.toolbar_height)
+                    - getResources().getDimension(R.dimen.media_panel_height_port));
         }else{
-            imageHeight = 203;
+            imageHeight = (int) (getResources().getConfiguration().screenHeightDp
+                    - getResources().getDimension(R.dimen.toolbar_height)
+                    - getResources().getDimension(R.dimen.media_panel_height_port));
         }
 
         ImageAssistant.loadImage(this, imagePath, background, imageHeight);
-        overlay.setBackgroundColor(Color.argb(opacity, 0, 0, 0));
+
     }
 
+    @Override
+    public void setOpacity(int opacity) {
+        overlay.setBackgroundColor(Color.argb(opacity, 0, 0, 0));
+    }
 
     // Show current track metadata in views
     public void showDescription(String title, String artist, long durationMS) {
@@ -918,4 +924,19 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
             presenter.checkTrial(androidId, new Date().getTime());
         }
     }
+
+
+    // Launch app
+    public void launchApp() {
+
+        Intent intent = getIntent();
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+
+        finish();
+
+        overridePendingTransition(0, 0);
+
+        startActivity(getIntent());
+    }
+
 }

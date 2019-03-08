@@ -19,6 +19,8 @@ import android.widget.TextView;
 
 import com.mnemo.angler.R;
 
+import java.text.DecimalFormat;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -203,7 +205,13 @@ public class AudioEffectsFragment extends Fragment implements AudioEffectsView{
                     MediaControllerCompat.getMediaController(getActivity()).getTransportControls().sendCustomAction("amplifier_change_band_level", extras);
                 }
 
-                amplifierLevel.setText(i + " mDB");
+                if (i >= 1000) {
+
+                    DecimalFormat format = new DecimalFormat("0.##");
+                    amplifierLevel.setText(format.format((float) i / 1000) + " DB");
+                }else {
+                    amplifierLevel.setText(i + " mDB");
+                }
             }
 
             @Override
@@ -224,7 +232,15 @@ public class AudioEffectsFragment extends Fragment implements AudioEffectsView{
         amplifierSwitch.setChecked(amplifierOnOffState);
 
         amplifierSeekBar.setProgress(amplifierGain);
-        amplifierLevel.setText(amplifierGain + " mDB");
+
+        if (amplifierGain >= 1000) {
+
+            DecimalFormat format = new DecimalFormat("0.##");
+            amplifierLevel.setText(format.format((float) amplifierGain / 1000) + " DB");
+        }else {
+            amplifierLevel.setText(amplifierGain + " mDB");
+        }
+    
         amplifierSeekBar.setEnabled(amplifierOnOffState);
 
 

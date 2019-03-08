@@ -137,9 +137,9 @@ public class AddTracksExpandableListAdapter extends BaseExpandableListAdapter{
         ImageView expandButton = linearLayout.findViewById(R.id.add_track_expand_button);
 
         if (expandedGroups[i]){
-            expandButton.setImageResource(R.drawable.baseline_keyboard_arrow_down_white_18dp);
+            expandButton.setImageResource(R.drawable.baseline_keyboard_arrow_down_black_18dp);
         }else {
-            expandButton.setImageResource(R.drawable.baseline_keyboard_arrow_right_white_18dp);
+            expandButton.setImageResource(R.drawable.baseline_keyboard_arrow_right_black_18dp);
         }
 
         expandButton.setOnClickListener(expView -> {
@@ -148,9 +148,9 @@ public class AddTracksExpandableListAdapter extends BaseExpandableListAdapter{
             onGroupExpandListener.onGroupExpand(i, expandedGroups[i]);
 
             if (expandedGroups[i]){
-                expandButton.setImageResource(R.drawable.baseline_keyboard_arrow_down_white_18dp);
+                expandButton.setImageResource(R.drawable.baseline_keyboard_arrow_down_black_18dp);
             }else {
-                expandButton.setImageResource(R.drawable.baseline_keyboard_arrow_right_white_18dp);
+                expandButton.setImageResource(R.drawable.baseline_keyboard_arrow_right_black_18dp);
             }
         });
 
@@ -166,6 +166,7 @@ public class AddTracksExpandableListAdapter extends BaseExpandableListAdapter{
         // Set muted
         if (mutedArtists.contains(artist)){
             checkBox.setEnabled(false);
+            checkBox.setAlpha(0.4f);
         }
 
         // Set listener
@@ -220,8 +221,12 @@ public class AddTracksExpandableListAdapter extends BaseExpandableListAdapter{
         checkBox.setText(track.getTitle());
 
         // Set checked and muted for already added tracks
-        checkBox.setChecked(checkedTracks.get(track));
-        checkBox.setEnabled(!checkedTracks.get(track));
+        if (checkedTracks.get(track)){
+            checkBox.setChecked(true);
+            checkBox.setEnabled(false);
+            checkBox.setAlpha(0.4f);
+        }
+
 
         // Set checked for tracks candidates to add
         if (!checkedTracks.get(track)){

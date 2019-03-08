@@ -20,26 +20,25 @@
             android:id="@+id/background_group"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="140dp"
-            android:layout_marginTop="48dp"
+            android:layout_marginBottom="@dimen/media_panel_height_port"
+            android:layout_marginTop="@dimen/toolbar_height"
             app:constraint_referenced_ids="main_fragment_background, overlay" />
 
         <ImageView
             android:id="@+id/main_fragment_background"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="140dp"
-            android:layout_marginTop="48dp"
+            android:layout_marginBottom="@dimen/media_panel_height_port"
+            android:layout_marginTop="@dimen/toolbar_height"
             android:contentDescription="@string/background_image"
-            android:scaleType="centerCrop"
-            tools:src="@drawable/back1" />
+            android:scaleType="centerCrop"/>
 
         <FrameLayout
             android:id="@+id/overlay"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="140dp"
-            android:layout_marginTop="48dp"
+            android:layout_marginBottom="@dimen/media_panel_height_port"
+            android:layout_marginTop="@dimen/toolbar_height"
             tools:background="#CC000000" />
 
         <!-- frames for fragments -->
@@ -48,13 +47,13 @@
             android:id="@+id/main_frame"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="140dp" />
+            android:layout_marginBottom="@dimen/media_panel_height_port" />
 
         <FrameLayout
             android:id="@+id/frame"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="140dp" />
+            android:layout_marginBottom="@dimen/media_panel_height_port" />
 
         <FrameLayout
             android:id="@+id/full_frame"
@@ -67,7 +66,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/media_panel"
             android:layout_width="match_parent"
-            android:layout_height="140dp"
+            android:layout_height="@dimen/media_panel_height_port"
             android:background="@color/softMainGrey"
             app:layout_constraintBottom_toBottomOf="parent" >
 
@@ -87,11 +86,10 @@
                 android:layout_gravity="center_horizontal"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:maxWidth="300dp"
                 android:paddingEnd="28dp"
                 android:paddingStart="28dp"
                 android:textColor="#000000"
-                android:textSize="14sp"
+                android:textSize="@dimen/default_text_size"
                 android:text="@string/no_media"
                 app:layout_constraintBottom_toTopOf="@+id/media_panel_seek_bar"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -116,7 +114,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="36dp"
                 android:layout_marginEnd="36dp"
-                android:layout_marginBottom="8dp"
+                android:layout_marginBottom="@dimen/half_margin"
                 android:progressBackgroundTint="@color/gGrey"
                 android:progressTint="@color/colorAccentLight"
                 android:thumbTint="@color/colorAccentLight"
@@ -131,7 +129,7 @@
                 android:layout_marginStart="16dp"
                 android:textColor="@color/gGrey"
                 android:text="0:00"
-                android:textSize="12sp"
+                android:textSize="@dimen/small_text_size"
                 app:layout_constraintTop_toTopOf="@id/media_panel_seek_bar"
                 app:layout_constraintBottom_toBottomOf="@id/media_panel_seek_bar"
                 app:layout_constraintEnd_toStartOf="@id/media_panel_seek_bar"
@@ -143,7 +141,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
                 android:textColor="@color/gGrey"
-                android:textSize="12sp"
+                android:textSize="@dimen/small_text_size"
                 android:text="0:00"
                 app:layout_constraintTop_toTopOf="@id/media_panel_seek_bar"
                 app:layout_constraintBottom_toBottomOf="@id/media_panel_seek_bar"
@@ -156,7 +154,7 @@
             <ImageButton
                 android:id="@+id/media_panel_repeat"
                 style="@style/playlist_media_button"
-                android:layout_marginBottom="12dp"
+                android:layout_marginBottom="@dimen/three_quaters_margin"
                 android:alpha="0.2"
                 android:contentDescription="@string/repeat"
                 android:src="@drawable/ic_repeat_black_24dp"
@@ -168,7 +166,7 @@
             <ImageButton
                 android:id="@+id/media_panel_previous_track"
                 style="@style/playlist_media_button"
-                android:layout_marginBottom="12dp"
+                android:layout_marginBottom="@dimen/three_quaters_margin"
                 android:contentDescription="@string/skip_to_previous"
                 android:src="@drawable/ic_skip_previous_black_24dp"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -179,7 +177,7 @@
             <ImageButton
                 android:id="@+id/media_panel_play_pause"
                 style="@style/playlist_media_button"
-                android:layout_marginBottom="12dp"
+                android:layout_marginBottom="@dimen/three_quaters_margin"
                 android:contentDescription="@string/play_pause"
                 android:src="@drawable/ic_play_arrow_black_48dp"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -191,7 +189,7 @@
             <ImageButton
                 android:id="@+id/media_panel_next_track"
                 style="@style/playlist_media_button"
-                android:layout_marginBottom="12dp"
+                android:layout_marginBottom="@dimen/three_quaters_margin"
                 android:contentDescription="@string/play_next"
                 android:src="@drawable/ic_skip_next_black_24dp"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -202,7 +200,7 @@
             <ImageButton
                 android:id="@+id/media_panel_shuffle"
                 style="@style/playlist_media_button"
-                android:layout_marginBottom="12dp"
+                android:layout_marginBottom="@dimen/three_quaters_margin"
                 android:alpha="0.2"
                 android:contentDescription="@string/shuffle"
                 android:src="@drawable/ic_shuffle_black_24dp"
@@ -239,7 +237,7 @@
                 android:layout_centerInParent="true"
                 android:text="@string/app_name"
                 android:textAllCaps="true"
-                android:fontFamily="serif"
+                android:fontFamily="@font/constantine"
                 android:textColor="@color/gGrey"
                 android:textSize="50sp" />
 
@@ -251,9 +249,8 @@
                 android:layout_centerHorizontal="true"
                 android:text="@string/trial_version"
                 android:textAllCaps="true"
-                android:fontFamily="serif"
                 android:textColor="@color/gGrey"
-                android:textSize="12sp"
+                android:textSize="@dimen/medium_text_size"
                 android:visibility="gone"/>
 
         </RelativeLayout>

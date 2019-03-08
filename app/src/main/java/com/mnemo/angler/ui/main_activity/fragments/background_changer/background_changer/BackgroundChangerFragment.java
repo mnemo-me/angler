@@ -63,7 +63,6 @@ public class BackgroundChangerFragment extends Fragment implements DrawerItem, B
     private String backgroundImage;
     private String selectedImage;
     private String imageFolder;
-    private int imageHeight;
     private int opacity;
 
     private Boolean isInteract = false;
@@ -88,10 +87,8 @@ public class BackgroundChangerFragment extends Fragment implements DrawerItem, B
         // Get image height & folder based on orientation
         if (orientation == Configuration.ORIENTATION_PORTRAIT) {
             imageFolder = AnglerFolder.PATH_BACKGROUND_PORTRAIT;
-            imageHeight = 520;
         }else{
             imageFolder = AnglerFolder.PATH_BACKGROUND_LANDSCAPE;
-            imageHeight = 203;
         }
 
         // Get is interact
@@ -241,7 +238,8 @@ public class BackgroundChangerFragment extends Fragment implements DrawerItem, B
         presenter.saveBackground(selectedImage, opacity);
 
         // Set new backgroundImage and opacity
-        ((MainActivity)getActivity()).setBackground(selectedImage, opacity);
+        ((MainActivity)getActivity()).setOpacity(opacity);
+        ((MainActivity)getActivity()).setBackground(selectedImage);
 
         // Select music player drawer item
         ((MainActivity)getActivity()).selectDrawerItem(0);
@@ -292,13 +290,14 @@ public class BackgroundChangerFragment extends Fragment implements DrawerItem, B
             if (image.equals(backgroundImage)){
 
                 if (selectedImage.equals(backgroundImage)){
-                    selectedImage = "R.drawable.back1";
+                    selectedImage = AnglerFolder.PATH_BACKGROUND_DEFAULT + File.separator + "back1.jpg";
                 }
-                backgroundImage = "R.drawable.back1";
+                backgroundImage = AnglerFolder.PATH_BACKGROUND_DEFAULT + File.separator + "back1.jpg";
 
                 presenter.saveBackground(backgroundImage, presenter.getCurrentOpacity());
                 showBackgroundImage(backgroundImage);
-                ((MainActivity)getActivity()).setBackground(backgroundImage, presenter.getCurrentOpacity());
+                ((MainActivity)getActivity()).setOpacity(presenter.getCurrentOpacity());
+                ((MainActivity)getActivity()).setBackground(backgroundImage);
 
                 backgroundImageAdapter.setDefaultBackground();
             }
@@ -318,7 +317,19 @@ public class BackgroundChangerFragment extends Fragment implements DrawerItem, B
     // Support methods
     private void showBackgroundImage(String image){
 
-        if (selectedImage.startsWith("R.drawable.")){
+        int imageHeight;
+
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            imageHeight = (int) (getResources().getConfiguration().screenHeightDp
+                    - getResources().getDimension(R.dimen.toolbar_height)
+                    - getResources().getDimension(R.dimen.media_panel_height_port));
+        }else{
+            imageHeight = (int) (getResources().getConfiguration().screenHeightDp
+                    - getResources().getDimension(R.dimen.toolbar_height)
+                    - getResources().getDimension(R.dimen.media_panel_height_port));
+        }
+
+        if (selectedImage.contains("/.default/")){
             ImageAssistant.loadImage(getContext(), image, background, imageHeight);
         }else {
             ImageAssistant.loadImage(getContext(), imageFolder + File.separator + image, background, imageHeight);

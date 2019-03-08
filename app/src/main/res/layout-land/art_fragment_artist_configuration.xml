@@ -14,6 +14,7 @@
         <ImageButton
             android:id="@+id/artist_conf_back"
             style="@style/button"
+            android:layout_marginStart="4dp"
             android:contentDescription="@string/back"
             android:src="@drawable/ic_arrow_back_black_24dp" />
 
@@ -28,7 +29,7 @@
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/artist_conf_tab_layout"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="@dimen/toolbar_height"
             app:tabGravity="fill"
             app:tabIndicatorHeight="0dp"
             app:tabMode="fixed"
@@ -37,23 +38,31 @@
 
     </androidx.appcompat.widget.Toolbar>
 
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/artist_conf_guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.4"/>
+
     <androidx.cardview.widget.CardView
         android:id="@+id/artist_conf_cardview"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintDimensionRatio="1"
-        android:layout_marginStart="@dimen/cover_land_horizontal_margin"
-        android:layout_marginTop="@dimen/cover_land_vertical_margin"
-        android:layout_marginBottom="@dimen/cover_land_vertical_margin"
+        android:layout_margin="@dimen/default_margin"
         app:cardCornerRadius="2dp"
         app:cardElevation="0dp"
+        app:cardBackgroundColor="@android:color/transparent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/artist_conf_guideline"
         app:layout_constraintTop_toBottomOf="@id/artist_conf_toolbar">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:background="@drawable/white_frame">
 
             <ImageView
                 android:id="@+id/artist_conf_image"
@@ -90,9 +99,9 @@
         android:id="@+id/artist_conf_view_pager"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
+        android:layout_marginStart="@dimen/half_margin"
         android:paddingBottom="48dp"
-        app:layout_constraintStart_toEndOf="@id/artist_conf_cardview"
+        app:layout_constraintStart_toEndOf="@id/artist_conf_guideline"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/artist_conf_toolbar" />
 

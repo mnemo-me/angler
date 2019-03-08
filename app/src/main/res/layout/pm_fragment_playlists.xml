@@ -15,6 +15,7 @@
         <ImageView
             android:id="@+id/playlist_manager_drawer_back"
             style="@style/button"
+            android:layout_marginStart="4dp"
             android:contentDescription="@string/settings"
             android:src="@drawable/selected_menu" />
 
@@ -25,6 +26,7 @@
         <ImageButton
             android:id="@+id/new_playlist_button"
             style="@style/button"
+            android:layout_marginEnd="4dp"
             android:layout_gravity="end"
             android:contentDescription="@string/create_new_playlist"
             android:src="@drawable/ic_playlist_add_black_24dp"
@@ -36,12 +38,12 @@
         android:id="@+id/playlist_grid"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="@dimen/toolbar_height"
         android:clipToPadding="false"
-        android:paddingEnd="8dp"
-        android:paddingStart="8dp"
+        android:paddingEnd="@dimen/half_margin"
+        android:paddingStart="@dimen/half_margin"
         android:paddingTop="18dp"
-        android:verticalSpacing="8dp"
+        android:verticalSpacing="@dimen/half_margin"
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         app:spanCount="@integer/playlist_column_count"/>
 
@@ -50,31 +52,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/gGrey"
-        android:textSize="18sp"
+        android:textSize="@dimen/default_text_size"
         android:text="@string/no_playlists"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/playlist_toolbar"
         app:layout_constraintBottom_toBottomOf="parent"/>
-
-    <com.facebook.shimmer.ShimmerFrameLayout
-        android:id="@+id/playlist_loading"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/playlist_toolbar"
-        app:layout_constraintBottom_toBottomOf="parent">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/white"
-            android:textSize="18sp"
-            android:text="@string/loading"/>
-
-    </com.facebook.shimmer.ShimmerFrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

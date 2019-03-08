@@ -157,10 +157,12 @@ public class ContextualMenuDialogFragment extends BottomSheetDialogFragment impl
         presenter.attachView(this);
 
         // Fill album cover
+        int imageHeight = (int)(80 * MainActivity.density);
+
         if (presenter.checkAlbumCoverExist(track.getArtist(), track.getAlbum())){
-            ImageAssistant.loadImage(getContext(), albumCover, albumCoverView, 80);
+            ImageAssistant.loadImage(getContext(), albumCover, albumCoverView, imageHeight);
         }else{
-            ImageAssistant.loadImage(getContext(), "R.drawable.black_logo", albumCoverView, 80);
+            ImageAssistant.loadImage(getContext(), "R.drawable.black_logo", albumCoverView, imageHeight);
         }
     }
 

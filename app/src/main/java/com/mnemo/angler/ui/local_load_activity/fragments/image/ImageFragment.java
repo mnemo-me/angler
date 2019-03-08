@@ -56,8 +56,10 @@ public class ImageFragment extends Fragment {
         String image = getArguments().getString("image");
 
         // Assign image to view
+        int imageHeigt = getResources().getConfiguration().screenHeightDp;
+
         imageView.setTransitionName(getResources().getString(R.string.local_load_image_transition) + getArguments().getInt("position"));
-        ImageAssistant.loadImage(getContext(), image, imageView, 400);
+        ImageAssistant.loadImage(getContext(), image, imageView, imageHeigt);
 
         Point size = new Point();
 

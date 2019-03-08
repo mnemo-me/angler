@@ -2,4 +2,5 @@
 <resources>
     <integer name="playlist_column_count">5</integer>
     <integer name="artist_column_count">3</integer>
+    <integer name="image_folder_column_count">5</integer>
 </resources>

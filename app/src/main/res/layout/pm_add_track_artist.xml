@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:paddingTop="@dimen/half_margin"
     android:orientation="horizontal">
 
     <ImageView
@@ -12,9 +13,9 @@
         android:layout_gravity="center_vertical"
         android:alpha="0.5"
         android:contentDescription="@string/expand"
-        android:paddingEnd="8dp"
+        android:paddingEnd="@dimen/half_margin"
         android:paddingStart="24dp"
-        tools:src="@drawable/baseline_keyboard_arrow_right_white_18dp" />
+        tools:src="@drawable/baseline_keyboard_arrow_right_black_18dp" />
 
     <CheckBox
         android:id="@+id/add_track_artist"
@@ -22,11 +23,11 @@
         android:layout_height="wrap_content"
         android:focusable="false"
         android:paddingBottom="4dp"
-        android:paddingEnd="8dp"
-        android:paddingStart="8dp"
+        android:paddingEnd="@dimen/half_margin"
+        android:paddingStart="@dimen/half_margin"
         android:paddingTop="4dp"
         android:textColor="@color/black"
-        android:textSize="16sp"
+        android:textSize="@dimen/default_text_size"
         android:textStyle="bold"
         android:theme="@style/check_box_style" />
 

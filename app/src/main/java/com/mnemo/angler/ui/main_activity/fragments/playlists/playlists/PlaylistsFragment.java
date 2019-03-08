@@ -2,7 +2,6 @@ package com.mnemo.angler.ui.main_activity.fragments.playlists.playlists;
 
 
 import android.os.Bundle;
-import android.os.Handler;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.view.GravityCompat;
@@ -15,7 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.facebook.shimmer.ShimmerFrameLayout;
 import com.mnemo.angler.data.database.Entities.Playlist;
 import com.mnemo.angler.ui.main_activity.adapters.PlaylistsAdapter;
 import com.mnemo.angler.R;
@@ -47,8 +45,6 @@ public class PlaylistsFragment extends Fragment implements DrawerItem, Playlists
     @BindView(R.id.playlist_empty_text)
     TextView emptyTextView;
 
-    private ShimmerFrameLayout loadingView;
-
     private PlaylistsAdapter adapter;
 
 
@@ -65,18 +61,6 @@ public class PlaylistsFragment extends Fragment implements DrawerItem, Playlists
 
         // Inject views
         unbinder = ButterKnife.bind(this, view);
-
-        // Loading view appear handler
-        loadingView = view.findViewById(R.id.playlist_loading);
-
-        Handler handler = new Handler();
-        handler.postDelayed(() -> {
-
-            if (adapter == null){
-                loadingView.setVisibility(View.VISIBLE);
-            }
-
-        }, 1000);
 
         // Setup recycler view
         recyclerView.setHasFixedSize(true);
@@ -135,11 +119,6 @@ public class PlaylistsFragment extends Fragment implements DrawerItem, Playlists
             emptyTextView.setVisibility(View.VISIBLE);
         } else {
             emptyTextView.setVisibility(View.GONE);
-        }
-
-        // Loading text visibility
-        if (loadingView.getVisibility() == View.VISIBLE) {
-            loadingView.setVisibility(View.GONE);
         }
 
         adapter = new PlaylistsAdapter(getContext(), playlists);

@@ -88,6 +88,7 @@
                 <ImageButton
                     android:id="@+id/album_conf_back"
                     style="@style/button"
+                    android:layout_marginStart="4dp"
                     android:contentDescription="@string/back"
                     android:src="@drawable/ic_arrow_back_black_24dp" />
 
@@ -108,28 +109,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"
-        android:paddingBottom="8dp"
+        android:paddingBottom="@dimen/half_margin"
         android:paddingTop="20dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-
-
-    <com.facebook.shimmer.ShimmerFrameLayout
-        android:id="@+id/album_conf_loading"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:layout_marginBottom="210dp"
-        android:layout_gravity="center_horizontal"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/white"
-            android:textSize="18sp"
-            android:text="@string/loading"/>
-
-    </com.facebook.shimmer.ShimmerFrameLayout>
-
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

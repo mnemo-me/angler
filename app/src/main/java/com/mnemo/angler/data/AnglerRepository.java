@@ -67,10 +67,10 @@ public class AnglerRepository {
             anglerDB.updateDatabase(tracks, () -> {
 
                 if (onAppInitializationListener != null){
-
                     onAppInitializationListener.onAppInitialized(anglerDB.loadLibrary());
                 }
 
+                loadDefaultBackgrounds();
                 loadAlbumCovers();
                 loadAlbumYear();
                 loadArtistImagesAndBios();
@@ -179,6 +179,18 @@ public class AnglerRepository {
         }
     }
 
+    // Load default backgrounds
+    private void loadDefaultBackgrounds(){
+
+        for (int i = 1; i <= 4; i++){
+
+            if (!anglerFileStorage.isDefaultBackgroundExist("back" + i)) {
+
+                anglerFirebase.downloadBackground("back" + i, anglerFileStorage.getDefaultBackgroundUri("back" + i));
+            }
+        }
+    }
+
     // Shared preferences methods
     public boolean getFirstLaunch(){
         return anglerPreferences.getFirstLaunch();
@@ -200,19 +212,37 @@ public class AnglerRepository {
         anglerFirebase.syncTimestamps(accountId, timestamp, listener);
     }
 
-
     public String getBackgroundImage(){
 
-       String backgroundImage = anglerPreferences.getBackgroundImage();
+        return anglerPreferences.getBackgroundImage();
+    }
 
-        if (!backgroundImage.startsWith("R.drawable.")) {
+
+    public void getBackgroundImage(AnglerFileStorage.OnBackgroundCheckListener listener){
+
+        String backgroundImage = anglerPreferences.getBackgroundImage();
+
+        if (!backgroundImage.contains("/.default/")) {
             if (!anglerFileStorage.isFileExist(AnglerFolder.PATH_BACKGROUND_PORTRAIT + File.separator + backgroundImage)) {
-                backgroundImage = "R.drawable.back1";
+                backgroundImage = AnglerFolder.PATH_BACKGROUND_DEFAULT + File.separator + "back1.jpg";
                 anglerPreferences.setBackgroundImage(backgroundImage);
+
+                getBackgroundImage(listener);
+            }else{
+                listener.onBackgroundChecked(backgroundImage);
+            }
+
+        }else{
+
+            String backgroundImageShort = backgroundImage.substring(backgroundImage.lastIndexOf("/.default/") + 10, backgroundImage.length() - 4);
+
+            if (!anglerFileStorage.isDefaultBackgroundExist(backgroundImageShort)){
+                anglerFirebase.downloadBackground(backgroundImageShort, anglerFileStorage.getDefaultBackgroundUri(backgroundImageShort),
+                        (background) -> listener.onBackgroundChecked(anglerFileStorage.getDefaultBackgroundPath(background)));
+            }else{
+                listener.onBackgroundChecked(backgroundImage);
             }
         }
-
-       return backgroundImage;
 
     }
 

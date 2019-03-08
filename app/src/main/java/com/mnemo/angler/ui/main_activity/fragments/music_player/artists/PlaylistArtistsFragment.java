@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.os.Handler;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -19,7 +18,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.facebook.shimmer.ShimmerFrameLayout;
 import com.mnemo.angler.R;
 import com.mnemo.angler.ui.main_activity.activity.MainActivity;
 import com.mnemo.angler.ui.main_activity.adapters.PlaylistArtistsAdapter;
@@ -39,13 +37,11 @@ public class PlaylistArtistsFragment extends Fragment implements PlaylistArtists
 
     private Unbinder unbinder;
 
-    @BindView(R.id.mp_track_list_recycler_view)
+    @BindView(R.id.mp_artist_list_recycler_view)
     RecyclerView recyclerView;
 
-    @BindView(R.id.mp_track_list_empty_text)
+    @BindView(R.id.mp_artist_list_empty_text)
     TextView emptyTextView;
-
-    private ShimmerFrameLayout loadingView;
 
     private PlaylistArtistsAdapter adapter;
 
@@ -61,7 +57,7 @@ public class PlaylistArtistsFragment extends Fragment implements PlaylistArtists
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.mp_track_list, container, false);
+        View view = inflater.inflate(R.layout.mp_artist_list, container, false);
 
         // Get orientation
         int orientation = getResources().getConfiguration().orientation;
@@ -76,18 +72,6 @@ public class PlaylistArtistsFragment extends Fragment implements PlaylistArtists
             getActivity().findViewById(R.id.artist_track_separator).setVisibility(View.VISIBLE);
         }
 
-        // Loading view appear handler
-        loadingView = view.findViewById(R.id.mp_track_list_loading);
-
-        Handler handler = new Handler();
-        handler.postDelayed(() -> {
-
-            if (adapter == null){
-                loadingView.setVisibility(View.VISIBLE);
-            }
-
-        }, 1000);
-
         // Get filter
         filter = ((MainActivity)getActivity()).getFilter();
 
@@ -100,7 +84,7 @@ public class PlaylistArtistsFragment extends Fragment implements PlaylistArtists
             recyclerView.setPadding(0, (int) (8 * MainActivity.density), 0, (int) (8 * MainActivity.density));
         }else{
             recyclerView.setPadding(0, (int) (4 * MainActivity.density), 0, (int) (4 * MainActivity.density));
-            recyclerView.getLayoutParams().width = (int)(285 * MainActivity.density);
+            recyclerView.getLayoutParams().width = (int)(0.4 * view.getLayoutParams().width);
         }
 
         recyclerView.setHasFixedSize(true);
@@ -108,9 +92,6 @@ public class PlaylistArtistsFragment extends Fragment implements PlaylistArtists
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
-
-        // Set empty text
-        emptyTextView.setText(R.string.no_artists);
 
         // Pass to artist tracks fragment
         if (getArguments() != null) {
@@ -194,11 +175,6 @@ public class PlaylistArtistsFragment extends Fragment implements PlaylistArtists
             emptyTextView.setVisibility(View.VISIBLE);
         } else {
             emptyTextView.setVisibility(View.GONE);
-        }
-
-        // Loading text visibility
-        if (loadingView.getVisibility() == View.VISIBLE) {
-            loadingView.setVisibility(View.GONE);
         }
 
         adapter = new PlaylistArtistsAdapter(getContext(), artists);

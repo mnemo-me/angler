@@ -4,6 +4,9 @@ package com.mnemo.angler.data.preferences;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.mnemo.angler.data.file_storage.AnglerFolder;
+
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -53,7 +56,7 @@ public class AnglerPreferences {
     }
 
     public String getBackgroundImage(){
-        return appPreferences.getString("background", "R.drawable.back1");
+        return appPreferences.getString("background", AnglerFolder.PATH_BACKGROUND_DEFAULT + File.separator + "back1.jpg");
     }
 
     public void setBackgroundOpacity(int opacity){

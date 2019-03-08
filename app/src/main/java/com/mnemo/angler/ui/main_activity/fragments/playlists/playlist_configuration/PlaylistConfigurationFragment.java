@@ -6,8 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
+import android.graphics.Point;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Parcelable;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,6 +18,8 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,7 +29,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.facebook.shimmer.ShimmerFrameLayout;
 import com.mnemo.angler.data.database.Entities.Track;
 import com.mnemo.angler.R;
 import com.mnemo.angler.ui.main_activity.activity.MainActivity;
@@ -107,8 +108,6 @@ public class PlaylistConfigurationFragment extends Fragment implements PlaylistC
     @BindView(R.id.playlist_conf_empty_text)
     TextView emptyTextView;
 
-    private ShimmerFrameLayout loadingView;
-
     private TrackAdapter adapter;
 
     // Playlist variables
@@ -139,18 +138,6 @@ public class PlaylistConfigurationFragment extends Fragment implements PlaylistC
         // Inject views
         unbinder = ButterKnife.bind(this, view);
 
-        // Loading view appear handler
-        loadingView = view.findViewById(R.id.playlist_conf_loading);
-
-        Handler handler = new Handler();
-        handler.postDelayed(() -> {
-
-            if (adapter == null){
-                loadingView.setVisibility(View.VISIBLE);
-            }
-
-        }, 1000);
-
         // Get playlist variables
         if (title == null) {
             title = getArguments().getString("title");
@@ -171,7 +158,15 @@ public class PlaylistConfigurationFragment extends Fragment implements PlaylistC
 
         if (orientation == Configuration.ORIENTATION_PORTRAIT){
             collapsedTitleText.setText(title);
+
+            Display display = getActivity().getWindowManager().getDefaultDisplay();
+            Point size = new Point();
+            display.getSize(size);
+
+            titleText.setMaxWidth((int)(0.42 * size.x));
         }
+
+        tracksCountView.setText(getString(R.string.tracks) + ": " + 0);
 
         // Load cover image
         updateCover();
@@ -332,12 +327,6 @@ public class PlaylistConfigurationFragment extends Fragment implements PlaylistC
             emptyTextView.setVisibility(View.GONE);
         }
 
-        // Loading text visibility
-        if (loadingView.getVisibility() == View.VISIBLE) {
-            loadingView.setVisibility(View.GONE);
-        }
-
-
         adapter = new TrackAdapter(getContext(), type, title, tracks);
         recyclerView.setAdapter(adapter);
 
@@ -469,13 +458,7 @@ public class PlaylistConfigurationFragment extends Fragment implements PlaylistC
     // Updating cover
     public void updateCover(){
 
-        int imageHeight;
-
-        if (orientation == Configuration.ORIENTATION_PORTRAIT){
-            imageHeight = 196;
-        }else{
-            imageHeight = 240;
-        }
+        int imageHeight = getResources().getConfiguration().screenWidthDp / 2;
 
         ImageAssistant.loadImage(getContext(), cover, imageView, imageHeight);
     }

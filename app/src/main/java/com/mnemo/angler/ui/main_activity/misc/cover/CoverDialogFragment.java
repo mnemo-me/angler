@@ -41,7 +41,15 @@ public class CoverDialogFragment extends DialogFragment {
         TextView artistView = cardView.findViewById(R.id.artist_cover_artist);
 
         // Fill views
-        ImageAssistant.loadImage(getContext(), image, coverView, 340);
+        int imageHeight;
+
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
+            imageHeight = getResources().getConfiguration().screenWidthDp;
+        }else{
+            imageHeight = getResources().getConfiguration().screenHeightDp;
+        }
+
+        ImageAssistant.loadImage(getContext(), image, coverView, imageHeight);
         artistView.setText(artist);
 
         // Fill album (optional)

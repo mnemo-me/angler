@@ -2,6 +2,7 @@ package com.mnemo.angler.ui.main_activity.fragments.artists.artist_configuration
 
 
 import android.content.res.Configuration;
+import android.graphics.Point;
 import android.os.Bundle;
 
 import android.os.Parcelable;
@@ -14,6 +15,8 @@ import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.cardview.widget.CardView;
+
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -125,6 +128,17 @@ public class ArtistConfigurationFragment extends Fragment implements ArtistConfi
 
         if (orientation == Configuration.ORIENTATION_PORTRAIT){
             collapsedTitleText.setText(artist);
+
+            Display display = getActivity().getWindowManager().getDefaultDisplay();
+            Point size = new Point();
+            display.getSize(size);
+
+            artistText.setMaxWidth((int)(0.42 * size.x));
+        }
+
+        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            albumsCountView.setText(getString(R.string.albums_dc) + ": " + 0);
+            tracksCountView.setText(getString(R.string.tracks) + ": " + 0);
         }
 
         // Setup appbar behavior
@@ -294,13 +308,7 @@ public class ArtistConfigurationFragment extends Fragment implements ArtistConfi
     // Support methods
     private void loadArtistImage(){
 
-        int imageHeight;
-
-        if (orientation == Configuration.ORIENTATION_PORTRAIT){
-            imageHeight = 148;
-        }else{
-            imageHeight = 240;
-        }
+        int imageHeight = getResources().getConfiguration().screenWidthDp / 2;
 
         if (presenter.checkArtistImageExist(artist)) {
             ImageAssistant.loadImage(getContext(), image, imageView, imageHeight);

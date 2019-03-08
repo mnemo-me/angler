@@ -3,7 +3,6 @@ package com.mnemo.angler.ui.local_load_activity.fragments.image_folder;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.os.Handler;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -13,7 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.facebook.shimmer.ShimmerFrameLayout;
 import com.mnemo.angler.R;
 import com.mnemo.angler.ui.local_load_activity.adapters.ImageFolderAdapter;
 import com.mnemo.angler.ui.local_load_activity.misc.ImageDecoration;
@@ -34,8 +32,6 @@ public class ImageFolderFragment extends Fragment implements ImageFolderView{
 
     @BindView(R.id.image_folder_list)
     RecyclerView recyclerView;
-
-    private ShimmerFrameLayout loadingView;
 
     private ImageFolderAdapter imageFolderAdapter;
 
@@ -66,18 +62,6 @@ public class ImageFolderFragment extends Fragment implements ImageFolderView{
 
         // Inject views
         unbinder = ButterKnife.bind(this, view);
-
-        // Loading view appear handler
-        loadingView = view.findViewById(R.id.image_folder_loading);
-
-        Handler handler = new Handler();
-        handler.postDelayed(() -> {
-
-            if (imageFolderAdapter == null){
-                loadingView.setVisibility(View.VISIBLE);
-            }
-
-        }, 1000);
 
         // Setup RecyclerView
         recyclerView.setHasFixedSize(true);
@@ -124,11 +108,6 @@ public class ImageFolderFragment extends Fragment implements ImageFolderView{
     // MVP View methods
     @Override
     public void setImages(List<String> images) {
-
-        // Loading text visibility
-        if (loadingView.getVisibility() == View.VISIBLE) {
-            loadingView.setVisibility(View.GONE);
-        }
 
         imageFolderAdapter = new ImageFolderAdapter(getContext(), images);
         recyclerView.setAdapter(imageFolderAdapter);

@@ -23,11 +23,18 @@ public class MainActivityPresenter extends BasePresenter {
     // Setup background from shared preferences
     void setupBackground(){
 
-        String backgroundImage = repository.getBackgroundImage();
         int opacity = repository.getBackgroundOpacity();
 
-        ((MainActivityView) getView()).setBackground(backgroundImage, opacity);
+        if (getView() != null){
+           ((MainActivityView) getView()).setOpacity(opacity);
+        }
 
+        repository.getBackgroundImage(backgroundImage -> {
+
+            if (getView() != null){
+                ((MainActivityView) getView()).setBackground(backgroundImage);
+            }
+        });
     }
 
 

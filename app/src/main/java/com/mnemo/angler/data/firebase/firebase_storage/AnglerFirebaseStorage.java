@@ -6,8 +6,11 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 
-
 public class AnglerFirebaseStorage {
+
+    public interface OnBackgroundLoadListener {
+        void onBackgrondLoaded(String background);
+    }
 
     public AnglerFirebaseStorage() {
 
@@ -48,6 +51,28 @@ public class AnglerFirebaseStorage {
 
                     newArtistStorageReference.getDownloadUrl()
                             .addOnFailureListener(e1 -> newArtistStorageReference.putBytes(new byte[0]));
+                });
+    }
+
+    // Backgrounds
+    public void downloadBackground(String background, Uri backgroundImagePath){
+
+        FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+        StorageReference storageReference = firebaseStorage.getReference().child("backgrounds");
+
+        storageReference.child(background + ".jpg").getFile(backgroundImagePath);
+    }
+
+    public void downloadBackground(String background, Uri firstDefaultBackgroundImagePath, OnBackgroundLoadListener listener){
+
+        FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+        StorageReference storageReference = firebaseStorage.getReference().child("backgrounds");
+
+        storageReference.child(background + ".jpg").getFile(firstDefaultBackgroundImagePath)
+                .addOnCompleteListener(task -> listener.onBackgrondLoaded(background))
+                .addOnFailureListener(e -> {
+                    e.printStackTrace();
+                    listener.onBackgrondLoaded(background);
                 });
     }
 }

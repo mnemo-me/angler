@@ -5,8 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingBottom="16dp"
-    android:paddingEnd="8dp"
-    android:paddingStart="8dp"
+    android:paddingEnd="@dimen/half_margin"
+    android:paddingStart="@dimen/half_margin"
     android:paddingTop="2dp">
 
 

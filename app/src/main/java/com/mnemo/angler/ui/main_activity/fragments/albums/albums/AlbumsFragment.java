@@ -2,7 +2,6 @@ package com.mnemo.angler.ui.main_activity.fragments.albums.albums;
 
 
 import android.os.Bundle;
-import android.os.Handler;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.view.GravityCompat;
@@ -16,7 +15,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.facebook.shimmer.ShimmerFrameLayout;
 import com.mnemo.angler.data.database.Entities.Album;
 import com.mnemo.angler.data.file_storage.AnglerFolder;
 import com.mnemo.angler.ui.main_activity.adapters.AlbumAdapter;
@@ -52,8 +50,6 @@ public class AlbumsFragment extends Fragment implements DrawerItem, AlbumsView {
     @BindView(R.id.albums_empty_text)
     TextView emptyTextView;
 
-    private ShimmerFrameLayout loadingView;
-
     private AlbumAdapter adapter;
 
     @Override
@@ -64,18 +60,6 @@ public class AlbumsFragment extends Fragment implements DrawerItem, AlbumsView {
 
         // Inject views
         unbinder = ButterKnife.bind(this, view);
-
-        // Loading view appear handler
-        loadingView = view.findViewById(R.id.albums_loading);
-
-        Handler handler = new Handler();
-        handler.postDelayed(() -> {
-
-            if (adapter == null){
-                loadingView.setVisibility(View.VISIBLE);
-            }
-
-        }, 1000);
 
         // Setup recycler view
         recyclerView.setItemViewCacheSize(20);
@@ -125,12 +109,6 @@ public class AlbumsFragment extends Fragment implements DrawerItem, AlbumsView {
         } else {
             emptyTextView.setVisibility(View.GONE);
         }
-
-        // Loading text visibility
-        if (loadingView.getVisibility() == View.VISIBLE) {
-            loadingView.setVisibility(View.GONE);
-        }
-
 
         adapter = new AlbumAdapter(getContext(), albums);
 

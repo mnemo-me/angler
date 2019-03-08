@@ -13,6 +13,7 @@
 
         <ImageButton
             style="@style/button"
+            android:layout_marginStart="4dp"
             android:contentDescription="@string/settings"
             android:src="@drawable/ic_crop_black_24dp" />
 

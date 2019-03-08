@@ -4,8 +4,8 @@
     android:layout_height="match_parent"
     android:background="@color/softMainGrey"
     android:orientation="vertical"
-    android:paddingBottom="8dp"
-    android:paddingTop="8dp">
+    android:paddingBottom="@dimen/half_margin"
+    android:paddingTop="@dimen/half_margin">
 
     <TextView
         android:id="@+id/play_all_play_now"

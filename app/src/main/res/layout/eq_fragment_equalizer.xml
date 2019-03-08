@@ -14,6 +14,7 @@
         <ImageView
             android:id="@+id/equalizer_drawer_back"
             style="@style/button"
+            android:layout_marginStart="4dp"
             android:contentDescription="@string/settings"
             android:src="@drawable/selected_menu" />
 
@@ -25,7 +26,7 @@
             android:id="@+id/equalizer_audio_effects"
             style="@style/button"
             android:layout_gravity="end"
-            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
             android:alpha="0.5"
             android:contentDescription="@string/audio_effects"
             android:src="@drawable/baseline_surround_sound_black_24dp"
@@ -35,8 +36,6 @@
             android:id="@+id/equalizer_equalizer"
             style="@style/button"
             android:layout_gravity="end"
-            android:layout_marginEnd="4dp"
-            android:layout_marginStart="4dp"
             android:alpha="1"
             android:contentDescription="@string/equalizer"
             android:src="@drawable/baseline_equalizer_black_24dp"
@@ -47,8 +46,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
+            android:layout_marginEnd="@dimen/half_margin"
+            android:layout_marginStart="@dimen/half_margin"
             android:src="@drawable/ic_layers_black_24dp" />
 
 

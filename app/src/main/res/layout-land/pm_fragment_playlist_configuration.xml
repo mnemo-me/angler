@@ -12,10 +12,10 @@
         app:contentInsetStart="0dp"
         android:transitionName="toolbar">
 
-
         <ImageButton
             android:id="@+id/playlist_conf_back"
             style="@style/button"
+            android:layout_marginStart="4dp"
             android:contentDescription="@string/back"
             android:src="@drawable/ic_arrow_back_black_24dp" />
 
@@ -30,7 +30,6 @@
         <TextView
             android:id="@+id/playlist_conf_tracks_count"
             style="@android:style/TextAppearance.Material.Widget.TabWidget"
-            android:fontFamily="@font/nexa_light"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/black"
@@ -43,23 +42,32 @@
 
     </androidx.appcompat.widget.Toolbar>
 
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/playlist_conf_guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.4"/>
+
 
     <androidx.cardview.widget.CardView
         android:id="@+id/playlist_conf_cardview"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintDimensionRatio="1"
-        android:layout_marginStart="@dimen/default_margin"
-        android:layout_marginTop="@dimen/default_margin"
-        android:layout_marginBottom="@dimen/default_margin"
+        android:layout_margin="@dimen/default_margin"
         app:cardCornerRadius="2dp"
+        app:cardElevation="0dp"
+        app:cardBackgroundColor="@android:color/transparent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/playlist_conf_guideline"
         app:layout_constraintTop_toBottomOf="@id/playlist_conf_toolbar">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:background="@drawable/white_frame">
 
             <ImageView
                 android:id="@+id/playlist_conf_image"
@@ -96,12 +104,12 @@
         android:id="@+id/playlist_conf_list"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="48dp"
+        android:layout_marginStart="@dimen/half_margin"
+        android:layout_marginTop="@dimen/toolbar_height"
         android:clipToPadding="false"
-        android:paddingTop="8dp"
+        android:paddingTop="@dimen/playlist_track_list_padding"
         android:paddingBottom="4dp"
-        app:layout_constraintStart_toEndOf="@id/playlist_conf_cardview"
+        app:layout_constraintStart_toEndOf="@id/playlist_conf_guideline"
         app:layout_constraintEnd_toEndOf="parent"/>
 
 
@@ -110,37 +118,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/gGrey"
-        android:textSize="18sp"
+        android:textSize="@dimen/default_text_size"
         android:text="@string/no_tracks"
         android:visibility="gone"
         android:layout_marginTop="108dp"
-        android:layout_marginStart="24dp"
-        app:layout_constraintStart_toEndOf="@id/playlist_conf_cardview"
+        android:layout_marginStart="@dimen/half_margin"
+        app:layout_constraintStart_toEndOf="@id/playlist_conf_guideline"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
-
-
-    <com.facebook.shimmer.ShimmerFrameLayout
-        android:id="@+id/playlist_conf_loading"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:layout_marginTop="108dp"
-        android:layout_marginStart="24dp"
-        app:layout_constraintStart_toEndOf="@id/playlist_conf_cardview"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/white"
-            android:textSize="18sp"
-            android:text="@string/loading"/>
-
-    </com.facebook.shimmer.ShimmerFrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

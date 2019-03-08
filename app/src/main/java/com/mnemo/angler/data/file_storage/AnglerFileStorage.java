@@ -46,16 +46,16 @@ public class AnglerFileStorage {
         void backgroundImagesGathered(List<String> images);
     }
 
-    public interface OnArtistImagesUpdateListener{
-        void onArtistImagesUpdated(boolean isSuccess);
-    }
-
     public interface OnImageFolderLoadListener{
         void onImageFolderLoaded(List<String> images);
     }
 
     public interface OnArtistBioLoadListener{
         void onArtistBioLoaded(String bio);
+    }
+
+    public interface OnBackgroundCheckListener{
+        void onBackgroundChecked(String backgroundImage);
     }
 
     public static final String PHONE_STORAGE = Environment.getExternalStorageDirectory().getPath();
@@ -77,6 +77,7 @@ public class AnglerFileStorage {
         new File(AnglerFolder.PATH_BACKGROUND).mkdir();
         new File(AnglerFolder.PATH_BACKGROUND_PORTRAIT).mkdir();
         new File(AnglerFolder.PATH_BACKGROUND_LANDSCAPE).mkdir();
+        new File(AnglerFolder.PATH_BACKGROUND_DEFAULT).mkdir();
         new File(AnglerFolder.PATH_PLAYLIST_COVER).mkdir();
         new File(AnglerFolder.PATH_ALBUM_COVER).mkdir();
         new File(AnglerFolder.PATH_ARTIST_IMAGE).mkdir();
@@ -308,10 +309,12 @@ public class AnglerFileStorage {
                                 }
 
                                 // Add default images to list
-                                images.add("R.drawable.back1");
-                                images.add("R.drawable.back2");
-                                images.add("R.drawable.back3");
-                                images.add("R.drawable.back4");
+                                for (int i = 1; i <= 4; i++){
+                                    if (isDefaultBackgroundExist("back" + i)){
+                                        images.add(getDefaultBackgroundPath("back" + i));
+                                    }
+                                }
+
 
                                 listener.backgroundImagesGathered(images);
                             });
@@ -375,6 +378,14 @@ public class AnglerFileStorage {
         return Uri.fromFile(new File(getAlbumImagePath(artist, album)));
     }
 
+    // Get defalut background path
+    public String getDefaultBackgroundPath(String background){
+        return AnglerFolder.PATH_BACKGROUND_DEFAULT + File.separator + background + ".jpg";
+    }
+
+    public Uri getDefaultBackgroundUri(String background){
+        return Uri.fromFile(new File(getDefaultBackgroundPath(background)));
+    }
 
 
 
@@ -447,6 +458,10 @@ public class AnglerFileStorage {
 
     public boolean isArtistBioExist(String artist){
         return new File(getArtistBioPath(artist)).exists();
+    }
+
+    public boolean isDefaultBackgroundExist(String background){
+        return new File(getDefaultBackgroundPath(background)).exists();
     }
 
 

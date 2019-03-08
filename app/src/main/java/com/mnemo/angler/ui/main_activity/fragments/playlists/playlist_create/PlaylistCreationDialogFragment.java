@@ -47,6 +47,8 @@ public class PlaylistCreationDialogFragment extends DialogFragment implements Pl
 
     private EditText editText;
 
+    private int imageHeight;
+
     // CropIwa receiver
     private CropIwaResultReceiver resultReceiver;
 
@@ -64,6 +66,13 @@ public class PlaylistCreationDialogFragment extends DialogFragment implements Pl
         // Get cover change variable
         if (savedInstanceState != null){
             isCoverChanged = savedInstanceState.getBoolean("is_cover_changed");
+        }
+
+        // Set image height
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            imageHeight = getResources().getConfiguration().screenWidthDp;
+        }else{
+            imageHeight = getResources().getConfiguration().screenHeightDp;
         }
 
         // Bind Presenter to View
@@ -138,9 +147,9 @@ public class PlaylistCreationDialogFragment extends DialogFragment implements Pl
         ImageView coverView = constraintLayout.findViewById(R.id.playlist_creation_image);
 
         if (!isCoverChanged) {
-            ImageAssistant.loadImage(getContext(), image, coverView, 350);
+            ImageAssistant.loadImage(getContext(), image, coverView, imageHeight);
         }else{
-            ImageAssistant.loadImage(getContext(), tempImage, coverView, 350);
+            ImageAssistant.loadImage(getContext(), tempImage, coverView, imageHeight);
         }
 
         // Load new cover
@@ -168,7 +177,7 @@ public class PlaylistCreationDialogFragment extends DialogFragment implements Pl
         resultReceiver.setListener(new CropIwaResultReceiver.Listener() {
             @Override
             public void onCropSuccess(Uri croppedUri) {
-                ImageAssistant.loadImage(getContext(), tempImage, coverView, 350);
+                ImageAssistant.loadImage(getContext(), tempImage, coverView, imageHeight);
                 isCoverChanged = true;
             }
 

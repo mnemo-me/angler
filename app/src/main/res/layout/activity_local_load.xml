@@ -19,6 +19,7 @@
             <ImageButton
                 android:id="@+id/local_load_back_button"
                 style="@style/button"
+                android:layout_marginStart="4dp"
                 android:contentDescription="@string/back"
                 android:src="@drawable/ic_arrow_back_black_24dp" />
 
@@ -31,7 +32,7 @@
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tab_layout"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="@dimen/toolbar_height"
             android:elevation="4dp"
             app:tabIndicatorColor="@color/black"
             app:tabIndicatorHeight="2dp"
@@ -53,5 +54,17 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:elevation="8dp" />
+
+    <TextView
+        android:id="@+id/empty_image_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="80dp"
+        android:layout_gravity="center"
+        android:textColor="@color/gGrey"
+        android:textSize="@dimen/default_text_size"
+        android:text="@string/no_images"
+        android:visibility="gone"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
