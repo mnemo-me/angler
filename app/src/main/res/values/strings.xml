@@ -5,10 +5,10 @@
     <string name="add_track_to_playlist">Add track to playlist</string>
     <string name="add_tracks_to_playlist">Add tracks</string>
     <string name="added_to">added to</string>
-    <string name="amplifier">Amplifier</string>
     <string name="album_cover_crop_advice">crop image for playlist cover</string>
     <string name="albums">Albums</string>
     <string name="albums_dc">albums</string>
+    <string name="amplifier">Amplifier</string>
     <string name="app_name">Angler</string>
     <string name="artist">artist</string>
     <string name="artists">Artists</string>
