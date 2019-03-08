@@ -37,10 +37,10 @@
         android:id="@+id/manage_tracks_list"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:paddingTop="20dp"
-        android:paddingBottom="20dp"
-        android:clipToPadding="false"/>
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:clipToPadding="false"
+        android:layout_weight="1"/>
 
     <View
         style="@style/line"/>

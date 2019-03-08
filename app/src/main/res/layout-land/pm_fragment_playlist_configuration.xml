@@ -30,6 +30,7 @@
         <TextView
             android:id="@+id/playlist_conf_tracks_count"
             style="@android:style/TextAppearance.Material.Widget.TabWidget"
+            android:fontFamily="@font/nexa_and_raleway_light"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/black"

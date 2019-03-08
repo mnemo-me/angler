@@ -13,6 +13,7 @@ import android.widget.ImageView;
 
 import com.mnemo.angler.R;
 import com.mnemo.angler.data.file_storage.AnglerFolder;
+import com.mnemo.angler.ui.main_activity.activity.MainActivity;
 import com.mnemo.angler.util.ImageAssistant;
 import com.mnemo.angler.ui.local_load_activity.activity.LocalLoadActivity;
 
@@ -84,13 +85,13 @@ public class BackgroundImageAdapter extends RecyclerView.Adapter<BackgroundImage
 
         if (orientation == Configuration.ORIENTATION_PORTRAIT){
             imageHeight = (int)((context.getResources().getConfiguration().screenHeightDp
-                    - context.getResources().getDimension(R.dimen.toolbar_height)
-                    - context.getResources().getDimension(R.dimen.media_panel_height_port))
+                    - context.getResources().getDimension(R.dimen.toolbar_height) / MainActivity.density
+                    - context.getResources().getDimension(R.dimen.media_panel_height_port) / MainActivity.density)
                     / 3);
         }else{
             imageHeight = (int)((context.getResources().getConfiguration().screenHeightDp
-                    - context.getResources().getDimension(R.dimen.toolbar_height)
-                    - context.getResources().getDimension(R.dimen.media_panel_height_land))
+                    - context.getResources().getDimension(R.dimen.toolbar_height) / MainActivity.density
+                    - context.getResources().getDimension(R.dimen.media_panel_height_land) / MainActivity.density)
                     / 2);
         }
     }

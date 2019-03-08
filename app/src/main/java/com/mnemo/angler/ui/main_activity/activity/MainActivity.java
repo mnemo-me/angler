@@ -227,7 +227,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
             }
 
             // Select current drawer item
-            drawerItems.get(selectedDrawerItemIndex).setSelected(true);
+            selectDrawerItem(selectedDrawerItemIndex);
 
         }
     }
@@ -417,12 +417,12 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
 
         if (orientation == Configuration.ORIENTATION_PORTRAIT) {
             imageHeight = (int) (getResources().getConfiguration().screenHeightDp
-                    - getResources().getDimension(R.dimen.toolbar_height)
-                    - getResources().getDimension(R.dimen.media_panel_height_port));
+                    - getResources().getDimension(R.dimen.toolbar_height) / density
+                    - getResources().getDimension(R.dimen.media_panel_height_port) / density);
         }else{
             imageHeight = (int) (getResources().getConfiguration().screenHeightDp
-                    - getResources().getDimension(R.dimen.toolbar_height)
-                    - getResources().getDimension(R.dimen.media_panel_height_port));
+                    - getResources().getDimension(R.dimen.toolbar_height) / density
+                    - getResources().getDimension(R.dimen.media_panel_height_port) / density);
         }
 
         ImageAssistant.loadImage(this, imagePath, background, imageHeight);

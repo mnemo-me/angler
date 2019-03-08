@@ -321,12 +321,12 @@ public class BackgroundChangerFragment extends Fragment implements DrawerItem, B
 
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
             imageHeight = (int) (getResources().getConfiguration().screenHeightDp
-                    - getResources().getDimension(R.dimen.toolbar_height)
-                    - getResources().getDimension(R.dimen.media_panel_height_port));
+                    - getResources().getDimension(R.dimen.toolbar_height) / MainActivity.density
+                    - getResources().getDimension(R.dimen.media_panel_height_port) / MainActivity.density);
         }else{
             imageHeight = (int) (getResources().getConfiguration().screenHeightDp
-                    - getResources().getDimension(R.dimen.toolbar_height)
-                    - getResources().getDimension(R.dimen.media_panel_height_port));
+                    - getResources().getDimension(R.dimen.toolbar_height) / MainActivity.density
+                    - getResources().getDimension(R.dimen.media_panel_height_port) / MainActivity.density);
         }
 
         if (selectedImage.contains("/.default/")){
