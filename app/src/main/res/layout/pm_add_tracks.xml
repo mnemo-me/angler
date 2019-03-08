@@ -12,7 +12,7 @@
         android:layout_weight="1"
         android:clipToPadding="false"
         android:groupIndicator="@drawable/invisible_rectangle"
-        android:paddingBottom="8dp"
+        android:paddingBottom="@dimen/half_margin"
         android:paddingTop="6dp" />
 
     <View style="@style/line"/>

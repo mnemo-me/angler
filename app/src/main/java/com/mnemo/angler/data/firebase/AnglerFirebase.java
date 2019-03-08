@@ -59,4 +59,13 @@ public class AnglerFirebase {
     public void downloadArtistImage(String artist, Uri artistImagePath){
         anglerFirebaseStorage.downloadArtistImage(artist, artistImagePath);
     }
+
+    // Background
+    public void downloadBackground(String background, Uri backgroundImagePath){
+        anglerFirebaseStorage.downloadBackground(background, backgroundImagePath);
+    }
+
+    public void downloadBackground(String background, Uri firstDefaultBackgroundImagePath, AnglerFirebaseStorage.OnBackgroundLoadListener listener){
+        anglerFirebaseStorage.downloadBackground(background, firstDefaultBackgroundImagePath, listener);
+    }
 }

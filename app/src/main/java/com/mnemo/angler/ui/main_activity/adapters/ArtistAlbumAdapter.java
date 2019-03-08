@@ -26,6 +26,7 @@ public class ArtistAlbumAdapter extends RecyclerView.Adapter<ArtistAlbumAdapter.
     private Context context;
     private String artist;
     private List<Album> albums;
+    private int imageHeight;
 
     private OnAlbumClickListener onAlbumClickListener;
     private OnAlbumLongClickListener onAlbumLongClickListener;
@@ -58,6 +59,8 @@ public class ArtistAlbumAdapter extends RecyclerView.Adapter<ArtistAlbumAdapter.
         this.context = context;
         this.artist = artist;
         this.albums = albums;
+
+        imageHeight = context.getResources().getConfiguration().screenWidthDp / context.getResources().getInteger(R.integer.playlist_column_count);
     }
 
     @NonNull
@@ -108,7 +111,7 @@ public class ArtistAlbumAdapter extends RecyclerView.Adapter<ArtistAlbumAdapter.
             albumImagePath = "R.drawable.black_logo";
         }
 
-        ImageAssistant.loadImage(context, albumImagePath, holder.coverView, 125);
+        ImageAssistant.loadImage(context, albumImagePath, holder.coverView, imageHeight);
 
         // Set album title
         holder.titleView.setText(album);

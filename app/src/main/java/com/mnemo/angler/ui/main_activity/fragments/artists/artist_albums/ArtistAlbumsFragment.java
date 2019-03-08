@@ -1,10 +1,10 @@
 package com.mnemo.angler.ui.main_activity.fragments.artists.artist_albums;
 
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 
 
-import android.os.Handler;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -14,7 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.facebook.shimmer.ShimmerFrameLayout;
 import com.mnemo.angler.R;
 import com.mnemo.angler.data.database.Entities.Album;
 import com.mnemo.angler.data.file_storage.AnglerFolder;
@@ -41,8 +40,6 @@ public class ArtistAlbumsFragment extends Fragment implements ArtistAlbumsView {
     @BindView(R.id.artist_albums_list)
     RecyclerView recyclerView;
 
-    private ShimmerFrameLayout loadingView;
-
     private ArtistAlbumAdapter adapter;
 
     private String artist;
@@ -61,21 +58,13 @@ public class ArtistAlbumsFragment extends Fragment implements ArtistAlbumsView {
         // Inject views
         unbinder = ButterKnife.bind(this, view);
 
-        // Loading view appear handler
-        loadingView = view.findViewById(R.id.artist_albums_loading);
-
-        Handler handler = new Handler();
-        handler.postDelayed(() -> {
-
-            if (adapter == null){
-                loadingView.setVisibility(View.VISIBLE);
-            }
-
-        }, 1000);
-
         // Setup recycler view
         recyclerView.setHasFixedSize(true);
         recyclerView.setItemViewCacheSize(20);
+
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+            recyclerView.setPadding(0, (int)getResources().getDimension(R.dimen.playlist_track_list_padding), 0, 0);
+        }
 
         // Get artist
         artist = getArguments().getString("artist");
@@ -108,11 +97,6 @@ public class ArtistAlbumsFragment extends Fragment implements ArtistAlbumsView {
     // MVP View methods
     @Override
     public void setArtistAlbums(List<Album> albums) {
-
-        // Loading text visibility
-        if (loadingView.getVisibility() == View.VISIBLE) {
-            loadingView.setVisibility(View.GONE);
-        }
 
         adapter = new ArtistAlbumAdapter(getContext(), artist, albums);
 

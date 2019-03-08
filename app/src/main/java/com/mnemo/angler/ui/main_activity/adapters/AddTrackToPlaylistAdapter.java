@@ -28,6 +28,7 @@ public class AddTrackToPlaylistAdapter extends RecyclerView.Adapter<AddTrackToPl
     private Context context;
     private List<Playlist> playlists;
     private List<String> playlistsWithTrack;
+    private int imageHeight;
 
     private OnAddTrackToPlaylistListener onAddTrackToPlaylistListener;
 
@@ -66,6 +67,8 @@ public class AddTrackToPlaylistAdapter extends RecyclerView.Adapter<AddTrackToPl
         this.context = context;
         this.playlists = playlists;
         this.playlistsWithTrack = playlistsWithTrack;
+
+        imageHeight = context.getResources().getConfiguration().screenWidthDp / context.getResources().getInteger(R.integer.playlist_column_count);
     }
 
     @NonNull
@@ -117,7 +120,7 @@ public class AddTrackToPlaylistAdapter extends RecyclerView.Adapter<AddTrackToPl
 
             // Fill views
             ((PlaylistViewHolder)holder).titleView.setText(title);
-            ImageAssistant.loadImage(context, cover, ((PlaylistViewHolder)holder).coverView, 125);
+            ImageAssistant.loadImage(context, cover, ((PlaylistViewHolder)holder).coverView, imageHeight);
 
             // Disable playlists with track
             if (playlistsWithTrack.contains(title)){

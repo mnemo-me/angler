@@ -6,7 +6,7 @@
         <item name="colorPrimary">@color/colorPrimaryDark</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:fontFamily">@font/nexa_light</item>
+        <item name="android:fontFamily">@font/nexa_and_raleway_light</item>
     </style>
     
     <style name="AppTheme.Launcher">
@@ -20,9 +20,9 @@
     <style name="title">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginStart">8dp</item>
+        <item name="android:layout_marginStart">@dimen/half_margin</item>
         <item name="android:layout_marginEnd">24dp</item>
-        <item name="android:textSize">16sp</item>
+        <item name="android:textSize">@dimen/default_text_size</item>
         <item name="android:lines">1</item>
         <item name="android:textColor">@color/black</item>
         <item name="android:ellipsize">end</item>
@@ -34,7 +34,7 @@
         <item name="android:layout_marginStart">24dp</item>
         <item name="android:paddingTop">@dimen/default_margin</item>
         <item name="android:paddingBottom">@dimen/default_margin</item>
-        <item name="android:textSize">16sp</item>
+        <item name="android:textSize">@dimen/default_text_size</item>
         <item name="android:textColor">@color/black</item>
         <item name="android:textStyle">bold</item>
     </style>
@@ -42,14 +42,13 @@
     <style name="expanded_title">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:maxWidth">185dp</item>
         <item name="android:layout_marginStart">24dp</item>
         <item name="android:layout_marginBottom">40dp</item>
         <item name="android:gravity">center_vertical</item>
         <item name="layout_constraintStart_toStartOf">parent</item>
         <item name="layout_constraintTop_toTopOf">parent</item>
         <item name="layout_constraintBottom_toBottomOf">parent</item>
-        <item name="android:textSize">20sp</item>
+        <item name="android:textSize">@dimen/expanded_title_text_size</item>
         <item name="android:textColor">@color/black</item>
         <item name="android:textStyle">bold</item>
         <item name="android:lines">2</item>
@@ -59,10 +58,9 @@
     <style name="expanded_subtitle">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:maxWidth">185dp</item>
         <item name="android:layout_marginStart">24dp</item>
         <item name="layout_constraintStart_toStartOf">parent</item>
-        <item name="android:textSize">16sp</item>
+        <item name="android:textSize">@dimen/expanded_subtitle_text_size</item>
         <item name="android:textColor">@color/gGrey</item>
         <item name="android:lines">1</item>
         <item name="android:ellipsize">end</item>
@@ -84,9 +82,7 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:background">?android:attr/selectableItemBackgroundBorderless</item>
-        <item name="android:layout_marginStart">8dp</item>
-        <item name="android:layout_marginEnd">8dp</item>
-        <item name="android:padding">8dp</item>
+        <item name="android:padding">@dimen/three_quaters_margin</item>
         <item name="android:layout_gravity">center_vertical</item>
     </style>
 
@@ -121,8 +117,8 @@
         <item name="android:textColor">@color/black</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textAllCaps">true</item>
-        <item name="android:layout_marginTop">8dp</item>
-        <item name="android:paddingBottom">12dp</item>
+        <item name="android:layout_marginTop">@dimen/half_margin</item>
+        <item name="android:paddingBottom">@dimen/three_quaters_margin</item>
     </style>
 
     <style name="grey_yes_no_bottom_button" parent="yes_no_bottom_button">
@@ -188,8 +184,8 @@
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginTop">4dp</item>
-        <item name="android:layout_marginBottom">12dp</item>
-        <item name="android:textSize">14sp</item>
+        <item name="android:layout_marginBottom">@dimen/three_quaters_margin</item>
+        <item name="android:textSize">@dimen/playlist_text_size</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:lines">2</item>
         <item name="android:ellipsize">end</item>
@@ -201,7 +197,7 @@
 
     <style name="toolbar">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">48dp</item>
+        <item name="android:layout_height">@dimen/toolbar_height</item>
         <item name="android:elevation">4dp</item>
     </style>
 

@@ -9,7 +9,7 @@
         android:id="@+id/overlay_background"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="@dimen/toolbar_height"
         android:contentDescription="@string/background_image"
         android:scaleType="centerCrop"
         tools:src="@drawable/back4" />
@@ -18,7 +18,7 @@
         android:id="@+id/overlay_overlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="@dimen/toolbar_height"
         tools:background="#CC000000" />
 
     <androidx.appcompat.widget.Toolbar
@@ -30,6 +30,7 @@
         <ImageView
             android:id="@+id/background_changer_drawer_back"
             style="@style/button"
+            android:layout_marginStart="4dp"
             android:contentDescription="@string/settings"
             android:src="@drawable/selected_menu" />
 
@@ -41,6 +42,7 @@
             android:id="@+id/background_changer_select_background"
             style="@style/button"
             android:layout_gravity="end"
+            android:layout_marginEnd="4dp"
             android:alpha="0.2"
             android:contentDescription="@string/select"
             android:src="@drawable/ic_check_black_24dp" />
@@ -61,7 +63,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="@dimen/half_margin"
         android:layout_marginStart="@dimen/default_margin"
         android:text="@string/opacity"
         android:textColor="@color/white"
@@ -72,7 +74,7 @@
         android:id="@+id/overlay_seekbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="12dp"
+        android:layout_marginBottom="@dimen/three_quaters_margin"
         android:max="255"
         android:progressBackgroundTint="@color/white"
         android:progressTint="@color/colorAccentLight"

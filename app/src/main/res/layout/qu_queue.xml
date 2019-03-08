@@ -34,8 +34,8 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:clipToPadding="false"
-        android:paddingBottom="8dp"
-        android:paddingTop="8dp"
+        android:paddingBottom="@dimen/half_margin"
+        android:paddingTop="@dimen/half_margin"
         app:layout_constraintTop_toBottomOf="@id/qu_separator" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

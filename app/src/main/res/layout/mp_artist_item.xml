@@ -3,13 +3,12 @@
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingBottom="7dp"
+    android:layout_height="@dimen/artist_item_height"
     android:paddingEnd="@dimen/default_margin"
     android:paddingStart="24dp"
-    android:paddingTop="8dp"
     android:textAllCaps="true"
     android:textColor="@color/white"
-    android:textSize="18sp"
+    android:textSize="@dimen/large_text_size"
+    android:gravity="center_vertical"
     tools:text="Sweet dreams" />
 

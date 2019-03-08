@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="horizontal"
     android:paddingBottom="2dp"
-    android:paddingEnd="8dp"
+    android:paddingEnd="@dimen/half_margin"
     android:paddingStart="28dp"
     android:paddingTop="2dp">
 
@@ -14,10 +14,10 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="48dp"
         android:focusable="false"
-        android:paddingEnd="8dp"
-        android:paddingStart="8dp"
+        android:paddingEnd="@dimen/half_margin"
+        android:paddingStart="@dimen/half_margin"
         android:textColor="@color/black"
-        android:textSize="14sp"
+        android:textSize="@dimen/default_text_size"
         android:theme="@style/check_box_style" />
 
 </LinearLayout>

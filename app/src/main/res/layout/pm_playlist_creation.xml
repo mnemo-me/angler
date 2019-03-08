@@ -25,7 +25,7 @@
     <ImageButton
         android:id="@+id/playlist_creation_load_image"
         style="@style/button"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="@dimen/half_margin"
         android:background="?android:selectableItemBackgroundBorderless"
         android:contentDescription="@string/load_image"
         android:src="@drawable/baseline_add_photo_alternate_white_48dp"

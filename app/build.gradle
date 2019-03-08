@@ -12,13 +12,14 @@ android {
         applicationId "com.mnemo.angler"
         minSdkVersion 21
         targetSdkVersion 26
-        versionCode 6
+        versionCode 9
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
 

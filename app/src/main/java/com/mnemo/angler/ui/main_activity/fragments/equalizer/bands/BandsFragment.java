@@ -10,6 +10,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import android.text.TextUtils;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -96,6 +97,7 @@ public class BandsFragment extends Fragment implements BandsView {
 
             // Initialize band level view
             TextView bandLevelView = bandLayout.findViewById(R.id.band_level);
+            bandLevelView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.default_text_size));
 
             // Setup band SeekBar
             SeekBar seekBar = bandLayout.findViewById(R.id.band_band);
@@ -142,6 +144,7 @@ public class BandsFragment extends Fragment implements BandsView {
             frequencyView.setPadding((int)(4 * MainActivity.density), 0, (int)(4 * MainActivity.density), 0);
             frequencyView.setLines(1);
             frequencyView.setEllipsize(TextUtils.TruncateAt.END);
+            frequencyView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.default_text_size));
             frequencyView.setText(bandsFrequencies.get(i) / 1000 + " Hz");
 
             // Add band to bands layout

@@ -19,6 +19,7 @@
             <ImageButton
                 android:id="@+id/local_load_back_button"
                 style="@style/button"
+                android:layout_marginStart="4dp"
                 android:contentDescription="@string/back"
                 android:src="@drawable/ic_arrow_back_black_24dp" />
 
@@ -31,7 +32,7 @@
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tab_layout"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="@dimen/toolbar_height"
             android:elevation="4dp"
             app:tabIndicatorColor="@color/black"
             app:tabIndicatorHeight="2dp"

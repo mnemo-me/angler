@@ -13,6 +13,7 @@
         android:layout_marginTop="@dimen/default_margin"
         android:text="@string/virtualizer"
         android:textColor="@color/white"
+        android:textSize="@dimen/default_text_size"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toTopOf="@id/ae_virtualizer_seek_bar"
         app:layout_constraintTop_toTopOf="parent" />
@@ -47,6 +48,7 @@
         android:layout_marginEnd="@dimen/default_margin"
         android:gravity="end"
         android:textColor="@color/white"
+        android:textSize="@dimen/default_text_size"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/ae_virtualizer_seek_bar"
         app:layout_constraintTop_toBottomOf="@id/ae_virtualizer_switch"
@@ -61,6 +63,7 @@
         android:layout_marginStart="@dimen/default_margin"
         android:text="@string/bass_boost"
         android:textColor="@color/white"
+        android:textSize="@dimen/default_text_size"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/ae_virtualizer_seek_bar"
         app:layout_constraintBottom_toTopOf="@id/ae_bass_boost_seek_bar"/>
@@ -94,6 +97,7 @@
         android:layout_marginEnd="@dimen/default_margin"
         android:gravity="end"
         android:textColor="@color/white"
+        android:textSize="@dimen/default_text_size"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/ae_bass_boost_seek_bar"
         app:layout_constraintTop_toBottomOf="@id/ae_bass_boost_switch"
@@ -108,6 +112,7 @@
         android:layout_marginStart="@dimen/default_margin"
         android:text="@string/amplifier"
         android:textColor="@color/white"
+        android:textSize="@dimen/default_text_size"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/ae_bass_boost_seek_bar"
         app:layout_constraintBottom_toTopOf="@id/ae_amplifier_seek_bar"/>
@@ -142,6 +147,7 @@
         android:layout_marginBottom="2dp"
         android:gravity="end"
         android:textColor="@color/white"
+        android:textSize="@dimen/default_text_size"
         android:lines="1"
         android:ellipsize="end"
         app:layout_constraintEnd_toEndOf="parent"

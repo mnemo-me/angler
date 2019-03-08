@@ -14,6 +14,7 @@
         <ImageView
             android:id="@+id/albums_drawer_back"
             style="@style/button"
+            android:layout_marginStart="4dp"
             android:contentDescription="@string/settings"
             android:src="@drawable/selected_menu" />
 
@@ -27,8 +28,8 @@
         android:id="@+id/albums_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="48dp"
-        android:paddingTop="8dp"
+        android:layout_marginTop="@dimen/toolbar_height"
+        android:paddingTop="@dimen/half_margin"
         android:clipToPadding="false"/>
 
     <TextView
@@ -36,31 +37,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/gGrey"
-        android:textSize="18sp"
+        android:textSize="@dimen/default_text_size"
         android:text="@string/no_albums"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/albums_toolbar"
         app:layout_constraintBottom_toBottomOf="parent"/>
-
-    <com.facebook.shimmer.ShimmerFrameLayout
-        android:id="@+id/albums_loading"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/albums_toolbar"
-        app:layout_constraintBottom_toBottomOf="parent">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/white"
-            android:textSize="18sp"
-            android:text="@string/loading"/>
-
-    </com.facebook.shimmer.ShimmerFrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

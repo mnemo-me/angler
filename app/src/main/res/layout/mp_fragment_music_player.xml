@@ -17,6 +17,7 @@
         <ImageView
             android:id="@+id/settings"
             style="@style/button"
+            android:layout_marginStart="4dp"
             android:contentDescription="@string/settings"
             android:src="@drawable/selected_menu" />
 
@@ -33,7 +34,6 @@
         <ImageButton
             android:id="@+id/search"
             style="@style/button"
-            android:layout_marginEnd="4dp"
             android:layout_marginStart="4dp"
             android:alpha="0.5"
             android:contentDescription="@string/search"
@@ -42,8 +42,6 @@
         <ImageButton
             android:id="@+id/playlist"
             style="@style/button"
-            android:layout_marginEnd="4dp"
-            android:layout_marginStart="4dp"
             android:alpha="1"
             android:contentDescription="@string/playlist"
             android:src="@drawable/baseline_toc_black_24dp" />
@@ -51,7 +49,7 @@
         <ImageButton
             android:id="@+id/artists"
             style="@style/button"
-            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
             android:alpha="0.5"
             android:contentDescription="@string/artists"
             android:src="@drawable/baseline_people_black_24dp" />
@@ -62,7 +60,7 @@
     <androidx.appcompat.widget.SearchView
         android:id="@+id/search_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/toolbar_height"
         android:background="@color/softMainGrey"
         android:paddingEnd="0dp"
         android:paddingStart="32dp"
@@ -76,13 +74,13 @@
         android:id="@+id/song_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="48dp"/>
+        android:layout_marginTop="@dimen/toolbar_height"/>
 
     <FrameLayout
         android:id="@+id/artist_song_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="48dp"/>
+        android:layout_marginTop="@dimen/toolbar_height"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

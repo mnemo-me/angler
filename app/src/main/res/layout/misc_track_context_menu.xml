@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:background="@color/softMainGrey"
         android:orientation="vertical"
-        android:paddingBottom="8dp">
+        android:paddingBottom="@dimen/half_margin">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -45,7 +45,7 @@
                 android:paddingEnd="@dimen/default_margin"
                 android:paddingStart="@dimen/default_margin"
                 android:textColor="@color/black"
-                android:textSize="14sp"
+                android:textSize="@dimen/default_text_size"
                 app:layout_constraintStart_toEndOf="@id/context_menu_album_card"
                 app:layout_constraintBottom_toTopOf="@id/context_menu_artist"
                 app:layout_constraintTop_toTopOf="parent"
@@ -59,7 +59,7 @@
                 android:paddingEnd="@dimen/default_margin"
                 android:paddingStart="@dimen/default_margin"
                 android:textColor="@color/gGrey"
-                android:textSize="12sp"
+                android:textSize="@dimen/small_text_size"
                 app:layout_constraintStart_toEndOf="@id/context_menu_album_card"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/context_menu_title"
@@ -73,7 +73,7 @@
         <TextView
             android:id="@+id/context_menu_play"
             style="@style/contextual_menu_item"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="@dimen/half_margin"
             android:text="@string/context_menu_play" />
 
         <TextView

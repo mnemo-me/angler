@@ -23,6 +23,7 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.View
 
     private Context context;
     private List<Playlist> playlists;
+    private int imageHeight;
 
     private OnPlaylistClickListener onPlaylistClickListener;
     private OnPlaylistLongClickListener onPlaylistLongClickListener;
@@ -52,6 +53,8 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.View
     public PlaylistsAdapter(Context context, List<Playlist> playlists) {
         this.context = context;
         this.playlists = playlists;
+
+        imageHeight = context.getResources().getConfiguration().screenWidthDp / context.getResources().getInteger(R.integer.playlist_column_count);
     }
 
     @NonNull
@@ -94,7 +97,7 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.View
 
         // Assign data to views
         holder.playlistTitle.setText(title);
-        ImageAssistant.loadImage(context, cover, holder.playlistImage, 125);
+        ImageAssistant.loadImage(context, cover, holder.playlistImage, imageHeight);
 
     }
 

@@ -29,3 +29,11 @@
     **[] $VALUES;
     public *;
 }
+
+# OkHttp rules
+-keep class okhttp3.** { *; }
+-dontwarn okhttp3.**
+
+-dontwarn org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement
+
+-dontwarn com.steelkiwi.cropiwa.shape.CropIwaOvalShape

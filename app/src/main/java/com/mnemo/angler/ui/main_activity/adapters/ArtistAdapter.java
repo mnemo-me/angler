@@ -24,6 +24,7 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder
 
     private Context context;
     private List<String> artists;
+    private int imageHeight;
 
     private OnArtistClickListener onArtistClickListener;
     private OnArtistLongClickListener onArtistLongClickListener;
@@ -54,6 +55,8 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder
     public ArtistAdapter(Context context, List<String> artists) {
         this.context = context;
         this.artists = artists;
+
+        imageHeight = context.getResources().getConfiguration().screenWidthDp / context.getResources().getInteger(R.integer.artist_column_count);
     }
 
     @NonNull
@@ -95,13 +98,14 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder
         String artist = artists.get(position);
         String image = AnglerFolder.PATH_ARTIST_IMAGE + File.separator + artist + ".jpg";
 
-        if (!new File(image).exists()){
-            image = "R.drawable.black_rectangle";
+        // Fill views
+        if (new File(image).exists()){
+            ImageAssistant.loadImage(context, image, holder.imageView, imageHeight);
+        }else{
+            holder.imageView.setBackgroundColor(context.getResources().getColor(R.color.black));
         }
 
-        // Fill views
         holder.titleView.setText(artist);
-        ImageAssistant.loadImage(context, image, holder.imageView, 200);
     }
 
     @Override
@@ -110,7 +114,6 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder
     }
 
     // Setters for listeners
-
     public void setOnArtistClickListener(OnArtistClickListener onArtistClickListener) {
         this.onArtistClickListener = onArtistClickListener;
     }

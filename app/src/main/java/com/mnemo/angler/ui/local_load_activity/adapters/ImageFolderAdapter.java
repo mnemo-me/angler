@@ -37,10 +37,13 @@ public class ImageFolderAdapter extends RecyclerView.Adapter<ImageFolderAdapter.
 
     private Context context;
     private List<String> images;
+    private int imageHeight;
 
     public ImageFolderAdapter(Context context, List<String> images) {
         this.context = context;
         this.images = images;
+
+        imageHeight = context.getResources().getConfiguration().screenWidthDp / context.getResources().getInteger(R.integer.image_folder_column_count);
     }
 
     @Override
@@ -84,7 +87,7 @@ public class ImageFolderAdapter extends RecyclerView.Adapter<ImageFolderAdapter.
 
         holder.imageView.setTransitionName(context.getResources().getString(R.string.local_load_image_transition) + holder.getAdapterPosition());
 
-        ImageAssistant.loadImage(context, image, holder.imageView, 135);
+        ImageAssistant.loadImage(context, image, holder.imageView, imageHeight);
 
     }
 

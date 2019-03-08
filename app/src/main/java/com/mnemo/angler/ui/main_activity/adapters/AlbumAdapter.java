@@ -29,6 +29,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder>{
 
     private Context context;
     private int albumsInLine;
+    private int imageHeight;
 
     private ArrayList<ListItem> items;
     private static final int ARTIST_HEADER_VIEW_TYPE = 0;
@@ -49,6 +50,8 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder>{
     public AlbumAdapter(Context context, List<Album> albums) {
         this.context = context;
         this.albumsInLine = context.getResources().getInteger(R.integer.playlist_column_count);
+
+        imageHeight = context.getResources().getConfiguration().screenWidthDp / albumsInLine;
 
         // Get artists
         TreeSet<String> artists = new TreeSet<>();
@@ -222,7 +225,8 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder>{
                     // Load album image
                     ImageAssistant.loadImage(context,
                             albumImagePath,
-                            ((AlbumsLineHolder)holder).albumsImageView.get(i), 125);
+                            ((AlbumsLineHolder)holder).albumsImageView.get(i),
+                            imageHeight);
 
                     // Set album title
                     ((AlbumsLineHolder)holder).albumsTitleView.get(i).setText(album);

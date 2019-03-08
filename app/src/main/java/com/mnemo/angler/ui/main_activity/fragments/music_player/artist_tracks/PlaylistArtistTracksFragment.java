@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.os.Handler;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -18,7 +17,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.facebook.shimmer.ShimmerFrameLayout;
 import com.mnemo.angler.R;
 import com.mnemo.angler.data.database.Entities.Track;
 import com.mnemo.angler.ui.main_activity.activity.MainActivity;
@@ -43,7 +41,6 @@ public class PlaylistArtistTracksFragment extends Fragment implements PlaylistAr
     @BindView(R.id.mp_track_list_empty_text)
     TextView emptyTextView;
 
-    private ShimmerFrameLayout loadingView;
 
     private TrackAdapter adapter;
 
@@ -73,18 +70,6 @@ public class PlaylistArtistTracksFragment extends Fragment implements PlaylistAr
         if (orientation == Configuration.ORIENTATION_PORTRAIT){
             getActivity().findViewById(R.id.song_list).setVisibility(View.GONE);
         }
-
-        // Loading view appear handler
-        loadingView = view.findViewById(R.id.mp_track_list_loading);
-
-        Handler handler = new Handler();
-        handler.postDelayed(() -> {
-
-            if (adapter == null){
-                loadingView.setVisibility(View.VISIBLE);
-            }
-
-        }, 1000);
 
         // Get filter
         filter = ((MainActivity)getActivity()).getFilter();
@@ -228,10 +213,6 @@ public class PlaylistArtistTracksFragment extends Fragment implements PlaylistAr
             emptyTextView.setVisibility(View.GONE);
         }
 
-        // Loading text visibility
-        if (loadingView.getVisibility() == View.VISIBLE) {
-            loadingView.setVisibility(View.GONE);
-        }
 
         adapter = new TrackAdapter(getContext(), "music_player", localPlaylistName, artistTracks);
         recyclerView.setAdapter(adapter);

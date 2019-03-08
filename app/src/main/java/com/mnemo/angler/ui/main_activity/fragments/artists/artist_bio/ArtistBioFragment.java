@@ -1,6 +1,7 @@
 package com.mnemo.angler.ui.main_activity.fragments.artists.artist_bio;
 
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 
 import android.os.Handler;
@@ -33,8 +34,6 @@ public class ArtistBioFragment extends Fragment implements ArtistBioView {
     @BindView(R.id.artist_bio_text)
     TextView textView;
 
-    private ShimmerFrameLayout loadingView;
-
     private String artist;
 
     public ArtistBioFragment() {
@@ -51,22 +50,13 @@ public class ArtistBioFragment extends Fragment implements ArtistBioView {
         // Inject views
         unbinder = ButterKnife.bind(this, view);
 
-        // Loading view appear handler
-        loadingView = view.findViewById(R.id.artist_bio_loading);
-
-        Handler handler = new Handler();
-        handler.postDelayed(() -> {
-
-            if (textView != null) {
-                if (TextUtils.isEmpty(textView.getText())) {
-                    loadingView.setVisibility(View.VISIBLE);
-                }
-            }
-
-        }, 1000);
-
         // Get artist
         artist = getArguments().getString("artist");
+
+        // Set padding
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+            textView.setPadding(0, (int)getResources().getDimension(R.dimen.playlist_track_list_padding), 0, 0);
+        }
 
         // Set link movement method
         textView.setMovementMethod(LinkMovementMethod.getInstance());
@@ -98,11 +88,6 @@ public class ArtistBioFragment extends Fragment implements ArtistBioView {
     // MVP View methods
     @Override
     public void setBio(String bio) {
-
-        // Loading text visibility
-        if (loadingView.getVisibility() == View.VISIBLE) {
-            loadingView.setVisibility(View.GONE);
-        }
 
         textView.setText(Html.fromHtml(bio));
     }

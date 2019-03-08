@@ -5,9 +5,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.Configuration;
 import android.os.Bundle;
 
-import android.os.Handler;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -17,7 +17,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.facebook.shimmer.ShimmerFrameLayout;
 import com.mnemo.angler.R;
 import com.mnemo.angler.data.database.Entities.Track;
 import com.mnemo.angler.ui.main_activity.activity.MainActivity;
@@ -40,8 +39,6 @@ public class ArtistTracksFragment extends Fragment implements ArtistTracksView{
     @BindView(R.id.artist_tracks_list)
     RecyclerView recyclerView;
 
-    private ShimmerFrameLayout loadingView;
-
     private TrackAdapter adapter;
 
     // Artist tracks variables
@@ -63,22 +60,13 @@ public class ArtistTracksFragment extends Fragment implements ArtistTracksView{
         // Inject views
         unbinder = ButterKnife.bind(this, view);
 
-        // Loading view appear handler
-        loadingView = view.findViewById(R.id.artist_tracks_loading);
-
-        Handler handler = new Handler();
-        handler.postDelayed(() -> {
-
-            if (adapter == null){
-                loadingView.setVisibility(View.VISIBLE);
-            }
-
-        }, 1000);
-
         // Setup recycler view
-
         recyclerView.setHasFixedSize(true);
         recyclerView.setItemViewCacheSize(20);
+
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+            recyclerView.setPadding(0, (int)getResources().getDimension(R.dimen.playlist_track_list_padding), 0, 0);
+        }
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -176,11 +164,6 @@ public class ArtistTracksFragment extends Fragment implements ArtistTracksView{
     // MVP View methods
     @Override
     public void setArtistTracks(List<Track> tracks) {
-
-        // Loading text visibility
-        if (loadingView.getVisibility() == View.VISIBLE) {
-            loadingView.setVisibility(View.GONE);
-        }
 
         adapter = new TrackAdapter(getContext(), "artist", localPlaylistName, tracks);
         recyclerView.setAdapter(adapter);

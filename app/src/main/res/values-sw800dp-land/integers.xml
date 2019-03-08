@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="playlist_column_count">5</integer>
+    <integer name="artist_column_count">4</integer>
+    <integer name="image_folder_column_count">5</integer>
+</resources>

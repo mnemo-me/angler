@@ -24,10 +24,10 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:clipToPadding="false"
-        android:paddingBottom="8dp"
-        android:paddingEnd="8dp"
-        android:paddingStart="8dp"
-        android:paddingTop="12dp"
+        android:paddingBottom="@dimen/half_margin"
+        android:paddingEnd="@dimen/half_margin"
+        android:paddingStart="@dimen/half_margin"
+        android:paddingTop="@dimen/three_quaters_margin"
         app:layout_constraintTop_toBottomOf="@id/add_track_to_playlist_separator" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

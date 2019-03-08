@@ -33,7 +33,6 @@ public class ImageAssistant {
             options.inJustDecodeBounds = true;
 
             // Identify is current image default or local
-
             if (image.startsWith("R.drawable.")){
                 resourceId.set(context.getResources().getIdentifier(image.replace("R.drawable.", ""), "drawable", context.getPackageName()));
                 BitmapFactory.decodeResource(context.getResources(), resourceId.get(), options);
@@ -44,7 +43,7 @@ public class ImageAssistant {
             double width = options.outWidth;
             double height = options.outHeight;
 
-            double scale = height / (double)(imageHeight * MainActivity.density);
+            double scale = height / (imageHeight * MainActivity.density);
 
             scaleWidth.set((int) (width / scale));
             scaleHeight.set((int) (height / scale));

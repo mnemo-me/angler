@@ -3,7 +3,6 @@ package com.mnemo.angler.ui.main_activity.fragments.artists.artists;
 
 import android.os.Bundle;
 
-import android.os.Handler;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.view.GravityCompat;
@@ -16,7 +15,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.facebook.shimmer.ShimmerFrameLayout;
 import com.mnemo.angler.ui.main_activity.adapters.ArtistAdapter;
 import com.mnemo.angler.ui.main_activity.classes.DrawerItem;
 import com.mnemo.angler.R;
@@ -45,8 +43,6 @@ public class ArtistsFragment extends Fragment implements DrawerItem, ArtistsView
     @BindView(R.id.artists_empty_text)
     TextView emptyTextView;
 
-    private ShimmerFrameLayout loadingView;
-
     private ArtistAdapter adapter;
 
     public ArtistsFragment() {
@@ -62,18 +58,6 @@ public class ArtistsFragment extends Fragment implements DrawerItem, ArtistsView
 
         // Inject views
         unbinder = ButterKnife.bind(this, view);
-
-        // Loading view appear handler
-        loadingView = view.findViewById(R.id.artists_loading);
-
-        Handler handler = new Handler();
-        handler.postDelayed(() -> {
-
-            if (adapter == null){
-                loadingView.setVisibility(View.VISIBLE);
-            }
-
-        }, 1000);
 
         // Setup recycler view
         recyclerView.setHasFixedSize(true);
@@ -118,11 +102,6 @@ public class ArtistsFragment extends Fragment implements DrawerItem, ArtistsView
             emptyTextView.setVisibility(View.VISIBLE);
         } else {
             emptyTextView.setVisibility(View.GONE);
-        }
-
-        // Loading text visibility
-        if (loadingView.getVisibility() == View.VISIBLE) {
-            loadingView.setVisibility(View.GONE);
         }
 
         adapter = new ArtistAdapter(getContext(), artists);
