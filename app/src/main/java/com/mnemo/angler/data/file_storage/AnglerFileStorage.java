@@ -198,7 +198,7 @@ public class AnglerFileStorage {
     public void createTempImage(){
 
         File outputFile = new File(TEMP_IMAGE_NAME);
-        Bitmap bm = BitmapFactory.decodeResource(context.getResources(), context.getResources().getIdentifier("black_logo", "drawable", context.getPackageName()));
+        Bitmap bm = BitmapFactory.decodeResource(context.getResources(), context.getResources().getIdentifier("playlist_default", "drawable", context.getPackageName()));
 
         try {
 
@@ -388,13 +388,23 @@ public class AnglerFileStorage {
     }
 
 
+    // Create artist albums directory
+    public void createArtistAlbumsDirectory(String artist){
+
+        String path = AnglerFolder.PATH_ALBUM_COVER + File.separator + artist;
+
+        File artistAlbumsDirectory = new File(path);
+
+        if (!artistAlbumsDirectory.exists()){
+            artistAlbumsDirectory.mkdir();
+        }
+    }
 
     // Save album cover
     public Uri saveAlbumCover(String artist, String album, InputStream inputStream){
 
         String path = AnglerFolder.PATH_ALBUM_COVER + File.separator + artist;
 
-        new File(path).mkdir();
         File file = new File(path, album + ".jpg");
 
         FileOutputStream outputStream = null;
@@ -438,9 +448,15 @@ public class AnglerFileStorage {
 
         try {
 
-            BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file));
-            bufferedWriter.write(bio);
-            bufferedWriter.close();
+            if (!file.exists()){
+                file.createNewFile();
+            }
+
+            if (bio != null) {
+                BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file));
+                bufferedWriter.write(bio);
+                bufferedWriter.close();
+            }
 
         }catch (IOException e){
             e.printStackTrace();
@@ -646,7 +662,14 @@ public class AnglerFileStorage {
 
     // Check artist bio
     public boolean checkArtistBio(String artist){
-        return new File(getArtistBioPath(artist)).length() > 0;
+
+        File file =  new File(getArtistBioPath(artist));
+
+        if (!file.exists()){
+            return false;
+        }else{
+            return file.length() > 0;
+        }
     }
 
 

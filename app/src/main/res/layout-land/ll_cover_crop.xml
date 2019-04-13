@@ -11,9 +11,10 @@
 
         <ImageButton
             style="@style/button"
+            android:padding="@dimen/half_margin"
             android:layout_marginStart="4dp"
             android:contentDescription="@string/settings"
-            android:src="@drawable/ic_crop_black_24dp" />
+            android:src="@drawable/crop_image" />
 
         <TextView
             style="@style/title"

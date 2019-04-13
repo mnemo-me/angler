@@ -15,10 +15,10 @@ import io.reactivex.Single;
 @Dao
 public interface LinkDAO {
 
-    @Query("SELECT * FROM links WHERE playlist=:playlist ORDER BY position ASC")
+    @Query("SELECT * FROM links WHERE playlist=:playlist ORDER BY position COLLATE NOCASE ASC")
     Flowable<List<Link>> getLinks(String playlist);
 
-    @Query("SELECT * FROM links WHERE playlist=:playlist ORDER BY position ASC")
+    @Query("SELECT * FROM links WHERE playlist=:playlist ORDER BY position COLLATE NOCASE ASC")
     Single<List<Link>> getLinksOnce(String playlist);
 
     @Query("SELECT track_id FROM links WHERE playlist=:playlist")

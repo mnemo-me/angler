@@ -21,7 +21,7 @@
                 style="@style/button"
                 android:layout_marginStart="4dp"
                 android:contentDescription="@string/back"
-                android:src="@drawable/ic_arrow_back_black_24dp" />
+                android:src="@drawable/back" />
 
             <TextView
                 style="@style/title"

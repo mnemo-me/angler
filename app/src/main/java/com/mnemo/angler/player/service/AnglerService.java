@@ -96,6 +96,8 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
         presenter = new AnglerServicePresenter();
         presenter.attachView(this);
 
+        presenter.updateLibrary();
+
         // Setup media session on service, set playback state and callbacks
         mMediaSession = new MediaSessionCompat(this, "Angler Service");
         mMediaSession.setPlaybackState(createPlaybackState(PlaybackStateCompat.STATE_PAUSED));
@@ -259,32 +261,139 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
     @Override
     public void updateQueue(List<Track> tracks) {
 
-        for (MediaSessionCompat.QueueItem queueItem : queue){
+        if (queueTitle.equals("library")) {
 
-            boolean isTrackExist = false;
+            String currentTrackId = "";
 
-            for (Track track : tracks){
+            if (queueIndex >= 0 && queue.size() > 0) {
+                currentTrackId = queue.get(queueIndex).getDescription().getMediaId();
+            }
 
-                if (track.get_id().equals(queueItem.getDescription().getMediaId())){
+            queue.clear();
+            setQueue(tracks);
 
-                    isTrackExist = true;
+            boolean isMedia = false;
 
-                    if (!track.getUri().equals(queueItem.getDescription().getMediaUri().toString())){
+            if (!currentTrackId.equals("")) {
+                for (MediaSessionCompat.QueueItem queueItem : queue) {
 
-                        queue.set(queue.indexOf(queueItem), MediaAssistant.changeQueueItemUri(queueItem, track.getUri()));
+                    if (queueItem.getDescription().getMediaId().equals(currentTrackId)) {
+                        queueIndex = queue.indexOf(queueItem);
+                        mMediaSession.setPlaybackState(createPlaybackState(mMediaSession.getController().getPlaybackState().getState()));
+
+                        isMedia = true;
+
+                        break;
                     }
-
-                    break;
                 }
             }
 
-            if (!isTrackExist) {
-
-                Bundle bundle = new Bundle();
-                bundle.putInt("position", queue.indexOf(queueItem));
-
-                mMediaSession.getController().getTransportControls().sendCustomAction("remove_queue_item", bundle);
+            if (!isMedia) {
+                queueIndex = -1;
+                mMediaSession.setPlaybackState(createPlaybackState(mMediaSession.getController().getPlaybackState().getState()));
+                initializeMedia(false);
             }
+
+        }else if(queueTitle.startsWith("playlist_artist/library/")){
+
+            String currentTrackId = "";
+
+            if (queueIndex >= 0 && queue.size() > 0) {
+                currentTrackId = queue.get(queueIndex).getDescription().getMediaId();
+            }
+
+            boolean isMedia = false;
+
+            String artist = queueTitle.replace("playlist_artist/library/", "").replace("\\", "/");
+
+            ArrayList<Track> artistTracks = new ArrayList<>();
+
+            for (Track track : tracks){
+
+                if (track.getArtist().equals(artist)){
+                    artistTracks.add(track);
+
+                    if (!isMedia){
+                        if (track.get_id().equals(currentTrackId)){
+                            queueIndex = artistTracks.indexOf(track);
+
+                            isMedia = true;
+                        }
+                    }
+                }
+            }
+
+            queue.clear();
+
+            for (MediaDescriptionCompat description : MediaAssistant.mergeMediaDescriptionArray(queueTitle, artistTracks)) {
+
+                MediaSessionCompat.QueueItem queueItem = new MediaSessionCompat.QueueItem(description, description.hashCode());
+                queue.add(queueItem);
+            }
+
+            mMediaSession.setQueue(queue);
+
+            if (!isMedia) {
+                queueIndex = -1;
+                mMediaSession.setPlaybackState(createPlaybackState(mMediaSession.getController().getPlaybackState().getState()));
+                initializeMedia(false);
+            }else{
+                mMediaSession.setPlaybackState(createPlaybackState(mMediaSession.getController().getPlaybackState().getState()));
+            }
+
+
+        }else {
+
+            CopyOnWriteArrayList<MediaSessionCompat.QueueItem> updatedQueue = new CopyOnWriteArrayList<>();
+            int updatedQueueIndex = queueIndex;
+
+            boolean isMedia = false;
+
+            for (MediaSessionCompat.QueueItem queueItem : queue){
+
+                boolean isAdded = false;
+
+                for (Track track : tracks) {
+
+                    if (track.get_id().equals(queueItem.getDescription().getMediaId())) {
+
+                        if (!track.getUri().equals(queueItem.getDescription().getMediaUri().toString())) {
+                            updatedQueue.add(MediaAssistant.changeQueueItemUri(queueItem, track.getUri()));
+                        }else {
+                            updatedQueue.add(queueItem);
+                        }
+
+                        if (queue.indexOf(queueItem) == queueIndex){
+                            isMedia = true;
+                        }
+
+                        isAdded = true;
+
+                        break;
+                    }
+                }
+
+                if (!isAdded){
+                    if (queue.indexOf(queueItem) < queueIndex){
+                        updatedQueueIndex--;
+                    }
+                }
+
+            }
+
+            queue.clear();
+            queue.addAll(updatedQueue);
+            mMediaSession.setQueue(queue);
+
+            if (!isMedia){
+                queueIndex = -1;
+                mMediaSession.setPlaybackState(createPlaybackState(mMediaSession.getController().getPlaybackState().getState()));
+                initializeMedia(false);
+            }else {
+                queueIndex = updatedQueueIndex;
+                mMediaSession.setPlaybackState(createPlaybackState(mMediaSession.getController().getPlaybackState().getState()));
+            }
+
         }
     }
 

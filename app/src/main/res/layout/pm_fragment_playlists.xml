@@ -9,15 +9,14 @@
         android:id="@+id/playlist_toolbar"
         style="@style/toolbar"
         android:background="@color/softMainGrey"
-        app:contentInsetStart="0dp"
-        android:transitionName="toolbar">
+        app:contentInsetStart="0dp">
 
         <ImageView
             android:id="@+id/playlist_manager_drawer_back"
             style="@style/button"
             android:layout_marginStart="4dp"
             android:contentDescription="@string/settings"
-            android:src="@drawable/selected_menu" />
+            android:src="@drawable/menu" />
 
         <TextView
             style="@style/title"
@@ -26,10 +25,11 @@
         <ImageButton
             android:id="@+id/new_playlist_button"
             style="@style/button"
+            android:padding="@dimen/half_margin"
             android:layout_marginEnd="4dp"
             android:layout_gravity="end"
             android:contentDescription="@string/create_new_playlist"
-            android:src="@drawable/ic_playlist_add_black_24dp"
+            android:src="@drawable/create_playlist"
             android:tooltipText="@string/create_new_playlist" />
 
     </androidx.appcompat.widget.Toolbar>

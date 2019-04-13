@@ -36,7 +36,7 @@
         style="@style/button"
         android:layout_marginStart="4dp"
         android:contentDescription="@string/load_image"
-        android:src="@drawable/baseline_add_photo_alternate_white_48dp"
+        android:src="@drawable/load_image"
         android:tooltipText="@string/load_image"
         app:layout_constraintBottom_toBottomOf="@id/playlist_creation_image"
         app:layout_constraintStart_toStartOf="@id/playlist_creation_image" />

@@ -21,6 +21,12 @@ public class AnglerServicePresenter extends DisposableBasePresenter {
         AnglerApp.getAnglerComponent().injectAnglerServicePresenter(this);
     }
 
+    // Update library
+    void updateLibrary(){
+        repository.updateLibrary(() -> {
+        });
+    }
+
 
     // Equalizer methods
     // Get equalizer state

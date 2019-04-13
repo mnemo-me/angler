@@ -3,25 +3,29 @@ package com.mnemo.angler.ui.main_activity.misc.cover;
 
 import android.app.Dialog;
 import android.content.res.Configuration;
-import android.graphics.Point;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
+
 import android.view.LayoutInflater;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.mnemo.angler.ui.main_activity.activity.MainActivity;
 import com.mnemo.angler.R;
+import com.mnemo.angler.ui.main_activity.activity.MainActivity;
 import com.mnemo.angler.util.ImageAssistant;
 
 
 
 public class CoverDialogFragment extends DialogFragment {
 
+    private Bundle imageSize;
+    private int maxImageHeight;
+    private int maxImageWidth;
 
     @NonNull
     @Override
@@ -40,16 +44,15 @@ public class CoverDialogFragment extends DialogFragment {
         ImageView coverView = cardView.findViewById(R.id.artist_cover_image);
         TextView artistView = cardView.findViewById(R.id.artist_cover_artist);
 
+        // Set maximum size
+        maxImageHeight = (int)(getResources().getConfiguration().screenHeightDp * MainActivity.density - 16 * MainActivity.density);
+        coverView.setMaxHeight(maxImageHeight);
+
+        maxImageWidth = (int)(getResources().getConfiguration().screenWidthDp * MainActivity.density - 16 * MainActivity.density);
+        coverView.setMaxWidth(maxImageWidth);
+
         // Fill views
-        int imageHeight;
-
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
-            imageHeight = getResources().getConfiguration().screenWidthDp;
-        }else{
-            imageHeight = getResources().getConfiguration().screenHeightDp;
-        }
-
-        ImageAssistant.loadImage(getContext(), image, coverView, imageHeight);
+        imageSize = ImageAssistant.loadCoverImage(getContext(), image, coverView);
         artistView.setText(artist);
 
         // Fill album (optional)
@@ -70,13 +73,21 @@ public class CoverDialogFragment extends DialogFragment {
 
         AlertDialog alertDialog = (AlertDialog)getDialog();
 
-        Point size = new Point();
-        alertDialog.getWindow().getWindowManager().getDefaultDisplay().getSize(size);
+        int imageHeight = imageSize.getInt("image_height");
+        int imageWidth = imageSize.getInt("image_width");
 
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-            alertDialog.getWindow().setLayout(size.x, size.x);
+            if (imageHeight < maxImageHeight) {
+                alertDialog.getWindow().setLayout(imageWidth, FrameLayout.LayoutParams.WRAP_CONTENT);
+            }else{
+                alertDialog.getWindow().setLayout(FrameLayout.LayoutParams.WRAP_CONTENT, maxImageHeight);
+            }
         }else {
-            alertDialog.getWindow().setLayout((int) (size.y - 24 * MainActivity.density), (int) (size.y - 24 * MainActivity.density));
+            if (imageWidth < maxImageWidth) {
+                alertDialog.getWindow().setLayout(imageWidth, FrameLayout.LayoutParams.WRAP_CONTENT);
+            }else{
+                alertDialog.getWindow().setLayout(maxImageWidth, FrameLayout.LayoutParams.WRAP_CONTENT);
+            }
         }
     }
 }

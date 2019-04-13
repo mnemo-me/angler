@@ -73,8 +73,11 @@
             <ImageButton
                 android:id="@+id/media_panel_add_to_playlist"
                 style="@style/playlist_media_button"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:padding="8dp"
                 android:contentDescription="@string/add_track_to_playlist"
-                android:src="@drawable/ic_add_black_24dp"
+                android:src="@drawable/add_track_to_playlist"
                 app:layout_constraintBottom_toTopOf="@id/media_panel_seek_bar"
                 app:layout_constraintStart_toStartOf="@+id/media_panel_repeat"
                 app:layout_constraintTop_toTopOf="@id/media_panel" />
@@ -101,7 +104,7 @@
                 android:id="@+id/media_panel_queue"
                 style="@style/playlist_media_button"
                 android:contentDescription="@string/queue"
-                android:src="@drawable/baseline_queue_music_black_24dp"
+                android:src="@drawable/queue"
                 app:layout_constraintBottom_toTopOf="@id/media_panel_seek_bar"
                 app:layout_constraintStart_toStartOf="@id/media_panel_shuffle"
                 app:layout_constraintTop_toTopOf="@id/media_panel" />
@@ -157,7 +160,7 @@
                 android:layout_marginBottom="@dimen/three_quaters_margin"
                 android:alpha="0.2"
                 android:contentDescription="@string/repeat"
-                android:src="@drawable/ic_repeat_black_24dp"
+                android:src="@drawable/repeat"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/media_panel_previous_track"
                 app:layout_constraintStart_toStartOf="parent" />
@@ -168,7 +171,7 @@
                 style="@style/playlist_media_button"
                 android:layout_marginBottom="@dimen/three_quaters_margin"
                 android:contentDescription="@string/skip_to_previous"
-                android:src="@drawable/ic_skip_previous_black_24dp"
+                android:src="@drawable/skip_to_previous"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/media_panel_play_pause"
                 app:layout_constraintStart_toEndOf="@+id/media_panel_repeat" />
@@ -179,7 +182,7 @@
                 style="@style/playlist_media_button"
                 android:layout_marginBottom="@dimen/three_quaters_margin"
                 android:contentDescription="@string/play_pause"
-                android:src="@drawable/ic_play_arrow_black_48dp"
+                android:src="@drawable/play"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/media_panel_next_track"
                 app:layout_constraintHorizontal_chainStyle="spread"
@@ -191,7 +194,7 @@
                 style="@style/playlist_media_button"
                 android:layout_marginBottom="@dimen/three_quaters_margin"
                 android:contentDescription="@string/play_next"
-                android:src="@drawable/ic_skip_next_black_24dp"
+                android:src="@drawable/skip_to_next"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/media_panel_shuffle"
                 app:layout_constraintStart_toEndOf="@id/media_panel_play_pause" />
@@ -201,9 +204,10 @@
                 android:id="@+id/media_panel_shuffle"
                 style="@style/playlist_media_button"
                 android:layout_marginBottom="@dimen/three_quaters_margin"
+                android:paddingBottom="2dp"
                 android:alpha="0.2"
                 android:contentDescription="@string/shuffle"
-                android:src="@drawable/ic_shuffle_black_24dp"
+                android:src="@drawable/shuffle"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/media_panel_next_track" />
@@ -314,7 +318,7 @@
                 android:background="@color/colorAccent"
                 android:text="@string/purchase_angler"
                 android:textColor="@color/white"
-                android:drawableEnd="@drawable/baseline_shop_white_36dp"
+                android:drawableEnd="@drawable/play_store"
                 android:gravity="center_vertical"
                 android:visibility="gone"/>
 

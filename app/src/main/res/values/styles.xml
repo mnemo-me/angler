@@ -84,6 +84,7 @@
         <item name="android:background">?android:attr/selectableItemBackgroundBorderless</item>
         <item name="android:padding">@dimen/three_quaters_margin</item>
         <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:alpha">0.6</item>
     </style>
 
     <style name="playlist_media_button">
@@ -91,7 +92,7 @@
         <item name="android:layout_height">36dp</item>
         <item name="android:background">?android:attr/selectableItemBackgroundBorderless</item>
         <item name="android:layout_gravity">center</item>
-        <item name="android:alpha">0.8</item>
+        <item name="android:alpha">0.6</item>
     </style>
 
     <style name="play_all_button">

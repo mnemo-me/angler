@@ -24,7 +24,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -149,6 +148,8 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
     private int selectedDrawerItemIndex = 0;
 
     private boolean isMedia = false;
+    private boolean isAppStatusChecked = false;
+    private boolean isBackgroundInitialized = false;
 
     private BillingFlowParams flowParams;
 
@@ -245,10 +246,15 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
             presenter.attachView(this);
 
             // Check app status
-            checkAppStatus();
+            if (!isAppStatusChecked) {
+                checkAppStatus();
+                isAppStatusChecked = true;
+            }
 
             // Set background
-            presenter.setupBackground();
+            if (!isBackgroundInitialized) {
+                presenter.setupBackground();
+            }
         }
 
 
@@ -425,7 +431,9 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
                     - getResources().getDimension(R.dimen.media_panel_height_port) / density);
         }
 
-        ImageAssistant.loadImage(this, imagePath, background, imageHeight);
+        ImageAssistant.loadImageOnMainThread(this, imagePath, background, imageHeight);
+
+        isBackgroundInitialized = true;
 
     }
 
@@ -460,9 +468,9 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
     public void setPlayPause(String playPauseState){
 
         if (playPauseState.equals("play")){
-            mPlayPauseButton.setImageResource(R.drawable.ic_pause_black_48dp);
+            mPlayPauseButton.setImageResource(R.drawable.pause);
         }else{
-            mPlayPauseButton.setImageResource(R.drawable.ic_play_arrow_black_48dp);
+            mPlayPauseButton.setImageResource(R.drawable.play);
         }
     }
 
@@ -523,7 +531,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
         boolean isRepeat = anglerClient.changeRepeatMode();
 
         if (isRepeat){
-            v.setAlpha(0.8f);
+            v.setAlpha(0.6f);
         }else{
             v.setAlpha(0.2f);
         }
@@ -535,7 +543,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
         boolean isShuffle = anglerClient.changeShuffleMode();
 
         if (isShuffle){
-            v.setAlpha(0.8f);
+            v.setAlpha(0.6f);
         }else{
             v.setAlpha(0.2f);
         }
@@ -545,7 +553,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
     public void setRepeatState(boolean repeatState){
 
         if (repeatState){
-            repeatButton.setAlpha(0.8f);
+            repeatButton.setAlpha(0.6f);
         }else{
             repeatButton.setAlpha(0.2f);
         }
@@ -554,7 +562,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
     public void setShuffleState(boolean shuffleState) {
 
         if (shuffleState) {
-            shuffleButton.setAlpha(0.8f);
+            shuffleButton.setAlpha(0.6f);
         }else{
             shuffleButton.setAlpha(0.2f);
         }
@@ -876,7 +884,6 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
 
                                 if (skuDetailsList.size() > 0){
                                     SkuDetails premiumSkuDetails = skuDetailsList.get(0);
-                                    Log.e("0909090", premiumSkuDetails.getPrice());
 
                                     flowParams = BillingFlowParams.newBuilder()
                                             .setSkuDetails(premiumSkuDetails)

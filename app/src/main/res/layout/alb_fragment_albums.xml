@@ -16,7 +16,7 @@
             style="@style/button"
             android:layout_marginStart="4dp"
             android:contentDescription="@string/settings"
-            android:src="@drawable/selected_menu" />
+            android:src="@drawable/menu" />
 
         <TextView
             style="@style/title"

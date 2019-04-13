@@ -59,7 +59,7 @@
             android:layout_gravity="center"
             android:alpha="0.2"
             android:contentDescription="@string/delete_track_from_queue"
-            android:src="@drawable/ic_clear_black_24dp" />
+            android:src="@drawable/baseline_clear_black_18dp" />
 
     </FrameLayout>
 

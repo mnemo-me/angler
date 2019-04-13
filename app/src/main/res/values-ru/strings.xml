@@ -41,7 +41,7 @@
     <string name="delete_track_from_queue">удалить трек из очереди воспроизведения</string>
     <string name="empty_playlist">Плейлист пуст</string>
     <string name="empty_queue">Очередь воспроизведения пуста</string>
-    <string name="enter_new_playlist_title">Введить название плейлиста</string>
+    <string name="enter_new_playlist_title">Введите название плейлиста</string>
     <string name="equalizer">Эквалайзер</string>
     <string name="expand">расширить</string>
     <string name="free_trial">бесплатная пробная версия</string>
@@ -51,6 +51,7 @@
     <string name="image_folder_item">изображение в папке</string>
     <string name="landscape_crop">Ландшафтная обрезка</string>
     <string name="landscape_crop_advice">Обрезать изображение для ландшафтной ориентации</string>
+    <string name="library">Библиотека</string>
     <string name="library_updated">Библиотека обновлена</string>
     <string name="load_image">Загрузить изображение</string>
     <string name="loading">Загрузка контента</string>
@@ -75,7 +76,7 @@
     <string name="playlist_manager">Плейлисты</string>
     <string name="playlist_name_in_used">Данное название уже используется</string>
     <string name="playlist_name_is_empty">Не заполнено название плейлиста</string>
-    <string name="playlist_name_reserved">Даннок название зарезервировано</string>
+    <string name="playlist_name_reserved">Данное название зарезервировано</string>
     <string name="portrait_crop">Портретная обрезка</string>
     <string name="portrait_crop_advice">Обрезать изображение для портретной ориентации</string>
     <string name="purchase">приобрести</string>
@@ -92,6 +93,7 @@
     <string name="shuffle">перемешать</string>
     <string name="skip_to_next">следующий трек</string>
     <string name="skip_to_previous">предыдущий трек</string>
+    <string name="thank_you">Спасибо!</string>
     <string name="track_is_missing">трек отсутствует на устройстве</string>
     <string name="track_removed">трек удалён</string>
     <string name="tracks">треки</string>

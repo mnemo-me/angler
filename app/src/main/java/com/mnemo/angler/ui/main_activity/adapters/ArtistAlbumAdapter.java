@@ -108,7 +108,7 @@ public class ArtistAlbumAdapter extends RecyclerView.Adapter<ArtistAlbumAdapter.
 
         // Load album image
         if (!new File(albumImagePath).exists()){
-            albumImagePath = "R.drawable.black_logo";
+            albumImagePath = "R.drawable.album_default";
         }
 
         ImageAssistant.loadImage(context, albumImagePath, holder.coverView, imageHeight);

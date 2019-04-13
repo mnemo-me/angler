@@ -20,7 +20,7 @@
     <string name="bio">bio</string>
     <string name="cancel">Cancel</string>
     <string name="change_background">Background</string>
-    <string name="clear_playlist_question">Are you sure you want delete all tracks from</string>
+    <string name="clear_playlist_question">Are you sure you want to delete all tracks from</string>
     <string name="close">Close</string>
     <string name="configure_playlist">Configure playlist</string>
     <string name="context_menu_add_to_playlist">Add to playlist</string>
@@ -36,7 +36,7 @@
     <string name="custom">Custom</string>
     <string name="delete_image">delete image</string>
     <string name="delete_playlist">Delete playlist</string>
-    <string name="delete_playlist_question">Are you sure you want delete</string>
+    <string name="delete_playlist_question">Are you sure you want to delete</string>
     <string name="delete_track_from_queue">delete track from queue</string>
     <string name="empty_playlist">Playlist is empty</string>
     <string name="empty_queue">Queue is empty</string>
@@ -50,6 +50,7 @@
     <string name="image_folder_item">image in folder</string>
     <string name="landscape_crop">Landscape crop</string>
     <string name="landscape_crop_advice">crop background for landscape orientation</string>
+    <string name="library">Library</string>
     <string name="library_updated">Library updated</string>
     <string name="load_image">Load image</string>
     <string name="loading">loading content</string>
@@ -93,10 +94,11 @@
     <string name="shuffle">shuffle</string>
     <string name="skip_to_next">skip to next</string>
     <string name="skip_to_previous">skip to previous</string>
+    <string name="thank_you">Thank you!</string>
     <string name="track_is_missing">Track is missing</string>
     <string name="track_removed">1 track removed</string>
     <string name="tracks">tracks</string>
-    <string name="trial_period_initialization">Thanks for downloading Angler. You get free trial version for 15 days. After that for continue using app you should purchase it. Also you can do it any time you want.</string>
+    <string name="trial_period_initialization">Thanks for downloading Angler. You get free trial version for 15 days. To continue using app later you should purchase it. You can also do it any time you want.</string>
     <string name="trial_period_is_expired">Trial period is expired. To continue using Angler you should purchase it.</string>
     <string name="trial_version">Trial version</string>
     <string name="undo">Undo</string>

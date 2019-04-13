@@ -393,7 +393,7 @@ public class AlbumConfigurationFragment extends Fragment implements AlbumConfigu
         if (presenter.checkAlbumCoverExist(artist, title)){
             ImageAssistant.loadImage(getContext(), image, imageView, imageHeight);
         }else{
-            ImageAssistant.loadImage(getContext(), "R.drawable.black_logo", imageView, imageHeight);
+            ImageAssistant.loadImage(getContext(), "R.drawable.album_default", imageView, imageHeight);
         }
 
     }

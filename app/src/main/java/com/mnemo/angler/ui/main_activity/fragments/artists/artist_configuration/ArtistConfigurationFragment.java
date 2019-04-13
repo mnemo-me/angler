@@ -313,7 +313,7 @@ public class ArtistConfigurationFragment extends Fragment implements ArtistConfi
         if (presenter.checkArtistImageExist(artist)) {
             ImageAssistant.loadImage(getContext(), image, imageView, imageHeight);
         }else{
-            ImageAssistant.loadImage(getContext(), "R.drawable.black_logo", imageView, imageHeight);
+            ImageAssistant.loadImage(getContext(), "R.drawable.artist_default", imageView, imageHeight);
         }
 
     }

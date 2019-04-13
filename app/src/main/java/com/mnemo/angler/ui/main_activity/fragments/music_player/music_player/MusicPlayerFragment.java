@@ -120,13 +120,19 @@ public class MusicPlayerFragment extends Fragment implements MusicPlayerView {
 
                 if (isSpinnerInitialized) {
 
-                    String mainPlaylist = (String) adapterView.getItemAtPosition(i);
+                    String mainPlaylist;
+
+                    if (i == 0){
+                        mainPlaylist = "library";
+                    }else {
+                        mainPlaylist = (String) adapterView.getItemAtPosition(i);
+                    }
 
                     ((MainActivity) getActivity()).setMainPlaylistName(mainPlaylist);
                     presenter.updateMainPlaylist(mainPlaylist);
 
-                    playlist.setAlpha(1f);
-                    artists.setAlpha(0.5f);
+                    playlist.setAlpha(0.6f);
+                    artists.setAlpha(0.2f);
 
                     showLibrary();
 
@@ -186,10 +192,15 @@ public class MusicPlayerFragment extends Fragment implements MusicPlayerView {
     @Override
     public void updateSpinner(List<String> playlists) {
 
-        adapter.clear();
-        adapter.addAll(playlists);
-        spinner.setSelection(playlists.indexOf(((MainActivity) getActivity()).getMainPlaylistName()));
-        adapter.notifyDataSetChanged();
+        if (playlists.size() > 0) {
+
+            playlists.set(0, getString(R.string.library));
+
+            adapter.clear();
+            adapter.addAll(playlists);
+            spinner.setSelection(playlists.indexOf(((MainActivity) getActivity()).getMainPlaylistName()));
+            adapter.notifyDataSetChanged();
+        }
 
     }
 
@@ -198,8 +209,8 @@ public class MusicPlayerFragment extends Fragment implements MusicPlayerView {
     // Show playlist
     private void showLibrary(){
 
-        playlist.setAlpha(1f);
-        artists.setAlpha(0.5f);
+        playlist.setAlpha(0.6f);
+        artists.setAlpha(0.2f);
 
         if (orientation == Configuration.ORIENTATION_LANDSCAPE){
 
@@ -227,8 +238,8 @@ public class MusicPlayerFragment extends Fragment implements MusicPlayerView {
     // show playlist artists
     private void showArtistList(){
 
-        artists.setAlpha(1f);
-        playlist.setAlpha(0.5f);
+        artists.setAlpha(0.6f);
+        playlist.setAlpha(0.2f);
 
         // Hide artist tracks fragment and show tracks fragment
         Fragment artistTracksFragment = getActivity().getSupportFragmentManager().findFragmentByTag("artist_track_fragment");
@@ -400,7 +411,7 @@ public class MusicPlayerFragment extends Fragment implements MusicPlayerView {
 
             isSearchBarOpen = true;
 
-            search.setAlpha(1f);
+            search.setAlpha(0.6f);
 
             searchView.animate().translationY(searchView.getHeight());
             songList.animate().translationY(searchView.getHeight());
@@ -414,7 +425,7 @@ public class MusicPlayerFragment extends Fragment implements MusicPlayerView {
 
         if (orientation == Configuration.ORIENTATION_PORTRAIT){
 
-            search.setAlpha(0.5f);
+            search.setAlpha(0.2f);
 
             searchView.animate().translationY(0);
             songList.animate().translationY(0);

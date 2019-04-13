@@ -20,9 +20,10 @@
         <ImageButton
             android:id="@+id/manage_tracks_clear_button"
             style="@style/button"
+            android:padding="@dimen/half_margin"
             android:layout_marginEnd="4dp"
             android:contentDescription="@string/delete_playlist"
-            android:src="@drawable/baseline_delete_sweep_black_24dp"
+            android:src="@drawable/delete_all_tracks"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"/>

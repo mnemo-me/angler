@@ -42,8 +42,8 @@ class LastFMApiClient {
         int REQUEST_TIMEOUT = 60;
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .connectTimeout(REQUEST_TIMEOUT, TimeUnit.SECONDS)
-                .readTimeout(REQUEST_TIMEOUT, TimeUnit.SECONDS)
-                .writeTimeout(REQUEST_TIMEOUT, TimeUnit.SECONDS);
+                .writeTimeout(REQUEST_TIMEOUT, TimeUnit.SECONDS)
+                .readTimeout(REQUEST_TIMEOUT, TimeUnit.SECONDS);
 
         // Add logging interceptor to watch requests
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();

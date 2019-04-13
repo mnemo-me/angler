@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.inject.Inject;
 
@@ -62,21 +63,7 @@ public class AnglerRepository {
         Completable.fromAction(() -> {
             anglerPreferences.initializePreferences();
             anglerFileStorage.createAppFolder();
-
-            ArrayList<Track> tracks = anglerFileStorage.scanTracks(AnglerFileStorage.PHONE_STORAGE);
-            anglerDB.updateDatabase(tracks, () -> {
-
-                if (onAppInitializationListener != null){
-                    onAppInitializationListener.onAppInitialized(anglerDB.loadLibrary());
-                }
-
-                loadDefaultBackgrounds();
-                loadAlbumCovers();
-                loadAlbumYear();
-                loadArtistImagesAndBios();
-                loadTrackAlbumPosition();
-
-            });
+            loadDefaultBackgrounds();
 
         }).subscribeOn(Schedulers.io())
                 .subscribe();
@@ -95,6 +82,9 @@ public class AnglerRepository {
 
                     anglerDB.loadAlbumTracks(album.getArtist(), album.getAlbum(), tracks1 -> Completable.fromAction(() -> {
                         for (Track track : tracks1) {
+
+                            anglerFileStorage.createArtistAlbumsDirectory(track.getArtist());
+
                             InputStream inputStream1 = anglerFileStorage.extractAlbumImage(track.getUri());
 
                             if (inputStream1 != null){
@@ -166,15 +156,31 @@ public class AnglerRepository {
 
             anglerDB.getTrackWithUnknownAlbumPosition(tracks -> {
 
-                for (Track track : tracks) {
+                Completable.fromAction(() -> {
 
-                    anglerNetworking.loadTrackAlbumPosition(track.getTitle(), track.getArtist(), track.getAlbum(), albumPosition -> {
+                    AtomicBoolean isNewAlbumPositionAppear = new AtomicBoolean(false);
 
-                        if (albumPosition != 10000) {
-                            anglerDB.updateTrackAlbumPosition(track.get_id(), albumPosition);
-                        }
-                    });
-                }
+                    for (Track track : tracks) {
+
+                        anglerNetworking.loadTrackAlbumPosition(track.getTitle(), track.getArtist(), track.getAlbum(), albumPosition -> {
+
+                            if (albumPosition != 10000) {
+                                track.setAlbumPosition(albumPosition);
+
+                                if (!isNewAlbumPositionAppear.get()) {
+                                    isNewAlbumPositionAppear.set(true);
+                                }
+                            }
+                        });
+                    }
+
+                    if (isNewAlbumPositionAppear.get()) {
+                        anglerDB.updateTracks(tracks);
+                    }
+                })
+                        .subscribeOn(Schedulers.io())
+                        .subscribe();
+
             });
         }
     }

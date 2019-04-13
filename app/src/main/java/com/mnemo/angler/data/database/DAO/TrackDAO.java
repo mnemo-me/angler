@@ -3,6 +3,7 @@ package com.mnemo.angler.data.database.DAO;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
+import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
@@ -16,34 +17,34 @@ import io.reactivex.Single;
 @Dao
 public interface TrackDAO {
 
-    @Query("SELECT * FROM tracks ORDER BY title ASC")
+    @Query("SELECT * FROM tracks ORDER BY title COLLATE NOCASE ASC")
     Flowable<List<Track>> getTracks();
 
-    @Query("SELECT * FROM tracks ORDER BY title ASC")
+    @Query("SELECT * FROM tracks ORDER BY title COLLATE NOCASE ASC")
     Single<List<Track>> getTracksOnce();
 
     @Query("SELECT * FROM tracks WHERE _id IN (:tracksId)")
     List<Track> getTracks(List<String> tracksId);
 
-    @Query("SELECT * FROM tracks ORDER BY title ASC")
+    @Query("SELECT * FROM tracks ORDER BY title COLLATE NOCASE ASC")
     List<Track> getLibrary();
 
     @Query("SELECT COUNT(*) FROM tracks")
     Single<Integer> getLibraryTrackCount();
 
-    @Query("SELECT artist FROM tracks GROUP BY artist ORDER BY artist ASC")
+    @Query("SELECT artist FROM tracks GROUP BY artist ORDER BY artist COLLATE NOCASE ASC")
     Flowable<List<String>> getArtists();
 
-    @Query("SELECT artist FROM tracks WHERE _id IN (:tracksId) GROUP BY artist ORDER BY artist ASC")
+    @Query("SELECT artist FROM tracks WHERE _id IN (:tracksId) GROUP BY artist ORDER BY artist COLLATE NOCASE ASC")
     Single<List<String>> getArtists(List<String> tracksId);
 
-    @Query("SELECT * FROM tracks WHERE artist=:artist ORDER BY title ASC")
+    @Query("SELECT * FROM tracks WHERE artist=:artist ORDER BY title COLLATE NOCASE ASC")
     Flowable<List<Track>> getTracksByArtist(String artist);
 
-    @Query("SELECT * FROM tracks WHERE artist=:artist AND _id IN (:tracksId) ORDER BY title ASC")
+    @Query("SELECT * FROM tracks WHERE artist=:artist AND _id IN (:tracksId) ORDER BY title COLLATE NOCASE ASC")
     Single<List<Track>> getTracksByArtist(List<String> tracksId, String artist);
 
-    @Query("SELECT * FROM tracks WHERE artist=:artist AND album=:album ORDER BY album_position,title ASC")
+    @Query("SELECT * FROM tracks WHERE artist=:artist AND album=:album ORDER BY album_position,title COLLATE NOCASE ASC")
     Flowable<List<Track>> getAlbumTracks(String artist, String album);
 
     @Query("SELECT COUNT(*) FROM tracks WHERE artist=:artist AND album=:album")
@@ -55,7 +56,7 @@ public interface TrackDAO {
     @Query("UPDATE tracks SET album_position=:albumPosition WHERE _id=:id")
     void updateTrackAlbumPosition(String id, int albumPosition);
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insert(Track... tracks);
 
     @Update

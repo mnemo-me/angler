@@ -77,7 +77,7 @@ public class AnglerNotificationManager {
         if (new File(albumImagePath).exists()){
             albumImage = BitmapFactory.decodeFile(albumImagePath);
         }else{
-            albumImage = BitmapFactory.decodeResource(anglerService.getResources(), R.drawable.black_logo);
+            albumImage = BitmapFactory.decodeResource(anglerService.getResources(), R.drawable.album_default);
         }
 
 
@@ -90,20 +90,20 @@ public class AnglerNotificationManager {
         // Configure Notification Builder
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(anglerService, channelId)
                 .setSmallIcon((mediaController.getPlaybackState().getState() == PlaybackStateCompat.STATE_PLAYING) ?
-                        R.drawable.baseline_play_arrow_white_36dp_boarderless : R.drawable.baseline_pause_white_36dp_boarderless)
+                        R.drawable.play_white : R.drawable.pause_white)
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setContentTitle(title)
                 .setContentText(artist)
                 .setSubText(album)
                 .setLargeIcon(albumImage)
-                .addAction(new NotificationCompat.Action(R.drawable.baseline_fast_rewind_white_36dp_left_cut, "previous",
+                .addAction(new NotificationCompat.Action(R.drawable.fast_back, "previous",
                         PendingIntent.getBroadcast(anglerService, 0, new Intent("action_previous"), 0)))
                 .addAction((mediaController.getPlaybackState().getState() == PlaybackStateCompat.STATE_PLAYING) ?
-                        new NotificationCompat.Action(R.drawable.baseline_pause_white_36dp, "pause",
+                        new NotificationCompat.Action(R.drawable.pause_white, "pause",
                         PendingIntent.getBroadcast(anglerService, 0, new Intent("action_pause"), 0)) :
-                        new NotificationCompat.Action(R.drawable.baseline_play_arrow_white_36dp, "play",
+                        new NotificationCompat.Action(R.drawable.play_white, "play",
                         PendingIntent.getBroadcast(anglerService, 0, new Intent("action_play"), 0)))
-                .addAction(new NotificationCompat.Action(R.drawable.baseline_fast_forward_white_36dp, "next",
+                .addAction(new NotificationCompat.Action(R.drawable.fast_forward, "next",
                         PendingIntent.getBroadcast(anglerService, 0, new Intent("action_next"), 0)))
                 .setShowWhen(false)
                 .setStyle(new androidx.media.app.NotificationCompat.MediaStyle()

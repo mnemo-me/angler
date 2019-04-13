@@ -130,8 +130,8 @@ public class EqualizerFragment extends Fragment implements DrawerItem, Equalizer
     void showEqualizerBands(){
 
         if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-            audioEffects.setAlpha(0.5f);
-            equalizer.setAlpha(1f);
+            audioEffects.setAlpha(0.2f);
+            equalizer.setAlpha(0.6f);
         }
 
         BandsFragment bandsFragment = new BandsFragment();
@@ -150,8 +150,8 @@ public class EqualizerFragment extends Fragment implements DrawerItem, Equalizer
     void showAudioEffects(){
 
         if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-            equalizer.setAlpha(0.5f);
-            audioEffects.setAlpha(1f);
+            equalizer.setAlpha(0.2f);
+            audioEffects.setAlpha(0.6f);
         }
 
         AudioEffectsFragment audioEffectsFragment = new AudioEffectsFragment();

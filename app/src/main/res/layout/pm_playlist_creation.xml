@@ -28,7 +28,7 @@
         android:layout_marginBottom="@dimen/half_margin"
         android:background="?android:selectableItemBackgroundBorderless"
         android:contentDescription="@string/load_image"
-        android:src="@drawable/baseline_add_photo_alternate_white_48dp"
+        android:src="@drawable/load_image"
         android:tooltipText="@string/load_image"
         app:layout_constraintBottom_toBottomOf="@id/playlist_creation_image"
         app:layout_constraintEnd_toEndOf="@id/playlist_creation_image" />

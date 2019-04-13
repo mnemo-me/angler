@@ -11,8 +11,7 @@
         android:layout_height="match_parent"
         android:layout_marginTop="@dimen/toolbar_height"
         android:contentDescription="@string/background_image"
-        android:scaleType="centerCrop"
-        tools:src="@drawable/back4" />
+        android:scaleType="centerCrop"/>
 
     <FrameLayout
         android:id="@+id/overlay_overlay"
@@ -32,7 +31,7 @@
             style="@style/button"
             android:layout_marginStart="4dp"
             android:contentDescription="@string/settings"
-            android:src="@drawable/selected_menu" />
+            android:src="@drawable/menu" />
 
         <TextView
             style="@style/title"
@@ -41,11 +40,14 @@
         <ImageView
             android:id="@+id/background_changer_select_background"
             style="@style/button"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:padding="@dimen/half_margin"
             android:layout_gravity="end"
             android:layout_marginEnd="4dp"
             android:alpha="0.2"
             android:contentDescription="@string/select"
-            android:src="@drawable/ic_check_black_24dp" />
+            android:src="@drawable/set_background" />
 
     </androidx.appcompat.widget.Toolbar>
 

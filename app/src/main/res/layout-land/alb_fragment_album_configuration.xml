@@ -16,7 +16,7 @@
             style="@style/button"
             android:layout_marginStart="4dp"
             android:contentDescription="@string/back"
-            android:src="@drawable/ic_arrow_back_black_24dp" />
+            android:src="@drawable/back" />
 
         <TextView
             android:id="@+id/album_conf_title"
@@ -110,7 +110,7 @@
                 style="@style/button"
                 android:layout_marginStart="4dp"
                 android:contentDescription="@string/play_all"
-                android:src="@drawable/baseline_playlist_play_white_48dp"
+                android:src="@drawable/play_all"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"/>
 

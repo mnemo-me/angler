@@ -11,11 +11,11 @@
 
     <ImageView
         android:id="@+id/queue_track_play_selector"
-        android:layout_width="16dp"
-        android:layout_height="16dp"
+        android:layout_width="12dp"
+        android:layout_height="12dp"
         android:layout_marginStart="@dimen/half_margin"
         android:contentDescription="@string/play_now"
-        android:src="@drawable/ic_play_arrow_black_24dp"
+        android:src="@drawable/play"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -33,9 +33,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
+        android:paddingEnd="140dp"
         android:ellipsize="end"
         android:lines="1"
-        android:maxWidth="240dp"
         android:textColor="@color/black"
         android:textSize="@dimen/default_text_size"
         app:layout_constraintBottom_toTopOf="@+id/queue_guideline"
@@ -47,9 +47,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
+        android:paddingEnd="140dp"
         android:ellipsize="end"
         android:lines="1"
-        android:maxWidth="240dp"
         android:textColor="@color/gGrey"
         android:textSize="@dimen/small_text_size"
         app:layout_constraintStart_toStartOf="parent"
@@ -100,7 +100,7 @@
             android:layout_gravity="center"
             android:alpha="0.2"
             android:contentDescription="@string/delete_track_from_queue"
-            android:src="@drawable/ic_clear_black_24dp" />
+            android:src="@drawable/baseline_clear_black_18dp" />
 
     </FrameLayout>
 

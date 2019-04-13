@@ -167,6 +167,15 @@ public class AnglerDB{
                 .subscribe(tracksToUpdate -> db.trackDAO().update(tracksToUpdate.toArray(new Track[tracksToUpdate.size()])));
     }
 
+    public void updateTracks(List<Track> tracks){
+
+        Completable.fromAction(() -> {
+            db.trackDAO().update(tracks.toArray(new Track[tracks.size()]));
+        })
+                .subscribeOn(Schedulers.io())
+                .subscribe();
+    }
+
     @SuppressLint("CheckResult")
     private void deleteTracks(List<Track> tracks, List<Track> dbTracks) {
 

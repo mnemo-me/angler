@@ -20,21 +20,27 @@ public class AnglerFirebaseStorage {
     public void uploadAlbumCover(String artist, Uri albumCoverPath){
 
         FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
-        StorageReference storageReference = firebaseStorage.getReference().child("album cover").child(artist);
+        StorageReference storageReference = firebaseStorage.getReference().child("album cover");
 
-        StorageReference albumCoverStorageReference = storageReference.child(albumCoverPath.getLastPathSegment().replace("jpeg", "jpg"));
+        StorageReference albumCoverStorageReference = storageReference.child(artist + ":::" + albumCoverPath.getLastPathSegment().replace("jpeg", "jpg"));
 
         albumCoverStorageReference.getDownloadUrl()
-                .addOnFailureListener(e -> albumCoverStorageReference.putFile(albumCoverPath));
+                .addOnFailureListener(e1 -> {
+
+                    StorageReference modAlbumCoverStorageReference = storageReference.child("_mod").child(artist + ":::" + albumCoverPath.getLastPathSegment().replace("jpeg", "jpg"));
+
+                    modAlbumCoverStorageReference.getDownloadUrl()
+                            .addOnFailureListener(e2 -> modAlbumCoverStorageReference.putFile(albumCoverPath));
+                });
 
     }
 
     public void downloadAlbumCover(String artist, String album, Uri albumCoverPath){
 
         FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
-        StorageReference storageReference = firebaseStorage.getReference().child("album cover").child(artist);
+        StorageReference storageReference = firebaseStorage.getReference().child("album cover");
 
-        storageReference.child(album + ".jpg").getFile(albumCoverPath);
+        storageReference.child(artist + ":::" + album + ".jpg").getFile(albumCoverPath);
     }
 
 
@@ -47,7 +53,7 @@ public class AnglerFirebaseStorage {
         storageReference.child(artist + ".jpg").getFile(artistImagePath)
                 .addOnFailureListener(e -> {
 
-                    StorageReference newArtistStorageReference = storageReference.child("_new artists").child(artist);
+                    StorageReference newArtistStorageReference = storageReference.child("_new artists").child(artist + ".jpg");
 
                     newArtistStorageReference.getDownloadUrl()
                             .addOnFailureListener(e1 -> newArtistStorageReference.putBytes(new byte[0]));

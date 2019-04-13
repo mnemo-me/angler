@@ -17,13 +17,13 @@ import io.reactivex.Single;
 @Dao
 public interface AlbumDAO {
 
-    @Query("SELECT * FROM albums ORDER BY year ASC")
+    @Query("SELECT * FROM albums ORDER BY year COLLATE NOCASE ASC")
     Flowable<List<Album>> getAlbums();
 
-    @Query("SELECT * FROM albums ORDER BY year ASC")
+    @Query("SELECT * FROM albums ORDER BY year COLLATE NOCASE ASC")
     Single<List<Album>> getAlbumsOnce();
 
-    @Query("SELECT * FROM albums WHERE artist=:artist ORDER BY year ASC")
+    @Query("SELECT * FROM albums WHERE artist=:artist ORDER BY year COLLATE NOCASE ASC")
     Flowable<List<Album>> getArtistAlbums(String artist);
 
     @Query("SELECT * FROM albums WHERE year=:year")

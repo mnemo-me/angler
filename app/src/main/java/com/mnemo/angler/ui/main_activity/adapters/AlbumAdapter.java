@@ -210,6 +210,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder>{
 
                     // Set album visible
                     ((AlbumsLineHolder)holder).albumsView.get(i).setVisibility(View.VISIBLE);
+                    ((AlbumsLineHolder)holder).albumsTitleView.get(i).setVisibility(View.VISIBLE);
 
                     // Get album variables
                     String album = artistAlbums.get(i).getAlbum();
@@ -219,7 +220,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder>{
                     String albumImagePath = AnglerFolder.PATH_ALBUM_COVER + File.separator + artist + File.separator + album + ".jpg";
 
                     if (!new File(albumImagePath).exists()){
-                        albumImagePath = "R.drawable.black_logo";
+                        albumImagePath = "R.drawable.album_default";
                     }
 
                     // Load album image
@@ -235,6 +236,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder>{
 
                     // Set album invisible
                     ((AlbumsLineHolder)holder).albumsView.get(i).setVisibility(View.INVISIBLE);
+                    ((AlbumsLineHolder)holder).albumsTitleView.get(i).setVisibility(View.INVISIBLE);
                 }
             }
 

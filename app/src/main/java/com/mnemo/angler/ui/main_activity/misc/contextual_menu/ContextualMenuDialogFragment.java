@@ -162,7 +162,7 @@ public class ContextualMenuDialogFragment extends BottomSheetDialogFragment impl
         if (presenter.checkAlbumCoverExist(track.getArtist(), track.getAlbum())){
             ImageAssistant.loadImage(getContext(), albumCover, albumCoverView, imageHeight);
         }else{
-            ImageAssistant.loadImage(getContext(), "R.drawable.black_logo", albumCoverView, imageHeight);
+            ImageAssistant.loadImage(getContext(), "R.drawable.album_default", albumCoverView, imageHeight);
         }
     }
 

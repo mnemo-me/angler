@@ -3,7 +3,7 @@
     android:id="@+id/playlist_spinner_item_title"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:drawableEnd="@drawable/ic_arrow_drop_down_white_24dp"
+    android:drawableEnd="@drawable/baseline_arrow_drop_down_white_24dp"
     android:ellipsize="end"
     android:maxLines="1"
     android:paddingBottom="@dimen/half_margin"

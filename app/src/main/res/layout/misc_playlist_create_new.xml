@@ -25,7 +25,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:contentDescription="@string/create_new_playlist"
-                android:src="@drawable/baseline_add_black_48dp_transparent" />
+                android:src="@drawable/add" />
 
             <View
                 style="@style/cover_selector"/>

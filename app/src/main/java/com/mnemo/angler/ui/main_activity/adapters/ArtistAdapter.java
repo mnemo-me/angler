@@ -102,7 +102,7 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder
         if (new File(image).exists()){
             ImageAssistant.loadImage(context, image, holder.imageView, imageHeight);
         }else{
-            holder.imageView.setBackgroundColor(context.getResources().getColor(R.color.black));
+            ImageAssistant.loadImage(context, "R.drawable.black_rectangle", holder.imageView, imageHeight);
         }
 
         holder.titleView.setText(artist);
