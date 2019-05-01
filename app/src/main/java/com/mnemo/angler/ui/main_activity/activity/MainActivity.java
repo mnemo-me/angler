@@ -3,6 +3,7 @@ package com.mnemo.angler.ui.main_activity.activity;
 
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -39,6 +40,9 @@ import com.android.billingclient.api.BillingFlowParams;
 import com.android.billingclient.api.Purchase;
 import com.android.billingclient.api.SkuDetails;
 import com.android.billingclient.api.SkuDetailsParams;
+import com.google.android.gms.ads.identifier.AdvertisingIdClient;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.mnemo.angler.data.database.Entities.Track;
 import com.mnemo.angler.data.file_storage.AnglerFolder;
 import com.mnemo.angler.ui.main_activity.fragments.albums.albums.AlbumsFragment;
@@ -59,14 +63,21 @@ import com.mnemo.angler.ui.main_activity.misc.add_track_to_playlist.AddTrackToPl
 import com.mnemo.angler.ui.main_activity.fragments.playlists.playlists.PlaylistsFragment;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import butterknife.BindView;
 import butterknife.BindViews;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.reactivex.Completable;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 
 public class MainActivity extends AppCompatActivity implements MainActivityView {
@@ -905,31 +916,37 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
         });
     }
 
+    @SuppressLint("CheckResult")
     private void checkTrial(){
 
-        String androidId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        Observable.fromCallable(() -> AdvertisingIdClient.getAdvertisingIdInfo(getApplicationContext()).getId()).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(androidId -> {
 
-        trialVersionText.setVisibility(View.VISIBLE);
-        purchaseButton.setVisibility(View.VISIBLE);
+                    trialVersionText.setVisibility(View.VISIBLE);
+                    purchaseButton.setVisibility(View.VISIBLE);
 
-        if (isTrialAvailable != null){
+                    if (isTrialAvailable != null){
 
-            if (!isTrialAvailable){
+                        if (!isTrialAvailable){
 
-                if (getSupportFragmentManager().findFragmentByTag("Trial expired dialog") == null) {
+                            if (getSupportFragmentManager().findFragmentByTag("Trial expired dialog") == null) {
 
-                    TrialExpiredDialogFragment trialExpiredDialogFragment = new TrialExpiredDialogFragment();
+                                TrialExpiredDialogFragment trialExpiredDialogFragment = new TrialExpiredDialogFragment();
 
-                    trialExpiredDialogFragment.setCancelable(false);
+                                trialExpiredDialogFragment.setCancelable(false);
 
-                    trialExpiredDialogFragment.show(getSupportFragmentManager(), "Trial expired dialog");
-                }
-            }
+                                trialExpiredDialogFragment.show(getSupportFragmentManager(), "Trial expired dialog");
+                            }
+                        }
 
-        }else {
+                    }else {
 
-            presenter.checkTrial(androidId, new Date().getTime());
-        }
+                        presenter.checkTrial(androidId, new Date().getTime());
+                    }
+                });
+
+
     }
 
 

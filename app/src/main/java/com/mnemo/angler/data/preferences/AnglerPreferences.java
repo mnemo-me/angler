@@ -64,7 +64,7 @@ public class AnglerPreferences {
     }
 
     public int getBackgroundOpacity(){
-        return appPreferences.getInt("overlay", 203);
+        return appPreferences.getInt("overlay", 140);
     }
 
     public void setMainPlaylist(String playlist){

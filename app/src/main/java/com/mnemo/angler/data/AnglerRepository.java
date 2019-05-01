@@ -3,6 +3,7 @@ package com.mnemo.angler.data;
 
 import android.annotation.SuppressLint;
 import android.net.Uri;
+import android.util.Log;
 
 import com.mnemo.angler.AnglerApp;
 import com.mnemo.angler.data.database.AnglerDB;
@@ -497,6 +498,14 @@ public class AnglerRepository {
         Completable.fromAction(() -> {
 
                     ArrayList<Track> tracks = anglerFileStorage.scanTracks(AnglerFileStorage.PHONE_STORAGE);
+
+                    String removableSDCardPath = anglerFileStorage.getRemovableSDCardPath();
+
+                    if (removableSDCardPath != null){
+                        Log.e("TTTTTT", removableSDCardPath);
+                        tracks.addAll(anglerFileStorage.scanTracks(removableSDCardPath));
+                    }
+
                     anglerDB.updateDatabase(tracks, () -> {
 
                         if (onAppInitializationListener != null){

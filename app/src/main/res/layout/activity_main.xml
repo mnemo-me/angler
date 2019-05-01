@@ -234,16 +234,14 @@
             android:layout_height="0dp"
             android:layout_weight="1">
 
-            <TextView
+            <ImageView
                 android:id="@+id/app_name_text"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:paddingStart="@dimen/half_margin"
+                android:paddingEnd="@dimen/half_margin"
                 android:layout_centerInParent="true"
-                android:text="@string/app_name"
-                android:textAllCaps="true"
-                android:fontFamily="@font/constantine"
-                android:textColor="@color/gGrey"
-                android:textSize="50sp" />
+                android:src="@drawable/logo"/>
 
             <TextView
                 android:id="@+id/trial_version_text"
