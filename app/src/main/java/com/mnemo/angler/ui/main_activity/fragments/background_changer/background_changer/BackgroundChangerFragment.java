@@ -63,6 +63,7 @@ public class BackgroundChangerFragment extends Fragment implements DrawerItem, B
     private String backgroundImage;
     private String selectedImage;
     private String imageFolder;
+    private String defaultImageFolder;
     private int opacity;
 
     private Boolean isInteract = false;
@@ -87,8 +88,10 @@ public class BackgroundChangerFragment extends Fragment implements DrawerItem, B
         // Get image height & folder based on orientation
         if (orientation == Configuration.ORIENTATION_PORTRAIT) {
             imageFolder = AnglerFolder.PATH_BACKGROUND_PORTRAIT;
+            defaultImageFolder = AnglerFolder.PATH_BACKGROUND_DEFAULT_PORTRAIT;
         }else{
             imageFolder = AnglerFolder.PATH_BACKGROUND_LANDSCAPE;
+            defaultImageFolder = AnglerFolder.PATH_BACKGROUND_DEFAULT_LANDSCAPE;
         }
 
         // Get is interact
@@ -290,9 +293,9 @@ public class BackgroundChangerFragment extends Fragment implements DrawerItem, B
             if (image.equals(backgroundImage)){
 
                 if (selectedImage.equals(backgroundImage)){
-                    selectedImage = AnglerFolder.PATH_BACKGROUND_DEFAULT + File.separator + "back1.jpg";
+                    selectedImage = defaultImageFolder + File.separator + "back1.jpeg";
                 }
-                backgroundImage = AnglerFolder.PATH_BACKGROUND_DEFAULT + File.separator + "back1.jpg";
+                backgroundImage = defaultImageFolder + File.separator + "back1.jpeg";
 
                 presenter.saveBackground(backgroundImage, presenter.getCurrentOpacity());
                 showBackgroundImage(backgroundImage);
@@ -330,7 +333,7 @@ public class BackgroundChangerFragment extends Fragment implements DrawerItem, B
         }
 
         if (selectedImage.contains("/.default/")){
-            ImageAssistant.loadImage(getContext(), image, background, imageHeight);
+            ImageAssistant.loadImage(getContext(), defaultImageFolder + File.separator + image.replace("/.default/", ""), background, imageHeight);
         }else {
             ImageAssistant.loadImage(getContext(), imageFolder + File.separator + image, background, imageHeight);
         }

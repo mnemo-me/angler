@@ -2,7 +2,6 @@ package com.mnemo.angler.data.networking;
 
 
 import android.content.Context;
-import android.util.Log;
 
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 
@@ -53,7 +52,6 @@ class LastFMApiClient {
 
         builder.addInterceptor(chain -> {
             Request request = chain.request();
-            Log.e("request", request.url().toString());
             return chain.proceed(request);
         });
 

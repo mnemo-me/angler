@@ -6,6 +6,7 @@
     android:drawableEnd="@drawable/baseline_arrow_drop_down_black_24dp"
     android:ellipsize="end"
     android:maxLines="1"
+    android:gravity="center_vertical"
     android:paddingStart="@dimen/half_margin"
     android:paddingBottom="@dimen/half_margin"
     android:paddingTop="@dimen/half_margin"

@@ -112,7 +112,6 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
         setSessionToken(mMediaSession.getSessionToken());
 
 
-
         // Run another thread, that watch on seek bar position from service
         Handler seekHandler = new Handler();
         seekHandler.post(new Runnable() {
@@ -639,7 +638,11 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
 
             if (isFirstTrack){
 
-                seekbarPosition = (int) (pos * Integer.parseInt(presenter.getCurrentTrack().split(":::")[4]) / 100);
+                String currentTrack = presenter.getCurrentTrack();
+
+                if (currentTrack != null) {
+                    seekbarPosition = (int) (pos * Integer.parseInt(currentTrack.split(":::")[4]) / 100);
+                }
 
             }
 

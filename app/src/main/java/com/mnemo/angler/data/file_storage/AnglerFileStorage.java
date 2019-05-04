@@ -11,7 +11,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.os.storage.StorageManager;
-import android.util.Log;
 import android.webkit.MimeTypeMap;
 
 import com.mnemo.angler.data.database.Entities.Track;
@@ -33,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -83,6 +83,8 @@ public class AnglerFileStorage {
         new File(AnglerFolder.PATH_BACKGROUND_PORTRAIT).mkdir();
         new File(AnglerFolder.PATH_BACKGROUND_LANDSCAPE).mkdir();
         new File(AnglerFolder.PATH_BACKGROUND_DEFAULT).mkdir();
+        new File(AnglerFolder.PATH_BACKGROUND_DEFAULT_PORTRAIT).mkdir();
+        new File(AnglerFolder.PATH_BACKGROUND_DEFAULT_LANDSCAPE).mkdir();
         new File(AnglerFolder.PATH_PLAYLIST_COVER).mkdir();
         new File(AnglerFolder.PATH_ALBUM_COVER).mkdir();
         new File(AnglerFolder.PATH_ARTIST_IMAGE).mkdir();
@@ -96,9 +98,9 @@ public class AnglerFileStorage {
     }
 
     // Recursively retrieve metadata from phone storage
-    public ArrayList<Track> scanTracks(String filepath){
+    public HashSet<Track> scanTracks(String filepath){
 
-        ArrayList<Track> tracks = new ArrayList<>();
+        HashSet<Track> tracks = new HashSet<>();
 
         File directory = new File(filepath);
         ArrayList<String> files = new ArrayList<>(Arrays.asList(directory.list()));
@@ -345,7 +347,7 @@ public class AnglerFileStorage {
                                 // Add default images to list
                                 for (int i = 1; i <= 4; i++){
                                     if (isDefaultBackgroundExist("back" + i)){
-                                        images.add(getDefaultBackgroundPath("back" + i));
+                                        images.add("/.default/" + "back" + i + ".jpeg");
                                     }
                                 }
 
@@ -413,12 +415,20 @@ public class AnglerFileStorage {
     }
 
     // Get defalut background path
-    public String getDefaultBackgroundPath(String background){
-        return AnglerFolder.PATH_BACKGROUND_DEFAULT + File.separator + background + ".jpg";
+    private String getDefaultBackgroundPathPort(String background){
+        return AnglerFolder.PATH_BACKGROUND_DEFAULT_PORTRAIT + File.separator + background + ".jpeg";
     }
 
-    public Uri getDefaultBackgroundUri(String background){
-        return Uri.fromFile(new File(getDefaultBackgroundPath(background)));
+    private String getDefaultBackgroundPathLand(String background){
+        return AnglerFolder.PATH_BACKGROUND_DEFAULT_LANDSCAPE + File.separator + background + ".jpeg";
+    }
+
+    public Uri getDefaultBackgroundUriPort(String background){
+        return Uri.fromFile(new File(getDefaultBackgroundPathPort(background)));
+    }
+
+    public Uri getDefaultBackgroundUriLand(String background){
+        return Uri.fromFile(new File(getDefaultBackgroundPathLand(background)));
     }
 
 
@@ -511,7 +521,7 @@ public class AnglerFileStorage {
     }
 
     public boolean isDefaultBackgroundExist(String background){
-        return new File(getDefaultBackgroundPath(background)).exists();
+        return new File(getDefaultBackgroundPathPort(background)).exists() && new File(getDefaultBackgroundPathLand(background)).exists();
     }
 
 
@@ -602,9 +612,9 @@ public class AnglerFileStorage {
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            imageFolders.sort(Comparator.comparing(s -> new File(s).getName()));
+            imageFolders.sort(Comparator.comparing(s -> new File(s).getName().toLowerCase()));
         }else{
-            Collections.sort(imageFolders, (imageFolder1, imageFolder2) -> new File(imageFolder1).getName().compareTo(new File(imageFolder2).getName()));
+            Collections.sort(imageFolders, (imageFolder1, imageFolder2) -> new File(imageFolder1).getName().compareToIgnoreCase(new File(imageFolder2).getName()));
         }
 
         return imageFolders;

@@ -6,6 +6,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import android.content.Context;
+
 import androidx.annotation.NonNull;
 
 
@@ -17,6 +18,7 @@ import com.mnemo.angler.data.database.Entities.Track;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -122,7 +124,7 @@ public class AnglerDB{
 
     // Update database
     @SuppressLint("CheckResult")
-    public void updateDatabase(List<Track> tracks, UpdateDatabaseListener listener){
+    public void updateDatabase(Set<Track> tracks, UpdateDatabaseListener listener){
 
         db.trackDAO().getTracksOnce()
                 .subscribeOn(Schedulers.io())
@@ -142,20 +144,23 @@ public class AnglerDB{
 
     // Insert, Update, Delete track methods
     @SuppressLint("CheckResult")
-    private void insertTracks(List<Track> tracks, List<Track> dbTracks){
+    private void insertTracks(Set<Track> tracks, List<Track> dbTracks){
 
         Observable.fromIterable(tracks)
                 .filter(track -> track.getTitle() != null && track.getArtist() != null && track.getAlbum() != null && track.getDuration() != 0 && track.getUri() != null)
                 .filter(track -> !dbTracks.contains(track))
                 .toList()
                 .subscribe(tracksToInsert -> {
-                    db.trackDAO().insert(tracksToInsert.toArray(new Track[tracksToInsert.size()]));
-                    db.albumDAO().insert(getAlbums(tracksToInsert).toArray(new Album[tracksToInsert.size()]));
+
+                    if (tracksToInsert.size() > 0) {
+                        db.trackDAO().insert(tracksToInsert.toArray(new Track[0]));
+                        db.albumDAO().insert(getAlbums(tracksToInsert).toArray(new Album[tracksToInsert.size()]));
+                    }
                 });
     }
 
     @SuppressLint("CheckResult")
-    private void updateTracks(List<Track> tracks, List<Track> dbTracks){
+    private void updateTracks(Set<Track> tracks, List<Track> dbTracks){
 
         Observable.fromIterable(tracks)
                 .filter(dbTracks::contains)
@@ -164,25 +169,37 @@ public class AnglerDB{
                     return !track.getUri().equals(dbTrack.getUri());
                 })
                 .toList()
-                .subscribe(tracksToUpdate -> db.trackDAO().update(tracksToUpdate.toArray(new Track[tracksToUpdate.size()])));
+                .subscribe(tracksToUpdate -> {
+
+                    if (tracksToUpdate.size() > 0) {
+                        db.trackDAO().update(tracksToUpdate.toArray(new Track[0]));
+                    }
+                });
     }
 
     public void updateTracks(List<Track> tracks){
 
-        Completable.fromAction(() -> {
-            db.trackDAO().update(tracks.toArray(new Track[tracks.size()]));
-        })
-                .subscribeOn(Schedulers.io())
-                .subscribe();
+        if (tracks.size() > 0) {
+
+            Completable.fromAction(() -> db.trackDAO().update(tracks.toArray(new Track[0])))
+                    .subscribeOn(Schedulers.io())
+                    .subscribe();
+
+        }
     }
 
     @SuppressLint("CheckResult")
-    private void deleteTracks(List<Track> tracks, List<Track> dbTracks) {
+    private void deleteTracks(Set<Track> tracks, List<Track> dbTracks) {
 
         Observable.fromIterable(dbTracks)
                 .filter(dbTrack -> !tracks.contains(dbTrack))
                 .toList()
-                .subscribe(tracksToDelete -> db.trackDAO().delete(tracksToDelete.toArray(new Track[tracksToDelete.size()])));
+                .subscribe(tracksToDelete -> {
+
+                    if (tracksToDelete.size() > 0) {
+                        db.trackDAO().delete(tracksToDelete.toArray(new Track[0]));
+                    }
+                });
     }
 
     // Tracks support method
@@ -246,7 +263,7 @@ public class AnglerDB{
                 .subscribe(albums -> Observable.fromIterable(albums)
                         .filter(album -> db.trackDAO().getAlbumsTrackCount(album.getAlbum(), album.getArtist()) == 0)
                         .toList()
-                        .subscribe(albumsToDelete -> db.albumDAO().delete(albumsToDelete.toArray(new Album[albumsToDelete.size()]))));
+                        .subscribe(albumsToDelete -> db.albumDAO().delete(albumsToDelete.toArray(new Album[0]))));
 
     }
 
@@ -458,7 +475,7 @@ public class AnglerDB{
                 .subscribeOn(Schedulers.io())
                 .map(track -> new Link(track.get_id(), playlist, tracksWithPosition.get(track)))
                 .toList()
-                .subscribe(links -> db.linkDAO().insert(links.toArray(new Link[links.size()])));
+                .subscribe(links -> db.linkDAO().insert(links.toArray(new Link[0])));
 
     }
 
@@ -468,7 +485,7 @@ public class AnglerDB{
         Observable.fromIterable(tracks)
                 .map(track -> new Link(track.get_id(), playlist,tracks.indexOf(track)))
                 .toList()
-                .subscribe(links -> db.linkDAO().insert(links.toArray(new Link[links.size()])));
+                .subscribe(links -> db.linkDAO().insert(links.toArray(new Link[0])));
     }
 
     @SuppressLint("CheckResult")

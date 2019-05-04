@@ -27,10 +27,16 @@ public class AnglerFirebaseStorage {
         albumCoverStorageReference.getDownloadUrl()
                 .addOnFailureListener(e1 -> {
 
-                    StorageReference modAlbumCoverStorageReference = storageReference.child("_mod").child(artist + ":::" + albumCoverPath.getLastPathSegment().replace("jpeg", "jpg"));
+                    StorageReference blAlbumCoverStorageReference = storageReference.child("_bl").child(artist + ":::" + albumCoverPath.getLastPathSegment().replace("jpeg", "jpg"));
 
-                    modAlbumCoverStorageReference.getDownloadUrl()
-                            .addOnFailureListener(e2 -> modAlbumCoverStorageReference.putFile(albumCoverPath));
+                    blAlbumCoverStorageReference.getDownloadUrl()
+                            .addOnFailureListener(e2 -> {
+
+                                StorageReference modAlbumCoverStorageReference = storageReference.child("_mod").child(artist + ":::" + albumCoverPath.getLastPathSegment().replace("jpeg", "jpg"));
+
+                                modAlbumCoverStorageReference.getDownloadUrl()
+                                        .addOnFailureListener(e3 -> modAlbumCoverStorageReference.putFile(albumCoverPath));
+                            });
                 });
 
     }
@@ -53,32 +59,44 @@ public class AnglerFirebaseStorage {
         storageReference.child(artist + ".jpg").getFile(artistImagePath)
                 .addOnFailureListener(e -> {
 
-                    StorageReference newArtistStorageReference = storageReference.child("_new artists").child(artist + ".jpg");
+                    StorageReference blArtistStorageReference = storageReference.child("_bl").child(artist + ".jpg");
 
-                    newArtistStorageReference.getDownloadUrl()
-                            .addOnFailureListener(e1 -> newArtistStorageReference.putBytes(new byte[0]));
+                    blArtistStorageReference.getDownloadUrl()
+                            .addOnFailureListener(e1 -> {
+
+                                StorageReference newArtistStorageReference = storageReference.child("_new artists").child(artist + ".jpg");
+
+                                newArtistStorageReference.getDownloadUrl()
+                                        .addOnFailureListener(e2 -> newArtistStorageReference.putBytes(new byte[0]));
+                            });
                 });
     }
 
     // Backgrounds
-    public void downloadBackground(String background, Uri backgroundImagePath){
+    public void downloadBackground(String background, Uri backgroundImagePathPort, Uri backgroundImagePathLand){
 
         FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
         StorageReference storageReference = firebaseStorage.getReference().child("backgrounds");
 
-        storageReference.child(background + ".jpg").getFile(backgroundImagePath);
+        storageReference.child("port").child(background + ".jpeg").getFile(backgroundImagePathPort);
+        storageReference.child("land").child(background + ".jpeg").getFile(backgroundImagePathLand);
     }
 
-    public void downloadBackground(String background, Uri firstDefaultBackgroundImagePath, OnBackgroundLoadListener listener){
+    public void downloadBackground(String background, Uri firstDefaultBackgroundImagePathPort, Uri firstDefaultBackgroundImagePathLand, OnBackgroundLoadListener listener){
 
         FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
         StorageReference storageReference = firebaseStorage.getReference().child("backgrounds");
 
-        storageReference.child(background + ".jpg").getFile(firstDefaultBackgroundImagePath)
-                .addOnCompleteListener(task -> listener.onBackgrondLoaded(background))
+        storageReference.child("port").child(background + ".jpeg").getFile(firstDefaultBackgroundImagePathPort)
+                .addOnCompleteListener(task -> storageReference.child("land").child(background + ".jpeg").getFile(firstDefaultBackgroundImagePathLand)
+                        .addOnCompleteListener(task2 -> listener.onBackgrondLoaded("/.default/" + background + ".jpeg"))
+                    .addOnFailureListener(e -> {
+                        e.printStackTrace();
+                        listener.onBackgrondLoaded("/.default/" + background + ".jpeg");
+                }))
                 .addOnFailureListener(e -> {
                     e.printStackTrace();
-                    listener.onBackgrondLoaded(background);
+                    listener.onBackgrondLoaded("/.default/" + background + ".jpeg");
                 });
     }
 }

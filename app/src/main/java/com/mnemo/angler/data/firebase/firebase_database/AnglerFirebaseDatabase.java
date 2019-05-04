@@ -2,7 +2,6 @@ package com.mnemo.angler.data.firebase.firebase_database;
 
 
 import androidx.annotation.NonNull;
-import android.util.Log;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -34,7 +33,7 @@ public class AnglerFirebaseDatabase {
                 Long trialTimestamp = (Long)dataSnapshot.child("trial_timestamp").getValue();
 
                 boolean isTrialInitialized = false;
-                Log.e("%%%%%%%%%%%", String.valueOf(trialTimestamp));
+
                 if (trialTimestamp == null){
 
                     trialTimestamp = timestamp;

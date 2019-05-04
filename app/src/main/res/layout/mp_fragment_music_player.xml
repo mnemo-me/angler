@@ -7,7 +7,7 @@
     tools:context=".ui.main_activity.fragments.music_player.music_player.MusicPlayerFragment">
 
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         style="@style/toolbar"
         android:background="@color/softMainGrey"
         android:orientation="horizontal"
@@ -19,17 +19,19 @@
             style="@style/button"
             android:layout_marginStart="4dp"
             android:contentDescription="@string/settings"
-            android:src="@drawable/menu" />
+            android:src="@drawable/menu"
+            app:layout_constraintStart_toStartOf="parent"/>
 
         <Spinner
             android:id="@+id/main_fragment_playlist_spinner"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_gravity="center_vertical"
-            android:gravity="center_vertical"
             android:background="@null"
-            android:backgroundTint="@color/gGrey" />
+            android:backgroundTint="@color/gGrey"
+            app:layout_constraintStart_toEndOf="@id/settings"
+            app:layout_constraintEnd_toStartOf="@id/search"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
         <ImageButton
             android:id="@+id/search"
@@ -37,14 +39,16 @@
             android:layout_marginStart="4dp"
             android:alpha="0.2"
             android:contentDescription="@string/search"
-            android:src="@drawable/search" />
+            android:src="@drawable/search"
+            app:layout_constraintEnd_toStartOf="@id/playlist"/>
 
         <ImageButton
             android:id="@+id/playlist"
             style="@style/button"
             android:alpha="0.6"
             android:contentDescription="@string/playlist"
-            android:src="@drawable/tracks" />
+            android:src="@drawable/tracks"
+            app:layout_constraintEnd_toStartOf="@id/artists"/>
 
         <ImageButton
             android:id="@+id/artists"
@@ -52,9 +56,10 @@
             android:layout_marginEnd="4dp"
             android:alpha="0.2"
             android:contentDescription="@string/artists"
-            android:src="@drawable/artists" />
+            android:src="@drawable/artists"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
     <androidx.appcompat.widget.SearchView

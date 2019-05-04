@@ -1,8 +1,6 @@
 package com.mnemo.angler.ui.main_activity.activity;
 
 
-import android.util.Log;
-
 import com.mnemo.angler.AnglerApp;
 import com.mnemo.angler.data.AnglerRepository;
 import com.mnemo.angler.ui.base.BasePresenter;
@@ -48,8 +46,6 @@ public class MainActivityPresenter extends BasePresenter {
         if (trialTimestamp != 0){
 
             if (getView() != null){
-                Log.e("%%%%", currentTimestamp + "        " +  trialTimestamp + "         " + String.valueOf(currentTimestamp - trialTimestamp) + "    " + trialPeriod);
-                Log.e("%%%%", String.valueOf(currentTimestamp - trialTimestamp < trialPeriod));
                 ((MainActivityView)getView()).setTrial(currentTimestamp - trialTimestamp < trialPeriod);
             }
 

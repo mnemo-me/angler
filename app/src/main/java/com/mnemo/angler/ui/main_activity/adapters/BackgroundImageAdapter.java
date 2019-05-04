@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -160,7 +161,12 @@ public class BackgroundImageAdapter extends RecyclerView.Adapter<BackgroundImage
             String imagePath;
 
             if (image.contains("/.default/")){
-                imagePath = image;
+
+                if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+                    imagePath = AnglerFolder.PATH_BACKGROUND_DEFAULT_PORTRAIT + File.separator + image.replace("/.default/", "");
+                } else {
+                    imagePath = AnglerFolder.PATH_BACKGROUND_DEFAULT_LANDSCAPE + File.separator + image.replace("/.default/", "");
+                }
             }else {
                 if (orientation == Configuration.ORIENTATION_PORTRAIT) {
                     imagePath = AnglerFolder.PATH_BACKGROUND_PORTRAIT + File.separator + image;
@@ -221,7 +227,11 @@ public class BackgroundImageAdapter extends RecyclerView.Adapter<BackgroundImage
 
     // Set default background (when current background deleted)
     public void setDefaultBackground(){
-        currentBackground = AnglerFolder.PATH_BACKGROUND_DEFAULT + File.separator + "back1.jpg";
+        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            currentBackground = AnglerFolder.PATH_BACKGROUND_DEFAULT_PORTRAIT + File.separator + "back1.jpeg";
+        }else {
+            currentBackground = AnglerFolder.PATH_BACKGROUND_DEFAULT_LANDSCAPE + File.separator + "back1.jpeg";
+        }
         notifyItemChanged(images.indexOf(currentBackground));
     }
 

@@ -4,9 +4,6 @@ package com.mnemo.angler.data.preferences;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.mnemo.angler.data.file_storage.AnglerFolder;
-
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -56,7 +53,7 @@ public class AnglerPreferences {
     }
 
     public String getBackgroundImage(){
-        return appPreferences.getString("background", AnglerFolder.PATH_BACKGROUND_DEFAULT + File.separator + "back1.jpg");
+        return appPreferences.getString("background", "/.default/" + "back1.jpeg");
     }
 
     public void setBackgroundOpacity(int opacity){
@@ -199,7 +196,12 @@ public class AnglerPreferences {
     // Playback methods
     // Seekbar
     public String getCurrentTrack(){
-        return queuePreferences.getString("current_track", null);
+
+        try {
+            return queuePreferences.getString("current_track", null);
+        }catch (NullPointerException e){
+            return null;
+        }
     }
 
     public void setCurrentTrack(String track){

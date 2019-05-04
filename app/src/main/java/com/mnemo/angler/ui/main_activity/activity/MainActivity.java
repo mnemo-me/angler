@@ -18,7 +18,6 @@ import androidx.fragment.app.Fragment;
 
 import androidx.core.content.ContextCompat;
 
-import android.provider.Settings;
 import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -41,8 +40,6 @@ import com.android.billingclient.api.Purchase;
 import com.android.billingclient.api.SkuDetails;
 import com.android.billingclient.api.SkuDetailsParams;
 import com.google.android.gms.ads.identifier.AdvertisingIdClient;
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.mnemo.angler.data.database.Entities.Track;
 import com.mnemo.angler.data.file_storage.AnglerFolder;
 import com.mnemo.angler.ui.main_activity.fragments.albums.albums.AlbumsFragment;
@@ -63,20 +60,16 @@ import com.mnemo.angler.ui.main_activity.misc.add_track_to_playlist.AddTrackToPl
 import com.mnemo.angler.ui.main_activity.fragments.playlists.playlists.PlaylistsFragment;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import butterknife.BindView;
 import butterknife.BindViews;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 
@@ -342,7 +335,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
 
         if (isTrialAvailable != null) {
@@ -421,7 +414,11 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
         String imagePath;
 
         if (backgroundImage.contains("/.default/")) {
-            imagePath = backgroundImage;
+            if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+                imagePath = AnglerFolder.PATH_BACKGROUND_DEFAULT_PORTRAIT + File.separator + backgroundImage.replace("/.default/", "");
+            } else {
+                imagePath = AnglerFolder.PATH_BACKGROUND_DEFAULT_LANDSCAPE + File.separator + backgroundImage.replace("/.default/", "");
+            }
         }else {
             if (orientation == Configuration.ORIENTATION_PORTRAIT) {
                 imagePath = AnglerFolder.PATH_BACKGROUND_PORTRAIT + File.separator + backgroundImage;
@@ -429,7 +426,6 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
                 imagePath = AnglerFolder.PATH_BACKGROUND_LANDSCAPE + File.separator + backgroundImage;
             }
         }
-
         int imageHeight;
 
         if (orientation == Configuration.ORIENTATION_PORTRAIT) {
@@ -951,7 +947,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
 
 
     // Launch app
-    public void launchApp() {
+    private void launchApp() {
 
         Intent intent = getIntent();
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);

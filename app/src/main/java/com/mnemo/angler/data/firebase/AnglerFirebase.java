@@ -61,11 +61,11 @@ public class AnglerFirebase {
     }
 
     // Background
-    public void downloadBackground(String background, Uri backgroundImagePath){
-        anglerFirebaseStorage.downloadBackground(background, backgroundImagePath);
+    public void downloadBackground(String background, Uri backgroundImagePathPort, Uri backgroundImagePathLand){
+        anglerFirebaseStorage.downloadBackground(background, backgroundImagePathPort, backgroundImagePathLand);
     }
 
-    public void downloadBackground(String background, Uri firstDefaultBackgroundImagePath, AnglerFirebaseStorage.OnBackgroundLoadListener listener){
-        anglerFirebaseStorage.downloadBackground(background, firstDefaultBackgroundImagePath, listener);
+    public void downloadBackground(String background, Uri firstDefaultBackgroundImagePathPort, Uri firstDefaultBackgroundImagePathLand, AnglerFirebaseStorage.OnBackgroundLoadListener listener){
+        anglerFirebaseStorage.downloadBackground(background, firstDefaultBackgroundImagePathPort, firstDefaultBackgroundImagePathLand, listener);
     }
 }

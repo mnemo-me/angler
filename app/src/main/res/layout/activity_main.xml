@@ -79,8 +79,8 @@
                 android:contentDescription="@string/add_track_to_playlist"
                 android:src="@drawable/add_track_to_playlist"
                 app:layout_constraintBottom_toTopOf="@id/media_panel_seek_bar"
-                app:layout_constraintStart_toStartOf="@+id/media_panel_repeat"
-                app:layout_constraintTop_toTopOf="@id/media_panel" />
+                app:layout_constraintStart_toStartOf="@id/media_panel_repeat"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/media_panel_title"
@@ -94,10 +94,10 @@
                 android:textColor="#000000"
                 android:textSize="@dimen/default_text_size"
                 android:text="@string/no_media"
-                app:layout_constraintBottom_toTopOf="@+id/media_panel_seek_bar"
+                app:layout_constraintBottom_toBottomOf="@id/media_panel_add_to_playlist"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@id/media_panel"
+                app:layout_constraintTop_toTopOf="@id/media_panel_add_to_playlist"
                 tools:text="Marylin Manson - Sweet dreams" />
 
             <ImageButton
@@ -107,7 +107,7 @@
                 android:src="@drawable/queue"
                 app:layout_constraintBottom_toTopOf="@id/media_panel_seek_bar"
                 app:layout_constraintStart_toStartOf="@id/media_panel_shuffle"
-                app:layout_constraintTop_toTopOf="@id/media_panel" />
+                app:layout_constraintTop_toTopOf="parent" />
 
 
             <!-- SeekBar and time views -->
@@ -241,7 +241,8 @@
                 android:paddingStart="@dimen/half_margin"
                 android:paddingEnd="@dimen/half_margin"
                 android:layout_centerInParent="true"
-                android:src="@drawable/logo"/>
+                android:src="@drawable/logo"
+                android:contentDescription="@string/app_name"/>
 
             <TextView
                 android:id="@+id/trial_version_text"

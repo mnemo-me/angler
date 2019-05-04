@@ -3,7 +3,6 @@ package com.mnemo.angler.data;
 
 import android.annotation.SuppressLint;
 import android.net.Uri;
-import android.util.Log;
 
 import com.mnemo.angler.AnglerApp;
 import com.mnemo.angler.data.database.AnglerDB;
@@ -18,7 +17,6 @@ import com.mnemo.angler.data.preferences.AnglerPreferences;
 
 import java.io.File;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -155,34 +153,30 @@ public class AnglerRepository {
 
         if (anglerNetworking.checkNetworkConnection()) {
 
-            anglerDB.getTrackWithUnknownAlbumPosition(tracks -> {
+            anglerDB.getTrackWithUnknownAlbumPosition(tracks -> Completable.fromAction(() -> {
 
-                Completable.fromAction(() -> {
+                AtomicBoolean isNewAlbumPositionAppear = new AtomicBoolean(false);
 
-                    AtomicBoolean isNewAlbumPositionAppear = new AtomicBoolean(false);
+                for (Track track : tracks) {
 
-                    for (Track track : tracks) {
+                    anglerNetworking.loadTrackAlbumPosition(track.getTitle(), track.getArtist(), track.getAlbum(), albumPosition -> {
 
-                        anglerNetworking.loadTrackAlbumPosition(track.getTitle(), track.getArtist(), track.getAlbum(), albumPosition -> {
+                        if (albumPosition != 10000) {
+                            track.setAlbumPosition(albumPosition);
 
-                            if (albumPosition != 10000) {
-                                track.setAlbumPosition(albumPosition);
-
-                                if (!isNewAlbumPositionAppear.get()) {
-                                    isNewAlbumPositionAppear.set(true);
-                                }
+                            if (!isNewAlbumPositionAppear.get()) {
+                                isNewAlbumPositionAppear.set(true);
                             }
-                        });
-                    }
+                        }
+                    });
+                }
 
-                    if (isNewAlbumPositionAppear.get()) {
-                        anglerDB.updateTracks(tracks);
-                    }
-                })
-                        .subscribeOn(Schedulers.io())
-                        .subscribe();
-
-            });
+                if (isNewAlbumPositionAppear.get()) {
+                    anglerDB.updateTracks(tracks);
+                }
+            })
+                    .subscribeOn(Schedulers.io())
+                    .subscribe());
         }
     }
 
@@ -193,7 +187,7 @@ public class AnglerRepository {
 
             if (!anglerFileStorage.isDefaultBackgroundExist("back" + i)) {
 
-                anglerFirebase.downloadBackground("back" + i, anglerFileStorage.getDefaultBackgroundUri("back" + i));
+                anglerFirebase.downloadBackground("back" + i, anglerFileStorage.getDefaultBackgroundUriPort("back" + i), anglerFileStorage.getDefaultBackgroundUriLand("back" + i));
             }
         }
     }
@@ -231,7 +225,7 @@ public class AnglerRepository {
 
         if (!backgroundImage.contains("/.default/")) {
             if (!anglerFileStorage.isFileExist(AnglerFolder.PATH_BACKGROUND_PORTRAIT + File.separator + backgroundImage)) {
-                backgroundImage = AnglerFolder.PATH_BACKGROUND_DEFAULT + File.separator + "back1.jpg";
+                backgroundImage = "/.default/" + "back1.jpeg";
                 anglerPreferences.setBackgroundImage(backgroundImage);
 
                 getBackgroundImage(listener);
@@ -241,11 +235,11 @@ public class AnglerRepository {
 
         }else{
 
-            String backgroundImageShort = backgroundImage.substring(backgroundImage.lastIndexOf("/.default/") + 10, backgroundImage.length() - 4);
+            String backgroundImageShort = backgroundImage.replace("/.default", "").replace(".jpeg", "");
 
             if (!anglerFileStorage.isDefaultBackgroundExist(backgroundImageShort)){
-                anglerFirebase.downloadBackground(backgroundImageShort, anglerFileStorage.getDefaultBackgroundUri(backgroundImageShort),
-                        (background) -> listener.onBackgroundChecked(anglerFileStorage.getDefaultBackgroundPath(background)));
+                anglerFirebase.downloadBackground(backgroundImageShort, anglerFileStorage.getDefaultBackgroundUriPort(backgroundImageShort), anglerFileStorage.getDefaultBackgroundUriLand(backgroundImageShort),
+                        listener::onBackgroundChecked);
             }else{
                 listener.onBackgroundChecked(backgroundImage);
             }
@@ -497,12 +491,11 @@ public class AnglerRepository {
 
         Completable.fromAction(() -> {
 
-                    ArrayList<Track> tracks = anglerFileStorage.scanTracks(AnglerFileStorage.PHONE_STORAGE);
+                    HashSet<Track> tracks = anglerFileStorage.scanTracks(AnglerFileStorage.PHONE_STORAGE);
 
                     String removableSDCardPath = anglerFileStorage.getRemovableSDCardPath();
 
                     if (removableSDCardPath != null){
-                        Log.e("TTTTTT", removableSDCardPath);
                         tracks.addAll(anglerFileStorage.scanTracks(removableSDCardPath));
                     }
 

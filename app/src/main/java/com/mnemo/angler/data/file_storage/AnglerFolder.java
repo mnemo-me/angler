@@ -12,6 +12,8 @@ public class AnglerFolder {
     public static final String PATH_BACKGROUND_PORTRAIT = PATH_BACKGROUND + File.separator + "port";
     public static final String PATH_BACKGROUND_LANDSCAPE = PATH_BACKGROUND + File.separator + "land";
     public static final String PATH_BACKGROUND_DEFAULT = PATH_BACKGROUND + File.separator + ".default";
+    public static final String PATH_BACKGROUND_DEFAULT_PORTRAIT = PATH_BACKGROUND_DEFAULT + File.separator + "port";
+    public static final String PATH_BACKGROUND_DEFAULT_LANDSCAPE = PATH_BACKGROUND_DEFAULT + File.separator + "land";
     public static final String PATH_PLAYLIST_COVER = PATH_MAIN + File.separator + "playlist cover";
     public static final String PATH_ALBUM_COVER = PATH_MAIN + File.separator + "album cover";
     public static final String PATH_ARTIST_IMAGE = PATH_MAIN + File.separator + "artist image";

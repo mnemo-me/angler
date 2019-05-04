@@ -4,19 +4,15 @@ package com.mnemo.angler.ui.main_activity.fragments.artists.artist_bio;
 import android.content.res.Configuration;
 import android.os.Bundle;
 
-import android.os.Handler;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import android.text.Html;
-import android.text.TextUtils;
-import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.facebook.shimmer.ShimmerFrameLayout;
 import com.mnemo.angler.R;
 
 import butterknife.BindView;
@@ -59,7 +55,7 @@ public class ArtistBioFragment extends Fragment implements ArtistBioView {
         }
 
         // Set link movement method
-        textView.setMovementMethod(LinkMovementMethod.getInstance());
+        //textView.setMovementMethod(LinkMovementMethod.getInstance());
 
         return view;
     }
