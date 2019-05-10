@@ -15,7 +15,7 @@
     <string name="audio_effects">Audio effects</string>
     <string name="back">back</string>
     <string name="background_added">Background added</string>
-    <string name="background_image">background_image</string>
+    <string name="background_image" translatable="false">background_image</string>
     <string name="bass_boost">Bass boost</string>
     <string name="bio">bio</string>
     <string name="cancel">Cancel</string>

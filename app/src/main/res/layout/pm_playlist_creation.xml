@@ -44,6 +44,7 @@
         android:backgroundTint="@color/gGrey"
         android:hint="@string/enter_new_playlist_title"
         android:inputType="textImeMultiLine"
+        android:ellipsize="end"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/playlist_creation_image" />

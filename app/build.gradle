@@ -12,7 +12,7 @@ android {
         applicationId "com.mnemo.angler"
         minSdkVersion 21
         targetSdkVersion 26
-        versionCode 17
+        versionCode 20
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

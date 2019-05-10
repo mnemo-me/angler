@@ -141,7 +141,15 @@ public class AnglerFileStorage {
                         String title = mRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE);
                         String artist = mRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
                         String album = mRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM);
-                        long duration = Long.parseLong(mRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION));
+
+                        long duration;
+
+                        try {
+                            duration = Long.parseLong(mRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION));
+                        }catch (NumberFormatException e){
+                            continue;
+                        }
+
                         String id = (title + "-" + artist + "-" + album).replace(" ", "_");
                         String uri = filepath + File.separator + file;
 
@@ -164,7 +172,11 @@ public class AnglerFileStorage {
                         int position;
 
                         if (positionString != null){
-                            position = Integer.parseInt(positionString.split("/")[0]);
+                            try {
+                                position = Integer.parseInt(positionString.split("/")[0]);
+                            }catch (NumberFormatException e){
+                                position = 10000;
+                            }
                         }else{
                             position = 10000;
                         }
@@ -456,13 +468,12 @@ public class AnglerFileStorage {
         try {
             Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
 
+
             outputStream = new FileOutputStream(file);
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
 
-        } catch (IOException e) {
-
+        } catch (IOException | NullPointerException e) {
             e.printStackTrace();
-
         } finally {
 
             if (inputStream != null) {

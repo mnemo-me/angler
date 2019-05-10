@@ -641,7 +641,11 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
                 String currentTrack = presenter.getCurrentTrack();
 
                 if (currentTrack != null) {
-                    seekbarPosition = (int) (pos * Integer.parseInt(currentTrack.split(":::")[4]) / 100);
+                    try {
+                        seekbarPosition = (int) (pos * Integer.parseInt(currentTrack.split(":::")[4]) / 100);
+                    }catch (NumberFormatException e){
+                        seekbarPosition = 0;
+                    }
                 }
 
             }

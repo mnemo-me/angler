@@ -66,56 +66,59 @@ public class AnglerNotificationManager {
 
         //Get metadata via Media Controller
         MediaMetadataCompat metadata = mediaController.getMetadata();
-        String title = String.valueOf(metadata.getDescription().getTitle());
-        String artist = String.valueOf(metadata.getDescription().getSubtitle());
-        String album = String.valueOf(metadata.getDescription().getDescription());
 
-        String albumImagePath = AnglerFolder.PATH_ALBUM_COVER + File.separator + artist + File.separator + album + ".jpg";
+        if (metadata != null) {
+            String title = String.valueOf(metadata.getDescription().getTitle());
+            String artist = String.valueOf(metadata.getDescription().getSubtitle());
+            String album = String.valueOf(metadata.getDescription().getDescription());
 
-        Bitmap albumImage;
+            String albumImagePath = AnglerFolder.PATH_ALBUM_COVER + File.separator + artist + File.separator + album + ".jpg";
 
-        if (new File(albumImagePath).exists()){
-            albumImage = BitmapFactory.decodeFile(albumImagePath);
-        }else{
-            albumImage = BitmapFactory.decodeResource(anglerService.getResources(), R.drawable.album_default);
+            Bitmap albumImage;
+
+            if (new File(albumImagePath).exists()) {
+                albumImage = BitmapFactory.decodeFile(albumImagePath);
+            } else {
+                albumImage = BitmapFactory.decodeResource(anglerService.getResources(), R.drawable.album_default);
+            }
+
+
+            // Creating Content Intent that launch Angler Client on Notification click
+            Intent contentIntent = new Intent(anglerService, MainActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("meta", metadata);
+            contentIntent.putExtras(bundle);
+
+            // Configure Notification Builder
+            NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(anglerService, channelId)
+                    .setSmallIcon((mediaController.getPlaybackState().getState() == PlaybackStateCompat.STATE_PLAYING) ?
+                            R.drawable.play_white : R.drawable.pause_white)
+                    .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+                    .setContentTitle(title)
+                    .setContentText(artist)
+                    .setSubText(album)
+                    .setLargeIcon(albumImage)
+                    .addAction(new NotificationCompat.Action(R.drawable.fast_back, "previous",
+                            PendingIntent.getBroadcast(anglerService, 0, new Intent("action_previous"), 0)))
+                    .addAction((mediaController.getPlaybackState().getState() == PlaybackStateCompat.STATE_PLAYING) ?
+                            new NotificationCompat.Action(R.drawable.pause_white, "pause",
+                                    PendingIntent.getBroadcast(anglerService, 0, new Intent("action_pause"), 0)) :
+                            new NotificationCompat.Action(R.drawable.play_white, "play",
+                                    PendingIntent.getBroadcast(anglerService, 0, new Intent("action_play"), 0)))
+                    .addAction(new NotificationCompat.Action(R.drawable.fast_forward, "next",
+                            PendingIntent.getBroadcast(anglerService, 0, new Intent("action_next"), 0)))
+                    .setShowWhen(false)
+                    .setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
+                            .setMediaSession(token)
+                            .setShowActionsInCompactView(0, 1, 2))
+                    .setContentIntent(PendingIntent.getActivity(anglerService, 1, contentIntent, 0))
+                    .setDeleteIntent(PendingIntent.getBroadcast(anglerService, 0, new Intent("action_stop"), PendingIntent.FLAG_CANCEL_CURRENT))
+                    .setOngoing(false);
+
+
+            // Bind Notification with Angler Service
+            anglerService.startForeground(191, mBuilder.build());
         }
-
-
-        // Creating Content Intent that launch Angler Client on Notification click
-        Intent contentIntent = new Intent(anglerService, MainActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putParcelable("meta", metadata);
-        contentIntent.putExtras(bundle);
-
-        // Configure Notification Builder
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(anglerService, channelId)
-                .setSmallIcon((mediaController.getPlaybackState().getState() == PlaybackStateCompat.STATE_PLAYING) ?
-                        R.drawable.play_white : R.drawable.pause_white)
-                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-                .setContentTitle(title)
-                .setContentText(artist)
-                .setSubText(album)
-                .setLargeIcon(albumImage)
-                .addAction(new NotificationCompat.Action(R.drawable.fast_back, "previous",
-                        PendingIntent.getBroadcast(anglerService, 0, new Intent("action_previous"), 0)))
-                .addAction((mediaController.getPlaybackState().getState() == PlaybackStateCompat.STATE_PLAYING) ?
-                        new NotificationCompat.Action(R.drawable.pause_white, "pause",
-                        PendingIntent.getBroadcast(anglerService, 0, new Intent("action_pause"), 0)) :
-                        new NotificationCompat.Action(R.drawable.play_white, "play",
-                        PendingIntent.getBroadcast(anglerService, 0, new Intent("action_play"), 0)))
-                .addAction(new NotificationCompat.Action(R.drawable.fast_forward, "next",
-                        PendingIntent.getBroadcast(anglerService, 0, new Intent("action_next"), 0)))
-                .setShowWhen(false)
-                .setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
-                        .setMediaSession(token)
-                        .setShowActionsInCompactView(0,1,2))
-                .setContentIntent(PendingIntent.getActivity(anglerService,1, contentIntent,0))
-                .setDeleteIntent(PendingIntent.getBroadcast(anglerService,0,new Intent("action_stop"),PendingIntent.FLAG_CANCEL_CURRENT))
-                .setOngoing(false);
-
-
-        // Bind Notification with Angler Service
-        anglerService.startForeground(191, mBuilder.build());
     }
 
 

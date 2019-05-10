@@ -90,15 +90,20 @@ public class AnglerRepository {
 
                                 Uri albumCoverUri = anglerFileStorage.saveAlbumCover(track.getArtist(), track.getAlbum(), inputStream1);
 
-                                if (anglerNetworking.checkNetworkConnection()) {
-                                    anglerFirebase.uploadAlbumCover(album.getArtist(), albumCoverUri);
+                                if (albumCoverUri != null) {
+
+                                    if (anglerNetworking.checkNetworkConnection()) {
+                                        anglerFirebase.uploadAlbumCover(album.getArtist(), albumCoverUri);
+                                    }
                                 }
 
                                 return;
                             }else{
 
                                 // Download album cover from firebase
-                                anglerFirebase.downloadAlbumCover(album.getArtist(), album.getAlbum(), anglerFileStorage.getAlbumImageUri(album.getArtist(), album.getAlbum()));
+                                if (anglerNetworking.checkNetworkConnection()) {
+                                    anglerFirebase.downloadAlbumCover(album.getArtist(), album.getAlbum(), anglerFileStorage.getAlbumImageUri(album.getArtist(), album.getAlbum()));
+                                }
                             }
                         }
                     }).subscribeOn(Schedulers.io()).subscribe());
@@ -111,54 +116,55 @@ public class AnglerRepository {
     // Load missing album years
     private void loadAlbumYear(){
 
-        if (anglerNetworking.checkNetworkConnection()) {
+        anglerDB.loadAlbumsWithUnknownYear(albums -> {
 
-            anglerDB.loadAlbumsWithUnknownYear(albums -> {
+            for (Album album : albums) {
 
-                for (Album album : albums) {
-
+                if (anglerNetworking.checkNetworkConnection()) {
                     anglerNetworking.loadAlbumYear(album.getArtist(), album.getAlbum(), year -> {
                         if (year != 10000) {
                             anglerDB.updateAlbumYear(album.get_id(), year);
                         }
                     });
                 }
-            });
-        }
+            }
+        });
+
     }
 
     // Load artist images and bios and save them to file storage
     private void loadArtistImagesAndBios(){
 
-        if (anglerNetworking.checkNetworkConnection()) {
+        anglerDB.loadArtists("library", artists -> {
 
-            anglerDB.loadArtists("library", artists -> {
+            for (String artist : artists) {
 
-                for (String artist : artists) {
-
-                    if (!anglerFileStorage.isArtistImageExist(artist)) {
+                if (!anglerFileStorage.isArtistImageExist(artist)) {
+                    if (anglerNetworking.checkNetworkConnection()) {
                         anglerFirebase.downloadArtistImage(artist, anglerFileStorage.getArtistImageUri(artist));
                     }
+                }
 
-                    if (!anglerFileStorage.isArtistBioExist(artist)) {
+                if (!anglerFileStorage.isArtistBioExist(artist)) {
+                    if (anglerNetworking.checkNetworkConnection()) {
                         anglerNetworking.loadArtistBio(artist, bio -> anglerFileStorage.saveArtistBio(artist, bio));
                     }
                 }
-            });
-        }
+            }
+        });
+
     }
 
     // Load missing album track positions
     private void loadTrackAlbumPosition(){
 
-        if (anglerNetworking.checkNetworkConnection()) {
+        anglerDB.getTrackWithUnknownAlbumPosition(tracks -> Completable.fromAction(() -> {
 
-            anglerDB.getTrackWithUnknownAlbumPosition(tracks -> Completable.fromAction(() -> {
+            AtomicBoolean isNewAlbumPositionAppear = new AtomicBoolean(false);
 
-                AtomicBoolean isNewAlbumPositionAppear = new AtomicBoolean(false);
+            for (Track track : tracks) {
 
-                for (Track track : tracks) {
-
+                if (anglerNetworking.checkNetworkConnection()) {
                     anglerNetworking.loadTrackAlbumPosition(track.getTitle(), track.getArtist(), track.getAlbum(), albumPosition -> {
 
                         if (albumPosition != 10000) {
@@ -170,26 +176,31 @@ public class AnglerRepository {
                         }
                     });
                 }
+            }
 
-                if (isNewAlbumPositionAppear.get()) {
-                    anglerDB.updateTracks(tracks);
-                }
-            })
-                    .subscribeOn(Schedulers.io())
-                    .subscribe());
-        }
+            if (isNewAlbumPositionAppear.get()) {
+                anglerDB.updateTracks(tracks);
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .subscribe());
+
     }
 
     // Load default backgrounds
     private void loadDefaultBackgrounds(){
 
-        for (int i = 1; i <= 4; i++){
+        for (int i = 1; i <= 4; i++) {
 
             if (!anglerFileStorage.isDefaultBackgroundExist("back" + i)) {
 
-                anglerFirebase.downloadBackground("back" + i, anglerFileStorage.getDefaultBackgroundUriPort("back" + i), anglerFileStorage.getDefaultBackgroundUriLand("back" + i));
+                if (anglerNetworking.checkNetworkConnection()) {
+                    anglerFirebase.downloadBackground("back" + i, anglerFileStorage.getDefaultBackgroundUriPort("back" + i), anglerFileStorage.getDefaultBackgroundUriLand("back" + i));
+                }
             }
         }
+
+
     }
 
     // Shared preferences methods
@@ -210,7 +221,10 @@ public class AnglerRepository {
     }
 
     public void syncTimestamps(String accountId, long timestamp, AnglerFirebaseDatabase.OnSyncTimeStampsListener listener){
-        anglerFirebase.syncTimestamps(accountId, timestamp, listener);
+
+        if (anglerNetworking.checkNetworkConnection()) {
+            anglerFirebase.syncTimestamps(accountId, timestamp, listener);
+        }
     }
 
     public String getBackgroundImage(){
@@ -238,8 +252,11 @@ public class AnglerRepository {
             String backgroundImageShort = backgroundImage.replace("/.default", "").replace(".jpeg", "");
 
             if (!anglerFileStorage.isDefaultBackgroundExist(backgroundImageShort)){
-                anglerFirebase.downloadBackground(backgroundImageShort, anglerFileStorage.getDefaultBackgroundUriPort(backgroundImageShort), anglerFileStorage.getDefaultBackgroundUriLand(backgroundImageShort),
-                        listener::onBackgroundChecked);
+
+                if (anglerNetworking.checkNetworkConnection()) {
+                    anglerFirebase.downloadBackground(backgroundImageShort, anglerFileStorage.getDefaultBackgroundUriPort(backgroundImageShort), anglerFileStorage.getDefaultBackgroundUriLand(backgroundImageShort),
+                            listener::onBackgroundChecked);
+                }
             }else{
                 listener.onBackgroundChecked(backgroundImage);
             }

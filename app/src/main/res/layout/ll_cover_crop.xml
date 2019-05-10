@@ -44,8 +44,11 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:paddingStart="@dimen/default_margin"
+            android:paddingEnd="@dimen/default_margin"
             android:text="@string/album_cover_crop_advice"
             android:textColor="@color/gGrey"
+            android:gravity="center"
             app:layout_constraintBottom_toTopOf="@id/fragment_playlist_image_crop_crop"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
