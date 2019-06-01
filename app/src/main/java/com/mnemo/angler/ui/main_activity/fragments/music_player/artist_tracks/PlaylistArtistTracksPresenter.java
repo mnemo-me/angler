@@ -41,6 +41,18 @@ public class PlaylistArtistTracksPresenter extends DisposableBasePresenter {
         }));
     }
 
+    void loadArtistTracksFromFolder(String folder, String artist){
+
+        setListener(repository.loadArtistTracksFromFolder(folder, artist, artistTracks -> {
+
+            tracks = artistTracks;
+
+            if (getView() != null) {
+                applyFilter(((PlaylistArtistTracksFragment)getView()).getFilter());
+            }
+        }));
+    }
+
     // Apply filter to tracks
     @SuppressLint("CheckResult")
     void applyFilter(String filter) {

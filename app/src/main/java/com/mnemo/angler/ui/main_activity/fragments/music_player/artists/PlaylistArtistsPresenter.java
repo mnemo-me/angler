@@ -28,11 +28,23 @@ public class PlaylistArtistsPresenter extends DisposableBasePresenter {
     }
 
     // load playlist artists from database
-    void loadArtists(String playlist){
+    void loadPlaylistArtists(String playlist){
 
         setListener(repository.loadArtists(playlist, playlistArtists -> {
 
             artists = playlistArtists;
+
+            if (getView() != null) {
+                applyFilter(((PlaylistArtistsFragment)getView()).getFilter());
+            }
+        }));
+    }
+
+    void loadFolderArtists(String folder){
+
+        setListener(repository.loadFolderArtists(folder, folderArtists -> {
+
+            artists = folderArtists;
 
             if (getView() != null) {
                 applyFilter(((PlaylistArtistsFragment)getView()).getFilter());

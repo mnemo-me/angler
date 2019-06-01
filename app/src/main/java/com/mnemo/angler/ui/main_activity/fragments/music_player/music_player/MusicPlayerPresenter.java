@@ -21,7 +21,7 @@ public class MusicPlayerPresenter extends DisposableBasePresenter {
 
     // Load playlists from database
     void loadPlaylists(){
-        setListener(repository.loadPlaylistTitles(playlistTitles -> {
+        setListener(repository.loadPlaylistTitlesAndFolderLinks(playlistTitles -> {
 
             if (getView() != null) {
 

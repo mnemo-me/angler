@@ -4,6 +4,8 @@ package com.mnemo.angler.data.preferences;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.mnemo.angler.R;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -40,14 +42,6 @@ public class AnglerPreferences {
         appPreferences.edit().putBoolean("first_launch", firstLaunch).apply();
     }
 
-    public long getTrialTimestamp(){
-        return appPreferences.getLong("trial_timestamp", 0);
-    }
-
-    public void setTrialTimestamp(long timestamp){
-        appPreferences.edit().putLong("trial_timestamp", timestamp).apply();
-    }
-
     public void setBackgroundImage(String backgroundImage){
         appPreferences.edit().putString("background", backgroundImage).apply();
     }
@@ -61,7 +55,7 @@ public class AnglerPreferences {
     }
 
     public int getBackgroundOpacity(){
-        return appPreferences.getInt("overlay", 140);
+        return appPreferences.getInt("overlay", 89);
     }
 
     public void setMainPlaylist(String playlist){
@@ -232,5 +226,10 @@ public class AnglerPreferences {
 
     public void setShuffleMode(int shuffleMode){
         playbackPreferences.edit().putInt("shuffle_mode", shuffleMode).apply();
+    }
+
+    // Get unknown album title
+    public String getUnknownAlbumTitle(){
+        return context.getResources().getString(R.string.unknown);
     }
 }

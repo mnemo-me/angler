@@ -127,7 +127,13 @@ public class MainPlaylistFragment extends Fragment implements MainPlaylistView{
         }
 
         // Load tracks
-        presenter.loadPlaylist(((MainActivity) getActivity()).getMainPlaylistName());
+        String mainPlaylist = ((MainActivity) getActivity()).getMainPlaylistName();
+
+        if (!mainPlaylist.startsWith(getResources().getString(R.string.folder) + ": ")) {
+            presenter.loadPlaylist(mainPlaylist);
+        }else{
+            presenter.loadFolderTracks(mainPlaylist.replace(getResources().getString(R.string.folder) + ": ", ""));
+        }
 
         // Configure swipe behavior
         swipeRefreshLayout.setOnRefreshListener(() -> presenter.updateLibrary());

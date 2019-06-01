@@ -230,7 +230,8 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder>{
                             imageHeight);
 
                     // Set album title
-                    ((AlbumsLineHolder)holder).albumsTitleView.get(i).setText(album);
+                    ((AlbumsLineHolder) holder).albumsTitleView.get(i).setText(album);
+
 
                 }else{
 

@@ -47,6 +47,9 @@ public interface TrackDAO {
     @Query("SELECT * FROM tracks WHERE artist=:artist AND album=:album ORDER BY album_position,title COLLATE NOCASE ASC")
     Flowable<List<Track>> getAlbumTracks(String artist, String album);
 
+    @Query("SELECT * FROM tracks WHERE artist=:artist AND album=:album ORDER BY album_position,title COLLATE NOCASE ASC")
+    Single<List<Track>> getAlbumTracksOnce(String artist, String album);
+
     @Query("SELECT COUNT(*) FROM tracks WHERE artist=:artist AND album=:album")
     int getAlbumsTrackCount(String album, String artist);
 
@@ -55,6 +58,9 @@ public interface TrackDAO {
 
     @Query("UPDATE tracks SET album_position=:albumPosition WHERE _id=:id")
     void updateTrackAlbumPosition(String id, int albumPosition);
+
+    @Query("SELECT uri FROM tracks")
+    Flowable<List<String>> getUris();
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insert(Track... tracks);

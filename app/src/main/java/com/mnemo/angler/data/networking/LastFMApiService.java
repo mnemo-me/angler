@@ -6,8 +6,6 @@ import okhttp3.ResponseBody;
 import retrofit2.Response;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
-import retrofit2.http.Streaming;
-import retrofit2.http.Url;
 
 interface LastFMApiService {
 
@@ -17,8 +15,4 @@ interface LastFMApiService {
 
     @GET("?method=artist.getInfo")
     Single<Response<ResponseBody>> getArtist(@Query("api_key") String apiKey, @Query("artist") String artist, @Query("format") String format);
-
-    @Streaming
-    @GET
-    Single<Response<ResponseBody>> downloadImage(@Url String url);
 }

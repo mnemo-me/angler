@@ -43,7 +43,6 @@
     <string name="enter_new_playlist_title">Введите название плейлиста</string>
     <string name="equalizer">Эквалайзер</string>
     <string name="expand">расширить</string>
-    <string name="free_trial">бесплатная пробная версия</string>
     <string name="hide">Скрыть</string>
     <string name="image_carousel_advice_text">Свайп влево/вправо для смены изображения</string>
     <string name="image_crop">Обрезать изображение</string>
@@ -84,6 +83,7 @@
     <string name="queue_updated">Очередь воспроизведения обновлена</string>
     <string name="quit">выйти</string>
     <string name="repeat">повтор</string>
+    <string name="remove_ad">удалить рекламу</string>
     <string name="save">сохранить</string>
     <string name="search">поиск</string>
     <string name="search_hint">Введите ключевое слово...</string>
@@ -96,11 +96,17 @@
     <string name="track_is_missing">трек отсутствует на устройстве</string>
     <string name="track_removed">трек удалён</string>
     <string name="tracks">треки</string>
-    <string name="trial_period_initialization">Спасибо за установку Angler. Вам предоставлена пробная версия на 15 дней. По истечению пробного периода для дальнейшего использования приложения его необходимо будет приобрести.</string>
-    <string name="trial_period_is_expired">Пробный период истёк. Для дальнейшего использования необходимо приобрести приложение.</string>
-    <string name="trial_version">Пробная версия</string>
     <string name="undo">Вернуть</string>
     <string name="virtualizer">Виртуализатор</string>
     <string name="welcome">Добрый день</string>
     <string name="yes">да</string>
+    <string name="error">Ошибка</string>
+    <string name="folders">Папки</string>
+    <string name="folder">папка</string>
+    <string name="create_playlist">создать плэйлист</string>
+    <string name="link">связь</string>
+    <string name="unknown">Неизвестно</string>
+    <string name="unknown_artist">Неизвестный исполнитель</string>
+    <string name="linked">Связь установлена. Папка доступна с главного экрана.</string>
+    <string name="link_removed">Связь убрана.</string>
 </resources>

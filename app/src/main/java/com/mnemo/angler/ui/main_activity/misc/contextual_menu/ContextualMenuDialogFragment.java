@@ -143,6 +143,13 @@ public class ContextualMenuDialogFragment extends BottomSheetDialogFragment impl
                 contextMenuGoToAlbum.setVisibility(View.VISIBLE);
 
                 break;
+
+            case "folder":
+
+                contextMenuGoToArtist.setVisibility(View.VISIBLE);
+                contextMenuGoToAlbum.setVisibility(View.VISIBLE);
+
+                break;
         }
 
         return view;

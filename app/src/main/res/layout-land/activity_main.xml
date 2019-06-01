@@ -81,7 +81,7 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:textColor="@color/black"
-                android:textSize="@dimen/default_text_size"
+                android:textSize="@dimen/medium_text_size"
                 android:text="@string/no_media"
                 app:layout_constraintBottom_toTopOf="@id/media_panel_artist"
                 app:layout_constraintStart_toStartOf="parent"
@@ -273,18 +273,6 @@
                         android:src="@drawable/logo"
                         android:contentDescription="@string/app_name"/>
 
-                    <TextView
-                        android:id="@+id/trial_version_text"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/app_name_text"
-                        android:layout_centerHorizontal="true"
-                        android:text="@string/trial_version"
-                        android:textAllCaps="true"
-                        android:textColor="@color/gGrey"
-                        android:textSize="@dimen/medium_text_size"
-                        android:visibility="gone"/>
-
                 </RelativeLayout>
 
 
@@ -319,6 +307,11 @@
                     android:text="@string/artists" />
 
                 <TextView
+                    android:id="@+id/folders_drawer_item"
+                    style="@style/drawer_item"
+                    android:text="@string/folders" />
+
+                <TextView
                     android:id="@+id/equalizer_drawer_item"
                     style="@style/drawer_item"
                     android:text="@string/equalizer" />
@@ -339,14 +332,19 @@
 
                     <TextView
                         android:id="@+id/purchase_button"
-                        style="@style/drawer_item"
-                        android:layout_marginTop="@dimen/default_margin"
+                        android:layout_height="wrap_content"
+                        android:layout_width="match_parent"
+                        android:paddingStart="@dimen/default_margin"
+                        android:paddingEnd="@dimen/default_margin"
+                        android:paddingTop="@dimen/half_margin"
+                        android:paddingBottom="@dimen/half_margin"
+                        android:textSize="14sp"
+                        android:textAllCaps="true"
                         android:foreground="?android:attr/selectableItemBackground"
                         android:background="@color/colorAccent"
-                        android:text="@string/purchase_angler"
+                        android:text="@string/remove_ad"
                         android:textColor="@color/white"
-                        android:drawableEnd="@drawable/play_store"
-                        android:gravity="center_vertical"
+                        android:gravity="center"
                         android:visibility="gone"/>
 
                 </FrameLayout>

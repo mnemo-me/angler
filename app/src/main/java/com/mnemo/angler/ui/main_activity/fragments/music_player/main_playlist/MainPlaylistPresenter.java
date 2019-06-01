@@ -52,6 +52,19 @@ public class MainPlaylistPresenter extends DisposableBasePresenter {
         }));
     }
 
+    // Load folder tracks
+    void loadFolderTracks(String folder){
+
+        setListener(repository.loadFolderTracks(folder, folderTracks -> {
+
+            tracks = folderTracks;
+
+            if (getView() != null) {
+                applyFilter(((MainPlaylistView)getView()).getFilter());
+            }
+        }));
+    }
+
     // Apply filter to tracks
     @SuppressLint("CheckResult")
     void applyFilter(String filter) {

@@ -3,6 +3,7 @@ package com.mnemo.angler.data;
 
 import android.annotation.SuppressLint;
 import android.net.Uri;
+import android.os.Build;
 
 import com.mnemo.angler.AnglerApp;
 import com.mnemo.angler.data.database.AnglerDB;
@@ -11,12 +12,14 @@ import com.mnemo.angler.data.database.Entities.Track;
 import com.mnemo.angler.data.file_storage.AnglerFileStorage;
 import com.mnemo.angler.data.file_storage.AnglerFolder;
 import com.mnemo.angler.data.firebase.AnglerFirebase;
-import com.mnemo.angler.data.firebase.firebase_database.AnglerFirebaseDatabase;
 import com.mnemo.angler.data.networking.AnglerNetworking;
 import com.mnemo.angler.data.preferences.AnglerPreferences;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -79,10 +82,13 @@ public class AnglerRepository {
             for (Album album : albums){
                 if (!anglerFileStorage.isAlbumCoverExist(album.getArtist(), album.getAlbum())) {
 
-                    anglerDB.loadAlbumTracks(album.getArtist(), album.getAlbum(), tracks1 -> Completable.fromAction(() -> {
-                        for (Track track : tracks1) {
+                    anglerDB.loadAlbumTracksOnce(album.getArtist(), album.getAlbum(), tracks1 -> Completable.fromAction(() -> {
 
-                            anglerFileStorage.createArtistAlbumsDirectory(track.getArtist());
+                        anglerFileStorage.createArtistAlbumsDirectory(album.getArtist());
+
+                        boolean isAlbumCoverExtracted = false;
+
+                        for (Track track : tracks1) {
 
                             InputStream inputStream1 = anglerFileStorage.extractAlbumImage(track.getUri());
 
@@ -90,22 +96,28 @@ public class AnglerRepository {
 
                                 Uri albumCoverUri = anglerFileStorage.saveAlbumCover(track.getArtist(), track.getAlbum(), inputStream1);
 
-                                if (albumCoverUri != null) {
+                                if (albumCoverUri != null && !album.getAlbum().equals(anglerPreferences.getUnknownAlbumTitle())) {
 
                                     if (anglerNetworking.checkNetworkConnection()) {
                                         anglerFirebase.uploadAlbumCover(album.getArtist(), albumCoverUri);
                                     }
+
+                                    isAlbumCoverExtracted = true;
+
+                                    break;
                                 }
 
-                                return;
-                            }else{
-
-                                // Download album cover from firebase
-                                if (anglerNetworking.checkNetworkConnection()) {
-                                    anglerFirebase.downloadAlbumCover(album.getArtist(), album.getAlbum(), anglerFileStorage.getAlbumImageUri(album.getArtist(), album.getAlbum()));
-                                }
                             }
                         }
+
+                        // Download album cover from firebase
+                        if (!isAlbumCoverExtracted) {
+                            if (anglerNetworking.checkNetworkConnection()) {
+                                anglerFirebase.downloadAlbumCover(album.getArtist(), album.getAlbum(), anglerFileStorage.getAlbumImageUri(album.getArtist(), album.getAlbum()));
+                            }
+                        }
+
+
                     }).subscribeOn(Schedulers.io()).subscribe());
                 }
             }
@@ -120,12 +132,15 @@ public class AnglerRepository {
 
             for (Album album : albums) {
 
-                if (anglerNetworking.checkNetworkConnection()) {
-                    anglerNetworking.loadAlbumYear(album.getArtist(), album.getAlbum(), year -> {
-                        if (year != 10000) {
-                            anglerDB.updateAlbumYear(album.get_id(), year);
-                        }
-                    });
+                if (!album.getAlbum().equals(anglerPreferences.getUnknownAlbumTitle())) {
+
+                    if (anglerNetworking.checkNetworkConnection()) {
+                        anglerNetworking.loadAlbumYear(album.getArtist(), album.getAlbum(), year -> {
+                            if (year != 10000) {
+                                anglerDB.updateAlbumYear(album.get_id(), year);
+                            }
+                        });
+                    }
                 }
             }
         });
@@ -141,7 +156,10 @@ public class AnglerRepository {
 
                 if (!anglerFileStorage.isArtistImageExist(artist)) {
                     if (anglerNetworking.checkNetworkConnection()) {
-                        anglerFirebase.downloadArtistImage(artist, anglerFileStorage.getArtistImageUri(artist));
+
+                        if (!artist.toLowerCase().contains(" feat. ") && !artist.toLowerCase().contains(" feat ")) {
+                            anglerFirebase.downloadArtistImage(artist, anglerFileStorage.getArtistImageUri(artist));
+                        }
                     }
                 }
 
@@ -212,20 +230,6 @@ public class AnglerRepository {
         anglerPreferences.setFirstLaunch(firstLaunch);
     }
 
-    public long getTrialTimestamp(){
-        return anglerPreferences.getTrialTimestamp();
-    }
-
-    public void setTrialTimestamp(long timestamp){
-        anglerPreferences.setTrialTimestamp(timestamp);
-    }
-
-    public void syncTimestamps(String accountId, long timestamp, AnglerFirebaseDatabase.OnSyncTimeStampsListener listener){
-
-        if (anglerNetworking.checkNetworkConnection()) {
-            anglerFirebase.syncTimestamps(accountId, timestamp, listener);
-        }
-    }
 
     public String getBackgroundImage(){
 
@@ -469,7 +473,24 @@ public class AnglerRepository {
     }
 
     public List<String> gatherImageFolders(){
-        return anglerFileStorage.gatherImageFolders(AnglerFileStorage.PHONE_STORAGE);
+
+        List<String> imageFolders = new ArrayList<>();
+
+        imageFolders.addAll(anglerFileStorage.gatherImageFolders(AnglerFileStorage.PHONE_STORAGE));
+
+        String removableSDCardPath = anglerFileStorage.getRemovableSDCardPath();
+
+        if (removableSDCardPath != null){
+            imageFolders.addAll(anglerFileStorage.gatherImageFolders(removableSDCardPath));
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            imageFolders.sort(Comparator.comparing(s -> new File(s).getName().toLowerCase()));
+        }else{
+            Collections.sort(imageFolders, (imageFolder1, imageFolder2) -> new File(imageFolder1).getName().compareToIgnoreCase(new File(imageFolder2).getName()));
+        }
+
+        return imageFolders;
     }
 
     public void getImages(String imageFolder, AnglerFileStorage.OnImageFolderLoadListener listener){
@@ -545,6 +566,10 @@ public class AnglerRepository {
     // Load playlists or/and titles
     public Disposable loadPlaylistTitles(AnglerDB.PlaylistsUpdateListener listener){
         return anglerDB.loadPlaylistTitles(listener);
+    }
+
+    public Disposable loadPlaylistTitlesAndFolderLinks(AnglerDB.PlaylistsUpdateListener listener){
+        return anglerDB.loadPlaylistTitlesAndFolderLinks(listener);
     }
 
     public Disposable loadPlaylistsCreatedByUser(AnglerDB.UserPlaylistsUpdateListener listener){
@@ -657,6 +682,75 @@ public class AnglerRepository {
     }
 
 
+    // Folders methods
+    @SuppressLint("CheckResult")
+    public Disposable getMusicFolders(AnglerFileStorage.OnMusicFoldersGetListener listener){
+
+        return anglerDB.getMusicFolders(trackUris -> {
+
+            ArrayList<String> musicFolders = new ArrayList<>();
+
+            Completable.fromAction(() -> musicFolders.addAll(anglerFileStorage.getMusicFolders(trackUris)))
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(() -> listener.onMusicFoldersGot(musicFolders));
+        });
+    }
+
+    @SuppressLint("CheckResult")
+    public Disposable loadFolderTracks(String folder, AnglerFileStorage.OnFolderTracksFilterListener listener){
+
+        return anglerDB.loadFolderTracks(folderTracks -> {
+
+            ArrayList<Track> filteredFolderTracks = new ArrayList<>();
+
+            Completable.fromAction(() -> filteredFolderTracks.addAll(anglerFileStorage.filterFolderTracks(folder, folderTracks)))
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(() -> listener.onFolderTracksFiltered(filteredFolderTracks));
+        });
+    }
+
+    @SuppressLint("CheckResult")
+    public Disposable loadFolderArtists(String folder, AnglerFileStorage.OnFolderArtistsFilterListener listener){
+
+        return anglerDB.loadFolderTracks(folderTracks -> {
+
+            ArrayList<String> filteredFolderArtists = new ArrayList<>();
+
+            Completable.fromAction(() -> filteredFolderArtists.addAll(anglerFileStorage.filterFolderArtists(folder, folderTracks)))
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(() -> listener.onFolderArtistsFiltered(filteredFolderArtists));
+
+        });
+    }
+
+    @SuppressLint("CheckResult")
+    public Disposable loadArtistTracksFromFolder(String folder, String artist, AnglerFileStorage.OnFolderTracksFilterListener listener){
+
+        return anglerDB.loadFolderArtistTracks(artist, artistFolderTracks -> {
+
+            ArrayList<Track> filteredArtistFolderTracks = new ArrayList<>();
+
+            Completable.fromAction(() -> filteredArtistFolderTracks.addAll(anglerFileStorage.filterFolderTracks(folder, artistFolderTracks)))
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(() -> listener.onFolderTracksFiltered(filteredArtistFolderTracks));
+        });
+    }
+
+    public void addFolderLink(String folderName, String folderPath, AnglerDB.FolderLinkAddListener listener){
+        anglerDB.addFolderLink(folderName, folderPath, listener);
+    }
+
+    public void deleteFolderLink(String folderPath, AnglerDB.FolderLinkDeleteListener listener){
+        anglerDB.deleteFolderLink(folderPath, listener);
+    }
+
+    public void checkFolderLink(String folderPath, AnglerDB.FolderLinkCheckListener listener){
+        anglerDB.checkFolderLink(folderPath, listener);
+    }
 
 
     // Listeners

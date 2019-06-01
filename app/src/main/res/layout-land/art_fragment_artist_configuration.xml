@@ -74,20 +74,15 @@
                 android:foreground="@drawable/background_selector"
                 tools:src="@drawable/logo" />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="64dp"
-                android:layout_margin="1dp"
-                android:background="@drawable/skrim"
-                app:layout_constraintBottom_toBottomOf="parent"/>
-
-            <ImageButton
-                android:id="@+id/artist_conf_play_all_button"
-                style="@style/button"
-                android:layout_marginStart="4dp"
-                android:contentDescription="@string/play_all"
-                android:src="@drawable/play_all"
+            <Button
+                android:id="@+id/artist_conf_play_all"
+                style="@style/play_all_button_land"
+                android:layout_marginStart="@dimen/half_margin"
+                android:layout_marginEnd="@dimen/half_margin"
+                android:layout_marginBottom="@dimen/half_margin"
+                android:text="@string/play_all"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>

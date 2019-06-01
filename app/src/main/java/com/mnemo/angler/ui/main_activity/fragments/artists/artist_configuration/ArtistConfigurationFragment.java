@@ -72,6 +72,10 @@ public class ArtistConfigurationFragment extends Fragment implements ArtistConfi
     TextView tracksCountView;
 
     @Nullable
+    @BindView(R.id.artist_conf_black_stripe)
+    View blackStripe;
+
+
     @BindView(R.id.artist_conf_play_all)
     Button playAllLayout;
 
@@ -152,6 +156,7 @@ public class ArtistConfigurationFragment extends Fragment implements ArtistConfi
                     artistText.setAlpha(alpha);
                     albumsCountView.setAlpha(alpha);
                     tracksCountView.setAlpha(alpha);
+                    blackStripe.setAlpha(alpha);
                     playAllLayout.setAlpha(alpha);
                     cardView.setAlpha(alpha);
 
@@ -164,6 +169,7 @@ public class ArtistConfigurationFragment extends Fragment implements ArtistConfi
                     artistText.setAlpha(alpha);
                     albumsCountView.setAlpha(alpha);
                     tracksCountView.setAlpha(alpha);
+                    blackStripe.setAlpha(alpha);
                     playAllLayout.setAlpha(alpha);
                     cardView.setAlpha(alpha);
 
@@ -272,12 +278,6 @@ public class ArtistConfigurationFragment extends Fragment implements ArtistConfi
         playAllDialogFragment.show(getActivity().getSupportFragmentManager(), "play_all_dialog_fragment");
     }
 
-
-    @Optional
-    @OnClick(R.id.artist_conf_play_all_button)
-    void playAllButton(){
-        playAll();
-    }
 
     @OnClick(R.id.artist_conf_back)
     void back(){

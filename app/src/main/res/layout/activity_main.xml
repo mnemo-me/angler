@@ -92,7 +92,7 @@
                 android:paddingEnd="28dp"
                 android:paddingStart="28dp"
                 android:textColor="#000000"
-                android:textSize="@dimen/default_text_size"
+                android:textSize="@dimen/medium_text_size"
                 android:text="@string/no_media"
                 app:layout_constraintBottom_toBottomOf="@id/media_panel_add_to_playlist"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -221,6 +221,7 @@
     <!-- drawer -->
 
     <LinearLayout
+        android:id="@+id/drawer_cover"
         android:layout_width="240dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
@@ -229,7 +230,8 @@
         android:orientation="vertical"
         android:focusable="true">
 
-        <RelativeLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/app_name_text_layout"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1">
@@ -240,23 +242,24 @@
                 android:layout_height="wrap_content"
                 android:paddingStart="@dimen/half_margin"
                 android:paddingEnd="@dimen/half_margin"
-                android:layout_centerInParent="true"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
                 android:src="@drawable/logo"
                 android:contentDescription="@string/app_name"/>
 
             <TextView
-                android:id="@+id/trial_version_text"
+                android:id="@+id/app_name_text_mini"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/app_name_text"
-                android:layout_centerHorizontal="true"
-                android:text="@string/trial_version"
-                android:textAllCaps="true"
-                android:textColor="@color/gGrey"
-                android:textSize="@dimen/medium_text_size"
+                android:layout_marginStart="@dimen/default_margin"
+                android:textSize="16sp"
+                android:text="@string/app_name"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
                 android:visibility="gone"/>
 
-        </RelativeLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
 
         <View
@@ -290,6 +293,11 @@
             android:text="@string/artists" />
 
         <TextView
+            android:id="@+id/folders_drawer_item"
+            style="@style/drawer_item"
+            android:text="@string/folders" />
+
+        <TextView
             android:id="@+id/equalizer_drawer_item"
             style="@style/drawer_item"
             android:text="@string/equalizer" />
@@ -304,24 +312,28 @@
             android:id="@+id/grey_line3"
             style="@style/line"/>
 
-        <FrameLayout
+
+        <TextView
+            android:id="@+id/purchase_button"
+            android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1">
+            android:paddingStart="@dimen/default_margin"
+            android:paddingEnd="@dimen/default_margin"
+            android:paddingTop="@dimen/half_margin"
+            android:paddingBottom="@dimen/half_margin"
+            android:textSize="14sp"
+            android:textAllCaps="true"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:background="@color/colorAccent"
+            android:text="@string/remove_ad"
+            android:textColor="@color/white"
+            android:gravity="center"
+            android:visibility="gone"/>
 
-            <TextView
-                android:id="@+id/purchase_button"
-                style="@style/drawer_item"
-                android:layout_marginTop="@dimen/default_margin"
-                android:foreground="?android:attr/selectableItemBackground"
-                android:background="@color/colorAccent"
-                android:text="@string/purchase_angler"
-                android:textColor="@color/white"
-                android:drawableEnd="@drawable/play_store"
-                android:gravity="center_vertical"
-                android:visibility="gone"/>
-
-        </FrameLayout>
+        <FrameLayout
+            android:id="@+id/ad_banner_space"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"/>
 
     </LinearLayout>
 

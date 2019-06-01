@@ -7,6 +7,7 @@
     <dimen name="playlist_track_list_padding">12dp</dimen>
 
     <dimen name="toolbar_height">48dp</dimen>
+    <dimen name="extra_toolbar_height">104dp</dimen>
     <dimen name="media_panel_height_port">140dp</dimen>
     <dimen name="media_panel_height_land">65dp</dimen>
     <dimen name="track_height">56dp</dimen>

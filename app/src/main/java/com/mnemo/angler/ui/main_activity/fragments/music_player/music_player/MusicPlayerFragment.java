@@ -32,6 +32,8 @@ import com.mnemo.angler.ui.main_activity.fragments.music_player.main_playlist.Ma
 import com.mnemo.angler.ui.main_activity.activity.MainActivity;
 import com.mnemo.angler.R;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -88,6 +90,8 @@ public class MusicPlayerFragment extends Fragment implements MusicPlayerView {
     private boolean isSearchBarOpen = false;
     private String artistSelected;
 
+    private List<String> playlists;
+
 
     public MusicPlayerFragment() {
         // Required empty public constructor
@@ -125,7 +129,7 @@ public class MusicPlayerFragment extends Fragment implements MusicPlayerView {
                     if (i == 0){
                         mainPlaylist = "library";
                     }else {
-                        mainPlaylist = (String) adapterView.getItemAtPosition(i);
+                        mainPlaylist = playlists.get(i);
                     }
 
                     ((MainActivity) getActivity()).setMainPlaylistName(mainPlaylist);
@@ -192,12 +196,25 @@ public class MusicPlayerFragment extends Fragment implements MusicPlayerView {
     @Override
     public void updateSpinner(List<String> playlists) {
 
+        this.playlists = playlists;
+
         if (playlists.size() > 0) {
 
             playlists.set(0, getString(R.string.library));
 
             adapter.clear();
-            adapter.addAll(playlists);
+
+            List<String> playlistsShort = new ArrayList<>();
+
+            for (String playlist : playlists){
+                if (playlist.startsWith(getResources().getString(R.string.folder) + ": ")){
+                    playlistsShort.add(getResources().getString(R.string.folder) + ": " + new File(playlist.replace(getResources().getString(R.string.folder) + ": ", "")).getName());
+                }else{
+                    playlistsShort.add(playlist);
+                }
+            }
+
+            adapter.addAll(playlistsShort);
             spinner.setSelection(playlists.indexOf(((MainActivity) getActivity()).getMainPlaylistName()));
             adapter.notifyDataSetChanged();
         }
@@ -305,7 +322,11 @@ public class MusicPlayerFragment extends Fragment implements MusicPlayerView {
 
             hideSearchToolbar();
 
-            searchView.findViewById(androidx.appcompat.R.id.search_close_btn).setVisibility(View.GONE);
+            try {
+                searchView.findViewById(androidx.appcompat.R.id.search_close_btn).setVisibility(View.GONE);
+            }catch (NullPointerException e){
+                e.printStackTrace();
+            }
 
             searchView.clearFocus();
         }

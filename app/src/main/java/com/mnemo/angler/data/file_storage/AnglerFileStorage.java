@@ -13,6 +13,7 @@ import android.os.Environment;
 import android.os.storage.StorageManager;
 import android.webkit.MimeTypeMap;
 
+import com.mnemo.angler.R;
 import com.mnemo.angler.data.database.Entities.Track;
 
 import java.io.BufferedReader;
@@ -63,6 +64,18 @@ public class AnglerFileStorage {
         void onBackgroundChecked(String backgroundImage);
     }
 
+    public interface OnMusicFoldersGetListener{
+        void onMusicFoldersGot(List<String> musicFolders);
+    }
+
+    public interface OnFolderTracksFilterListener{
+        void onFolderTracksFiltered(List<Track> folderTracks);
+    }
+
+    public interface OnFolderArtistsFilterListener{
+        void onFolderArtistsFiltered(List<String> folderArtists);
+    }
+
     public static final String PHONE_STORAGE = Environment.getExternalStorageDirectory().getPath();
     private static final String TEMP_IMAGE_NAME = AnglerFolder.PATH_PLAYLIST_COVER + File.separator + "temp.jpg";
 
@@ -103,7 +116,13 @@ public class AnglerFileStorage {
         HashSet<Track> tracks = new HashSet<>();
 
         File directory = new File(filepath);
-        ArrayList<String> files = new ArrayList<>(Arrays.asList(directory.list()));
+        ArrayList<String> files;
+
+        try {
+            files = new ArrayList<>(Arrays.asList(directory.list()));
+        }catch (NullPointerException e){
+            return tracks;
+        }
 
         if (directory.getName().startsWith(".") || tracks.contains(".nomedia")){
             return tracks;
@@ -138,9 +157,31 @@ public class AnglerFileStorage {
                             continue;
                         }
 
-                        String title = mRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE);
+                        String title =  mRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE);
+
+                        if (title != null){
+                            title = title.trim();
+                        }else{
+                            title = file.substring(0, file.lastIndexOf("."));
+                        }
+
                         String artist = mRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
+
+                        if (artist != null){
+                            artist = artist.trim();
+                        }else{
+                            artist = context.getResources().getString(R.string.unknown_artist);
+                        }
+
+
                         String album = mRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM);
+
+                        if (album != null){
+                            album = album.trim();
+                        }else{
+                            album = context.getResources().getString(R.string.unknown);
+                        }
+
 
                         long duration;
 
@@ -150,17 +191,26 @@ public class AnglerFileStorage {
                             continue;
                         }
 
+                        if (duration <= 10000){
+                            continue;
+                        }
+
                         String id = (title + "-" + artist + "-" + album).replace(" ", "_");
                         String uri = filepath + File.separator + file;
 
-                        String yearString = mRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_YEAR);
-
                         int year;
 
-                        if (yearString != null) {
-                            try {
-                                year = Integer.parseInt(yearString);
-                            }catch (NumberFormatException e){
+                        if (!album.equals(context.getResources().getString(R.string.unknown))) {
+
+                            String yearString = mRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_YEAR);
+
+                            if (yearString != null) {
+                                try {
+                                    year = Integer.parseInt(yearString);
+                                } catch (NumberFormatException e) {
+                                    year = 10000;
+                                }
+                            } else {
                                 year = 10000;
                             }
                         }else{
@@ -593,7 +643,13 @@ public class AnglerFileStorage {
         List<String> imageFolders = new ArrayList<>();
 
         File directory = new File(path);
-        ArrayList<String> files = new ArrayList<>(Arrays.asList(directory.list()));
+        ArrayList<String> files;
+
+        try {
+            files = new ArrayList<>(Arrays.asList(directory.list()));
+        }catch (NullPointerException e){
+            return imageFolders;
+        }
 
 
         if (directory.getName().startsWith(".") || files.contains(".nomedia")){
@@ -620,12 +676,6 @@ public class AnglerFileStorage {
                     }
                 }
             }
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            imageFolders.sort(Comparator.comparing(s -> new File(s).getName().toLowerCase()));
-        }else{
-            Collections.sort(imageFolders, (imageFolder1, imageFolder2) -> new File(imageFolder1).getName().compareToIgnoreCase(new File(imageFolder2).getName()));
         }
 
         return imageFolders;
@@ -727,5 +777,67 @@ public class AnglerFileStorage {
         }
     }
 
+
+    // Get music folders
+    public List<String> getMusicFolders(List<String> trackUris){
+
+        ArrayList<String> musicFolders = new ArrayList<>();
+
+        for (String uri : trackUris){
+
+            String musicFolder = new File(uri).getParent();
+
+            if (!musicFolders.contains(musicFolder)){
+                musicFolders.add(musicFolder);
+            }
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            musicFolders.sort(Comparator.comparing(s -> new File(s).getName().toLowerCase()));
+        }else{
+            Collections.sort(musicFolders, (musicFolder1, musicFolder2) -> new File(musicFolder1).getName().compareToIgnoreCase(new File(musicFolder2).getName()));
+        }
+
+        return musicFolders;
+    }
+
+    // Filter folder tracks
+    public List<Track> filterFolderTracks(String folder, List<Track> folderTracks){
+
+        ArrayList<Track> filteredFolderTracks = new ArrayList<>();
+
+        for (Track folderTrack : folderTracks){
+
+            if (new File(folderTrack.getUri()).getParent().equals(folder)){
+                filteredFolderTracks.add(folderTrack);
+            }
+        }
+
+        return filteredFolderTracks;
+    }
+
+    // Filter folder artists
+    public List<String> filterFolderArtists(String folder, List<Track> folderTracks){
+
+        ArrayList<String> filteredFolderArtists = new ArrayList<>();
+
+        for (Track folderTrack : folderTracks){
+
+            if (new File(folderTrack.getUri()).getParent().equals(folder)){
+
+                if (!filteredFolderArtists.contains(folderTrack.getArtist())) {
+                    filteredFolderArtists.add(folderTrack.getArtist());
+                }
+            }
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            filteredFolderArtists.sort(Comparator.comparing(String::toLowerCase));
+        }else{
+            Collections.sort(filteredFolderArtists, String::compareToIgnoreCase);
+        }
+
+        return filteredFolderArtists;
+    }
 
 }

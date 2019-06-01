@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".ui.main_activity.fragments.folders.folder_configuration.FolderConfigurationFragment">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/folder_conf_toolbar"
+        style="@style/toolbar"
+        app:contentInsetStart="0dp"
+        app:layout_collapseMode="pin">
+
+        <ImageButton
+            android:id="@+id/folder_conf_back"
+            style="@style/button"
+            android:layout_marginStart="4dp"
+            android:contentDescription="@string/back"
+            android:src="@drawable/back" />
+
+        <TextView
+            android:id="@+id/folder_conf_title"
+            style="@style/title"/>
+
+        <TextView
+            android:id="@+id/folder_conf_tracks_count"
+            android:layout_gravity="end"
+            style="@style/title"/>
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/folder_conf_guideline"
+        app:layout_constraintTop_toBottomOf="@id/folder_conf_toolbar"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <ImageView
+            android:id="@+id/folder_conf_image"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="@dimen/default_margin"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/folder_conf_play_all"
+            tools:src="@drawable/folder"
+            android:contentDescription="@string/folder"/>
+
+        <Button
+            android:id="@+id/folder_conf_play_all"
+            style="@style/play_all_button_land"
+            android:layout_marginTop="@dimen/default_margin"
+            android:text="@string/play_all"
+            android:textColor="@color/selected_grey_white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/folder_conf_image"
+            app:layout_constraintBottom_toTopOf="@id/folder_conf_link"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <Button
+            android:id="@+id/folder_conf_link"
+            style="@style/play_all_button_land"
+            android:layout_marginTop="@dimen/half_margin"
+            android:layout_marginBottom="@dimen/default_margin"
+            android:text="@string/link"
+            android:textColor="@color/selected_grey_white3"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/folder_conf_play_all"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/folder_conf_guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.4"/>
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/folder_conf_list"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_marginStart="@dimen/half_margin"
+        android:layout_marginTop="@dimen/toolbar_height"
+        android:clipToPadding="false"
+        android:paddingTop="@dimen/playlist_track_list_padding"
+        android:paddingBottom="4dp"
+        app:layout_constraintStart_toEndOf="@id/folder_conf_guideline"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

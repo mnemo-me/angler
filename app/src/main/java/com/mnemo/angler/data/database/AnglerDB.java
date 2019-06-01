@@ -2,6 +2,8 @@ package com.mnemo.angler.data.database;
 
 
 import android.annotation.SuppressLint;
+
+import androidx.room.migration.Migration;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
@@ -10,7 +12,9 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 
 
+import com.mnemo.angler.R;
 import com.mnemo.angler.data.database.Entities.Album;
+import com.mnemo.angler.data.database.Entities.FolderLink;
 import com.mnemo.angler.data.database.Entities.Link;
 import com.mnemo.angler.data.database.Entities.Playlist;
 import com.mnemo.angler.data.database.Entities.Track;
@@ -19,6 +23,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.inject.Inject;
 
@@ -31,6 +36,8 @@ import io.reactivex.schedulers.Schedulers;
 public class AnglerDB{
 
     private AnglerRoomDatabase db;
+
+    private Context context;
 
     // Listener interfaces
     public interface UpdateDatabaseListener{
@@ -105,8 +112,34 @@ public class AnglerDB{
         void onLibraryTracksCount(int count);
     }
 
+    public interface TrackUrisLoadListener{
+        void onTrackUrisLoaded(List<String> trackUris);
+    }
+
+    public interface FolderTracksLoadListener{
+        void onFolderTracksLoaded(List<Track> tracks);
+    }
+
+    public interface FolderArtistTracksLoadListener{
+        void onFolderArtistTracksLoaded(List<Track> tracks);
+    }
+
+    public interface FolderLinkAddListener{
+        void onFolderLinkAdded();
+    }
+
+    public interface FolderLinkDeleteListener{
+        void onFolderLinkDeleted();
+    }
+
+    public interface FolderLinkCheckListener{
+        void onFolderLinkChecked(boolean linkStatus);
+    }
+
     @Inject
     public AnglerDB(Context context) {
+
+        this.context = context;
 
         db = Room.databaseBuilder(context, AnglerRoomDatabase.class, "angler-database")
                 .addCallback(new RoomDatabase.Callback() {
@@ -117,6 +150,12 @@ public class AnglerDB{
                         Completable.fromAction(() -> db.playlistDAO().insert(new Playlist("library", "R.drawable.logo")))
                                 .subscribeOn(Schedulers.io())
                                 .subscribe();
+                    }
+                })
+                .addMigrations(new Migration(1,2) {
+                    @Override
+                    public void migrate(@NonNull SupportSQLiteDatabase database) {
+                        database.execSQL("CREATE TABLE IF NOT EXISTS `folders` (`_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `title` TEXT, `path` TEXT)");
                     }
                 })
                 .build();
@@ -316,6 +355,14 @@ public class AnglerDB{
                 .subscribe(listener::albumTracksLoaded);
     }
 
+    @SuppressLint("CheckResult")
+    public void loadAlbumTracksOnce(String artist, String album, AlbumTracksLoadListener listener){
+
+        db.trackDAO().getAlbumTracksOnce(artist, album)
+                .subscribeOn(Schedulers.io())
+                .subscribe(listener::albumTracksLoaded);
+    }
+
     // Load album year
     @SuppressLint("CheckResult")
     public void loadAlbumYear(String artist, String album, OnAlbumYearLoadListener listener){
@@ -334,6 +381,33 @@ public class AnglerDB{
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(listener::playlistsUpdated);
+    }
+
+    @SuppressLint("CheckResult")
+    public Disposable loadPlaylistTitlesAndFolderLinks(PlaylistsUpdateListener listener){
+
+        List<String> titles = new ArrayList<>();
+
+        return db.playlistDAO().getPlaylistTitles()
+                .subscribeOn(Schedulers.io())
+                .subscribe(playlistTitles -> {
+
+                    db.folderLinkDAO().getFolders()
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(folderLinks -> {
+
+                                titles.clear();
+                                titles.addAll(playlistTitles);
+
+                                for (FolderLink folderLink : folderLinks){
+                                    titles.add(context.getResources().getString(R.string.folder) + ": " + folderLink.getPath());
+                                }
+
+                                listener.playlistsUpdated(titles);
+                            });
+
+                });
     }
 
 
@@ -582,6 +656,62 @@ public class AnglerDB{
                             .subscribe(listener::artistTracksLoaded));
 
         }
+    }
+
+
+    // Folders methods
+    // Get music folders
+    public Disposable getMusicFolders(TrackUrisLoadListener listener){
+
+        return db.trackDAO().getUris()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(listener::onTrackUrisLoaded);
+    }
+
+    // Get folder tracks
+    public Disposable loadFolderTracks(FolderTracksLoadListener listener){
+
+        return db.trackDAO().getTracks()
+                .subscribeOn(Schedulers.io())
+                .subscribe(listener::onFolderTracksLoaded);
+    }
+
+    public Disposable loadFolderArtistTracks(String artist, FolderArtistTracksLoadListener listener){
+
+        return db.trackDAO().getTracksByArtist(artist)
+                .subscribeOn(Schedulers.io())
+                .subscribe(listener::onFolderArtistTracksLoaded);
+    }
+
+    // Add folder link
+    @SuppressLint("CheckResult")
+    public void addFolderLink(String folderName, String folderPath, FolderLinkAddListener listener){
+
+        Completable.fromAction(() -> db.folderLinkDAO().insert(new FolderLink(folderName, folderPath)))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(listener::onFolderLinkAdded);
+    }
+
+    // Delete folder link
+    @SuppressLint("CheckResult")
+    public void deleteFolderLink(String folderPath, FolderLinkDeleteListener listener){
+
+        Completable.fromAction(() -> db.folderLinkDAO().delete(folderPath))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(listener::onFolderLinkDeleted);
+    }
+
+    // Check folder link
+    @SuppressLint("CheckResult")
+    public void checkFolderLink(String folderPath, FolderLinkCheckListener listener) {
+
+        db.folderLinkDAO().checkLink(folderPath)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(count -> listener.onFolderLinkChecked(count > 0));
     }
 
 }

@@ -118,7 +118,13 @@ public class PlaylistArtistsFragment extends Fragment implements PlaylistArtists
         presenter.attachView(this);
 
         // Load artists
-        presenter.loadArtists(((MainActivity)getActivity()).getMainPlaylistName());
+        String mainPlaylist = ((MainActivity) getActivity()).getMainPlaylistName();
+
+        if (!mainPlaylist.startsWith(getResources().getString(R.string.folder) + ": ")) {
+            presenter.loadPlaylistArtists(mainPlaylist);
+        }else{
+            presenter.loadFolderArtists(mainPlaylist.replace(getResources().getString(R.string.folder) + ": ", ""));
+        }
 
     }
 

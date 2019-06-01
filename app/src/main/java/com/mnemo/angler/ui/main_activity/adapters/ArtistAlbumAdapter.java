@@ -115,6 +115,7 @@ public class ArtistAlbumAdapter extends RecyclerView.Adapter<ArtistAlbumAdapter.
 
         // Set album title
         holder.titleView.setText(album);
+
     }
 
     @Override

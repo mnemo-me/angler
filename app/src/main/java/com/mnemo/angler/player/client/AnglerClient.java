@@ -87,29 +87,33 @@ public class AnglerClient implements AnglerClientView{
 
     public void playPause(){
 
-        int pbState = mController.getPlaybackState().getState();
+        try {
+            int pbState = mController.getPlaybackState().getState();
 
-        switch (pbState){
+            switch (pbState){
 
-            case PlaybackStateCompat.STATE_PLAYING:
+                case PlaybackStateCompat.STATE_PLAYING:
 
-                mController.getTransportControls().pause();
+                    mController.getTransportControls().pause();
 
-                break;
+                    break;
 
-            case PlaybackStateCompat.STATE_ERROR:
+                case PlaybackStateCompat.STATE_ERROR:
 
-                Toast.makeText(context, context.getString(R.string.track_is_missing), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, context.getString(R.string.track_is_missing), Toast.LENGTH_SHORT).show();
 
-                break;
+                    break;
 
-            default:
+                default:
 
-                mController.getTransportControls().play();
+                    mController.getTransportControls().play();
 
-                break;
+                    break;
+            }
+
+        }catch (NullPointerException e){
+            Toast.makeText(context, context.getString(R.string.error), Toast.LENGTH_SHORT).show();
         }
-
     }
 
     public boolean changeRepeatMode(){

@@ -5,6 +5,8 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -46,11 +48,36 @@ public class AnglerNetworking {
     // Check network connection
     public boolean checkNetworkConnection(){
 
+        boolean networkConnectionStatus;
+
         ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
 
-        return networkInfo != null && networkInfo.isConnected();
+        networkConnectionStatus = networkInfo != null && networkInfo.isConnected();
+
+        //Check Wi Fi
+        if (networkConnectionStatus) {
+            if (networkInfo.getType() == ConnectivityManager.TYPE_WIFI) {
+
+                WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+
+                WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+
+                if (wifiInfo.getNetworkId() == -1){
+
+                    networkConnectionStatus = false;
+                }else {
+                    int level = WifiManager.calculateSignalLevel(wifiInfo.getRssi(), 5);
+
+                    if (level < 3) {
+                        networkConnectionStatus = false;
+                    }
+                }
+            }
+        }
+
+        return networkConnectionStatus;
     }
 
     // Load album year

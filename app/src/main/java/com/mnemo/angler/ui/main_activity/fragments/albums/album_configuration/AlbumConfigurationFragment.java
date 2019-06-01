@@ -78,12 +78,12 @@ public class AlbumConfigurationFragment extends Fragment implements AlbumConfigu
     TextView tracksCountView;
 
     @Nullable
+    @BindView(R.id.album_conf_black_stripe)
+    View blackStripe;
+
     @BindView(R.id.album_conf_play_all)
     Button playAllLayout;
 
-    @Nullable
-    @BindView(R.id.album_conf_play_all_button)
-    ImageButton playAllButton;
 
     @BindView(R.id.album_conf_list)
     RecyclerView recyclerView;
@@ -143,6 +143,7 @@ public class AlbumConfigurationFragment extends Fragment implements AlbumConfigu
         titleText.setText(title);
 
         if (orientation == Configuration.ORIENTATION_PORTRAIT){
+
             collapsedTitleText.setText(title);
 
             Display display = getActivity().getWindowManager().getDefaultDisplay();
@@ -171,6 +172,7 @@ public class AlbumConfigurationFragment extends Fragment implements AlbumConfigu
                     artistView.setAlpha(alpha);
                     yearView.setAlpha(alpha);
                     tracksCountView.setAlpha(alpha);
+                    blackStripe.setAlpha(alpha);
                     playAllLayout.setAlpha(alpha);
                     cardView.setAlpha(alpha);
 
@@ -184,6 +186,7 @@ public class AlbumConfigurationFragment extends Fragment implements AlbumConfigu
                     artistView.setAlpha(alpha);
                     yearView.setAlpha(alpha);
                     tracksCountView.setAlpha(alpha);
+                    blackStripe.setAlpha(alpha);
                     playAllLayout.setAlpha(alpha);
                     cardView.setAlpha(alpha);
 
@@ -341,12 +344,6 @@ public class AlbumConfigurationFragment extends Fragment implements AlbumConfigu
         playAllDialogFragment.setArguments(args);
 
         playAllDialogFragment.show(getActivity().getSupportFragmentManager(), "play_all_dialog_fragment");
-    }
-
-    @Optional
-    @OnClick(R.id.album_conf_play_all_button)
-    void playAllButton(){
-        playAll();
     }
 
 

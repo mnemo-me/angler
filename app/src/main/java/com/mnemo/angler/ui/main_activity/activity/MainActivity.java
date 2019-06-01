@@ -3,7 +3,6 @@ package com.mnemo.angler.ui.main_activity.activity;
 
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -12,6 +11,8 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.view.GravityCompat;
 import androidx.fragment.app.Fragment;
@@ -39,19 +40,21 @@ import com.android.billingclient.api.BillingFlowParams;
 import com.android.billingclient.api.Purchase;
 import com.android.billingclient.api.SkuDetails;
 import com.android.billingclient.api.SkuDetailsParams;
-import com.google.android.gms.ads.identifier.AdvertisingIdClient;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 import com.mnemo.angler.data.database.Entities.Track;
 import com.mnemo.angler.data.file_storage.AnglerFolder;
 import com.mnemo.angler.ui.main_activity.fragments.albums.albums.AlbumsFragment;
 import com.mnemo.angler.ui.main_activity.fragments.artists.artists.ArtistsFragment;
 import com.mnemo.angler.ui.main_activity.fragments.background_changer.background_changer.BackgroundChangerFragment;
+import com.mnemo.angler.ui.main_activity.fragments.folders.folders.FoldersFragment;
 import com.mnemo.angler.ui.main_activity.fragments.music_player.music_player.MusicPlayerFragment;
 import com.mnemo.angler.player.client.AnglerClient;
 import com.mnemo.angler.ui.main_activity.classes.DrawerItem;
 import com.mnemo.angler.R;
 import com.mnemo.angler.player.queue.QueueDialogFragment;
-import com.mnemo.angler.ui.main_activity.misc.trial_expired.TrialExpiredDialogFragment;
-import com.mnemo.angler.ui.main_activity.misc.welcome.WelcomeDialogFragment;
 import com.mnemo.angler.util.ImageAssistant;
 import com.mnemo.angler.util.MediaAssistant;
 import com.mnemo.angler.ui.main_activity.fragments.equalizer.equalizer.EqualizerFragment;
@@ -61,16 +64,12 @@ import com.mnemo.angler.ui.main_activity.fragments.playlists.playlists.Playlists
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.BindViews;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import io.reactivex.Observable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
 
 
 public class MainActivity extends AppCompatActivity implements MainActivityView {
@@ -84,9 +83,6 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
 
     @BindView(R.id.main_frame)
     FrameLayout mainFrame;
-
-    @BindView(R.id.trial_version_text)
-    TextView trialVersionText;
 
     @BindView(R.id.purchase_button)
     TextView purchaseButton;
@@ -123,8 +119,20 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
     FrameLayout overlay;
 
 
+    // bind logo views
+    @Nullable
+    @BindView(R.id.app_name_text_layout)
+    ConstraintLayout appLogoLayout;
+
+    @BindView(R.id.app_name_text)
+    ImageView appLogo;
+
+    @Nullable
+    @BindView(R.id.app_name_text_mini)
+    TextView appLogoText;
+
     // bind drawer items
-    @BindViews({R.id.music_player_drawer_item, R.id.playlists_drawer_item, R.id.albums_drawer_item, R.id.artists_drawer_item, R.id.equalizer_drawer_item, R.id.background_drawer_item})
+    @BindViews({R.id.music_player_drawer_item, R.id.playlists_drawer_item, R.id.albums_drawer_item, R.id.artists_drawer_item, R.id.folders_drawer_item, R.id.equalizer_drawer_item, R.id.background_drawer_item})
     List<TextView> drawerItems;
 
     // bind lines
@@ -136,6 +144,8 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
 
     @BindView(R.id.grey_line3)
     View greyLine3;
+
+    private AdView adBanner;
 
 
     // other variables
@@ -224,6 +234,21 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
                 mainFrame.setVisibility(savedInstanceState.getInt("main_frame_visibility"));
             }
 
+            // Setup visibility of app logo
+            if (orientation == Configuration.ORIENTATION_PORTRAIT){
+                int screeHeightDp = getResources().getConfiguration().screenHeightDp;
+
+                if (screeHeightDp < 650){
+
+                    if (!(screeHeightDp < 595)){
+                        appLogo.setVisibility(View.GONE);
+                        appLogoText.setVisibility(View.VISIBLE);
+                    }else {
+                        appLogo.setVisibility(View.GONE);
+                    }
+                }
+            }
+
             // Set title text max width
             if (orientation == Configuration.ORIENTATION_PORTRAIT){
                 titleView.setMaxWidth((int)(getResources().getConfiguration().screenWidthDp * MainActivity.density * 0.75));
@@ -231,9 +256,41 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
                 titleView.setMaxWidth((int)(getResources().getConfiguration().screenWidthDp * MainActivity.density * 0.25));
             }
 
+            // Set ad banner behavior on drawer open/close
+            drawer.addDrawerListener(new DrawerLayout.DrawerListener() {
+                @Override
+                public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
+
+                }
+
+                @Override
+                public void onDrawerOpened(@NonNull View drawerView) {
+
+                    if (adBanner != null){
+                        adBanner.resume();
+
+                        if (greyLine3.getVisibility() == View.VISIBLE){
+                            greyLine3.setVisibility(View.INVISIBLE);
+                        }
+                    }
+                }
+
+                @Override
+                public void onDrawerClosed(@NonNull View drawerView) {
+
+                    if (adBanner != null){
+                        adBanner.pause();
+                    }
+                }
+
+                @Override
+                public void onDrawerStateChanged(int newState) {
+
+                }
+            });
+
             // Select current drawer item
             selectDrawerItem(selectedDrawerItemIndex);
-
         }
     }
 
@@ -481,21 +538,6 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
         }
     }
 
-    @Override
-    public void setTrial( boolean isTrialAvailable) {
-
-        this.isTrialAvailable = isTrialAvailable;
-        checkTrial();
-    }
-
-    @Override
-    public void showWelcomeDialog() {
-
-        WelcomeDialogFragment welcomeDialogFragment = new WelcomeDialogFragment();
-
-        welcomeDialogFragment.show(getSupportFragmentManager(), "Welcome dialog fragment");
-
-    }
 
     // Setup media control buttons
     @OnClick(R.id.media_panel_play_pause)
@@ -706,7 +748,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
 
                 break;
 
-            case 5:
+            case 6:
 
                 greyLine1.setVisibility(View.VISIBLE);
                 greyLine2.setVisibility(View.VISIBLE);
@@ -752,14 +794,19 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
         createDrawerItemFragment(3, new ArtistsFragment(), "Artists fragment");
     }
 
+    @OnClick(R.id.folders_drawer_item)
+    void foldersSelect() {
+        createDrawerItemFragment(4, new FoldersFragment(), "Folders fragment");
+    }
+
     @OnClick(R.id.equalizer_drawer_item)
     void equalizerSelect() {
-        createDrawerItemFragment(4, new EqualizerFragment(), "Equalizer fragment");
+        createDrawerItemFragment(5, new EqualizerFragment(), "Equalizer fragment");
     }
 
     @OnClick(R.id.background_drawer_item)
     void backgroundSelect() {
-        createDrawerItemFragment(5, new BackgroundChangerFragment(), "Background fragment");
+        createDrawerItemFragment(6, new BackgroundChangerFragment(), "Background fragment");
     }
 
     @OnClick(R.id.purchase_button)
@@ -846,13 +893,13 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
 
         billingClient = BillingClient.newBuilder(this).setListener((responseCode, purchases) -> {
 
+
             if (responseCode == BillingClient.BillingResponse.OK && purchases != null){
 
                 Purchase purchase = purchases.get(0);
 
                 if (purchase.getSku().equals("premium")){
 
-                    trialVersionText.setVisibility(View.GONE);
                     purchaseButton.setVisibility(View.GONE);
                 }
             }
@@ -896,7 +943,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
                                             .setSkuDetails(premiumSkuDetails)
                                             .build();
 
-                                    checkTrial();
+                                    showAd();
                                 }
 
                             }
@@ -912,37 +959,32 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
         });
     }
 
-    @SuppressLint("CheckResult")
-    private void checkTrial(){
+    private void showAd(){
 
-        Observable.fromCallable(() -> AdvertisingIdClient.getAdvertisingIdInfo(getApplicationContext()).getId()).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(androidId -> {
+        MobileAds.initialize(this, "ca-app-pub-7980715947142398~1848325298");
 
-                    trialVersionText.setVisibility(View.VISIBLE);
-                    purchaseButton.setVisibility(View.VISIBLE);
+        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
 
-                    if (isTrialAvailable != null){
+            FrameLayout adBannerSpace = findViewById(R.id.ad_banner_space);
 
-                        if (!isTrialAvailable){
+            adBanner = new AdView(this);
+            adBannerSpace.addView(adBanner);
 
-                            if (getSupportFragmentManager().findFragmentByTag("Trial expired dialog") == null) {
+            AdSize adSize = new AdSize(240, 200);
+            adBanner.setAdSize(adSize);
 
-                                TrialExpiredDialogFragment trialExpiredDialogFragment = new TrialExpiredDialogFragment();
+            // test
+            adBanner.setAdUnitId("ca-app-pub-3940256099942544/6300978111");
 
-                                trialExpiredDialogFragment.setCancelable(false);
+            //adBanner.setAdUnitId("ca-app-pub-7980715947142398/7072731814");
 
-                                trialExpiredDialogFragment.show(getSupportFragmentManager(), "Trial expired dialog");
-                            }
-                        }
+            AdRequest adRequest = new AdRequest.Builder().build();
+            adBanner.loadAd(adRequest);
 
-                    }else {
+            adBanner.pause();
+        }
 
-                        presenter.checkTrial(androidId, new Date().getTime());
-                    }
-                });
-
-
+        purchaseButton.setVisibility(View.VISIBLE);
     }
 
 

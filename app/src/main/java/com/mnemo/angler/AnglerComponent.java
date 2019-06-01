@@ -21,6 +21,8 @@ import com.mnemo.angler.ui.main_activity.fragments.background_changer.background
 import com.mnemo.angler.ui.main_activity.fragments.equalizer.audio_effects.AudioEffectsPresenter;
 import com.mnemo.angler.ui.main_activity.fragments.equalizer.bands.BandsPresenter;
 import com.mnemo.angler.ui.main_activity.fragments.equalizer.equalizer.EqualizerPresenter;
+import com.mnemo.angler.ui.main_activity.fragments.folders.folder_configuration.FolderConfigurationPresenter;
+import com.mnemo.angler.ui.main_activity.fragments.folders.folders.FoldersPresenter;
 import com.mnemo.angler.ui.main_activity.fragments.music_player.artist_tracks.PlaylistArtistTracksPresenter;
 import com.mnemo.angler.ui.main_activity.fragments.music_player.artists.PlaylistArtistsPresenter;
 import com.mnemo.angler.ui.main_activity.fragments.music_player.main_playlist.MainPlaylistPresenter;
@@ -85,6 +87,10 @@ public interface AnglerComponent {
     void injectArtistTracksPresenter(ArtistTracksPresenter artistTracksPresenter);
     void injectArtistAlbumsPresenter(ArtistAlbumsPresenter artistAlbumsPresenter);
     void injectArtistBioPresenter(ArtistBioPresenter artistBioPresenter);
+
+    // Folders
+    void injectFoldersPresenter(FoldersPresenter foldersPresenter);
+    void injectFolderConfigurationPresenter(FolderConfigurationPresenter folderConfigurationPresenter);
 
     // Equalizer
     void injectEqualizerPresenter(EqualizerPresenter equalizerPresenter);

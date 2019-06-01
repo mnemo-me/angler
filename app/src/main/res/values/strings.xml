@@ -43,7 +43,6 @@
     <string name="enter_new_playlist_title">Enter new playlist title</string>
     <string name="equalizer">Equalizer</string>
     <string name="expand">expand</string>
-    <string name="free_trial">free trial</string>
     <string name="hide">Hide</string>
     <string name="image_carousel_advice_text">swipe left/right to change image</string>
     <string name="image_crop">Image crop</string>
@@ -85,6 +84,7 @@
     <string name="queue_updated">queue updated</string>
     <string name="quit">quit</string>
     <string name="repeat">repeat</string>
+    <string name="remove_ad">remove ad</string>
     <string name="save">save</string>
     <string name="search">search</string>
     <string name="search_hint">type keyword here…</string>
@@ -98,11 +98,18 @@
     <string name="track_is_missing">Track is missing</string>
     <string name="track_removed">1 track removed</string>
     <string name="tracks">tracks</string>
-    <string name="trial_period_initialization">Thanks for downloading Angler. You get free trial version for 15 days. To continue using app later you should purchase it. You can also do it any time you want.</string>
-    <string name="trial_period_is_expired">Trial period is expired. To continue using Angler you should purchase it.</string>
-    <string name="trial_version">Trial version</string>
     <string name="undo">Undo</string>
     <string name="virtualizer">Virtualizer</string>
     <string name="welcome">Welcome</string>
     <string name="yes">yes</string>
+    <string name="error">Error</string>
+    <string name="folders">Folders</string>
+    <string name="folder">folder</string>
+    <string name="create_playlist">create playlist</string>
+    <string name="link">link</string>
+    <string name="unknown">Unknown</string>
+    <string name="unknown_artist">Unknown artist</string>
+    <string name="linked">Linked. Folder is accessible from main screen.</string>
+    <string name="link_removed">Link removed.</string>
+
 </resources>

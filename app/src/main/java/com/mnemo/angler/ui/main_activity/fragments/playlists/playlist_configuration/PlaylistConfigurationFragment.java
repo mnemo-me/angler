@@ -76,12 +76,12 @@ public class PlaylistConfigurationFragment extends Fragment implements PlaylistC
     TextView tracksCountView;
 
     @Nullable
+    @BindView(R.id.playlist_conf_black_stripe)
+    View blackStripe;
+
     @BindView(R.id.playlist_conf_play_all)
     Button playAllLayout;
 
-    @Nullable
-    @BindView(R.id.playlist_conf_play_all_button)
-    ImageButton playAllButton;
 
     @Nullable
     @BindView(R.id.playlist_conf_add_tracks)
@@ -181,6 +181,7 @@ public class PlaylistConfigurationFragment extends Fragment implements PlaylistC
 
                     titleText.setAlpha(alpha);
                     tracksCountView.setAlpha(alpha);
+                    blackStripe.setAlpha(alpha);
                     playAllLayout.setAlpha(alpha);
                     cardView.setAlpha(alpha);
 
@@ -192,6 +193,7 @@ public class PlaylistConfigurationFragment extends Fragment implements PlaylistC
 
                     titleText.setAlpha(alpha);
                     tracksCountView.setAlpha(alpha);
+                    blackStripe.setAlpha(alpha);
                     playAllLayout.setAlpha(alpha);
                     cardView.setAlpha(alpha);
 
@@ -370,7 +372,6 @@ public class PlaylistConfigurationFragment extends Fragment implements PlaylistC
         playlistCreationDialogFragment.show(getActivity().getSupportFragmentManager(), "playlist_creation_dialog_fragment");
     }
 
-    @Optional
     @OnClick(R.id.playlist_conf_play_all)
     void playAll(){
 
@@ -390,12 +391,6 @@ public class PlaylistConfigurationFragment extends Fragment implements PlaylistC
 
             Toast.makeText(getContext(), R.string.empty_playlist, Toast.LENGTH_SHORT).show();
         }
-    }
-
-    @Optional
-    @OnClick(R.id.playlist_conf_play_all_button)
-    void playAllButton(){
-        playAll();
     }
 
     @Optional

@@ -12,8 +12,8 @@ android {
         applicationId "com.mnemo.angler"
         minSdkVersion 21
         targetSdkVersion 26
-        versionCode 20
-        versionName "1.0"
+        versionCode 23
+        versionName "1.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -102,13 +102,16 @@ dependencies {
     // Firebase
     implementation 'com.google.firebase:firebase-core:16.0.8'
     implementation 'com.google.firebase:firebase-auth:16.2.1'
-    implementation 'com.google.firebase:firebase-database:16.1.0'
     implementation 'com.google.firebase:firebase-storage:16.1.0'
     implementation 'com.crashlytics.sdk.android:crashlytics:2.9.9'
     implementation 'com.google.firebase:firebase-perf:16.2.5'
 
     // In-app billing
     implementation 'com.android.billingclient:billing:1.2'
+
+    // AdMob
+    implementation 'com.google.android.gms:play-services-ads:17.2.0'
+
 }
 
 apply plugin: 'com.google.gms.google-services'

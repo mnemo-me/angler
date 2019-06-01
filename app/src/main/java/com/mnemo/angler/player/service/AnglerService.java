@@ -29,6 +29,7 @@ import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.mnemo.angler.data.database.Entities.Track;
 import com.mnemo.angler.player.notification.AnglerNotificationManager;
 import com.mnemo.angler.util.MediaAssistant;
@@ -86,6 +87,8 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
     private int seekbarPosition = 0;
 
     private BroadcastReceiver receiver;
+
+    private FirebaseAnalytics firebaseAnalytics;
 
 
     public void onCreate() {
@@ -224,6 +227,8 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
 
 
         registerReceiver(receiver, intentFilter);
+
+        firebaseAnalytics = FirebaseAnalytics.getInstance(this);
     }
 
     @Override
@@ -427,13 +432,17 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
             }
 
             metadata = getCurrentMetadata();
-            mMediaSession.setMetadata(metadata);
 
-            if (!mMediaSession.isActive()) {
-                mMediaSession.setActive(true);
+            if (metadata != null) {
+
+                mMediaSession.setMetadata(metadata);
+
+                if (!mMediaSession.isActive()) {
+                    mMediaSession.setActive(true);
+                }
+
+                initializeMedia(true);
             }
-
-            initializeMedia(true);
         }
 
 
@@ -462,12 +471,17 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
 
                     onPrepare();
 
-                    initializeMediaPlayer();
+                    if (metadata != null) {
 
-                    try {
-                        mMediaPlayer.prepareAsync();
-                    }catch (IllegalStateException e){
-                        mMediaPlayer.pause();
+                        initializeMediaPlayer();
+
+                        firebaseAnalytics.logEvent("play_track", null);
+
+                        try {
+                            mMediaPlayer.prepareAsync();
+                        } catch (IllegalStateException e) {
+                            mMediaPlayer.pause();
+                        }
                     }
                 }
             }
@@ -1058,7 +1072,6 @@ public class AnglerService extends MediaBrowserServiceCompat implements AnglerSe
                 return true;
             });
             mMediaPlayer.setDataSource(AnglerService.this, metadata.getDescription().getMediaUri());
-
 
         } catch (IOException e) {
             e.printStackTrace();
